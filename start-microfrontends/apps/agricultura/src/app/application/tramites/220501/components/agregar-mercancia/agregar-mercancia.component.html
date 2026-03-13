@@ -1,0 +1,114 @@
+<form [formGroup]="agregarMercanciaForm">
+  <!--Agregar mercancía-->
+  <ng-titulo titulo="Agregar mercancía" />
+  <div class="row">
+    <div class="col-md-4">
+      <label for="fraccionArancelaria">Fracción arancelaria:</label>
+      <input
+        type="text"
+        id="fraccionArancelaria"
+        class="form-control"
+        formControlName="fraccionArancelaria"
+      />
+    </div>
+    <div class="col-md-8">
+      <label for="descripcionFraccion">Descripción de la fracción:</label>
+      <input
+        type="text"
+        id="descripcionFraccion"
+        class="form-control"
+        formControlName="descripcionFraccion"
+      />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <label for="nico">Nico:</label>
+      <input
+        type="text"
+        id="nico"
+        class="form-control"
+        formControlName="nico"
+      />
+    </div>
+    <div class="col-md-8">
+      <label for="descripcion">Descripción Nico:</label>
+      <input
+        type="text"
+        id="descripcion"
+        class="form-control"
+        formControlName="descripcion"
+      />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <label for="cantidadTotalUMT">Cantidad total UMT:</label>
+      <input
+        type="text"
+        id="cantidadTotalUMT"
+        class="form-control"
+        formControlName="cantidadTotalUMT"
+      />
+    </div>
+    <div class="col-md-4">
+      <label for="unidaddeMedidaDeUMT">Unidad de medida de UMT:</label>
+      <input
+        type="text"
+        id="unidaddeMedidaDeUMT"
+        class="form-control"
+        formControlName="unidaddeMedidaDeUMT"
+      />
+    </div>
+    <div class="col-md-4">
+      <label for="saldoPendiente">Saldo pendiente:</label>
+      <input
+        type="text"
+        id="saldoPendiente"
+        class="form-control"
+        formControlName="saldoPendiente"
+      />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <label for="saldoACapturar">Cantidad Solicitada en UMT<span [ngClass]="{'text-danger': agregarMercanciaForm.controls['saldoACapturar'].invalid && agregarMercanciaForm.controls['saldoACapturar'].touched}">*</span>:</label>
+      <input
+        type="text"
+        id="saldoACapturar"
+        class="form-control"
+        maxlength="16"
+        formControlName="saldoACapturar"
+        (change)="setSaldoACapturar($event)"
+      />
+      @if(agregarMercanciaForm.controls['saldoACapturar'].invalid &&
+      agregarMercanciaForm.controls['saldoACapturar'].touched) {
+      <div class="d-grid">
+        @if(agregarMercanciaForm.controls['saldoACapturar'].errors?.['required'])
+        {
+        <span class="mensaje-error">Este campo es obligatorio.</span>
+        }
+      </div>
+      }
+    </div>
+  </div>
+  <div class="row mb-4">
+    <div class="text-end">
+      <button type="button" class="btn btn-default" (click)="cerrarModal()">
+        Cancelar
+      </button>
+      <button type="button" class="btn btn-primary" (click)="aceptar()">
+        Aceptar
+      </button>
+    </div>
+  </div>
+</form>
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones
+    [notificacionInput]="nuevaNotificacion"
+    (confirmacionModal)="eliminarPedimento($event)"
+  >
+  </lib-notificaciones>
+</section>
+}

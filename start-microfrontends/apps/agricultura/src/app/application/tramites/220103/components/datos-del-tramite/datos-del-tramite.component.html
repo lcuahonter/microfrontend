@@ -1,0 +1,81 @@
+<div class="form">
+    <formas-dinamicas [forma]="formularioDatosTramite" 
+    [formularioTitulo]="'Datos del trámite'"
+    [formularioDatos]="configuracionFormularioDatos || []"
+        [soloLectura]="esSoloLectura"
+        [estado]="estadoSeleccionado" (emitirCambioDeValor)="establecerCambioDeValor($event)">
+   </formas-dinamicas>
+
+    <div class="row mt-4 text-center">
+        <ng-alert [CONTENIDO]="mensajeImportante"></ng-alert>
+    </div>
+    <div class="row">
+        <label for="mercancias" class="form-label text-left">Mercancías*:</label>
+        <app-tabla-dinamica [configuracionTabla]="configuracionTabla" [datos]="datosTabla"
+            [tipoSeleccionTabla]="seleccionTabla"
+            [disableSeleccionTablaCheckBox]="esSoloLectura"
+            (listaDeFilaSeleccionada)="obtenerMercanciasSeleccionadas($event)"></app-tabla-dinamica>
+        <nav aria-label="Ejemplo de paginación">
+            <ul class="pagination d-flex justify-content-center">
+                <li class="page-item"><a class="page-link">1</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12 d-flex justify-content-end">
+            @if(datosTabla.length > 0) {
+            <button name="modificar" class="btn btn-primary me-2" data-bs-toggle="modal"
+                data-bs-target="#modalMercancia" (click)="modificarMercancia()" [disabled]="esSoloLectura">
+                Modificar
+            </button>
+            <button name="eliminar" class="btn btn btn-danger me-2" (click)="eliminarMercancia()" [disabled]="esSoloLectura">
+                Eliminar
+            </button>
+            }
+            <button name="agregar" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalMercancia" [disabled]="esSoloLectura">
+                Agregar
+            </button>
+        </div>
+    </div>
+</div>
+<div #modalMercancia class="modal fade test-modal" id="modalMercancia" tabindex="-1" aria-labelledby="modalMercancia">
+    <div class="modal-dialog modal-dialog-centered modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="container mt-5">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h2>
+                                Solicitud de Requisitos de Sanidad Acuícola para Importación
+                            </h2>
+                        </div>
+                    </div>
+                    <div class="row mt-5">
+                        <formas-dinamicas [forma]="formularioDatosMercancia"
+                            [formularioTitulo]="'Datos mercancía'"
+                            [formularioDatos]="configuracionFormularioMercancia" [estado]="estadoSeleccionadoMercancia"
+                            (emitirCambioDeValor)="establecerCambioDeValor($event,'mercancia')"></formas-dinamicas>
+                    </div>
+                    <div class="row my-5">
+                        <div class="col-md-8">
+                            <p>* Campos obligatorios</p>
+                        </div>
+                        <div class="col-md-4 d-flex justify-content-end">
+                            <button name="limpiar" class="btn btn-primary me-2"
+                                (click)="formularioDatosMercancia.reset()">
+                                Limpiar
+                            </button>
+                            <button name="cancelar" class="btn btn btn-danger me-2" data-bs-dismiss="modal" #cerrarModal>
+                                Cancelar
+                            </button>
+                            <button name="agregar" class="btn btn-primary" (click)="agregarMercancia()">
+                                {{ esModificarMercancia? 'Modificar' : 'Agregar' }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

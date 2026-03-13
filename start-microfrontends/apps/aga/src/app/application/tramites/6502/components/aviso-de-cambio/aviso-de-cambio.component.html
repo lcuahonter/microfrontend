@@ -1,0 +1,94 @@
+<div class="row">
+    <div class="col-md-12">
+        <ng-titulo titulo="Datos de los agentes aduanales y mandatarios relacionados."></ng-titulo>
+    </div>
+</div>
+<div class ="mt-neg-2">
+    <div class="col-md-12">
+        <app-tabla-dinamica [configuracionTabla]="instalacionesPrincipalesTabla"
+        [datos]="instalacionesPrincipalesTablaDatos" [tipoSeleccionTabla]="tablaSeleccionCheckbox" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura ? true : false" 
+        [desactivarEmitirEvento]="esFormularioSoloLectura ? true : false"></app-tabla-dinamica>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 d-flex justify-content-end mb-4">
+        <button class="btn btn-primary me-2" (click)="openModal()" [disabled]="esFormularioSoloLectura ? true : false">Modificar</button>
+    </div>
+</div>
+
+<div
+  class="modal fade"
+  #modal
+  tabindex="-1"
+  aria-labelledby="modalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg m-width">
+    <div class="modal-content">
+        <div class="modal-header">
+            <p></p>
+        </div>
+      <div class="modal-body">
+        <form [formGroup]="modalForma">
+            <h6 class="para-title">Datos personales.</h6>
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="nombre" class="f-14">Nombre:</label>
+                    <input type="text" class="form-control" id="nombre" formControlName="nombre">
+                </div>
+                <div class="col-md-4">
+                    <label for="registroFederal" class="f-14">Registro federal de contribuyentes:</label>
+                    <input type="text" class="form-control" id="registroFederal" formControlName="registroFederal">
+                </div>
+                <div class="col-md-4">
+                    <label for="curp" class="f-14">Clave única de registro poblacional ( C U R P):</label>
+                    <input type="text" class="form-control" id="curp" formControlName="curp">
+                </div>
+            </div>
+            <h6 class="para-title">Actualización de la clave única de registro poblacional (CURP).</h6>
+            <div class="row mt-3">
+                <div class="col-md-8">
+                    <label for="curpActualizada" class="f-14"><span class="danger">*</span>Clave única de registro poblacional ( C U R P) actualizada:</label>
+                    <input type="text" class="form-control" id="curpActualizada" formControlName="curpActualizada" (change)="setValoresStore(modalForma,'curpActualizada', 'setCurpActualizada')">
+                    @if(modalForma.controls['curpActualizada'].invalid && modalForma.controls['curpActualizada'].touched){
+                        <div class="d-grid">
+                            @if(modalForma.controls['curpActualizada'].errors?.['required']) {
+                                <span class="mensaje-error">Este campo es obligatorio</span>
+                            }
+                        </div>
+                    }
+    
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-8">
+                    <label for="confirmacioCurpActualizada" class="f-14"><span class="danger">*</span>Confirmación de clave única de registro poblacional ( C U R P) actualizada:</label>
+                    <input type="text" class="form-control" id="confirmacioCurpActualizada" formControlName="confirmacioCurpActualizada" (change)="setValoresStore(modalForma,'confirmacioCurpActualizada', 'setConfirmacioCurpActualizada')">
+                    @if(modalForma.controls['confirmacioCurpActualizada'].invalid && modalForma.controls['confirmacioCurpActualizada'].touched){
+                        <div class="d-grid">
+                            @if(modalForma.controls['confirmacioCurpActualizada'].errors?.['required']) {
+                                <span class="mensaje-error">Este campo es obligatorio</span>
+                            }
+                        </div>
+                    }
+    
+                </div>
+            </div>
+                        
+        </form>
+        
+      </div>
+      <div class="modal-footer justify-content-end">
+        <button type="button" class="btn btn-primary" (click)="obtenerValoresFormulario()">Modificar</button>
+        <button type="button" class="btn btn-primary" (click)="limpiarValoresFormulario()">Limpiar</button>
+        <button type="button" class="btn btn-default" (click)="hideModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+@if (nuevaNotificacion) {
+    <section>
+      <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+      </lib-notificaciones>
+    </section>
+    }

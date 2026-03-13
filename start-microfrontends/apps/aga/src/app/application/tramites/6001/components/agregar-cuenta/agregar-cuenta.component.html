@@ -1,0 +1,217 @@
+<div class="container">
+    <ng-titulo titulo="Agregar cuenta" />
+    <h4 class="mb-5">Ingresar los datos de la cuenta bancaria</h4>
+
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <form [formGroup]="agregarCuentaForm">
+                <div class="mb-3 row">
+                    <label for="titular" class="col-sm-3 col-form-label">Titular de la cuenta*:</label>
+                    <div class="col-sm-9">
+                        <div class="form-group">
+                            <input type="text" 
+                            formControlName="titularDeLaCuenta" 
+                            (change)="setValoresStore(agregarCuentaForm,'titularDeLaCuenta', 'setTitularDeLaCuenta')"
+                            class="form-control" id="titular" >
+                        </div>
+                        @if((agregarCuentaForm.controls['titularDeLaCuenta'].invalid && tieneAgregarCuentaFormEnviado) || agregarCuentaForm.controls['titularDeLaCuenta'].touched) {
+                            <div class="d-grid">
+                                @if(agregarCuentaForm.controls['titularDeLaCuenta'].errors?.['required']) {
+                                    <span class="mensaje-error">Este campo es obligatorio</span>
+                                }
+                                @if(agregarCuentaForm.controls['titularDeLaCuenta'].errors?.['maxlength']) {
+                                    <span class="mensaje-error">No puede exceder los 30 caracteres.</span>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+        
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <app-catalogo-select 
+                            [catalogo]="tipoDePersona" 
+                            [label]="'Tipo de persona'"
+                            [required]="true"
+                            [isInline]="true"
+                            formControlName="persona"
+                            name="persona"  
+                            (change)="setValoresStore(agregarCuentaForm,'persona', 'setPersona')" >
+                        </app-catalogo-select>
+                        @if((agregarCuentaForm.controls['persona'].invalid && tieneAgregarCuentaFormEnviado)) {
+                            <div class="d-grid">
+                                @if(agregarCuentaForm.controls['persona'].errors?.['required']) {
+                                    <span class="mensaje-error">Este campo es obligatorio</span>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+        
+                <div class="mb-3 row">
+                    <label for="rfc" class="col-sm-3 col-form-label">RFC*:<i class="bi bi-question-circle-fill"></i></label>
+                    <div class="col-sm-9">
+                        <div class="form-group">
+                            <input type="text" id="rfc" formControlName="rfc"
+                            (change)="setValoresStore(agregarCuentaForm,'rfc', 'setRfc')"
+                             class="form-control">
+                        </div>
+                        @if((agregarCuentaForm.controls['rfc'].invalid &&tieneAgregarCuentaFormEnviado) || agregarCuentaForm.controls['rfc'].touched) {
+                            <div class="d-grid">
+                                @if(agregarCuentaForm.controls['rfc'].errors?.['required']) {
+                                    <span class="mensaje-error">Este campo es obligatorio</span>
+                                }
+                                @if(agregarCuentaForm.controls['rfc'].errors?.['pattern']) {
+                                    <span class="mensaje-error">Formato de RFC inválido. Debe seguir el formato correcto.</span>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="cuenta" class="col-sm-3 col-form-label">Número de cuenta*:</label>
+                    <div class="col-sm-9">
+                        <div class="form-group">
+                            <input type="text" formControlName="numeroDeCuenta"
+                            (change)="setValoresStore(agregarCuentaForm,'numeroDeCuenta', 'setNumeroDeCuenta')"
+                             id="cuenta" 
+                             class="form-control">
+                        </div>
+                        @if((agregarCuentaForm.controls['numeroDeCuenta'].invalid && tieneAgregarCuentaFormEnviado) || agregarCuentaForm.controls['numeroDeCuenta'].touched) {
+                            <div class="d-grid">
+                                @if(agregarCuentaForm.controls['numeroDeCuenta'].errors?.['required']) {
+                                    <span class="mensaje-error">Este campo es obligatorio</span>
+                                }
+                                @if(agregarCuentaForm.controls['numeroDeCuenta'].errors?.['maxlength']) {
+                                    <span class="mensaje-error">No puede exceder los 30 caracteres.</span>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <app-catalogo-select 
+                            [catalogo]="paisDondeRadica" 
+                            [label]="'País donde radica'"
+                            [required]="true"
+                            [isInline]="true" 
+                            name="pais"
+                            formControlName="pais"
+                            (change)="setValoresStore(agregarCuentaForm,'pais', 'setPais')" >
+                        </app-catalogo-select>
+                        @if((agregarCuentaForm.controls['pais'].invalid && tieneAgregarCuentaFormEnviado)) {
+                            <div class="d-grid">
+                                @if(agregarCuentaForm.controls['pais'].errors?.['required']) {
+                                    <span class="mensaje-error">Este campo es obligatorio</span>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <app-catalogo-select 
+                            [catalogo]="institucion" 
+                            [label]="'Institución'"
+                            [required]="true" 
+                            [isInline]="true"
+                            formControlName="institucion"
+                            name="institucions"  
+                            (change)="setValoresStore(agregarCuentaForm,'institucion', 'setInstitucion')" >
+                        </app-catalogo-select>
+                        @if((agregarCuentaForm.controls['institucion'].invalid && tieneAgregarCuentaFormEnviado)) {
+                            <div class="d-grid">
+                                @if(agregarCuentaForm.controls['institucion'].errors?.['required']) {
+                                    <span class="mensaje-error">Este campo es obligatorio</span>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+
+
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <app-catalogo-select 
+                            [catalogo]="estado" 
+                            [label]="'Estado'"
+                            [required]="true" 
+                            [isInline]="true"
+                            formControlName="estado"
+                            name="estado"  
+                            (change)="setValoresStore(agregarCuentaForm,'estado', 'setEstado')" >
+                        </app-catalogo-select>
+                        @if((agregarCuentaForm.controls['estado'].invalid && tieneAgregarCuentaFormEnviado)) {
+                            <div class="d-grid">
+                                @if(agregarCuentaForm.controls['estado'].errors?.['required']) {
+                                    <span class="mensaje-error">Este campo es obligatorio</span>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+
+
+                <div class="mb-3 row">
+                    <label for="sucursal" class="col-sm-3 col-form-label">Sucursal*:</label>
+                    <div class="col-sm-9">
+                        <div class="form-group">
+                            <input type="text" formControlName="sucursal"
+                            (change)="setValoresStore(agregarCuentaForm,'sucursal', 'setSucursal')"
+                             id="sucursal" 
+                             class="form-control">
+                        </div>
+                        @if((agregarCuentaForm.controls['sucursal'].invalid && tieneAgregarCuentaFormEnviado) || agregarCuentaForm.controls['sucursal'].touched) {
+                            <div class="d-grid">
+                                @if(agregarCuentaForm.controls['sucursal'].errors?.['required']) {
+                                    <span class="mensaje-error">Este campo es obligatorio</span>
+                                }
+                                @if(agregarCuentaForm.controls['sucursal'].errors?.['pattern']) {
+                                    <span class="mensaje-error">Formato de sucursal no válido. Debe seguir el formato correcto.</span>
+                                }
+                                @if(agregarCuentaForm.controls['sucursal'].errors?.['maxlength']) {
+                                    <span class="mensaje-error">No puede exceder los 10 caracteres.</span>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="plaza" class="col-sm-3 col-form-label">Número de plaza*:</label>
+                    <div class="col-sm-9">
+                        <div class="form-group">
+                            <input type="text" formControlName="numeroDePlaza"
+                            (change)="setValoresStore(agregarCuentaForm,'numeroDePlaza', 'setNumeroDePlaza')"
+                             id="plaza" 
+                             class="form-control text-uppercase">
+                        </div>
+                        @if((agregarCuentaForm.controls['numeroDePlaza'].invalid && tieneAgregarCuentaFormEnviado) || agregarCuentaForm.controls['numeroDePlaza'].touched) {
+                            <div class="d-grid">
+                                @if(agregarCuentaForm.controls['numeroDePlaza'].errors?.['required']) {
+                                    <span class="mensaje-error">Este campo es obligatorio</span>
+                                }
+                                @if(agregarCuentaForm.controls['numeroDePlaza'].errors?.['pattern']) {
+                                    <span class="mensaje-error">Formato de número de plaza no válido. Debe seguir el formato correcto.</span>
+                                }
+                                @if(agregarCuentaForm.controls['numeroDePlaza'].errors?.['maxlength']) {
+                                    <span class="mensaje-error">No puede exceder los 10 caracteres.</span>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="d-flex justify-content-center">
+            <button type="submit" class="btn btn-primary me-2" (click)="guardar()">Guardar</button>
+            <button type="button" class="btn btn-default" (click)="cancelar()">Cancelar</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,84 @@
+<div class="container">
+  <form [formGroup]="transportistaCertificacionForm">
+    <div class="row">
+      <div class="col-md-12">
+        <ng-titulo [titulo]="tituloModal" />
+      </div>
+      <div class="col-md-4 mt-4">
+        <label class="form-label text-start" for="trRfc">RFC<span [ngClass]="{'text-danger': transportistaCertificacionForm.get('transportistaRFC')?.invalid && (transportistaCertificacionForm.get('transportistaRFC')?.touched || transportistaCertificacionForm.get('transportistaRFC')?.dirty)}">*</span>:</label>
+        <input type="text" class="form-control" formControlName="transportistaRFC" name="trRfc" id="trRfc" maxlength="13"
+          (change)="actualizarTransportistaRFC($event)" />
+        @if (transportistaCertificacionForm.get('transportistaRFC')?.invalid && (transportistaCertificacionForm.get('transportistaRFC')?.touched || transportistaCertificacionForm.get('transportistaRFC')?.dirty)) {
+          @if (transportistaCertificacionForm.get('transportistaRFC')?.hasError('required')) {
+            <small class="mensaje-error">Este campo es obligatorio</small>
+          }
+          @else if (transportistaCertificacionForm.get('transportistaRFC')?.hasError('pattern')) {
+            <small class="mensaje-error">Formato de RFC inválido</small>
+          }
+          @else if (transportistaCertificacionForm.get('transportistaRFC')?.hasError('maxlength')) {
+            <small class="mensaje-error">Por favor, no escriba más de 13 caracteres.</small>
+          }
+        }
+      </div>
+      <div class="col-md-8 mt-4">
+        <div class="form-group text-start pull-left">
+          <button type="button" name="btnBuscarEmpresa" id="btnBuscarEmpresa" class="btn btn-primary mt-5 me-2"
+            (click)="selectBuscarTransportista()">
+            Buscar
+          </button>
+        </div>
+      </div>
+      <div class="col-md-4 mt-4">
+        <label class="form-label text-start" for="">RFC:</label>
+        <input type="text" class="form-control" formControlName="transportistaRFCModifTrans" name="trRfcModifTrans"
+          id="trRfcModifTrans" (change)="actualizarTransportistaRFCModifTrans($event)" />
+        @if (transportistaCertificacionForm.get('transportistaRFCModifTrans')?.invalid && (transportistaCertificacionForm.get('transportistaRFCModifTrans')?.touched || transportistaCertificacionForm.get('transportistaRFCModifTrans')?.dirty)) {
+          @if (transportistaCertificacionForm.get('transportistaRFCModifTrans')?.hasError('pattern')) {
+            <small class="mensaje-error">Formato de RFC inválido</small>
+          }
+        }
+      </div>
+      <div class="col-md-4 mt-8"></div>
+      <div class="col-md-6 mt-4">
+        <label class="form-label text-start" for="">Nombre, denominación o razón social:</label>
+        <input type="text" class="form-control" formControlName="transportistaRazonSocial" name="trRazonSocial"
+          id="trRazonSocial" (change)="actualizarTransportistaRazonSocial($event)" />
+      </div>
+      <div class="col-md-6 mt-4">
+        <label class="form-label text-start" for="">Domicilio:</label>
+        <input type="text" class="form-control" formControlName="transportistaDomicilio" name="trDomicilio"
+          id="trDomicilio" (change)="actualizarTransportistaDomicilio($event)" />
+      </div>
+      <div class="col-md-6 mt-4">
+        <label class="form-label text-start" for="">Registro CAAT vigente:</label>
+        <input type="text" class="form-control" formControlName="transportistaCaat" name="trCaat" id="trCaat"
+          (change)="actualizarTransportistaCaat($event)" />
+      </div>
+      <div class="col-md-12">
+        <div class="d-flex justify-content-end mt-4">
+          <button type="button" id="aceptar" class="btn btn-primary" data-bs-dismiss="modal" #closeModal
+            (click)="aceptarTransportista()">
+            Aceptar
+          </button>
+
+          <button type="button" id="limpiar" class="btn btn-default ms-3" (click)="limpiar()">
+            Limpiar
+          </button>
+
+          <button type="button" id="cancelar" class="btn btn-danger ms-3" (click)="cancelarTransportistaModal()" #closeModal>
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+@if(nuevaNotificacion && nuevaNotificacion.tipoNotificacion) {
+<section>
+  <lib-notificaciones 
+    [notificacionInput]="nuevaNotificacion"
+    (confirmacionModal)="manejarConfirmacionNotificacion($event)">
+  </lib-notificaciones>
+</section>
+}

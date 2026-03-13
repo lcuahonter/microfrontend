@@ -1,0 +1,784 @@
+<div class="container">
+  <form [formGroup]="datosComunesForm">
+    <div class="row mt-5">
+      <div class="col-md-12">
+        <label class="form-label text-start"
+          >Señale el sector productivo o servicio al que pertenece</label
+        >
+      </div>
+      <div class="col-12 col-md-12 p-0">
+        <div class="col-md-6">
+          <app-catalogo-select
+            formControlName="catseleccionados"
+            [catalogo]="sectorProductivo.catalogos"
+            [label]="sectorProductivo.labelNombre"
+            [placeholder]="sectorProductivo.primerOpcion"
+            [hiddenPrimerOption]="false"
+            [primerOptionValue]="0"
+            [isDisabled]="esFormularioSoloLectura"
+            [required]="sectorProductivo.required"
+            [markTouched]="!!datosComunesForm.get('catseleccionados')?.touched"
+            (selectionChange)="actualizarCatseleccionados($event)"
+            (click)="marcarDesplegablesComoInteractuados()"
+          ></app-catalogo-select>
+        </div>
+        <div class="col-md-6">
+          <app-catalogo-select
+            formControlName="servicio"
+            [catalogo]="servicio.catalogos"
+            [label]="servicio.labelNombre"
+            [placeholder]="servicio.primerOpcion"
+            [hiddenPrimerOption]="false"
+            [primerOptionValue]="0"
+            [isDisabled]="esFormularioSoloLectura"
+            [required]="servicio.required"
+            [markTouched]="!!datosComunesForm.get('servicio')?.touched"
+            (selectionChange)="actualizarServicio($event)"
+            (click)="marcarDesplegablesComoInteractuados()"
+          ></app-catalogo-select>
+        </div>
+      </div>
+      <div class="col-12 col-md-12 mt-5 nota">
+        <div class="alert alert-info">
+          <div class="form-check">
+            <b> Nota:</b> Si no encuadra en los sectores o los servicios de los catálogos, deberá seleccionar el más cercano a sus actividades.
+          </div>
+        </div>
+      </div>
+      @if (((datosComunesForm.get('catseleccionados')?.value.length === 0 || datosComunesForm.get('catseleccionados')?.value === 0) && (datosComunesForm.get('servicio')?.value.length === 0 || datosComunesForm.get('servicio')?.value === 0)) && desplegablesInteractuados) {
+          <small class="mensaje-error">Debe seleccionar al menos un sector productivo o un servicio</small>
+      }
+      <div class="col-md-12 mt-4">
+        <label class="form-label text-start">Señale si se encuentra al corriente en el cumplimiento de sus
+          obligaciones fiscales y aduaneras<span [ngClass]="{'text-danger': datosComunesForm.get('190')?.invalid && (datosComunesForm.get('190')?.touched || datosComunesForm.get('190')?.dirty)}">*</span>:</label
+        >
+        <app-input-radio
+          formControlName="190"
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gap]="'50px'"
+          (valueChange)="actualizar190($event)"
+        ></app-input-radio>
+        @if (datosComunesForm.get('190')?.hasError('required') && (datosComunesForm.get('190')?.touched || datosComunesForm.get('190')?.dirty)) {
+          <small class="mensaje-error">Este campo es obligatorio</small>
+        }
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="form-label text-start"
+          >Indique si autorizó al S A T hacer pública su opinión positiva sobre el cumplimiento de obligaciones fiscales<span [ngClass]="{'text-danger': datosComunesForm.get('191')?.invalid && (datosComunesForm.get('191')?.touched || datosComunesForm.get('191')?.dirty)}">*</span>:</label
+        >
+        <app-input-radio
+          formControlName="191"
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gap]="'50px'"
+          (valueChange)="actualizar191($event)"
+        ></app-input-radio>
+        @if (datosComunesForm.get('191')?.hasError('required') && (datosComunesForm.get('191')?.touched || datosComunesForm.get('191')?.dirty)) {
+          <small class="mensaje-error">Este campo es obligatorio</small>
+        }
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="form-label text-start">Señale si se encuentra en el listado de empresas publicadas por el SAT en términos del artículo 69 del CFF, con excepción de la fracción VI<span [ngClass]="{'text-danger': datosComunesForm.get('199')?.invalid && (datosComunesForm.get('199')?.touched || datosComunesForm.get('199')?.dirty)}">*</span>:</label
+        >
+        <app-input-radio
+          formControlName="199"
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gap]="'50px'"
+          (valueChange)="actualizar199($event)"
+        ></app-input-radio>
+        @if (datosComunesForm.get('199')?.hasError('required') && (datosComunesForm.get('199')?.touched || datosComunesForm.get('199')?.dirty)) {
+          <small class="mensaje-error">Este campo es obligatorio</small>
+        }
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="form-label text-start">Del mismo modo indique si se encuentra en el listado de empresas publicadas por el SAT en términos del artículo 69-B, cuarto párrafo y 69-B Bis, noveno párrafo, del CFF<span [ngClass]="{'text-danger': datosComunesForm.get('200')?.invalid && (datosComunesForm.get('200')?.touched || datosComunesForm.get('200')?.dirty)}">*</span>:</label
+        >
+        <app-input-radio
+          formControlName="200"
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gap]="'50px'"
+          (valueChange)="actualizar200($event)"
+        ></app-input-radio>
+        @if (datosComunesForm.get('200')?.hasError('required') && (datosComunesForm.get('200')?.touched || datosComunesForm.get('200')?.dirty)) {
+          <small class="mensaje-error">Este campo es obligatorio</small>
+        }
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="form-label text-start">Señale si sus certificados de sellos digitales están vigentes<span [ngClass]="{'text-danger': datosComunesForm.get('244')?.invalid && (datosComunesForm.get('244')?.touched || datosComunesForm.get('244')?.dirty)}">*</span>:</label>
+        <app-input-radio
+          formControlName="244"
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gap]="'50px'"
+          (valueChange)="actualizar244($event)"
+        ></app-input-radio>
+        @if (datosComunesForm.get('244')?.hasError('required') && (datosComunesForm.get('244')?.touched || datosComunesForm.get('244')?.dirty)) {
+          <small class="mensaje-error">Este campo es obligatorio</small>
+        }
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="form-label text-start">Señale si infringió alguno de los supuestos previstos en el artículo 17-H Bis del CFF, durante los últimos 12 meses<span [ngClass]="{'text-danger': datosComunesForm.get('201')?.invalid && (datosComunesForm.get('201')?.touched || datosComunesForm.get('201')?.dirty)}">*</span>:</label>
+        <app-input-radio
+          formControlName="201"
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gap]="'50px'"
+          (valueChange)="actualizar201($event)"
+        ></app-input-radio>
+        @if (datosComunesForm.get('201')?.hasError('required') && (datosComunesForm.get('201')?.touched || datosComunesForm.get('201')?.dirty)) {
+          <small class="mensaje-error">Este campo es obligatorio</small>
+        }
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="form-label text-start"
+          >Indique todos los domicilios registrados ante el RFC del solicitante
+          e indique aquellos en que se desarrollen actividades relacionadas con
+          su proceso productivo y/o la prestación de servicios.</label
+        >
+      </div>
+      <div class="col-md-12 mt-5">
+        <div class="alert alert-info">
+          <div class="form-check">
+            <b> Nota:</b> De contar con un programa IMMEX activo y vigente al momento de ingresar la solicitud, se mostrarán los domicilios registrados ante la Secretaria de Economía, es necesario eliminar aquellos domicilios que no tengan alguna relación con la presente solicitud. Así mismo, podrá incluir otros domicilios que se encuentren relacionados con el RFC del solicitante, dando click en el botón "Agregar" y seleccionado la Entidad Federativa.
+          </div>
+        </div>
+        <small class="mensaje-error">Se debe agregar por lo menos un domicilio registrado</small>
+        <div class="col-md-12 mt-5">
+          <app-tabla-dinamica
+            [tipoSeleccionTabla]="numeroDeEmpleadosTabla"
+            [configuracionTabla]="domiciliosConfiguracionColumnas"
+            [datos]="domiciliosDatos"
+            (listaDeFilaSeleccionada)="seleccionarDomiciliosDato($event)"
+          >
+          </app-tabla-dinamica>
+        </div>
+        <div class="col-md-12 mt-5">
+          <div class="d-flex justify-content-end mt-4">
+            <button
+              type="button"
+              id="modificar"
+              [disabled]="esFormularioSoloLectura || seleccionarDomiciliosDatos.length === 0"
+              class="btn btn-default"
+              data-bs-toggle="modal"
+              data-bs-target="#modalInstalacionesPrincipales"
+              (click)="agregarModificarPrincipales()"
+            >
+              Modificar
+            </button>
+            <button
+              type="button"
+              [disabled]="esFormularioSoloLectura || seleccionarDomiciliosDatos.length === 0"
+              id="eliminar"
+              class="btn btn-danger ms-3"
+              (click)="confirmarEliminarDomicilios()"
+            >
+              Eliminar
+            </button>
+            <button
+              type="button"
+              id="agregar"
+              [disabled]="esFormularioSoloLectura"
+              class="btn btn-primary ms-3"
+              (click)="agregarInstalacionesPrincipales()"
+            >
+              Agregar
+            </button>
+          </div>
+        </div>
+
+        <div class="col-md-12 mt-4">
+          <label class="form-label text-start"
+            >Señale si tiene actualizado sus medios de contacto para efectos del
+            buzón tributario en términos del penúltimo párrafo del artículo 17-K
+            del CFF<span [ngClass]="{'text-danger': datosComunesForm.get('246')?.invalid && (datosComunesForm.get('246')?.touched || datosComunesForm.get('246')?.dirty)}">*</span>:</label
+          >
+          <app-input-radio
+            formControlName="246"
+            [radioOptions]="sinoOpcion.radioOptions"
+            [isRequired]="sinoOpcion.isRequired"
+            [layout]="'horizontal'"
+            [gap]="'50px'"
+            (valueChange)="actualizar246($event)"
+          ></app-input-radio>
+          @if (datosComunesForm.get('246')?.hasError('required') && (datosComunesForm.get('246')?.touched || datosComunesForm.get('246')?.dirty)) {
+            <small class="mensaje-error">Este campo es obligatorio</small>
+          }
+        </div>
+
+        <div class="col-md-12 mt-4">
+          <label class="form-label text-start"
+            >Señale si se encuentra suspendida en el Padrón de Importadores o en el Padrón de Importadores de Sectores Específicos o Padrón de Exportadores Sectorial<span [ngClass]="{'text-danger': datosComunesForm.get('247')?.invalid && (datosComunesForm.get('247')?.touched || datosComunesForm.get('247')?.dirty)}">*</span>:</label
+          >
+          <app-input-radio
+            formControlName="247"
+            [radioOptions]="sinoOpcion.radioOptions"
+            [isRequired]="sinoOpcion.isRequired"
+            [layout]="'horizontal'"
+            [gap]="'50px'"
+            (valueChange)="actualizar247($event)"
+          ></app-input-radio>
+          @if (datosComunesForm.get('247')?.hasError('required') && (datosComunesForm.get('247')?.touched || datosComunesForm.get('247')?.dirty)) {
+            <small class="mensaje-error">Este campo es obligatorio</small>
+          }
+        </div>
+
+        <div class="col-md-12">
+          <ng-titulo titulo="Clientes y Proveedores en el Extranjero" />
+        </div>
+
+        <div class="col-md-12">
+          <label class="form-label text-start"
+            >Anexe un archivo que contenga sus clientes y proveedores directa o indirectamente vinculados con el régimen aduanero con el que se solicita el registro y con los que haya realizado operaciones de comercio exterior durante los últimos 12 meses.</label
+          >
+          <div class="mt-3">
+            <b>Para descargar plantilla del archivo de excel de clic </b>
+            <a href="/assets/pdf/carga_proveedoresExtranjeros_aviso.xlsx"
+              >aquí</a
+            >
+          </div>
+          <div class="row" style="margin-top: 20px">
+            <div class="col-md-4">
+              <input
+                type="file"
+                accept=".xlsx,.xls"
+                class="form-control sfile"
+                name="archivoExtranjero"
+                id="archivoExtranjero"
+                formControlName="file1"
+                (change)="actualizarFile2($event)"
+                title="Examinar"
+              />
+            </div>
+            <div class="col-md-4"></div>
+            <div class="col-md-4 d-flex justify-content-end">
+              <button
+                type="button"
+                name="cargaArchivoProcesos"
+                [disabled]="esFormularioSoloLectura"
+                id="cargaArchivoProcesos"
+                class="btn btn-primary me-md-3"
+                (click)="validarYAnexarArchivoExtranjeros()"
+              >
+                Anexar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 mt-4">
+          <label class="form-label text-start" for="actualmente1"
+            >Registros que existen actualmente.</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            formControlName="actualmente1"
+            name="actualmente1"
+            id="actualmente1"
+            readonly
+          />
+        </div>
+
+        <div class="col-md-12">
+          <ng-titulo titulo="Proveedores" />
+        </div>
+
+        <div class="col-md-12">
+          <label class="form-label text-start"
+            >Anexe un archivo que contenga el RFC de sus proveedores vinculados al proceso bajo el régimen que está solicitando el Registro en el Esquema de Certificación de Empresas y con los que haya realizado operaciones de comercio exterior durante los últimos 6 meses.</label
+          >
+          <div class="mt-3">
+            <b>Para descargar plantilla del archivo de excel de clic </b>
+            <a href="/assets/pdf/carga_proveedoresExtranjeros_aviso.xlsx"
+              >aquí</a
+            >
+          </div>
+          <div class="row" style="margin-top: 20px">
+            <div class="col-md-4">
+              <input
+                type="file"
+                accept=".xlsx,.xls"
+                class="form-control sfile"
+                name="archivoProveedores"
+                id="archivoProveedores"
+                formControlName="file2"
+                title="Examinar2"
+                readonly
+              />
+            </div>
+            <div class="col-md-4"></div>
+            <div class="col-md-4 d-flex justify-content-end">
+              <button
+                type="button"
+                [disabled]="esFormularioSoloLectura"
+                name="cargaArchivoProcesosProveedores"
+                id="cargaArchivoProcesosProveedores"
+                class="btn btn-primary me-md-3"
+                (click)="validarYAnexarArchivoProveedores()"
+              >
+                Anexar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 mt-4">
+          <label class="form-label text-start"
+            >Registros que existen actualmente.</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            formControlName="actualmente2"
+            name="actualmente2"
+            id="actualmente2"
+            readonly
+          />
+        </div>
+
+        <div class="col-md-8"></div>
+        <div class="col-md-12 mt-5">
+          <div class="alert alert-info">
+            <div class="form-check">
+              <b> Nota:</b> Los proveedores nacionales que se declaren deberán contar con la opinión positiva del cumplimiento de las obligaciones fiscales prevista en el artículo 32-D del código en la RFM.
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <ng-titulo titulo="Querella" />
+        </div>
+
+        <div class="col-md-12 mt-4">
+          <label class="form-label text-start"
+            >Señale si el SAT ha interpuesto querella o denuncia penal en contra
+            de los socios, accionistas, según corresponda, representante legal,
+            e integrantes de la administración de la empresa solicitante o
+            declaratoria de perjuicio, según corresponda, durante los últimos
+            tres años anteriores a la presentación de la solicitud de
+            certificación.</label
+          >
+          <app-input-radio
+            formControlName="248"
+            [radioOptions]="sinoOpcion.radioOptions"
+            [isRequired]="sinoOpcion.isRequired"
+            [layout]="'horizontal'"
+            [gap]="'50px'"
+            (valueChange)="actualizar248($event)"
+          ></app-input-radio>
+        </div>
+
+        <div class="col-md-12">
+          <ng-titulo titulo="Control Inventarios" />
+        </div>
+
+        <div class="col-md-12 mt-4">
+          <label class="form-label text-start"
+            >Indique si cuenta con un sistema de control de inventarios, para el
+            registro de sus operaciones de comercio exterior de conformidad con
+            el artículo 59, fracción I de la Ley.</label
+          >
+          <app-input-radio
+            formControlName="249"
+            [radioOptions]="sinoOpcion.radioOptions"
+            [isRequired]="sinoOpcion.isRequired"
+            [layout]="'horizontal'"
+            [gap]="'50px'"
+            (valueChange)="actualizar249($event)"
+          ></app-input-radio>
+        </div>
+
+        <div class="col-md-6 mt-4">
+          <label class="form-label text-start"
+            >Nombre del sistema o datos para su identificación<span [ngClass]="{'text-danger': datosComunesForm.get('identificacion')?.invalid && (datosComunesForm.get('identificacion')?.touched || datosComunesForm.get('identificacion')?.dirty)}">*</span>:</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            formControlName="identificacion"
+            name="identificacion"
+            id="identificacion"
+            maxlength="250"
+            size="50"
+            (change)="actualizarIdentificacion($event)"
+          />
+          @if (datosComunesForm.get('identificacion')?.hasError('required') && (datosComunesForm.get('identificacion')?.touched || datosComunesForm.get('identificacion')?.dirty)) {
+            <small class="mensaje-error">Este campo es obligatorio</small>
+          } @else if (datosComunesForm.get('identificacion')?.errors?.['pattern']) {
+              <small class="mensaje-error">Ingresa datos validos.</small>
+          }
+        </div>
+        <div class="col-md-6 mt-4">
+          <label class="form-label text-start">Lugar de radicación<span [ngClass]="{'text-danger': datosComunesForm.get('lugarDeRadicacion')?.invalid && (datosComunesForm.get('lugarDeRadicacion')?.touched || datosComunesForm.get('lugarDeRadicacion')?.dirty)}">*</span>:</label>
+          <input
+            type="text"
+            class="form-control"
+            name="lugarDeRadicacion"
+            formControlName="lugarDeRadicacion"
+            id="lugarDeRadicacion"
+            maxlength="250"
+            size="50"
+            (change)="actualizarLugarDeRadicacion($event)"
+          />
+          @if (datosComunesForm.get('lugarDeRadicacion')?.hasError('required') && (datosComunesForm.get('lugarDeRadicacion')?.touched || datosComunesForm.get('lugarDeRadicacion')?.dirty)) {
+            <small class="mensaje-error">Este campo es obligatorio</small>
+          } @else if (datosComunesForm.get('identificacion')?.errors?.['pattern']) {
+              <small class="mensaje-error">Ingresa datos validos.</small>
+          }
+        </div>
+
+        <div class="col-md-12 d-flex justify-content-end mt-4">
+          <button
+            type="button"
+            name=""
+            id=""
+            class="btn btn-primary me-md-3"
+            [disabled]="esFormularioSoloLectura"
+            (click)="validarYProcesarControlInventarios()"
+          >
+            Agregar
+          </button>
+        </div>
+        <div class="col-md-6 mt-4">
+          <label class="form-label text-start">Control Inventarios</label>
+        </div>
+
+        <div class="col-md-12 mt-4">
+          <app-tabla-dinamica
+            [tipoSeleccionTabla]="numeroDeEmpleadosTabla"
+            [configuracionTabla]="inventariosConfiguracionColumnas"
+            [datos]="inventariosDatos"
+            (listaDeFilaSeleccionada)="seleccionarInventariosDatos($event)"
+          >
+          </app-tabla-dinamica>
+        </div>
+
+        <div class="col-md-12 mt-5">
+          <div class="d-flex justify-content-end mt-4">
+            <button
+              type="button"
+              id="modificar"
+              class="btn btn-default ms-3"
+              [disabled]="esFormularioSoloLectura || seleccionarInventarios.length === 0"
+              (click)="modificarInventario()"
+            >
+              Modificar
+            </button>
+            <button
+              type="button"
+              id="eliminar"
+              [disabled]="esFormularioSoloLectura || seleccionarInventarios.length === 0"
+              class="btn btn-danger ms-3"
+              (click)="confirmarEliminarInventarios()"
+            >
+              Eliminar
+            </button>
+          </div>
+        </div>
+
+        <div class="col-md-12 mt-4">
+          <label class="form-label text-start"
+            >Indique si lleva la contabilidad en medios electrónicos y la ingresa mensualmente a través del portal del SAT, de conformidad con el artículo 28, fracciones III y IV, del CFF y las reglas 2.8.1.5. y la 2.8.1.6. de la RMF<span [ngClass]="{'text-danger': datosComunesForm.get('250')?.invalid && (datosComunesForm.get('250')?.touched || datosComunesForm.get('250')?.dirty)}">*</span>:</label
+          >
+          <app-input-radio
+            formControlName="250"
+            [radioOptions]="sinoOpcion.radioOptions"
+            [isRequired]="sinoOpcion.isRequired"
+            [layout]="'horizontal'"
+            [gap]="'50px'"
+            (valueChange)="actualizar250($event)"
+          ></app-input-radio>
+          @if (datosComunesForm.get('250')?.hasError('required') && (datosComunesForm.get('250')?.touched || datosComunesForm.get('250')?.dirty)) {
+            <small class="mensaje-error">Este campo es obligatorio</small>
+          }
+        </div>
+
+        <div class="col-md-12">
+          <ng-titulo titulo="Agregar miembro de la empresa" />
+        </div>
+
+        <div class="col-md-12 mt-4">
+          <p class="form-label text-start">
+            Opinión positiva vigente del cumplimiento de obligaciones fiscales de la solicitante, los socios, accionistas, según corresponda, representante legal con facultad para actos de administración o de dominio, e integrantes de la administración, de conformidad con la constitución de la empresa*
+          </p>
+        </div>
+
+        <div class="col-md-12 mt-4">
+          <p class="form-label text-start">
+            Señale si los socios, accionistas, según corresponda, representante legal con facultad para actos de administración o de dominio e integrantes de la administración de conformidad con la constitución de la empresa solicitante, se encuentran al corriente en el cumplimiento de sus obligaciones fiscales*  
+          </p>
+        </div>
+
+        <div class="col-md-12 mt-4">
+          <div class="col-md-12 mt-4 p-0">
+              <small class="mensaje-error">Se debe agregar por lo menos un administrador unico o un miembro del consejo de administración</small>
+          </div>
+          <div class="col-md-12 mt-4 p-0">
+            <label class="form-label text-start">Miembro de la empresa</label>
+          </div>
+          <app-tabla-dinamica
+            [tipoSeleccionTabla]="numeroDeEmpleadosTabla"
+            [configuracionTabla]="seccionSociosICConfiguracionColumnas"
+            [datos]="listaSeccionSociosIC"
+            (listaDeFilaSeleccionada)="seleccionarlistaSeccionSociosIC($event)"
+          >
+          </app-tabla-dinamica>
+        </div>
+
+        <div class="col-md-12 mt-5">
+          <div class="d-flex justify-content-end mt-4">
+            <button
+              type="button"
+              id="modificar"
+              [disabled]="esFormularioSoloLectura || seleccionarListaSeccionSociosIC.length === 0"
+              class="btn btn-default"
+              (click)="agregarModificarMiembro()"
+            >
+              Modificar
+            </button>
+            <button
+              type="button"
+              [disabled]="esFormularioSoloLectura || seleccionarListaSeccionSociosIC.length === 0"
+              id="eliminar"
+              class="btn btn-danger ms-3"
+              (click)="confirmarEliminarSocios()"
+            >
+              Eliminar
+            </button>
+            <button
+              type="button"
+              id="agregar"
+              [disabled]="esFormularioSoloLectura"
+              class="btn btn-primary ms-3"
+              (click)="agregarMiembrosEmpresa()"
+            >
+              Agregar
+            </button>
+          </div>
+        </div>
+
+        <div class="col-md-12 mt-4">
+          <label class="form-label text-start"
+            >Manifieste si sus socios o accionistas, según corresponda,
+            representantes legales con facultad para actos de dominio e
+            integrantes de la administración, no se encuentren vinculados con
+            alguna empresa a la que se le hubiere cancelado su Registro en el
+            Esquema de Certificación de Empresas, de conformidad con la regla
+            7.2.4., apartado A, fracciones V, VI y VII y apartado B, fracciones
+            II, y III y V y/o de la regla 7.2.5., fracciones VI, VII y XI<span [ngClass]="{'text-danger': datosComunesForm.get('251')?.invalid && (datosComunesForm.get('251')?.touched || datosComunesForm.get('251')?.dirty)}">*</span>:
+          </label>
+          <app-input-radio
+            formControlName="251"
+            [radioOptions]="sinoOpcion.radioOptions"
+            [isRequired]="sinoOpcion.isRequired"
+            [layout]="'horizontal'"
+            [gap]="'50px'"
+            (valueChange)="actualizar251($event)"
+          ></app-input-radio>
+          @if (datosComunesForm.get('251')?.hasError('required') && (datosComunesForm.get('251')?.touched || datosComunesForm.get('251')?.dirty)) {
+            <small class="mensaje-error">Este campo es obligatorio</small>
+          }
+        </div>
+
+        <div class="col-md-12 mt-4">
+          <div class="form-check form-label text-start">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              formControlName="checkbox2"
+              (change)="actualizarCheckbox2($event)"
+            />
+            &nbsp;<span [ngClass]="{'text-danger': datosComunesForm.get('checkbox2')?.invalid && (datosComunesForm.get('checkbox2')?.touched || datosComunesForm.get('checkbox2')?.dirty)}">*</span>&nbsp;Bajo protesta de decir verdad, manifiesto que los datos
+            asentados en el presente documento son ciertos y que las facultades
+            que me fueron otorgadas para representar al solicitante no me han
+            sido modificadas y/ o revocadas.
+          </div>
+          @if (datosComunesForm.get('checkbox2')?.hasError('required') && (datosComunesForm.get('checkbox2')?.touched || datosComunesForm.get('checkbox2')?.dirty)) {
+            <small class="mensaje-error">Respuesta Obligatoria</small>
+          }
+        </div>
+      </div>
+
+      <div class="col-md-8 mt-1"></div>
+    </div>
+  </form>
+</div>
+
+<div
+  class="modal fade"
+  id="modalInstalacionesPrincipalesElement"
+  #modalInstalacionesPrincipalesElement
+  tabindex="-1"
+  aria-labelledby="modalInstalacionesPrincipalesElementLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <app-agregar #agregarComponent 
+        [domiciliosExistentes]="domiciliosDatos"
+        (datosSeleccionados)="onDatosSeleccionados($event)" 
+        (cerrarModalEvento)="cerrarModalInstalaciones()">
+      </app-agregar>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="modalModificarElement"
+  #modalModificarElement
+  tabindex="-1"
+  aria-labelledby="modalModificarElementLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <app-modificar 
+        #modificarComponent
+        [domicilioAModificar]="domicilioSeleccionadoParaModificar"
+        (domicilioModificado)="onDomicilioModificado($event)"
+        (cerrarModalEvento)="cerrarModalModificar()">
+      </app-modificar>
+    </div>
+  </div>
+</div>
+
+@if (nuevaNotificacion) {
+  <lib-notificaciones 
+    [notificacionInput]="nuevaNotificacion" 
+    (confirmacionModal)="cerrarModal()">
+  </lib-notificaciones>
+}
+
+<div
+  class="modal fade"
+  id="modalEmpresaElementLabel"
+  #modalEmpresaElement
+  tabindex="-1"
+  aria-labelledby="modalEmpresaElementLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-body">
+        <app-empresa></app-empresa>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="modalModificarMiembro"
+  #modalModificarMiembro
+  tabindex="-1"
+  aria-labelledby="modalModificarMiembroLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-body">
+        <app-empresa 
+          #modificarMiembroComponent
+          [miembroAModificar]="miembroSeleccionadoParaModificar"
+          (miembroModificado)="onMiembroModificado($event)"
+          (cerrarModalEvento)="cerrarModalModificarMiembro()">
+        </app-empresa>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="modalModificarInventario"
+  #modalModificarInventario
+  tabindex="-1"
+  aria-labelledby="modalModificarInventarioLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalModificarInventarioLabel">Modificar inventario</h5>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="inventarioModalForm">
+          <div class="row">
+            <div class="col-md-12 mt-4">
+              <label class="form-label text-start"
+                >Nombre del sistema o datos para su identificación<span [ngClass]="{'text-danger': inventarioModalForm.get('identificacion')?.invalid && (inventarioModalForm.get('identificacion')?.touched || inventarioModalForm.get('identificacion')?.dirty)}">*</span>:</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                formControlName="identificacion"
+                name="identificacion"
+                id="modalIdentificacion"
+                maxlength="250"
+                size="50"
+              />
+              @if (inventarioModalForm.get('identificacion')?.hasError('required') && (inventarioModalForm.get('identificacion')?.touched || inventarioModalForm.get('identificacion')?.dirty)) {
+                <small class="mensaje-error">Este campo es obligatorio</small>
+              }
+            </div>
+            <div class="col-md-12 mt-4">
+              <label class="form-label text-start">Lugar de radicación<span [ngClass]="{'text-danger': inventarioModalForm.get('lugarDeRadicacion')?.invalid && (inventarioModalForm.get('lugarDeRadicacion')?.touched || inventarioModalForm.get('lugarDeRadicacion')?.dirty)}">*</span>:</label>
+              <input
+                type="text"
+                class="form-control"
+                name="lugarDeRadicacion"
+                formControlName="lugarDeRadicacion"
+                id="modalLugarDeRadicacion"
+                maxlength="250"
+                size="50"
+              />
+              @if (inventarioModalForm.get('lugarDeRadicacion')?.hasError('required') && (inventarioModalForm.get('lugarDeRadicacion')?.touched || inventarioModalForm.get('lugarDeRadicacion')?.dirty)) {
+                <small class="mensaje-error">Este campo es obligatorio</small>
+              }
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="cancelarModalInventario()">
+          Cancelar
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-primary" 
+          [disabled]="!inventarioModalForm.valid"
+          (click)="aceptarModalInventario()">
+          Aceptar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+@if(alertaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="alertaNotificacion"></lib-notificaciones>
+</section>
+}
+
+@if(nuevaNotificacion && nuevaNotificacion.tipoNotificacion) {
+<section>
+  <lib-notificaciones 
+    [notificacionInput]="nuevaNotificacion"
+    (confirmacionModal)="manejarConfirmacionEliminacion($event)">
+  </lib-notificaciones>
+</section>
+}

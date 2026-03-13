@@ -1,0 +1,71 @@
+<div class="container">
+    <ng-titulo titulo="Pago de derechos" />
+    <form [formGroup]="pagoDeDerechosForm">
+        <ng-container formGroupName="pagoDeDerechos"> 
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label" for="clavedereferencia">Clave de referencia:</label>
+                    <input class="form-control" id="clavedereferencia" type="text" formControlName="clavedereferencia"
+                    (change)="setValoresStore(pagoDeDerechos,'clavedereferencia', 'setClaveDeReferencia')"/>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label" for="cadenadeladependencia">Cadena de la dependencia:</label>
+                    <input class="form-control" id="cadenadeladependencia" type="text" formControlName="cadenadeladependencia"
+                    (change)="setValoresStore(pagoDeDerechos,'cadenadeladependencia', 'setCadenaDelaDependencia')"/>
+                  </div>
+                <div class="col-md-4 mb-3">
+                  <app-catalogo-select 
+                  id="bancoData"
+                  formControlName="banco"
+                  [catalogo]="bancoDatos" 
+                  [label]="'Banco'" 
+                  [placeholder]="bancoData.primerOpcion"
+                   [isDisabled]="esFormularioSoloLectura"
+                  (change)="setValoresStore(pagoDeDerechos,'banco', 'setBanco')"
+                  >
+                </app-catalogo-select>
+              </div>    
+            </div>
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label class="form-label" for="llavedepago">Llave de pago:</label>
+                <input class="form-control" id="llavedepago" type="text" formControlName="llavedepago"
+                (change)="setValoresStore(pagoDeDerechos,'llavedepago', 'setLlavedoPago')"/>
+                  @if (pagoDeDerechosForm.get('pagoDeDerechos.llavedepago')?.errors?.['pattern'] && (pagoDeDerechosForm.get('pagoDeDerechos.llavedepago')?.touched)) {
+              <div class="text-danger">
+                <small>Existen datos incorrectos que no cumplen con el formato esperado.</small>
+              </div>
+              }
+              </div>
+              <div class="col-md-4 mb-3">
+                <input-fecha
+                formControlName="fechadepago"
+                [datos]="fechaPago"
+                 [setFecha]="pagoDeDerechosForm.get('pagoDeDerechos.fechadepago')?.value"
+                (valorCambiado)="cambioFechaPago($event)"
+                [isDisabled]="esFormularioSoloLectura"
+              ></input-fecha>
+                 <div *ngIf="pagoDeDerechos.get('fechadepago')?.errors?.['futureDate'] && pagoDeDerechos.get('fechadepago')?.touched" class="text-danger">
+                   La fecha de pago debe ser menor o igual a la fecha actual.
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label" for="importedepago">Importe de pago:</label>
+                <input class="form-control" id="importedepago" type="text" formControlName="importedepago"
+                (change)="setValoresStore(pagoDeDerechos,'importedepago', 'setImportedePago')"/>
+                 @if (pagoDeDerechosForm.get('pagoDeDerechos.importedepago')?.hasError('pattern') &&
+                      pagoDeDerechosForm.get('pagoDeDerechos.importedepago')?.touched) {
+                      <div class="text-danger">
+                        <small>Por favor, escribe un número entero válido</small>
+                      </div>
+                      }
+              </div>
+            </div>
+              <div class="col-md-12 d-flex justify-content-end">
+                <button type="button" name="borarrdatosdelpago" class="btn btn-primary ms-2" [disabled]="esFormularioSoloLectura"
+                (click)="clearForm()"> Borrar datos del pago </button>
+              </div>
+        </ng-container>
+    </form>
+</div>
+

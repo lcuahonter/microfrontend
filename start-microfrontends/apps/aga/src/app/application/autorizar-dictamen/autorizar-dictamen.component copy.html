@@ -1,0 +1,122 @@
+@if(slectTramite) {
+<div class="container mt-2">
+    <div>
+        <div *ngIf="!firmar">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="titulo mt-5 mb-5">Autorizar dictamen</h2>
+                    
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 mt-3 mb-3">
+                    <lib-encabezado-requerimiento [numFolioTramite]="guardarDatos.folioTramite"
+                        [tipoTramite]="guardarDatos.tipoDeTramite"></lib-encabezado-requerimiento>
+                </div>
+            </div>
+            <div class="row margin-top">
+                <ul class="nav nav-tabs justify-content-center">
+                    <ng-container *ngFor="let tabsEvaluacion of tabsOpcionEvaluacion">
+                        <li *ngIf="tieneOpcion(tabsEvaluacion.nombre)" [ngClass]="indice === tabsEvaluacion.id ? 'active' : ''">
+                        <a data-toggle="tab"
+                            (click)="seleccionaTab(tabsEvaluacion.id)"
+                            (keydown.enter)="seleccionaTab(tabsEvaluacion.id)"
+                            (keydown.space)="seleccionaTab(tabsEvaluacion.id)"
+                            role="button"
+                            tabindex="{{tabsEvaluacion.id}}">
+                            {{ tabsEvaluacion.nombre }}
+                        </a>
+                        </li>
+                    </ng-container>
+                </ul>
+                <ng-container>
+                    @switch (indice) {
+                    @case (1) {
+                    <app-generar-dictamen [isAntecedentes]="false" 
+                    [conformidad]="conformidadDictamen"
+                    [dataIniciarDictamen]="dataIniciarDictamen"
+                    [opcionesSentidosDisponibles]="opcionesSentidosDispobles"
+                    [anexo222se]="false"
+                    (enviarEvento)="enviarEvento($event)">
+                    </app-generar-dictamen>
+                    }
+                    @case (2) {
+                    <br>
+                    <ul class="nav nav-tabs">
+                        <li [ngClass]="indiceDictamen === 1 ? 'active' : ''">
+                            <a data-toggle="tab" (click)="seleccionaTabRequerimiento(1)"
+                                (keydown.enter)="seleccionaTabRequerimiento(1)"
+                                (keydown.space)="seleccionaTabRequerimiento(1)" role="button" tabindex="0">Capturar
+                                requerimiento</a>
+                        </li>
+                        <li [ngClass]="indiceDictamen === 2 ? 'active' : ''">
+                            <a data-toggle="tab" (click)="seleccionaTabRequerimiento(2)"
+                                (keydown.enter)="seleccionaTabRequerimiento(2)"
+                                (keydown.space)="seleccionaTabRequerimiento(2)" role="button" tabindex="2">Seleccionar
+                                documentos</a>
+                        </li>
+                    </ul>
+                    <ng-container>
+                        @switch (indiceDictamen) {
+                        @case (1) {
+                        <app-capturar-requerimiento 
+                            [isTipoRequerimiento]="false" 
+                            [isAreaSolicitante]="false"
+                            [isJustificacionRequerimiento]="true"
+                            [iniciarResponse]="this.dataIniciarRequerimiento"
+                            (formChanged)="onFormRequerimientoChanged($event)">
+                        </app-capturar-requerimiento>
+                        }
+                        @case (2) {
+                        <app-solicitar-documentos 
+                        [isSegundaTabla]="false">
+                        </app-solicitar-documentos>
+                        }
+                        }
+                    </ng-container>
+                    <div class="d-flex justify-content-lg-end h3">
+                        <button type="button" class="btn btn-default ms-2" (click)="mostrarFirmarRequerimiento()">Guardar y Firmar</button>
+                        <button class="btn  btn-primary ms-2" type="button" (click)="guardarRequerimiento()">Guardar</button>
+                        <button type="button" class="btn btn-default ms-2" (click)="cancelar()">Cancelar</button>
+                    </div>
+                    }
+                    @case (3) {
+                    <app-solicitar-opinion></app-solicitar-opinion>
+                    }
+                    }
+                </ng-container>
+            </div>
+
+        </div>
+        <div *ngIf="firmar">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="titulo mt-5 mb-5">Firmar</h2>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <firma-electronica [tipo]="''" [cadenaOriginal]="cadenaOriginal || cadenaOriginalRequerimiento"
+                        (datosFirma)="obtieneFirma($event)"></firma-electronica>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-5 mt-5">
+            <app-reviewers-tabs [viewChild]="viewChild" [tramite]="tramite" [tabs]="tabs" [documentos]="documentosSolicitud"
+                [tareasSolicitud]="tareasSolicitud" [dictamenes]="dictamenesSolicitud"
+                [envioDigital]="envioDigital" [opinion]="opinion"
+                [requerimientos]="requerimientosSolicitud" [acusesResolucion]="acusesResolucion"
+                (viewChildcambioDePestana)="viewChildcambioDePestana($event)"
+                (tabSeleccionado)="onTabSeleccionado($event)">
+            </app-reviewers-tabs>
+        </div>
+    </div>
+</div>
+}
+@if(nuevaNotificacion) {
+<section>
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+    </lib-notificaciones>
+</section>
+}

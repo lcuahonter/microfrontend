@@ -1,0 +1,1 @@
+export const TXT_JUSTIFICACION = 'Justificación';

@@ -1,0 +1,48 @@
+<div class="container">
+  <div class="row">
+    <ul class="nav nav-tabs">
+      <li 
+        *ngFor="let tab of seccionesDeLaSolicitud" 
+        [ngClass]="indice === tab.index ? 'active' : ''"
+        
+      >
+        <a 
+          *ngIf="tab.index !== 5 || reconocimientoMutuoValue === '1'"
+         
+          [class.active]="indice === tab.index"
+          (click)="seleccionaTab(tab.index)"
+        >
+          {{ tab.title }}
+        </a>
+      </li>
+    </ul>
+
+    <ng-container>
+      <solicitante #solicitanteRef [hidden]="indice !== 1"></solicitante>
+      
+      @if(esDatosRespuesta){
+        <app-datos-comunes
+          #datosComunesRef 
+          (reconocimientoMutuoCTPATChange)="onReconocimientoMutuoChange($event)"
+          [hidden]="indice !== 2">
+        </app-datos-comunes>
+      }
+
+      @if(esDatosRespuesta){
+        <app-terceros-relacionados 
+          #tercerosRelacionadosRef  
+          [hidden]="indice !== 3">
+        </app-terceros-relacionados>
+      }
+
+      @if(esDatosRespuesta){
+        <app-importador-exportador 
+          #importadorExportadorRef 
+          [hidden]="indice !== 4">
+        </app-importador-exportador>
+      }
+
+    </ng-container>
+
+  </div>
+</div>

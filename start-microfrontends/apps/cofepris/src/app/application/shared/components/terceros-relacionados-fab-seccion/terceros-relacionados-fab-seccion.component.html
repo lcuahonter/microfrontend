@@ -1,0 +1,1105 @@
+<div class="container terceros-relacionados-container">
+    <div *ngIf="showTableDiv">
+  
+      <!-- titulo -->
+      <ng-titulo titulo="Terceros relacionados" />
+  
+      <!-- alerta -->
+      <ng-alert [CONTENIDO]="TEXTO_DE_ALERTA"></ng-alert>
+  
+      <!-- La mesa del fabricante en exhibición -->
+      <div class="mt-5">
+        <h5>Fabricante:</h5>
+        <div class="table-responsive mt-5">
+       
+         <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccionCheckbox" [configuracionTabla]="configuracionTabla" 
+       [datos]="fabricanteRowData" (listaDeFilaSeleccionada)="onFabricanteSeleccionados($event)" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura? true : false"></app-tabla-dinamica>
+        </div>
+        <br />
+        @if(!hideAgregarBtn){
+        <div class="d-flex justify-content-end mt-3">
+          @if(selectedFabricanteRows.length > 0) {
+            <div>
+              <button class="btn btn-danger mx-2" type="button"  (click)="eliminarSeleccionadosFabricante()" [disabled]="esFormularioSoloLectura" >Eliminar</button>
+              <button class="btn btn-default mx-2" type="button" [disabled]="esFormularioSoloLectura"   (click)="onModificarFabricante()">Modificar</button>
+            </div>
+          }
+          <button type="button" class="btn btn-primary mx-2" (click)="toggleDivFabricante()" [disabled]="esFormularioSoloLectura">
+            Agregar
+          </button>
+        </div>
+        }
+  
+      </div>
+  
+      <!-- La mesa del destinatario en exhibición -->
+      <div class="mt-5">
+        <h5>Destinatario (destino final)*:</h5>
+        <div class="table-responsive mt-5">
+        
+           <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccionCheckbox" [configuracionTabla]="configuracionTablaDestinatario" 
+       [datos]="destinatarioRowData" (listaDeFilaSeleccionada)="onDestinatarioSeleccionados($event)" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura? true : false"></app-tabla-dinamica>
+        </div>
+        <br />
+
+        @if(!hideAgregarBtn){
+        <div class="d-flex justify-content-end mt-3">
+          @if(selectedDestinatarioRows.length > 0) {
+            <div>
+                <button class="btn btn-danger mx-2" type="button" (click)="eliminarSeleccionadosDestinatario()" [disabled]="esFormularioSoloLectura">Eliminar</button>
+                <button class="btn btn-default mx-2" type="button" [disabled]="esFormularioSoloLectura"  (click)="onModificarDestinatario()">Modificar</button>
+            </div>
+          }
+          <button type="button" class="btn btn-primary mx-2" (click)="toggleDivDestinatario()" [disabled]="esFormularioSoloLectura">
+            Agregar
+          </button>
+        </div>
+        }
+      </div>
+  
+      <!-- La mesa del proveedor en exhibición -->
+      <div class="mt-5">
+        <h5>Proveedor:</h5>
+        <div class="table-responsive mt-5">
+         
+      <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccionCheckbox" [configuracionTabla]="configuracionTablaProveedor" 
+       [datos]="proveedorRowData" (listaDeFilaSeleccionada)="onProveedorSeleccionados($event)" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura? true : false"></app-tabla-dinamica>
+        </div>
+        <br />
+
+        @if(!hideAgregarBtn){
+        <div class="d-flex justify-content-end mt-3">
+          @if(selectedProveedorRows.length > 0) {
+            <div>
+              <button class="btn btn-danger mx-2" type="button" (click)="eliminarSeleccionadosProveedor()" [disabled]="esFormularioSoloLectura">Eliminar</button>
+              <button class="btn btn-default mx-2" type="button" [disabled]="esFormularioSoloLectura"  (click)="onModificarProveedor()">Modificar</button>
+            </div>
+          }
+          <button type="button" class="btn btn-primary mx-2" (click)="toggleDivProveedor()" [disabled]="esFormularioSoloLectura">
+            Agregar
+          </button>
+        </div>
+        }
+      </div>
+  
+      <!-- La mesa del facturador en exhibición -->
+      <div class="mt-5">
+        <h5>Facturador:</h5>
+        <div class="table-responsive mt-5">
+        
+        <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccionCheckbox" [configuracionTabla]="configuracionTablaFacturador" 
+       [datos]="facturadorRowData" (listaDeFilaSeleccionada)="onFacturadorSeleccionados($event)" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura? true : false"></app-tabla-dinamica>
+        </div>
+        <br />
+
+        @if(!hideAgregarBtn){
+        <div class="d-flex justify-content-end mt-3">
+          @if(selectedFacturadorRows.length > 0) {
+            <div>
+              <button class="btn btn-danger mx-2" type="button" (click)="eliminarSeleccionadosFacturador()" [disabled]="esFormularioSoloLectura">Eliminar</button>
+              <button class="btn btn-default mx-2" type="button" [disabled]="esFormularioSoloLectura" (click)="onModificarFacturador()">Modificar</button>
+            </div>
+          }
+          <button type="button" class="btn btn-primary mx-2" (click)="toggleDivFacturador()" [disabled]="esFormularioSoloLectura">
+            Agregar
+          </button>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+  
+  <!-- El formulario para agregar fabricante está en exhibición -->
+  <app-modal [active]="showFabricante">
+    <div class="agregar-fabricante-container">
+      <ng-titulo titulo="Agregar fabricante" />
+      <h5>Datos generales</h5>
+  
+      <form [formGroup]="agregarFabricanteFormGroup">
+        <!--botones de radio -->
+        <div class="row">
+          <div class="col-md-6">
+            <div>
+              <h6>Terceros nacionalidad*:</h6>
+              <div class="mt-2">
+                <app-input-radio [radioOptions]="nacionalidadOpcionDeBotonDeRadio" [isRequired]="true"
+                  [layout]="'vertical'" formControlName="tercerosNacionalidad"
+                  (valueChange)="tercerosInputChecked($event); enCambioDeControl('agregarFabricanteFormGroup','tercerosNacionalidad')"></app-input-radio>
+              </div>
+              <ng-container *ngIf="agregarFabricanteFormGroup.get('tercerosNacionalidad')?.invalid && (agregarFabricanteFormGroup.get('tercerosNacionalidad')?.touched || agregarFabricanteFormGroup.get('tercerosNacionalidad')?.dirty)">
+                <div class="text-danger small">La nacionalidad del tercero es obligatoria.</div>
+              </ng-container>
+              
+            </div>
+          </div>
+  
+          <div class="col-md-6">
+            <div>
+              <h6>Tipo persona*:</h6>
+              <div class="mt-2">
+                <app-input-radio [radioOptions]="personaOpcionDeBotonDeRadio" [isRequired]="true" [layout]="'vertical'" [showTooltip]="true"
+                  formControlName="tipoPersona" (valueChange)="tipoPersonaChecked($event, 'Fabricante')"></app-input-radio>
+              </div>
+              <ng-container *ngIf="agregarFabricanteFormGroup.get('tipoPersona')?.invalid && (agregarFabricanteFormGroup.get('tipoPersona')?.touched || agregarFabricanteFormGroup.get('tipoPersona')?.dirty)">
+                <div class="text-danger small">El tipo de persona es obligatorio.</div>
+              </ng-container>
+              
+            </div>
+          </div>
+        </div>
+        <hr />
+  
+        <!-- Activar/desactivar campos del formulario según la selección del botón de radio -->
+  
+        <div class="row">
+          @if (nacional && fisica || (!fisica && !moral)){
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="rfc" class="form-label">R.F.C*:
+                    <span class="bi bi-question-circle-fill" tooltip="Registro Federal de Contribuyentes" placement="top"></span>
+                </label>
+                <input type="text" id="rfc" formControlName="rfc" class="form-control" name="rfc" maxlength="15" />
+                <ng-container *ngIf="agregarFabricanteFormGroup.get('rfc')?.invalid && (agregarFabricanteFormGroup.get('rfc')?.touched || agregarFabricanteFormGroup.get('rfc')?.dirty)">
+                  <div class="text-danger small">
+                    <div *ngIf="agregarFabricanteFormGroup.get('rfc')?.errors?.['required']">El RFC es obligatorio.</div>
+                    <div *ngIf="agregarFabricanteFormGroup.get('rfc')?.errors?.['formatoRfcInvalido']">El formato del RFC es inválido.</div>
+                  </div>
+                </ng-container>
+                
+              </div>
+            </div>
+          </div>
+          <hr />
+          <h5>Datos personales</h5>
+          <div class="row d-flex datos-personales-form-container">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="nombre" class="form-label">Nombre(s)*: </label>
+                <input type="text" id="nombre" formControlName="nombre" name="nombre" maxlength="200" class="form-control" />
+                <ng-container *ngIf="agregarFabricanteFormGroup.get('nombre')?.invalid && (agregarFabricanteFormGroup.get('nombre')?.touched || agregarFabricanteFormGroup.get('nombre')?.dirty)">
+                  <div class="text-danger small">El nombre es obligatorio.</div>
+                </ng-container>
+                
+              </div>
+            </div>
+  
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="primerApellido">Primer apellido*:</label>
+                <input type="text" id="primerApellido" formControlName="primerApellido" maxlength="200" name="primerApellido"
+                  class="form-control" />
+                  <ng-container *ngIf="agregarFabricanteFormGroup.get('primerApellido')?.invalid && (agregarFabricanteFormGroup.get('primerApellido')?.touched || agregarFabricanteFormGroup.get('primerApellido')?.dirty)">
+                    <div class="text-danger small">El primer apellido es obligatorio.</div>
+                  </ng-container>
+              </div>
+            </div>
+  
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="segundoApellido">Segundo apellido*:</label>
+                <input type="text" id="segundoApellido" formControlName="segundoApellido" maxlength="200" name="segundoApellido"
+                  class="form-control" />
+              </div>
+            </div>
+          </div>
+          }
+  
+          @if (nacional && moral){
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="curp" class="form-label">R.F.C*:
+                    <span class="bi bi-question-circle-fill" tooltip="Registro Federal de Contribuyentes" placement="top"></span>
+                </label>
+                <input type="text" id="curp" formControlName="curp" class="form-control" name="curp" />
+                <ng-container *ngIf="agregarFabricanteFormGroup.get('curp')?.invalid && (agregarFabricanteFormGroup.get('curp')?.touched || agregarFabricanteFormGroup.get('curp')?.dirty)">
+                  <div class="text-danger small">
+                    <div *ngIf="agregarFabricanteFormGroup.get('curp')?.errors?.['required']">La CURP es obligatoria.</div>
+                    <div *ngIf="agregarFabricanteFormGroup.get('curp')?.errors?.['pattern']">El formato de la CURP es inválido.</div>
+                  </div>
+                </ng-container>
+                
+              </div>
+            </div>
+          </div>
+  
+          <div class="row">
+            <div class="col-md-8">
+              <div class="form-group">
+                <label class="form-label" for="denominacionRazonSocial">Denominación/razón social*:</label>
+                <input type="text" class="form-control" id="denominacionRazonSocial"
+                  formControlName="denominacionRazonSocial" name="denominacionRazonSocial" />
+                  <ng-container *ngIf="agregarFabricanteFormGroup.get('denominacionRazonSocial')?.invalid && (agregarFabricanteFormGroup.get('denominacionRazonSocial')?.touched || agregarFabricanteFormGroup.get('denominacionRazonSocial')?.dirty)">
+                    <div class="text-danger small">La denominación o razón social es obligatoria.</div>
+                  </ng-container>
+                  
+                </div>
+            </div>
+          </div>
+          }
+  
+          @if (extranjero && moral || (!fisica && !moral)){
+          <div class="row">
+            <div class="col-md-8">
+              <div class="form-group">
+                <label class="form-label" for="denominacionRazonSocial">Denominación/razón social*:</label>
+                <input type="text" class="form-control" id="denominacionRazonSocial"
+                  formControlName="denominacionRazonSocial" name="denominacionRazonSocial" />
+                  <ng-container *ngIf="agregarFabricanteFormGroup.get('denominacionRazonSocial')?.invalid && (agregarFabricanteFormGroup.get('denominacionRazonSocial')?.touched || agregarFabricanteFormGroup.get('denominacionRazonSocial')?.dirty)">
+                    <div class="text-danger small">La denominación o razón social es obligatoria.</div>
+                  </ng-container>
+                  
+                </div>
+            </div>
+          </div>
+          }
+          <hr />
+          @if (extranjero && fisica){
+          <h5>Datos personales</h5>
+          <div class="row d-flex datos-personales-form-container">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="nombre" class="form-label">Nombre(s)*: </label>
+                <input type="text" id="nombre" formControlName="nombre" maxlength="200" name="nombre" class="form-control" />
+              </div>
+              <ng-container *ngIf="agregarFabricanteFormGroup.get('nombre')?.invalid && (agregarFabricanteFormGroup.get('nombre')?.touched || agregarFabricanteFormGroup.get('nombre')?.dirty)">
+                <div class="text-danger small">El nombre es obligatorio.</div>
+              </ng-container>
+            </div>
+  
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="primerApellido">Primer apellido*:</label>
+                <input type="text" id="primerApellido" formControlName="primerApellido" maxlength="200" name="primerApellido"
+                  class="form-control" />
+                  <ng-container *ngIf="agregarFabricanteFormGroup.get('primerApellido')?.invalid && (agregarFabricanteFormGroup.get('primerApellido')?.touched || agregarFabricanteFormGroup.get('primerApellido')?.dirty)">
+                    <div class="text-danger small">El primer apellido es obligatorio.</div>
+                  </ng-container>
+              </div>
+            </div>
+  
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="segundoApellido">Segundo apellido*:</label>
+                <input type="text" id="segundoApellido" formControlName="segundoApellido" maxlength="200" name="segundoApellido"
+                  class="form-control" />
+              </div>
+            </div>
+          </div>
+          }
+          <hr />
+          <h5>Domicilio</h5>
+          <div class="row d-flex domicilio-form-container">
+  
+            @if(nacional){
+            <div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <app-catalogo-select [catalogo]="paisDropdownData" [label]="'País'" [required]="true" for="pais"
+                    id="pais" formControlName="pais" name="pais"></app-catalogo-select>
+                    <ng-container *ngIf="agregarFabricanteFormGroup.get('pais')?.invalid && (agregarFabricanteFormGroup.get('pais')?.touched || agregarFabricanteFormGroup.get('pais')?.dirty)">
+                      <div class="text-danger small">
+                        <div *ngIf="agregarFabricanteFormGroup.get('pais')?.errors?.['required']">El país es obligatorio.</div>
+                        <div *ngIf="agregarFabricanteFormGroup.get('pais')?.errors?.['paisRequerido']">Seleccione un país válido.</div>
+                      </div>
+                    </ng-container>
+                    
+                  </div>
+              </div>
+  
+              <div class="col-md-4">
+                <div class="form-group">
+                  <app-catalogo-select [catalogo]="dropdownData" [label]="'Estado/localidad'" [required]="true" (selectionChange)="cargarEstado($event)"
+                    for="estadoLocalidad" id="estadoLocalidad" formControlName="estadoLocalidad"></app-catalogo-select>
+                    <ng-container *ngIf="agregarFabricanteFormGroup.get('estadoLocalidad')?.invalid && (agregarFabricanteFormGroup.get('estadoLocalidad')?.touched || agregarFabricanteFormGroup.get('estadoLocalidad')?.dirty)">
+                      <div class="text-danger small">El estado o localidad es obligatorio.</div>
+                    </ng-container>
+                  </div>
+              </div>
+  
+              <div class="col-md-4">
+                <div class="form-group">
+                  <app-catalogo-select [catalogo]="municipioDropdownData" [label]="'Municipio/alcaldía'" [required]="true"
+                    for="municipioAlcaldia" id="municipioAlcaldia" (selectionChange)="cargarMunicipio($event)"
+                    formControlName="municipioAlcaldia"></app-catalogo-select>
+                    <ng-container *ngIf="agregarFabricanteFormGroup.get('municipioAlcaldia')?.invalid && (agregarFabricanteFormGroup.get('municipioAlcaldia')?.touched || agregarFabricanteFormGroup.get('municipioAlcaldia')?.dirty)">
+                      <div class="text-danger small">El municipio o alcaldía es obligatorio.</div>
+                    </ng-container>
+                  </div>
+              </div>
+              <hr />
+  
+              <div class="col-md-4">
+                <div class="form-group">
+                  <app-catalogo-select [catalogo]="localidadDropdownData" (selectionChange)="cargarLocalidad($event)" [label]="'Localidad'" [required]="false"
+                    for="localidad" id="localidad" formControlName="localidad" name="localidad"></app-catalogo-select>
+                    <ng-container *ngIf="agregarFabricanteFormGroup.get('estadoLocalidad')?.invalid && (agregarFabricanteFormGroup.get('estadoLocalidad')?.touched || agregarFabricanteFormGroup.get('estadoLocalidad')?.dirty)">
+                      <div class="text-danger small">El estado o localidad es obligatorio.</div>
+                    </ng-container>
+                </div>
+              </div>
+  
+              <div class="col-md-4">
+                <div class="form-group">
+                  <app-catalogo-select [catalogo]="codigoPostalDropdownData" [label]="'Código postal o equivalente'" (selectionChange)="cargarCodigoPostal($event)"
+                    [required]="true" for="codigoPostaloEquivalente" id="codigoPostaloEquivalente"
+                    formControlName="codigoPostaloEquivalente"></app-catalogo-select>
+                    <ng-container *ngIf="agregarFabricanteFormGroup.get('codigoPostaloEquivalente')?.invalid && (agregarFabricanteFormGroup.get('codigoPostaloEquivalente')?.touched || agregarFabricanteFormGroup.get('codigoPostaloEquivalente')?.dirty)">
+                      <div class="text-danger small">El código postal es obligatorio.</div>
+                    </ng-container>
+                  </div>
+              </div>
+  
+              <div class="col-md-4">
+                <div class="form-group">
+                  <app-catalogo-select [catalogo]="coloniaDropdownData" [label]="'Colonia'" for="colonia" id="colonia"
+                    formControlName="colonia"></app-catalogo-select>
+                </div>
+              </div>
+            </div>
+            }
+  
+  
+            @if(extranjero){
+            <div class="pl-0">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <app-catalogo-select [catalogo]="paisDropdownData" [label]="'País'" [required]="true" for="pais"
+                    id="pais" formControlName="pais" name="pais"></app-catalogo-select>
+                    <div class="text-danger" *ngIf="agregarFabricanteFormGroup.get('pais')?.touched && agregarFabricanteFormGroup.get('pais')?.invalid">
+                      El país es obligatorio.
+                    </div>
+                </div>
+              </div>
+  
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="extranjeroEstado" class="form-label">Estado*: </label>
+                  <input type="text" id="extranjeroEstado" formControlName="extranjeroEstado" maxlength="255" name="extranjeroEstado"
+                    class="form-control" />
+                    <div
+                    class="text-danger"
+                    *ngIf="agregarFabricanteFormGroup.get('extranjeroEstado')?.touched && agregarFabricanteFormGroup.get('extranjeroEstado')?.invalid"
+                  >
+                    El estado es obligatorio.
+                  </div>
+                </div>
+              </div>
+  
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="extranjeroCodigo">Código postal o equivalente:</label>
+                  <input type="text" id="extranjeroCodigo" maxlength="12" name="extranjeroCodigo" class="form-control" />
+                </div>
+              </div>
+  
+            </div>
+            <div class="pl-0">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="extranjeroColonia">Colonia o equivalente:</label>
+                  <input class="form-control" type="text" maxlength="100" id="extranjeroColonia" name="extranjeroColonia" />
+                </div>
+              </div>
+            </div>
+            }
+  
+            <div class="mt-5 p-0">
+              <div class="col-md-8">
+                <div class="form-group">
+                  <label class="form-label" for="calle">Calle*:
+                    <span class="bi bi-question-circle-fill" tooltip="Domicilio, calle, número interior, número exterior, lote" placement="top"></span>
+                  </label>
+                  <input type="text" class="form-control" id="calle" maxlength="100" formControlName="calle" name="calle" />
+                  <ng-container *ngIf="agregarFabricanteFormGroup.get('calle')?.invalid && (agregarFabricanteFormGroup.get('calle')?.touched || agregarFabricanteFormGroup.get('calle')?.dirty)">
+                    <div class="text-danger small">La calle es obligatoria.</div>
+                  </ng-container>
+                </div>
+              </div>
+  
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="numeroExterior" class="form-label">Número exterior*:
+                  </label>
+                  <input type="text" id="numeroExterior" formControlName="numeroExterior" maxlength="55" class="form-control"
+                    name="numeroExterior" />
+                    <ng-container *ngIf="agregarFabricanteFormGroup.get('numeroExterior')?.invalid && (agregarFabricanteFormGroup.get('numeroExterior')?.touched || agregarFabricanteFormGroup.get('numeroExterior')?.dirty)">
+                      <div class="text-danger small">El número exterior es obligatorio.</div>
+                    </ng-container>
+                </div>
+              </div>
+            </div>
+  
+  
+            <div class="col-md-4 mt-5">
+              <div class="form-group">
+                <label class="form-label" for="numeroInterior">Número interior:</label>
+                <input class="form-control" type="text" id="numeroInterior" formControlName="numeroInterior" maxlength="55"
+                  name="numeroInterior" />
+              </div>
+            </div>
+  
+            <div class="col-md-1 mt-5">
+              <div class="form-group">
+                <label class="form-label" for="lada">Lada:</label>
+                <input class="form-control" type="text" id="lada" formControlName="lada" name="lada" maxlength="5" />
+              </div>
+            </div>
+  
+            <div class="col-md-3 mt-5">
+              <div class="form-group">
+                <label class="form-label" for="telefono">Teléfono:</label>
+                <input class="form-control" type="text" id="telefono" formControlName="telefono" maxlength="24" name="telefono" />
+              </div>
+            </div>
+  
+            <div class="col-md-4 mt-5">
+              <div class="form-group">
+                <label class="form-label" for="correoElectronico">Correo electrónico:
+                  <span class="bi bi-question-circle-fill" tooltip="ejemplo@dominio.com" placement="top"></span>
+                </label>
+                <input class="form-control" type="text" id="correoElectronico" formControlName="correoElectronico" maxlength="320"
+                  name="correoElectronico" />
+              </div>
+            </div>
+            <hr />
+  
+            <!-- campos -->
+            <div class="col-md-3 text-muted text-vertical-align-button">
+              <span>*Campos obligatorios</span>
+            </div>
+  
+            <!-- últimos tres botones -->
+            <div class="row">
+              <div class="col-md-12 d-flex justify-content-end gap-1">
+                <button type="button" class="btn btn-danger" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                  aria-controls="offcanvasRight" (click)="toggleDivFabricante()">
+                  Cancelar
+                </button>
+                <button type="button" class="btn btn-default" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                  aria-controls="offcanvasRight"   (click)="agregarFabricanteFormGroup.reset()">
+                  Limpiar
+                </button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                  aria-controls="offcanvasRight" (click)="submitFabricanteForm()">
+                  Guardar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </app-modal>
+  
+  <!-- El formulario para agregar destinatario está en exhibición -->
+  <app-modal [active]="showDestinatario">
+    <div class="agregar-destinatario-container">
+      <ng-titulo titulo="Agregar destinatario (destino final)" />
+      <h5>Datos generales</h5>
+  
+      <form [formGroup]="agregarDestinatarioFormGroup">
+        <!--botones de radio -->
+        <div class="row">
+          <div class="col-md-6 offset-md-6">
+            <div>
+              <h6>Tipo persona*:</h6>
+              <div class="mt-2">
+                <app-input-radio [radioOptions]="personaOpcionDeBotonDeRadio" [isRequired]="true" [layout]="'vertical'" [showTooltip]="true"
+                  formControlName="tipoPersona" (valueChange)="tipoPersonaChecked($event, 'Destinatario')"></app-input-radio>
+                  <ng-container *ngIf="agregarDestinatarioFormGroup.get('tipoPersona')?.invalid && (agregarDestinatarioFormGroup.get('tipoPersona')?.touched || agregarDestinatarioFormGroup.get('tipoPersona')?.dirty)">
+                    <div class="text-danger small">El tipo de persona es obligatorio.</div>
+                  </ng-container>
+                </div>
+            </div>
+          </div>
+        </div>
+        <hr />
+  
+  
+        <div class="row">
+          <div class="col-md-4 p-2">
+            <div class="form-group">
+              <label for="rfc" class="form-label">R.F.C*:
+                  <span class="bi bi-question-circle-fill" tooltip="Registro Federal de Contribuyentes" placement="top"></span>
+              </label>
+              <input type="text" id="rfc" formControlName="rfc" class="form-control" maxlength="15" name="rfc" />
+              <ng-container *ngIf="agregarDestinatarioFormGroup.get('rfc')?.invalid && (agregarDestinatarioFormGroup.get('rfc')?.touched || agregarDestinatarioFormGroup.get('rfc')?.dirty)">
+                <div class="text-danger small">
+                  <div *ngIf="agregarDestinatarioFormGroup.get('rfc')?.errors?.['required']">El RFC es obligatorio.</div>
+                  <div *ngIf="agregarDestinatarioFormGroup.get('rfc')?.errors?.['formatoRfcInvalido']">El formato del RFC es inválido.</div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+  
+          @if (fisica || (!fisica && !moral)){
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="curp" class="form-label">C.U.R.P*:<span class="bi bi-question-circle-fill fs-4 m-1"
+                    title="Title" ata-bs-toggle="tooltip"></span>
+                </label>
+                <input type="text" id="curp" formControlName="curp" class="form-control" name="curp" />
+                <div class="text-danger" *ngIf="agregarDestinatarioFormGroup.get('curp')?.touched && agregarDestinatarioFormGroup.get('curp')?.invalid">
+                  El CURP es obligatorio.
+                </div>
+              </div>
+            </div>
+          </div>
+          }
+  
+          @if (moral || (!fisica && !moral)){
+          <div class="row">
+            <div class="col-md-8">
+              <div class="form-group">
+                <label class="form-label" for="denominacionRazonSocial">Denominación/razón social*:</label>
+                <input type="text" class="form-control" id="denominacionRazonSocial" maxlength="254"
+                  formControlName="denominacionRazonSocial" name="denominacionRazonSocial" />
+                  <div class="text-danger" *ngIf="agregarDestinatarioFormGroup.get('denominacionRazonSocial')?.touched && agregarDestinatarioFormGroup.get('denominacionRazonSocial')?.invalid">
+                    La denominación o razón social es obligatoria.
+                  </div>
+                  <ng-container *ngIf="agregarDestinatarioFormGroup.get('denominacionRazonSocial')?.invalid && (agregarDestinatarioFormGroup.get('denominacionRazonSocial')?.touched || agregarDestinatarioFormGroup.get('denominacionRazonSocial')?.dirty)">
+                    <div class="text-danger small">La denominación o razón social es obligatoria.</div>
+                  </ng-container>
+                </div>
+            </div>
+          </div>
+          }
+          <hr />
+          <h5>Domicilio</h5>
+          <div class="row d-flex domicilio-form-container">
+            <div class="col-md-4 mt-5">
+              <div class="form-group">
+                <app-catalogo-select [catalogo]="paisDropdownData" [label]="'País'" [required]="true" for="pais" id="pais"
+                  formControlName="pais" name="pais"></app-catalogo-select>
+                  <div class="text-danger" *ngIf="agregarDestinatarioFormGroup.get('pais')?.touched && agregarDestinatarioFormGroup.get('pais')?.invalid">
+                    El país es obligatorio.
+                  </div>
+                </div>
+            </div>
+  
+            <div class="col-md-4 mt-5">
+              <div class="form-group">
+                <app-catalogo-select [catalogo]="dropdownData" [label]="'Estado/localidad*'" [required]="true" (selectionChange)="cargarEstado($event)"
+                  for="estadoLocalidad" id="estadoLocalidad" formControlName="estadoLocalidad"
+                  name="estadoLocalidad"></app-catalogo-select>
+                  <ng-container *ngIf="agregarDestinatarioFormGroup.get('estadoLocalidad')?.invalid && (agregarDestinatarioFormGroup.get('estadoLocalidad')?.touched || agregarDestinatarioFormGroup.get('estadoLocalidad')?.dirty)">
+                    <div class="text-danger small">El estado o localidad es obligatorio.</div>
+                  </ng-container>
+              </div>
+            </div>
+  
+            <div class="col-md-4 mt-5">
+              <div class="form-group">
+                <app-catalogo-select [catalogo]="municipioDropdownData" [label]="'Municipio/alcaldía:'" [required]="true" (selectionChange)="cargarMunicipio($event)"
+                  for="municipioAlcaldia" id="municipioAlcaldia" formControlName="municipioAlcaldia"
+                  name="municipioAlcaldia"></app-catalogo-select>
+                  <ng-container *ngIf="agregarDestinatarioFormGroup.get('municipioAlcaldia')?.invalid && (agregarDestinatarioFormGroup.get('municipioAlcaldia')?.touched || agregarDestinatarioFormGroup.get('municipioAlcaldia')?.dirty)">
+                    <div class="text-danger small">El municipio o alcaldía es obligatorio.</div>
+                  </ng-container>
+              </div>
+            </div>
+  
+            <div class="col-md-4 mt-5">
+              <div class="form-group">
+                <app-catalogo-select [catalogo]="localidadDropdownData" [label]="'Localidad'" [required]="false" (selectionChange)="cargarLocalidad($event)"
+                  for="localidad" id="localidad" formControlName="localidad" name="localidad"></app-catalogo-select>
+              </div>
+            </div>
+  
+            <div class="col-md-4 mt-5">
+              <div class="form-group">
+                <app-catalogo-select [catalogo]="codigoPostalDropdownData" [label]="'Código postal o equivalente*'" (selectionChange)="cargarCodigoPostal($event)"
+                  for="codigoPostaloEquivalente" id="codigoPostaloEquivalente" formControlName="codigoPostaloEquivalente"
+                  name="codigoPostaloEquivalente"></app-catalogo-select>
+                  <div
+                  class="text-danger mt-1"
+                  *ngIf="agregarDestinatarioFormGroup.get('codigoPostaloEquivalente')?.touched &&
+                         agregarDestinatarioFormGroup.get('codigoPostaloEquivalente')?.invalid">
+                  El código postal es obligatorio.
+                </div>
+              </div>
+            </div>
+  
+            <div class="col-md-4 mt-5">
+              <div class="form-group">
+                <app-catalogo-select [catalogo]="coloniaDropdownData" [label]="'Colonia:'" for="colonia" id="colonia"
+                  formControlName="colonia" name="colonia"></app-catalogo-select>
+              </div>
+            </div>
+  
+            <div class="col-md-8">
+              <div class="form-group">
+                <label class="form-label" for="calle">Calle*:            
+                  <span class="bi bi-question-circle-fill" tooltip="Domicilio, calle, número interior, número exterior, lote" placement="top"></span>
+                </label>
+                <input type="text" id="calle" formControlName="calle" maxlength="100" class="form-control" name="calle" />
+                <div class="text-danger" *ngIf="agregarDestinatarioFormGroup.get('calle')?.touched && agregarDestinatarioFormGroup.get('calle')?.invalid">
+                  La calle es obligatoria.
+                </div>
+              </div>
+            </div>
+  
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="numeroExterior" class="form-label">Número exterior*:
+                </label>
+                <input type="text" id="numeroExterior" formControlName="numeroExterior" maxlength="55" class="form-control"
+                  name="numeroExterior" />
+                  <div
+                  class="text-danger mt-1"
+                  *ngIf="agregarDestinatarioFormGroup.get('numeroExterior')?.touched &&
+                         agregarDestinatarioFormGroup.get('numeroExterior')?.invalid">
+                  El número exterior es obligatorio.
+                </div>
+              </div>
+            </div>
+  
+            <div class="col-md-4 mt-5">
+              <div class="form-group">
+                <label class="form-label" for="numeroInterior">Número interior:</label>
+                <input type="text" id="numeroInterior" formControlName="numeroInterior" maxlength="55" class="form-control"
+                  name="numeroInterior" />
+              </div>
+            </div>
+  
+            <div class="col-md-1 mt-5">
+              <div class="form-group">
+                <label class="form-label" for="lada">Lada:</label>
+                <input type="text" id="lada" formControlName="lada" maxlength="5" class="form-control" name="lada" />
+              </div>
+            </div>
+  
+            <div class="col-md-3 mt-5">
+              <div class="form-group">
+                <label class="form-label" for="telefono">Teléfono:</label>
+                <input type="text" id="telefono" formControlName="telefono" maxlength="24" class="form-control" name="telefono" />
+              </div>
+            </div>
+  
+            <div class="col-md-4 mt-5">
+              <div class="form-group">
+                <label class="form-label" for="correoElectronico">Correo electrónico:
+                  <span class="bi bi-question-circle-fill" tooltip="ejemplo@dominio.com" placement="top"></span>
+                </label>
+                <input type="text" id="correoElectronico" formControlName="correoElectronico" maxlength="320" class="form-control"
+                  name="correoElectronico" />
+              </div>
+            </div>
+            <hr />
+  
+            <!-- campos -->
+            <div class="col-md-3 text-muted text-vertical-align-button">
+              <span>*Campos obligatorios</span>
+            </div>
+  
+            <!-- últimos tres botones -->
+            <div class="row">
+              <div class="col-md-12 d-flex justify-content-end gap-1">
+                <button type="button" class="btn btn-danger" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                  aria-controls="offcanvasRight" (click)="toggleDivDestinatario()">
+                  Cancelar
+                </button>
+                <button type="button" class="btn btn-default" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                  aria-controls="offcanvasRight"  (click)="agregarDestinatarioFormGroup.reset()">
+                  Limpiar
+                </button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                  aria-controls="offcanvasRight" (click)="submitDestinatarioForm()">
+                  Guardar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </app-modal>
+  
+  <!-- El formulario para agregar proveedor está en exhibición -->
+  <app-modal [active]="showProveedor">
+    <div class="agregar-proveedor-container">
+      <ng-titulo titulo="Agregar proveedor" />
+      <h5>Datos generales </h5>
+  
+      <form [formGroup]="agregarProveedorFormGroup">
+        <div class="row">
+          <div class="col-md-6 offset-md-6">
+            <div>
+              <h6>Tipo persona*:</h6>
+              <div class="mt-2">
+                <app-input-radio [radioOptions]="personaOpcionDeBotonDeRadio" [isRequired]="true" [layout]="'vertical'" [showTooltip]="true"
+                  formControlName="tipoPersona" (valueChange)="tipoPersonaChecked($event, 'Proveedor')"></app-input-radio>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr />
+  
+        @if (fisica || (!fisica && !moral)) {
+        <h5>Datos personales</h5>
+        <div class="row d-flex datos-personales-form-container">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="nombre" class="form-label">Nombre(s)*: </label>
+              <input type="text" id="nombre" formControlName="nombre" maxlength="200" name="nombre" class="form-control" />
+              <ng-container *ngIf="agregarProveedorFormGroup.get('nombre')?.invalid && (agregarProveedorFormGroup.get('nombre')?.touched || agregarProveedorFormGroup.get('nombre')?.dirty)">
+                <div class="text-danger small">El nombre es obligatorio.</div>
+              </ng-container>
+            </div>
+          </div>
+  
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="primerApellido">Primer apellido*:</label>
+              <input type="text" id="primerApellido" maxlength="200" formControlName="primerApellido" name="primerApellido"
+                class="form-control" />
+                <ng-container *ngIf="agregarProveedorFormGroup.get('primerApellido')?.invalid && (agregarProveedorFormGroup.get('primerApellido')?.touched || agregarProveedorFormGroup.get('primerApellido')?.dirty)">
+                  <div class="text-danger small">El primer apellido es obligatorio.</div>
+                </ng-container>
+            </div>
+          </div>
+  
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="segundoApellido">Segundo apellido*:</label>
+              <input type="text" id="segundoApellido" maxlength="200" formControlName="segundoApellido" name="segundoApellido"
+                class="form-control" />
+            </div>
+          </div>
+        </div>
+        }
+  
+        @if (moral || (!fisica && !moral)) {
+        <div class="row">
+          <div class="col-md-8">
+            <div class="form-group">
+              <label class="form-label" for="denominacionRazonSocial">Denominación/razón social*:</label>
+              <input type="text" class="form-control" id="denominacionRazonSocial"
+                formControlName="denominacionRazonSocial" name="denominacionRazonSocial" maxlength="254" />
+                <ng-container *ngIf="agregarProveedorFormGroup.get('denominacionRazonSocial')?.invalid && (agregarProveedorFormGroup.get('denominacionRazonSocial')?.touched || agregarProveedorFormGroup.get('denominacionRazonSocial')?.dirty)">
+                  <div class="text-danger small">La denominación o razón social es obligatoria.</div>
+                </ng-container>
+              </div>
+          </div>
+        </div>
+        }
+        <hr />
+        <h5>Domicilio</h5>
+        <div class="row d-flex domicilio-form-container">
+          <div class="col-md-4 mt-5">
+            <div class="form-group">
+              <app-catalogo-select [catalogo]="paisDropdownData" [label]="'País'" [required]="true" for="pais" id="pais"
+                formControlName="pais" name="pais"></app-catalogo-select>
+                <div class="text-danger" *ngIf="agregarProveedorFormGroup.get('pais')?.touched && agregarProveedorFormGroup.get('pais')?.invalid">
+                  El país es obligatorio.
+                </div>
+            </div>
+          </div>
+  
+          <div class="col-md-4 mt-5">
+            <div class="form-group">
+              <label class="form-label" for="estado">Estado*:</label>
+              <input class="form-control" type="text" id="estado" maxlength="255" formControlName="estado" name="estado" />
+              <div
+              class="text-danger"
+              *ngIf="agregarProveedorFormGroup.get('estado')?.touched && agregarProveedorFormGroup.get('estado')?.invalid"
+            >
+              El estado es obligatorio.
+            </div>
+            </div>
+          </div>
+  
+          <div class="col-md-4 mt-5">
+            <div class="form-group">
+              <label class="form-label" for="codigoPostaloEquivalente">Código postal o equivalente*:</label>
+              <input class="form-control" type="text" id="codigoPostaloEquivalente" maxlength="12"
+                formControlName="codigoPostaloEquivalente" name="codigoPostaloEquivalente" />
+            </div>
+          </div>
+  
+          <div class="col-md-4 mt-5">
+            <div class="form-group">
+              <label class="form-label" for="coloniaoEquivalente">Colonia o equivalente:</label>
+              <input class="form-control" type="text" id="coloniaoEquivalente" maxlength="100" formControlName="coloniaoEquivalente"
+                name="coloniaoEquivalente" />
+            </div>
+          </div>
+          <hr />
+          <div class="clearfix"></div>
+          <div class="col-md-8">
+            <div class="form-group">
+              <label class="form-label" for="calle">Calle*:
+                  <span class="bi bi-question-circle-fill" tooltip="Domicilio, calle, número interior, número exterior, lote" placement="top"></span>
+              </label>
+              <input type="text" class="form-control" id="calle" maxlength="100" formControlName="calle" name="calle" />
+              <ng-container *ngIf="agregarProveedorFormGroup.get('calle')?.invalid && (agregarProveedorFormGroup.get('calle')?.touched || agregarProveedorFormGroup.get('calle')?.dirty)">
+                <div class="text-danger small">La calle es obligatoria.</div>
+              </ng-container>
+            </div>
+          </div>
+  
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="numeroExterior" class="form-label">Número exterior*:
+              </label>
+              <input type="text" class="form-control" id="numeroExterior" maxlength="55" formControlName="numeroExterior"
+                name="numeroExterior" />
+                <ng-container *ngIf="agregarProveedorFormGroup.get('numeroExterior')?.invalid && (agregarProveedorFormGroup.get('numeroExterior')?.touched || agregarProveedorFormGroup.get('numeroExterior')?.dirty)">
+                  <div class="text-danger small">El número exterior es obligatorio.</div>
+                </ng-container>
+            </div>
+          </div>
+  
+          <div class="col-md-4 mt-5">
+            <div class="form-group">
+              <label class="form-label" for="numeroInterior">Número interior:</label>
+              <input type="text" class="form-control" id="numeroInterior" maxlength="55" formControlName="numeroInterior"
+                name="numeroInterior" />
+            </div>
+          </div>
+  
+          <div class="col-md-1 mt-5">
+            <div class="form-group">
+              <label class="form-label" for="lada">Lada:</label>
+              <input type="text" class="form-control" id="lada" maxlength="5" formControlName="lada" name="lada" />
+            </div>
+          </div>
+  
+          <div class="col-md-3 mt-5">
+            <div class="form-group">
+              <label class="form-label" for="telefono">Teléfono:</label>
+              <input type="text" class="form-control" id="telefono" maxlength="24" formControlName="telefono" name="telefono" />
+            </div>
+          </div>
+  
+          <div class="col-md-4 mt-5">
+            <div class="form-group">
+              <label class="form-label" for="correoElectronico">Correo electrónico:
+                <span class="bi bi-question-circle-fill" tooltip="ejemplo@dominio.com" placement="top"></span>
+              </label>
+              <input type="text" class="form-control" maxlength="320" id="correoElectronico" formControlName="correoElectronico"
+                name="correoElectronico" />
+            </div>
+          </div>
+          <hr />
+  
+          <div class="col-md-3 text-muted text-vertical-align-button">
+            <span>*Campos obligatorios</span>
+          </div>
+  
+  
+          <!-- últimos tres botones -->
+          <div class="row">
+            <div class="col-md-12 d-flex justify-content-end gap-1">
+              <button type="button" class="btn btn-danger" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                aria-controls="offcanvasRight" (click)="toggleDivProveedor()">
+                Cancelar
+              </button>
+              <button type="button" class="btn btn-default" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                aria-controls="offcanvasRight"  (click)="agregarProveedorFormGroup.reset()" >
+                Limpiar
+              </button>
+              <button type="button" class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                aria-controls="offcanvasRight" (click)="submitProveedorForm()">
+                Guardar
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </app-modal>
+  
+  <!-- El formulario para agregar facturador está en exhibición -->
+  <app-modal [active]="showFacturador">
+    <div class="agregar-facturador-container">
+      <ng-titulo titulo="Agregar facturador" />
+      <h5>Datos generales</h5>
+  
+      <form [formGroup]="agregarFacturadorFormGroup">
+        <div class="row">
+          <div class="col-md-6 offset-md-6">
+            <div>
+              <h6>Tipo persona*:</h6>
+              <div class="mt-2">
+                <app-input-radio [radioOptions]="personaOpcionDeBotonDeRadio" [isRequired]="true" [layout]="'vertical'" [showTooltip]="true"
+                  formControlName="tipoPersona" (valueChange)="tipoPersonaChecked($event, 'Facturador' )"></app-input-radio>
+                  <ng-container *ngIf="agregarFacturadorFormGroup.get('tipoPersona')?.invalid && (agregarFacturadorFormGroup.get('tipoPersona')?.touched || agregarFacturadorFormGroup.get('tipoPersona')?.dirty)">
+                    <div class="text-danger small">El tipo de persona es obligatorio.</div>
+                  </ng-container>
+                </div>
+            </div>
+          </div>
+        </div>
+        <hr />
+  
+        <div>
+          @if (fisica || (!fisica && !moral)) {
+          <h5>Datos personales</h5>
+          <div class="row d-flex datos-personales-form-container">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="nombre" class="form-label">Nombre(s)*: </label>
+                <input type="text" id="nombre" formControlName="nombre" maxlength="200" name="nombre" class="form-control" />
+              </div>
+              <ng-container *ngIf="agregarFacturadorFormGroup.get('nombre')?.invalid && (agregarFacturadorFormGroup.get('nombre')?.touched || agregarFacturadorFormGroup.get('nombre')?.dirty)">
+                <div class="text-danger small">El nombre es obligatorio.</div>
+              </ng-container>
+            </div>
+  
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="primerApellido">Primer apellido*:</label>
+                <input type="text" id="primerApellido" formControlName="primerApellido" maxlength="200" name="primerApellido"
+                  class="form-control" />
+              </div>
+            </div>
+  
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="segundoApellido">Segundo apellido*:</label>
+                <input type="text" id="segundoApellido" formControlName="segundoApellido" maxlength="200" name="segundoApellido"
+                  class="form-control" />
+              </div>
+            </div>
+          </div>
+          }
+  
+          @if (moral || (!fisica && !moral)) {
+          <div class="row">
+            <div class="col-md-8">
+              <div class="form-group">
+                <label class="form-label" for="denominacionRazonSocial">Denominación/razón social*:</label>
+                <input type="text" class="form-control" id="denominacionRazonSocial" maxlength="254"
+                  formControlName="denominacionRazonSocial" name="denominacionRazonSocial" />
+              </div>
+            </div>
+          </div>
+          }
+          <hr />
+          <h5>Domicilio</h5>
+          <div class="row d-flex domicilio-form-container">
+            <div class="col-md-4 mt-5">
+              <div class="form-group">
+                <app-catalogo-select [catalogo]="paisDropdownData" [label]="'País'" [required]="true" for="pais" id="pais"
+                  formControlName="pais" name="pais"></app-catalogo-select>
+              </div>
+            </div>
+  
+            <div class="col-md-4 mt-5">
+              <div class="form-group">
+                <label class="form-label" for="estado">Estado*:</label>
+                <input class="form-control" type="text" id="estado" maxlength="255" formControlName="estado" name="estado" />
+                <div
+                class="text-danger"
+                *ngIf="agregarFacturadorFormGroup.get('estado')?.touched && agregarFacturadorFormGroup.get('estado')?.invalid"
+              >
+                El estado es obligatorio.
+              </div>
+              </div>
+            </div>
+  
+            <div class="col-md-4 mt-5">
+              <div class="form-group">
+                <label class="form-label" for="codigoPostaloEquivalente">Código postal o equivalente*:</label>
+                <input class="form-control" type="text" id="codigoPostaloEquivalente" maxlength="12"
+                  formControlName="codigoPostaloEquivalente" name="codigoPostaloEquivalente" />
+              </div>
+            </div>
+  
+            <div class="col-md-4 mt-5">
+              <div class="form-group">
+                <label class="form-label" for="coloniaoEquivalente">Colonia o equivalente:</label>
+                <input class="form-control" type="text" id="coloniaoEquivalente" maxlength="100" formControlName="coloniaoEquivalente"
+                  name="coloniaoEquivalente" />
+              </div>
+            </div>
+            <hr />
+            <div class="clearfix"></div>
+            <div class="col-md-8">
+              <div class="form-group">
+                <label class="form-label" for="calle">Calle*:
+                    <span class="bi bi-question-circle-fill" tooltip="Domicilio, calle, número interior, número exterior, lote" placement="top"></span>
+                </label>
+                <input type="text" class="form-control" id="calle" formControlName="calle" name="calle" maxlength="100" />
+                <div class="text-danger" *ngIf="agregarFacturadorFormGroup.get('calle')?.touched && agregarFacturadorFormGroup.get('calle')?.invalid">
+                  La calle es obligatoria.
+                </div>
+             
+              </div>
+            </div>
+  
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="numeroExterior" class="form-label">Número exterior*:
+                </label>
+                <input type="text" id="numeroExterior" formControlName="numeroExterior" maxlength="55" name="numeroExterior"
+                  class="form-control" />
+                  <ng-container *ngIf="agregarFacturadorFormGroup.get('numeroExterior')?.invalid && (agregarFacturadorFormGroup.get('numeroExterior')?.touched || agregarFacturadorFormGroup.get('numeroExterior')?.dirty)">
+                    <div class="text-danger small">El número exterior es obligatorio.</div>
+                  </ng-container>
+              </div>
+            </div>
+  
+            <div class="col-md-4 mt-5">
+              <div class="form-group">
+                <label class="form-label" for="numeroInterior">Número interior:</label>
+                <input type="text" id="numeroInterior" formControlName="numeroInterior" maxlength="55" name="numeroInterior"
+                  class="form-control" />
+              </div>
+            </div>
+  
+            <div class="col-md-1 mt-5">
+              <div class="form-group">
+                <label class="form-label" for="lada">Lada:</label>
+                <input class="form-control" type="text" id="lada" formControlName="lada" maxlength="5" name="lada" />
+              </div>
+            </div>
+  
+            <div class="col-md-3 mt-5">
+              <div class="form-group">
+                <label class="form-label" for="telefono">Teléfono:</label>
+                <input class="form-control" type="text" id="telefono" formControlName="telefono" maxlength="24" name="telefono" />
+              </div>
+            </div>
+  
+            <div class="col-md-4 mt-5">
+              <div class="form-group">
+                <label class="form-label" for="correoElectronico">Correo electrónico:
+                      <span class="bi bi-question-circle-fill" tooltip="ejemplo@dominio.com" placement="top"></span>
+                </label>
+                <input class="form-control" type="text" id="correoElectronico" maxlength="320" formControlName="correoElectronico"
+                  name="correoElectronico" />
+              </div>
+            </div>
+            <hr />
+  
+            <div class="col-md-3 text-muted text-vertical-align-button">
+              <span>*Campos obligatorios</span>
+            </div>
+  
+            <!-- últimos tres botones -->
+            <div class="row">
+              <div class="col-md-12 d-flex justify-content-end gap-1">
+                <button type="button" class="btn btn-danger" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                  aria-controls="offcanvasRight" (click)="toggleDivFacturador()">
+                  Cancelar
+                </button>
+                <button type="button" class="btn btn-default" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                  aria-controls="offcanvasRight"   (click)="agregarFacturadorFormGroup.reset()">
+                  Limpiar
+                </button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                  aria-controls="offcanvasRight" (click)="submitFacturadorForm()">
+                  Guardar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </app-modal>

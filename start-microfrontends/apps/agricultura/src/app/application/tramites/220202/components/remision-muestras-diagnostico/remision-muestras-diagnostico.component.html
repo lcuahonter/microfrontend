@@ -1,0 +1,119 @@
+<div class="container" [formGroup]="formRemisionMuestrasDiagnostico">
+  <div class="row">
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="form-label">Tipo de laboratorio:</label>
+        <select class="form-control form-select" formControlName="tipoLaboratorio" (change)="cambioLaboratorio()"
+                [ngClass]="{ required: isInvalid('tipoLaboratorio')}"
+                [attr.disabled]="true">
+          <option [ngValue]="null">Seleccione un Tipo de laboratorio</option>
+          <option *ngFor="let tipo of tiposLaboratorio" [title]="tipo.descripcion" [value]="tipo.clave">
+            {{ tipo.descripcion }}
+          </option>
+        </select>
+        <app-error-requerido [form]="formRemisionMuestrasDiagnostico.get('tipoLaboratorio')!"></app-error-requerido>
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <div class="form-group">
+        <label class="form-label">Nombre del laboratorio</label>
+        <select class="form-control form-select" formControlName="nombreLaboratorio"
+                [ngClass]="{ required: isInvalid('nombreLaboratorio')}"
+                (change)="$event.preventDefault();$event.stopPropagation();"
+                [attr.disabled]="true">
+          <option [ngValue]="null">Seleccione un nombre del laboratorio</option>
+          <option *ngFor="let tipo of nombresLaboratorio" [title]="tipo.descripcion" [value]="tipo.clave">
+            {{ tipo.descripcion }}
+          </option>
+        </select>
+        <app-error-requerido [form]="formRemisionMuestrasDiagnostico.get('nombreLaboratorio')!"></app-error-requerido>
+      </div>
+    </div>
+
+    <div class="col-md-12 col-lg-10 my-4">
+      <ng-titulo [titulo]="'Solicitud de servicio'" />
+    </div>
+
+    <div class="col-md-4">
+      <label class="form-label" for="analisisSolicitado">Análisis solicitado:</label>
+      <input class="form-control" id="analisisSolicitado" type="text" formControlName="analisisSolicitado"
+             [ngClass]="{ required: isInvalid('analisisSolicitado')}" />
+      <app-error-requerido [form]="formRemisionMuestrasDiagnostico.get('analisisSolicitado')!"></app-error-requerido>
+    </div>
+
+    <div class="col-md-4">
+      <label class="form-label" for="tamanoMuestra">Tamaño de la muestra:</label>
+      <input class="form-control" id="tamanoMuestra" type="text" formControlName="tamanoMuestra"
+             [ngClass]="{ required: isInvalid('tamanoMuestra')}" />
+      <app-error-requerido [form]="formRemisionMuestrasDiagnostico.get('tamanoMuestra')!"></app-error-requerido>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="form-label">Unidad de medida:</label>
+        <select class="form-control form-select" formControlName="unidadMedida"
+                [ngClass]="{ required: isInvalid('unidadMedida')}"
+                [attr.disabled]="true">
+          <option [ngValue]="null">Seleccione un Tipo de laboratorio</option>
+          <option *ngFor="let unidad of unidadMedidaComercial" [title]="unidad.descripcion" [value]="unidad.clave">
+            {{ unidad.descripcion }}
+          </option>
+        </select>
+        <app-error-requerido [form]="formRemisionMuestrasDiagnostico.get('unidadMedida')!"></app-error-requerido>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <input-fecha
+        [mostrarErrores]="isInvalid('fechaTomaMuestra')"
+        [setFecha]="''"
+        [datos]="{
+        labelNombre:'Fecha de toma de muestra',
+        required:true,
+        habilitado:true
+        }"
+        (valorCambiado)="setFecha($event)"
+
+      ></input-fecha>
+      <app-error-requerido [form]="formRemisionMuestrasDiagnostico.get('fechaTomaMuestra')!"></app-error-requerido>
+    </div>
+
+    <div class="col-md-4">
+      <label class="form-label" for="loteNumero">Lote número:</label>
+      <input class="form-control" id="loteNumero" type="text" formControlName="loteNumero"
+             [ngClass]="{ required: isInvalid('loteNumero')}" />
+      <app-error-requerido [form]="formRemisionMuestrasDiagnostico.get('loteNumero')!"></app-error-requerido>
+    </div>
+
+
+    <div class="col-md-4">
+      <label class="form-label" for="observaciones">Observaciones:</label>
+      <input class="form-control no-arrows" id="observaciones" type="text" formControlName="observaciones"
+             [ngClass]="{ required: isInvalid('observaciones')}" />
+      <app-error-requerido [form]="formRemisionMuestrasDiagnostico.get('observaciones')!"></app-error-requerido>
+    </div>
+
+    <div class="col-md-12 col-lg-10 my-4">
+      <ng-titulo [titulo]="'Datos generales'" />
+    </div>
+
+    <div class="col-md-8">
+      <label class="form-label" for="datosGenerales">Nombre del importador, agente aduanal y/o representante:</label>
+      <input class="form-control" id="datosGenerales" type="text" formControlName="datosGenerales"
+             [ngClass]="{ required: isInvalid('tipoLaboratorio')}" />
+      <app-error-requerido [form]="formRemisionMuestrasDiagnostico.get('datosGenerales')!"></app-error-requerido>
+    </div>
+
+    <div class="col-md-12">
+      <div class="d-flex justify-content-end">
+        <button type="button" class="btn btn-default" (click)="visualizar()">
+          Visualizar
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+</div>

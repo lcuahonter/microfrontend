@@ -1,0 +1,3 @@
+export const DATOS_GENERALES_TRAMITES_COFEPRIS = [
+    260401, 260402
+];

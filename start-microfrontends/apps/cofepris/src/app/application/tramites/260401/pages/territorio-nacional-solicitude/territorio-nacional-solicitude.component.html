@@ -1,0 +1,76 @@
+<div class="Page">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        @if (indice !== 3) {
+          <h3>
+          Solicitud permiso de salida del territorio nacional de células y tejidos incluyendo sangre, sus componentes y derivados, así como otros productos de seres humanos
+        </h3>
+        } @else {
+        <h1>Firmar</h1>
+        }
+      </div>
+      <app-wizard [listaPasos]="territorioPasos"></app-wizard>
+    </div>
+  <div *ngIf="esFormaValido" class="alert alert-danger text-center">
+    <strong>¡Error de registro!</strong> Faltan campos por capturar.
+  </div>
+    <div class="row">
+      @switch (indice) { @case (1) {
+      <app-datos-territorio #datosTerritorio></app-datos-territorio>
+      } @case (2) {
+      <app-paso-carga-documento 
+      [idSolicitud]="solicitudState.idSolicitud"
+      [idTipoTRamite]="'260401'"
+      [cargaArchivosEvento]="cargarArchivosEvento"
+      (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+      (reenviarCargaRealizada)="cargaRealizada($event)"
+      (cargaEnProgreso)="onCargaEnProgreso($event)"
+      (enBlancoObligatoria)="onBlancoObligatoria($event)"
+      ></app-paso-carga-documento>
+      } @case (3) {
+      <paso-firma [idSolicitud]="solicitudState.idSolicitud" [procedure]="260401" [procedureUrl]="'territorio-nacional/solicitante'"></paso-firma>
+
+      }}
+    </div>
+    @if (indice !== 2){
+    <btn-continuar [datos]="datosPasos" (continuarEvento)="getValorIndice($event)" [dePadre]="true"></btn-continuar>
+    } @else {
+        <div class="mt-5 mb-3 d-flex justify-content-end">
+          <button
+            type="button"
+            class="btn btn-default"
+            (click)="anterior()"
+            *ngIf="seccionCargarDocumentos"
+          >
+            Anterior
+          </button>
+            @if (isSaltar) {
+                <button
+                type="button"
+                class="btn btn-default ms-3"
+                (click)="saltar()"
+                >
+                Saltar
+                </button>
+            }
+          <button
+            class="btn btn-primary ms-3"
+            (click)="
+              seccionCargarDocumentos ? onClickCargaArchivos() : siguiente()
+            "
+            [disabled]="(seccionCargarDocumentos && !activarBotonCargaArchivos) || (!seccionCargarDocumentos && cargaEnProgreso)"
+          >
+            {{ seccionCargarDocumentos ? 'Cargar archivos' : 'Continuar' }}
+          </button>
+        </div>
+      }
+  </div>
+</div>
+
+@if(mostrarAlerta) {
+  <section>
+    <lib-notificaciones [notificacionInput]="seleccionarFilaNotificacion" (confirmacionModal)="cerrarModal($event)">
+    </lib-notificaciones>
+  </section>
+  }

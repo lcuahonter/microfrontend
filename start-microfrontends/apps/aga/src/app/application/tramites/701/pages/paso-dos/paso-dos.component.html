@@ -1,0 +1,75 @@
+<form [formGroup]="form">
+  <div class="container">
+    <ng-titulo titulo="Especificos" />
+    <label class="form-label text-start d-block">Si usted necesita anexar más de un documento del mismo tipo seleccionelo de la lista y
+      presione "Agregar nuevo"</label>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label" for="">Tipo de Documento:
+          </label>
+          <select class="form-control form-select" formControlName="tipoDocumento">
+            <option [ngValue]="null">Seleccione un tipo de documento</option>
+            <option *ngFor="let catalogo of catalogoDocumentos" [title]="catalogo.descripcion" [value]="catalogo.clave">
+              {{ catalogo.descripcion }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-4 d-flex align-items-end">
+        <button class="btn btn-primary" [disabled]="esFormularioSoloLectura" (click)="agregarNuevo()">
+          Agregar nuevo
+        </button>
+      </div>
+    </div>
+    <div class="col-md-12 mt-5">
+      <div class="tabla-scroll-x">
+        <table class="table align-middle tabla-documentos">
+          <thead>
+            <tr class="text-center">
+              <th style="width: 50px;"></th>
+              <th style="width: 50px; text-align: center;">
+                <input type="checkbox" 
+                      [(ngModel)]="seleccionarTodos"
+                      (change)="toggleSeleccionarTodos()"
+                      [ngModelOptions]="{ standalone: true }"/>
+              </th>
+              <th>Tipo de Documento</th>
+              <th>RFC Para Consulta</th>
+              <th>Nombre o Razón social</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let doc of documentosTabla; let i = index">
+              <td class="text-center">{{ i + 1 }}</td>
+              <td class="text-center">
+                <input type="checkbox" [(ngModel)]="doc.seleccionado" [ngModelOptions]="{ standalone: true }">
+              </td>
+              <td class="doc-descripcion">
+                {{ doc.tipoDocumento }}
+              </td>
+              <td>
+                <input type="text" class="form-control" [(ngModel)]="doc.rfc"
+                  oninput="this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '')" maxlength="13"
+                  (blur)="getPersonaUsuarioIDC(doc)" [ngModelOptions]="{ standalone: true }"
+                  [disabled]="esFormularioSoloLectura" [attr.maxlength]="13" [disabled]="esFormularioSoloLectura">
+              </td>
+              <td>{{ doc.razonSocial}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col-md-4 d-flex align-items-end">
+      <button class="btn btn-primary" [disabled]="esFormularioSoloLectura" (click)="eliminarDocumento()">
+        Eliminar
+      </button>
+    </div>
+  </div>
+</form>
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+  </lib-notificaciones>
+</section>
+}

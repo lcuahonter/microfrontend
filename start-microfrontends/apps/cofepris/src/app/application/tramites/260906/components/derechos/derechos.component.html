@@ -1,0 +1,82 @@
+<div class="container">
+  <ng-titulo titulo="Pago de derechos" />
+  <form [formGroup]="derechosForm">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="referencia">Clave de referencia:</label>
+          <input class="form-control" id="referencia" formControlName="referencia" placeholder="" type="text" maxlength="50" minlength="10" [ngClass]="{'is-invalid': esInvalido('referencia')}" (change)="setValoresStore(derechosForm,'referencia', 'setreferencia')">
+          <div *ngIf="esInvalido('referencia')" class="text-danger">
+            <small *ngIf="derechosForm.controls['referencia'].errors?.['required']">
+              Este campo es obligatorio.
+            </small>
+            <small
+              *ngIf="derechosForm.get('referencia')?.errors?.['minlength'] || derechosForm.get('referencia')?.errors?.['maxlength']"
+              class="d-block">
+              Por favor, no escriba menos de 10 caracteres ni más de 50 caracteres.
+            </small>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="cadenaDependencia">Cadena de la dependencia:</label>
+          <input class="form-control" id="cadenaDependencia" formControlName="cadenaDependencia" placeholder="" type="text" maxlength="50" minlength="10" [ngClass]="{'is-invalid': esInvalido('cadenaDependencia')}" (change)="setValoresStore(derechosForm,'cadenaDependencia', 'setcadenaDependencia')">
+          <div *ngIf="esInvalido('cadenaDependencia')" class="text-danger">
+            <small *ngIf="derechosForm.controls['cadenaDependencia'].errors?.['required']">
+              Este campo es obligatorio.
+            </small>
+            <small
+              *ngIf="derechosForm.get('cadenaDependencia')?.errors?.['minlength'] || derechosForm.get('cadenaDependencia')?.errors?.['maxlength']"
+              class="d-block">
+              Por favor, no escriba menos de 10 caracteres ni más de 50 caracteres.
+            </small>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <app-catalogo-select [catalogo]="derechosList" [label]="'Banco'" [placeholder]="'Seleccione una aduana'" formControlName="banco" (change)="setValoresStore(derechosForm,'banco', 'setbanco')" [isDisabled]="soloLectura"></app-catalogo-select>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="llave">Llave de pago</label>
+          <input class="form-control" id="llave" placeholder="" type="text" formControlName="llave" maxlength="30" (change)="setValoresStore(derechosForm,'llave', 'setLlave')">
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <input-fecha [datos]="fechaInicioInput" name="tipoFetch" (valorCambiado)="cambioFechaIngreso($event)" [setFecha]="derechosForm.get('tipoFetch')?.value" [isDisabled]="soloLectura"></input-fecha>
+          <div *ngIf="derechosForm.get('tipoFetch')?.hasError('fechaInvalida')" class="text-danger">
+            La fecha de pago debe ser menor o igual a la fecha actual.
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="importe">Importe de pago</label>
+          <input class="form-control" id="importe" placeholder="" type="text" formControlName="importe" maxlength="16" [ngClass]="{'is-invalid': esInvalido('importe')}" (change)="setValoresStore(derechosForm,'importe', 'setimporte')">
+          <div *ngIf="esInvalido('importe')" class="text-danger">
+            <small *ngIf="derechosForm.get('importe')?.errors?.['pattern']" class="d-block">
+              El importe debe contener solo números y no puede exceder 16 dígitos.
+            </small>
+            <small *ngIf="derechosForm.get('importe')?.errors?.['maxlength']" class="d-block">
+              El importe no puede exceder 16 dígitos.
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-5 mb-2">
+      <div class="col-md-8"></div>
+      <div class="col-md-4">
+        <div class="btn-group">
+          <button type="button" class="btn btn-primary" [disabled]="soloLectura" (click)="borrarDatosPago()">Borrar datos del pago</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

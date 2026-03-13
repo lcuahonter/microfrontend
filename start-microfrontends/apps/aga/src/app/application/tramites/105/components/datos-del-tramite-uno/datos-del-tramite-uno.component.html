@@ -1,0 +1,312 @@
+<div class="container">
+  <form class="row mt-5" [formGroup]="datosDelTramite">
+    <div class="col-md-12">
+      <ng-titulo titulo="Datos del trámite" />
+      <div class="checkbox-container">
+        <p class="checkbox-header mb-4 fw-bold">Indique el(los) régimen(es) al (los) que se destinará la mercancía*</p>
+
+        <lib-input-check [isDisabled]="esFormularioSoloLectura" [id]="'importación'" [label]="'Importación'"
+          [required]="false" formControlName="importacion"
+          (change)="setValoresStore(datosDelTramite, 'importacion', 'setImportacion')"></lib-input-check>
+
+        <lib-input-check [isDisabled]="esFormularioSoloLectura" [id]="'exportacion'" [label]="'Exportación'"
+          [required]="false" formControlName="exportacion"
+          (change)="setValoresStore(datosDelTramite, 'exportacion', 'setExportacion')"></lib-input-check>
+
+        <lib-input-check [isDisabled]="esFormularioSoloLectura" [id]="'depositoFiscalGas'" [label]="'Depósito Fiscal de gas licuado de petróleo o de gas
+            natural'" [required]="false" formControlName="depositoFiscalGas"
+          (change)="setValoresStore(datosDelTramite, 'depositoFiscalGas', 'setDepositoFiscalGas')"></lib-input-check>
+
+        <lib-input-check [isDisabled]="esFormularioSoloLectura" [id]="'depositoFiscalVehiculos'"
+          [label]="'Depósito Fiscal de Vehículos'" [required]="false" formControlName="depositoFiscalVehiculos"
+          (change)="setValoresStore(datosDelTramite, 'depositoFiscalVehiculos', 'setDepositoFiscalVehiculos')"></lib-input-check>
+      </div>
+
+      <!-- Servicios a terceros -->
+      <div class="row mt-3">
+        <p>Indique si la empresa prestará servicios a terceros*</p>
+        <app-input-radio [radioOptions]="opcionDeBotonDeRadio" id="serviciosTerceros"  [isBold]="true"
+          formControlName="serviciosTerceros" [layout]="'horizontal'" (change)="
+          setValoresStore(datosDelTramite, 'serviciosTerceros', 'setServiciosTerceros')
+        ">
+        </app-input-radio>
+      </div>
+
+      <!-- Distribución de gas -->
+      <div class="row mt-3">
+        <p>Indique si se trata de una empresa cuya actividad sea la distribución, comercialización y almacenamiento de
+          gas licuado de petróleo o de gas natural.*</p>
+        <app-input-radio [radioOptions]="opcionDeBotonDeRadio" id="distribucionGas" [isBold]="true" formControlName="distribucionGas"
+          [layout]="'horizontal'" (change)="
+            setValoresStore(datosDelTramite, 'distribucionGas', 'setDistribucionGas')
+          ">
+        </app-input-radio>
+      </div>
+
+      <!-- Industria automotriz -->
+      <div class="row mt-3">
+        <p>Indique si se trata de una empresa de la industria automotriz terminal o manufacturera de vehículos de
+          autotransporte.*</p>
+
+        <app-input-radio [radioOptions]="opcionDeBotonDeRadio" id="industriaAutomotriz"
+          formControlName="industriaAutomotriz" [layout]="'horizontal'" [isBold]="true" (change)="
+            setValoresStore(datosDelTramite, 'industriaAutomotriz', 'setIndustriaAutomotriz')
+          ">
+        </app-input-radio>
+      </div>
+    </div>
+
+    <!-- Ubicación -->
+    <div class="Seleccione-capturar">
+      <ng-titulo titulo="Ubicación de las instalaciones solicitadas" />
+      <div class="check">
+        <p class="fw-bold">Seleccione las opciones que desea capturar*</p>
+        <div class="checkbox-container d-flex flex-row">
+          <div class="checkbox">
+            <lib-input-check [isDisabled]="esFormularioSoloLectura" [id]="'domicilio'" [label]="'Domicilio'"
+              [required]="false" formControlName="domicilio"
+              (change)="setValoresStore(datosDelTramite, 'domicilio', 'setDomicilio');onCambioCheckbox($event,'domicilio')"></lib-input-check>
+          </div>
+          <div class="checkbox ms-4">
+            <lib-input-check [isDisabled]="esFormularioSoloLectura" [id]="'ubicacion'" [label]="'Ubicación:'"
+              [required]="false" formControlName="ubicacion"
+              (change)="setValoresStore(datosDelTramite, 'ubicacion', 'setUbicacion');onCambioCheckbox($event,'ubicacion')"></lib-input-check>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inputs -->
+    <div class="form-input">
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <app-catalogo-select [isDisabled]="esFormularioSoloLectura || deshabilitarSeleccion" [catalogo]="pais"
+            formControlName="pais" name="pais" [label]="'País'" [required]="false" (change)="
+                setValoresStore(datosDelTramite, 'pais', 'setPais')
+              "></app-catalogo-select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label" for="codigoPostal">
+            Código postal<span [ngClass]="{
+              'text-danger': datosDelTramite.get('codigoPostal')?.touched && datosDelTramite.get('codigoPostal')?.invalid && datosDelTramite.get('codigoPostal')?.errors?.['required']
+            }">*</span>
+          </label>
+          <input type="number"
+            class="form-control"
+            [ngClass]="{
+              'border-danger': datosDelTramite.get('codigoPostal')?.touched && datosDelTramite.get('codigoPostal')?.invalid && datosDelTramite.get('codigoPostal')?.errors?.['required']
+            }"
+            id="codigoPostal"
+            formControlName="codigoPostal"
+            (input)="onCodigoPostalInput($event)"
+            (change)="setValoresStore(datosDelTramite, 'codigoPostal', 'setCodigoPostal')"
+          />
+          <div class="d-grid">
+            <div *ngIf="datosDelTramite.get('codigoPostal')?.touched">
+              <small class="mensaje-error" *ngIf="datosDelTramite.get('codigoPostal')?.hasError('required')">
+                Este campo es obligatorio
+              </small>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <app-catalogo-select [isDisabled]="esFormularioSoloLectura || deshabilitarSeleccion"
+            [catalogo]="entidadFederativa" formControlName="entidadFederativa" [label]="'Entidad federativa'"
+            [required]="true"
+            (change)="setValoresStore(datosDelTramite, 'entidadFederativa', 'setEntidadFederativa')"></app-catalogo-select>
+        </div>
+        <div class="col-md-4">
+          <app-catalogo-select [isDisabled]="esFormularioSoloLectura || deshabilitarSeleccion"
+            [catalogo]="municipioDelegacion" formControlName="municipioDelegacion" [label]="'Municipio o delegación'"
+            (change)="setValoresStore(datosDelTramite, 'municipioDelegacion', 'setMunicipioDelegacion')"
+            [required]="true"></app-catalogo-select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label" for="localidad">
+            Localidad<span [ngClass]="{
+              'text-danger': datosDelTramite.get('localidad')?.touched && datosDelTramite.get('localidad')?.invalid && datosDelTramite.get('localidad')?.errors?.['required']
+            }">*</span>
+          </label>
+          <input type="text"
+            class="form-control"
+            [ngClass]="{
+              'border-danger': datosDelTramite.get('localidad')?.touched && datosDelTramite.get('localidad')?.invalid && datosDelTramite.get('localidad')?.errors?.['required']
+            }"
+            id="localidad"
+            formControlName="localidad"
+            (change)="setValoresStore(datosDelTramite, 'localidad', 'setlocalidad')"
+            maxlength="120" />
+          <div class="d-grid">
+            <div *ngIf="datosDelTramite.get('localidad')?.touched">
+              <small class="mensaje-error" *ngIf="datosDelTramite.get('localidad')?.hasError('required')">
+                Este campo es obligatorio
+              </small>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <app-catalogo-select [isDisabled]="esFormularioSoloLectura || deshabilitarSeleccion" [catalogo]="colonia"
+            formControlName="colonia" [label]="'Colonia'" [required]="true"
+            (change)="setValoresStore(datosDelTramite, 'colonia', 'setColonia')"></app-catalogo-select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <label class="form-label" for="calle">
+            Calle<span [ngClass]="{
+              'text-danger': datosDelTramite.get('calle')?.touched && datosDelTramite.get('calle')?.invalid && (datosDelTramite.get('calle')?.errors?.['pattern'] || datosDelTramite.get('calle')?.errors?.['required'])
+            }">*</span>
+          </label>
+          <input type="text"
+            class="form-control"
+            [ngClass]="{
+              'border-danger': datosDelTramite.get('calle')?.touched && datosDelTramite.get('calle')?.invalid && (datosDelTramite.get('calle')?.errors?.['pattern'] || datosDelTramite.get('calle')?.errors?.['required'])
+            }"
+            id="calle"
+            formControlName="calle"
+            (change)="setValoresStore(datosDelTramite, 'calle', 'setCalle')"
+            maxlength="100" />
+          <div class="text-danger"
+            *ngIf="datosDelTramite.get('calle')?.touched && datosDelTramite.get('calle')?.invalid && datosDelTramite.get('calle')?.errors?.['pattern']">
+            <small>El valor capturado no es válido.</small>
+          </div>
+          <div class="d-grid">
+            <div *ngIf="datosDelTramite.get('calle')?.touched">
+              <small class="mensaje-error" *ngIf="datosDelTramite.get('calle')?.hasError('required')">
+                Este campo es obligatorio
+              </small>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label" for="numeroExterior">
+            Número exterior<span [ngClass]="{
+              'text-danger': datosDelTramite.get('numeroExterior')?.touched && datosDelTramite.get('numeroExterior')?.invalid && datosDelTramite.get('numeroExterior')?.errors?.['required']
+            }">*</span>
+          </label>
+          <input type="text"
+            class="form-control"
+            [ngClass]="{
+              'border-danger': datosDelTramite.get('numeroExterior')?.touched && datosDelTramite.get('numeroExterior')?.invalid && datosDelTramite.get('numeroExterior')?.errors?.['required']
+            }"
+            id="numeroExterior"
+            formControlName="numeroExterior"
+            (change)="setValoresStore(datosDelTramite, 'numeroExterior', 'setNumeroExterior')"
+            maxlength="55" />
+          <div class="d-grid">
+            <div *ngIf="datosDelTramite.get('numeroExterior')?.touched">
+              <small class="mensaje-error" *ngIf="datosDelTramite.get('numeroExterior')?.hasError('required')">
+                Este campo es obligatorio
+              </small>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label" for="numeroInterior">Número interior</label>
+          <input type="text" class="form-control" id="numeroInterior" formControlName="numeroInterior"
+            (change)="setValoresStore(datosDelTramite, 'numeroInterior', 'setNumeroInterior')" maxlength="55" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+          <label class="form-label" for="ubicacionDescripcion">Ubicación</label>
+          <textarea class="form-control ht" id="ubicacionDescripcion" formControlName="ubicacionDescripcion"
+            (change)="setValoresStore(datosDelTramite, 'ubicacionDescripcion', 'setUbicacionDescripcion')"
+            rows="6"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aduanas -->
+    <ng-titulo titulo="Aduanas" />
+    <div class="row">
+      <p class="fw-bold">Seleccione la aduana por la que llevará a cabo las operaciones</p>
+      <div class="col-md-8 mt-3">
+        <app-catalogo-select [isDisabled]="esFormularioSoloLectura" [catalogo]="aduana" formControlName="aduana"
+          [label]="'Aduana'" [required]="true"
+          (change)="setValoresStore(datosDelTramite, 'aduana', 'setAduana')"
+          [ngClass]="{'is-invalid': hasError('aduana', 'required')}"
+        ></app-catalogo-select>
+           <div *ngIf="hasError('aduana', 'required')" class="text-danger mt-1">
+          <small>Este campo es obligatorio</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fracciones -->
+    <ng-titulo titulo="Registro de fracciones arancelarias" />
+    <div class="row">
+      <div class="table-container">
+
+          <app-tabla-dinamica 
+          [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+           [tipoSeleccionTabla]="checkbox"
+            [configuracionTabla]="configuracionTabla" 
+            [datos]="mercanciTablaDatos">
+        </app-tabla-dinamica>
+      </div>
+      <div class="col-md-12 mt-5 d-flex justify-content-end">
+        <button type="button" class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#modalAgregar"
+          (click)="abrirModal()" [disabled]="esFormularioSoloLectura">Agregar</button>
+        <button type="button" class="btn  btn-danger ms-3 me-3" [disabled]="esFormularioSoloLectura">Eliminar</button>
+        <button type="button" class="btn btn-default" [disabled]="esFormularioSoloLectura">Modificar</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+<div class="container mt-4">
+  <div class="modal fade" id="modalAgregar" tabindex="-1" aria-labelledby="modalAgregarLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Agregar</h4>
+        </div>
+        <div class="modal-body">
+          <ng-titulo titulo="Fracciones arancelarias"></ng-titulo>
+          <form [formGroup]="agregarForm">
+            <p class="fw-bold">Seleccione la fracción arancelaria de la mercancía por la que solicita autorización
+              conforme a la TIGIE</p>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <app-catalogo-select [catalogo]="fraccionArancelaria" [label]="'Fracción arancelaria'" [required]="true"
+                  formControlName="fraccionArancelaria" (change)="setDiscription($event)">
+                </app-catalogo-select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="descripcion">Descripción*</label>
+                <textarea class="form-control ht2" id="descripcion" formControlName="descripcion" rows="6">
+                </textarea>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <label class="form-label" for="descripcionAdicional">Descripción adicional de la mercancía</label>
+                <textarea class="form-control ht2" id="descripcionAdicional" formControlName="descripcionAdicional"
+                  rows="6"  [maxlength]="250">
+                </textarea>
+            
+              </div>
+            </div>
+
+          </form>
+        </div>
+        <div class="modal-footer custom-footer justify-content-center">
+          <button type="button" class="btn btn-primary" (click)="agregarMercancias()">Agregar</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" #closeModal>
+            Cancelar
+          </button>
+          <button type="button" class="btn btn-default" data-bs-dismiss="modal" #closeModal>
+              Limpiar
+            </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<lib-notificaciones
+  *ngIf="nuevaNotificacion"
+  [notificacionInput]="nuevaNotificacion"
+  (confirmacionModal)="aceptarConfirmacion($event)">
+</lib-notificaciones>

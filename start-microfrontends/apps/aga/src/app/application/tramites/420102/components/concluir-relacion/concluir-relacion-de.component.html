@@ -1,0 +1,82 @@
+<div class="container">
+  <ng-titulo titulo="Concluir relación con proveedor" />
+
+  <form [formGroup]="concluirFormulario" (ngSubmit)="concluirFormularioSubmit()">
+    <div>
+      <div class="row estilo-campo-personalizado">
+        <div class="col-md-4">
+          <label for="rfc" class="form-label">RFC:</label>
+          <input type="text" formControlName="rfc" class="form-control" />
+        </div>
+        <div class="col-md-4">
+              <button
+                type="button"
+                class="btn btn-primary"
+                (click)="buscarRFC()"
+                [disabled]="esFormularioSoloLectura"
+              >
+                Buscar
+              </button>
+        </div>
+      </div>
+
+      <div class="row pt4-custom">
+          <div class="row">
+              <div class="col-md-4">
+                  <div class="form-group datepicker-group input-fecha">
+                      <input-fecha
+                      [datos]="fechaInicioInput"
+                      (valorCambiado)="cambiarFechaInicio($event)"
+                      name="fechaInicial"
+                      [setFecha]="concluirFormulario.get('fechaInicial')?.value"
+                      [isDisabled]="esFormularioSoloLectura"
+                    ></input-fecha>
+                  </div>
+              </div>
+              <div class="col-md-4">
+                  <div class="form-group datepicker-group input-fecha">
+                    <input-fecha
+                    [setFecha]="fechaPagoDate"
+                    [datos]="fechaFinalInput"
+                    (valorCambiado)="cambiarFechaInicio($event)"
+                    name="fechaFinal"
+                    [setFecha]="concluirFormulario.get('fechaFinal')?.value"
+                    [isDisabled]="esFormularioSoloLectura"
+                    ></input-fecha>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+
+      <div class="row pt7-custom">
+        <div class="col-md-12" id="IdGridContenedoresITC">
+          <div class="table-responsive">
+              <div class="innercontainer">
+                  <app-tabla-dinamica [tipoSeleccionTabla]="seleccionTabla"  [configuracionTabla]="encabezadoDeTabla" [disableSeleccionTablaRadio]="esFormularioSoloLectura"
+                  [datos]="datosTabla"></app-tabla-dinamica>
+              </div>
+          </div>
+
+          <div align="center" id="paginGridContenedoresITC">
+            <nav aria-label="Navegación de página ejemplo">
+                <ul class="pagination d-flex justify-content-center">
+                    <li class="page-item"><a class="page-link" href="Javascript:;">1</a></li>
+                </ul>
+            </nav>
+          </div>
+
+        </div>
+
+      </div>
+      
+      <div class="row pt7-custom">
+        <div class="modal-footer custom-footer justify-content-end">
+          <button type="button" class="btn btn-default btn-space" [disabled]="esFormularioSoloLectura">Limpiar</button>
+        </div>
+      </div>
+
+    </div>
+  </form>
+
+</div>

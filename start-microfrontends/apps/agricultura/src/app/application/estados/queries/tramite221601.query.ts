@@ -1,0 +1,19 @@
+import { Solicitud221601State, Tramite221601Store } from '../tramites/tramite221601.store';
+import { Injectable } from '@angular/core';
+import { Query } from '@datorama/akita';
+
+
+@Injectable({ providedIn: 'root' })
+export class Tramite221601Query extends Query<Solicitud221601State> {
+  /**
+   * Selecciona el estado completo de la solicitud
+   */
+  selectSolicitud$ = this.select((state) => {
+    return state;
+  });
+
+  /**Guarda el estado completo del formulario de la solicitud */
+  constructor(protected override store: Tramite221601Store) {
+    super(store);
+  }
+}

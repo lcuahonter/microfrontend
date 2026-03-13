@@ -1,0 +1,1 @@
+export const ALERTA = `<p style='text-align: center;'><b>Error!</b> Debe registrar un documento.</p>`;

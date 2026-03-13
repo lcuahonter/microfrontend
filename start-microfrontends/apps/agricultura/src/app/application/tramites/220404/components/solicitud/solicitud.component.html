@@ -1,0 +1,68 @@
+<div class="container">
+  <form [formGroup]="formPermisoDesistir">
+    <div class="form">
+      <ng-titulo titulo="Permiso a desistir" />
+      <ng-container>
+        <div class="row mb-3">
+          <div class="col-md-8">
+            <div class="form-group">
+              <label for="folio" class="form-label">Folio:</label>
+              <input
+                class="form-control"
+                type="text"
+                formControlName="folio"
+                name="folio"
+                id="folio"
+                appUpercase
+              />
+            </div>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-8">
+            <div class="form-group">
+              <label for="tipoDeSolicitud" class="form-label"
+                >Tipo de solicitud:</label
+              >
+              <textarea
+                class="form-control"
+                rows="3"
+                id="tipoDeSolicitud"
+                formControlName="tipoDeSolicitud"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-8">
+            <div class="form-group">
+              <label for="descripcion" class="form-label"
+                >Motivo de desistimiento*:</label
+              >
+              <textarea
+                class="form-control"
+                rows="3"
+                id="descripcion"
+                formControlName="descripcion"
+                [ngClass]="
+                  isValid(formPermisoDesistir, 'descripcion') ? 'required' : ''
+                "
+                (change)="onDescripcionChange()"
+              ></textarea>
+              @if (formPermisoDesistir.get('descripcion')?.hasError('required')
+              && (formPermisoDesistir.get('descripcion')?.touched ||
+              formPermisoDesistir.get('descripcion')?.dirty)) {
+              <small class="mensaje-error">Este campo es obligatorio.</small>
+              } @if
+              (formPermisoDesistir.get('descripcion')?.hasError('maxlength')) {
+              <small class="mensaje-error"
+                >El texto no debe exceder 250 caracteres.</small
+              >
+              }
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </form>
+</div>

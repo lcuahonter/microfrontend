@@ -1,0 +1,282 @@
+<ng-container [formGroup]="inicializarFormulario">
+  <div class="row mt-2">
+    <div class="col-md-12">
+      <ng-titulo
+        titulo=" Domicilio de la empresa para oír y recibir notificaciones"
+      />
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="form-label">Calle*:</label>
+        <input
+          class="form-control"
+          id="calle"
+          type="text"
+          name="calle"
+          formControlName="calle"
+          (change)="
+            setValoresStore(inicializarFormulario, 'calle')
+          "
+        />
+        <div *ngIf="esInvalido('calle')" class="text-danger">
+          <small
+            *ngIf="inicializarFormulario.controls['calle'].hasError('required')"
+            >Este campo es obligatorio.</small
+          >
+          <small
+            *ngIf="
+              inicializarFormulario.controls['calle'].hasError('maxlength')
+            "
+          >
+            La calle no puede exceder los 100 caracteres.</small
+          >
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="form-label">Número exterior*:</label>
+        <input
+          class="form-control"
+          type="text"
+          id="numeroExterior"
+          name="numeroExterior"
+          formControlName="numeroExterior"
+          (change)="
+            setValoresStore(
+              inicializarFormulario,
+              'numeroExterior'
+            )
+          "
+        />
+        <div *ngIf="esInvalido('numeroExterior')" class="text-danger">
+          <small
+            *ngIf="
+              inicializarFormulario.controls['numeroExterior'].hasError(
+                'required'
+              )
+            "
+            >Este campo es obligatorio.</small
+          >
+          <small
+            *ngIf="
+              inicializarFormulario.controls['numeroExterior'].hasError(
+                'maxlength'
+              )
+            "
+          >
+            El número interior no puede exceder los 55 caracteres.</small
+          >
+          <small
+            *ngIf="
+              inicializarFormulario.controls['numeroExterior'].hasError(
+                'pattern'
+              )
+            "
+          >
+            Solo se permiten números.
+          </small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="form-label">Numero interior:</label>
+        <input
+          class="form-control"
+          type="text"
+          id="numeroInterior"
+          name="numeroInterior"
+          formControlName="numeroInterior"
+          (change)="
+            setValoresStore(
+              inicializarFormulario,
+              'numeroInterior'
+            )
+          "
+        />
+        <div *ngIf="esInvalido('numeroInterior')" class="text-danger">
+          <small
+            *ngIf="
+              inicializarFormulario.controls['numeroInterior'].hasError(
+                'maxlength'
+              )
+            "
+            >El número interior no puede exceder los 55 caracteres.</small
+          >
+          <small
+            *ngIf="
+              inicializarFormulario.controls['numeroInterior'].hasError(
+                'pattern'
+              )
+            "
+          >
+            Solo se permiten números.
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div
+        class="form-group"
+        *ngIf="entidadFederativaList$ | async as entidadFederativaList"
+      >
+        <app-catalogo-select
+          [catalogo]="entidadFederativaList"
+          [label]="'Entidad federativa'"
+          [placeholder]="'Seleccione un valor'"
+          [required]="true"
+          id="entidadFederativa"
+          formControlName="entidadFederativa"
+          (change)="
+            setValoresStore(
+              inicializarFormulario,
+              'entidadFederativa'
+            )
+          "
+           [isDisabled]="esFormularioSoloLectura"
+        ></app-catalogo-select>
+
+        <div *ngIf="esInvalido('entidadFederativa')" class="text-danger">
+          <small
+            *ngIf="
+              inicializarFormulario.controls['entidadFederativa'].hasError(
+                'required'
+              )
+            "
+            >Este campo es obligatorio.</small
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div
+        class="form-group"
+        *ngIf="delegacionMunicipioList$ | async as delegacionMunicipioList"
+      >
+        <app-catalogo-select
+          [catalogo]="delegacionMunicipioList"
+          [label]="'Municipio o delegación'"
+          [placeholder]="'Seleccione un valor'"
+          [required]="true"
+          id="delegacionMunicipio"
+          formControlName="delegacionMunicipio"
+          (change)="
+            setValoresStore(
+              inicializarFormulario,
+              'delegacionMunicipio'
+            )
+          "
+           [isDisabled]="esFormularioSoloLectura"
+        ></app-catalogo-select>
+
+        <div *ngIf="esInvalido('delegacionMunicipio')" class="text-danger">
+          <small
+            *ngIf="
+              inicializarFormulario.controls['delegacionMunicipio'].hasError(
+                'required'
+              )
+            "
+            >Este campo es obligatorio.</small
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group" *ngIf="coloniaList$ | async as coloniaList">
+        <app-catalogo-select
+          [catalogo]="coloniaList"
+          [label]="'Colonia'"
+          [placeholder]="'Seleccione un valor'"
+          [required]="true"
+          id="colonia"
+          formControlName="colonia"
+          (change)="
+            setValoresStore(inicializarFormulario, 'colonia')
+          "
+           [isDisabled]="esFormularioSoloLectura"
+        ></app-catalogo-select>
+
+        <div *ngIf="esInvalido('colonia')" class="text-danger">
+          <small
+            *ngIf="
+              inicializarFormulario.controls['colonia'].hasError('required')
+            "
+            >Este campo es obligatorio.</small
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-2">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="form-label">Localidad*:</label>
+        <input
+          class="form-control"
+          id="localidad"
+          type="text"
+          name="localidad"
+          formControlName="localidad"
+          (change)="
+            setValoresStore(
+              inicializarFormulario,
+              'localidad'
+            )
+          "
+        />
+        <div *ngIf="esInvalido('localidad')" class="text-danger">
+          <small
+            *ngIf="
+              inicializarFormulario.controls['localidad'].hasError('required')
+            "
+            >Este campo es obligatorio.</small
+          >
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="form-label">Codigo postal*:</label>
+        <input
+          class="form-control"
+          id="codigoPostal"
+          type="text"
+          name="codigoPostal"
+          formControlName="codigoPostal"
+          (change)="
+            setValoresStore(
+              inicializarFormulario,
+              'codigoPostal'
+            )
+          "
+        />
+        <div *ngIf="esInvalido('codigoPostal')" class="text-danger">
+          <small
+            *ngIf="
+              inicializarFormulario.controls['codigoPostal'].hasError(
+                'required'
+              )
+            "
+            >Este campo es obligatorio.</small
+          >
+
+          <small
+            *ngIf="
+              inicializarFormulario.controls['codigoPostal'].hasError(
+                'maxlength'
+              )
+            "
+            >El código postal no puede exceder los 6 caracteres.</small
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>

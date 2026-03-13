@@ -1,0 +1,1098 @@
+<div class="container" [formGroup]="registroDonacionForm">
+  <!--Manifiestos-->
+  <ng-titulo titulo="Manifiestos"></ng-titulo>
+
+  <ng-container formGroupName="manifiesto">
+    @for (manifiesto of manifiestos; let i = $index; track i) {
+    <div class="row">
+      <div class="col-md-12">
+        <div class="alert alert-info">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            [id]="'manifiesto-' + i"
+            [value]="manifiesto.declaracion.clave"
+            [checked]="seleccionadaManifiesto.value[i]"
+            class="required"
+            (change)="onManifiestoCheckboxCambiar($event, i)"
+            [disabled]="formularioDeshabilitado"
+          />
+          <div class="manifiestoDescripcion">
+            <label>*{{ manifiesto.declaracion.descripcion }}</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+
+    <div class="row">
+      <div class="col-md-8">
+        <div class="form-group">
+          <app-catalogo-select
+            [catalogo]="aduana"
+            [label]="'Aduana por la que ingresará la mercancía'"
+            [required]="true"
+            name="aduana"
+            formControlName="aduana"
+            [isDisabled]="formularioDeshabilitado"
+            [placeholder]="'Seleccione una opción'"
+            (change)="aduanaSeleccion()"
+          ></app-catalogo-select>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-md-12">
+        <label for="basicoRequerimientoTitulo"
+          >Tipo de requerimiento básico de subsistencia que tiene como finalidad
+          atender la donación la mercancía*:</label
+        >
+      </div>
+    </div>
+    <div class="row">
+      @for (basicoRequerimiento of basicoRequerimientos; let i = $index; track
+      i) {
+      <div class="col-md-12">
+        <input
+          type="checkbox"
+          class="form-check-input me-2"
+          [checked]="seleccionadaBasicoRequerimiento.value[i]"
+          [disabled]="formularioDeshabilitado"
+          (change)="onBasicoRequirimentoCheckboxCambiar($event, i)"
+        />
+        <span for="basicoRequerimiento" class="ms-2">{{
+          basicoRequerimiento.descripcion
+        }}</span>
+      </div>
+      }
+    </div>
+  </ng-container>
+
+  <!--Mercancías-->
+  <ng-titulo titulo="Mercancías"></ng-titulo>
+
+  <ng-table
+    [commonTableHeader]="mercanciaHeaderData"
+    [commonTableBody]="mercanciaBodyData"
+    [disableSeleccionTablaCheckBox]="formularioDeshabilitado"
+  ></ng-table>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="pull-right">
+        <button
+          type="button"
+          name="modificarMercancias"
+          class="btn btn-default"
+          [disabled]="formularioDeshabilitado"
+        >
+          Modificar
+        </button>
+        <button
+          type="button"
+          name="eliminarMercancias"
+          class="btn btn-danger ms-2"
+          [disabled]="formularioDeshabilitado"
+        >
+          Eliminar
+        </button>
+        <button
+          type="button"
+          name="agregarMercancias"
+          class="btn btn-primary ms-2"
+          data-bs-toggle="modal"
+          data-bs-target="#modalAgregarMercancias"
+          [disabled]="formularioDeshabilitado"
+          (click)="abrirDialogoMercancias()"
+        >
+          Agregar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-md-12">
+      <div class="panel-group ficha-collapse" id="accordion">
+        @for(panel of panels; let i = $index; track i) {
+        <div class="panel panel-default mb-3">
+          <div class="panel-heading" (click)="mostrar_colapsable(i)">
+            <h4 class="panel-title">
+              <a>
+                {{ panel.label }}
+              </a>
+            </h4>
+            <button
+              type="button"
+              class="collpase-button"
+              [class.collapsed]="panel.isCollapsed"
+            ></button>
+          </div>
+          <div
+            class="panel-collapse"
+            [id]="'panel-' + i"
+            [ngClass]="{ collapse: panel.isCollapsed, in: !panel.isCollapsed }"
+          >
+            <div class="panel-body">
+              <!-- DATOS DEL DONANTE EXTRANJERO -->
+              <ng-container *ngIf="i === 0">
+                <app-datos-donante-extranjero
+                  [formularioDeshabilitado]="formularioDeshabilitado"
+                ></app-datos-donante-extranjero>
+              </ng-container>
+
+              <!-- DATOS DEL DONATARIO -->
+              <ng-container *ngIf="i === 1">
+                <app-datos-donatario
+                  [formularioDeshabilitado]="formularioDeshabilitado"
+                ></app-datos-donatario>
+              </ng-container>
+
+              <!-- DATOS DEL REPRESENTANTE LEGAL DEL DONATARIO -->
+              <ng-container *ngIf="i === 2">
+                <app-datos-rep-legal-donatario
+                  [formularioDeshabilitado]="formularioDeshabilitado"
+                ></app-datos-rep-legal-donatario>
+              </ng-container>
+
+              <!-- DATOS DEL REPRESENTANTE LEGAL AUTORIZADO PARA RECIBIR LA DONACION -->
+              <ng-container *ngIf="i === 3">
+                <app-datos-rep-legal-recibir-donacion
+                  [formularioDeshabilitado]="formularioDeshabilitado"
+                ></app-datos-rep-legal-recibir-donacion>
+              </ng-container>
+
+              <!-- DATOS DE LA PERSONA AUTORIZADA PARA OIR Y RECIBIR NOTIFICACIONES -->
+              <ng-container *ngIf="i === 4">
+                <app-datos-persona-oir-recibir
+                  [formularioDeshabilitado]="formularioDeshabilitado"
+                ></app-datos-persona-oir-recibir>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Ventana emergente modal para agregar mercancías-->
+<div
+  class="modal fade"
+  id="modalAgregarMercancias"
+  tabindex="-1"
+  aria-labelledby="modalAgregarMercanciasLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <ng-alert [CONTENIDO]="TEXTOS.DESCRIPCION_DONACION"></ng-alert>
+        <form [formGroup]="agregarMercanciasForm">
+          <!--Datos de la mercancía-->
+          <ng-titulo titulo="Datos de la mercancía"></ng-titulo>
+          <ng-container formGroupName="datosMercancia">
+            <div class="row">
+              <div class="col-md-4">
+                <label class="form-label" for="numeroConsecutivo"
+                  >Número consecutivo:</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  name="numeroConsecutivo"
+                  id="numeroConsecutivo"
+                  formControlName="numeroConsecutivo"
+                  (change)="
+                    setValoresStore(
+                      agregarMercanciasForm,
+                      'datosMercancia.numeroConsecutivo',
+                      'setNumeroConsecutivo'
+                    )
+                  "
+                />
+              </div>
+              <div class="col-md-8">
+                <app-catalogo-select
+                  [catalogo]="destinoDonacion"
+                  name="destinoDonacion"
+                  formControlName="destinoDonacion"
+                  [required]="true"
+                  (change)="destinoDonacionSeleccion()"
+                  [isDisabled]="formularioDeshabilitado"
+                  [label]="'Donatario o destinatario final de la donación'"
+                >
+                </app-catalogo-select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-4">
+                <label class="form-label" for="posibleFraccion"
+                  >Posible fracción arancelaria:</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  name="posibleFraccion"
+                  formControlName="posibleFraccion"
+                  id="posibleFraccion"
+                  (change)="
+                    setValoresStore(
+                      agregarMercanciasForm,
+                      'datosMercancia.posibleFraccion',
+                      'setPosibleFraccion'
+                    )
+                  "
+                />
+              </div>
+              <div class="col-md-8">
+                <label class="form-label" for="descripcionFraccion"
+                  >Descripción de la fracción:</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  name="descripcionFraccion"
+                  formControlName="descripcionFraccion"
+                  id="descripcionFraccion"
+                  (change)="
+                    setValoresStore(
+                      agregarMercanciasForm,
+                      'datosMercancia.descripcionFraccion',
+                      'setDescripcionFraccion'
+                    )
+                  "
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <label class="form-label" for="solicituddeInspección"
+                  >Cuenta con permiso previo de importación*:</label
+                >
+                <app-input-radio
+                  [radioOptions]="opcionDeBotonDeRadio"
+                  [isRequired]="true"
+                  [layout]="'vertical'"
+                  formControlName="solicitudDeInspeccion"
+                  (change)="
+                    setValoresStore(
+                      agregarMercanciasForm,
+                      'datosMercancia.solicitudDeInspeccion',
+                      'setSolicitudDeInspeccion'
+                    )
+                  "
+                  (valueChange)="enCambioDeValor()"
+                ></app-input-radio>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label class="form-label" for="justificacionMerca"
+                    >Justificación de la necesidad de la mercancía y
+                    distribución</label
+                  >
+                  <p>
+                    <b
+                      >(en caso de no tener suficiente espacio favor de adjuntar
+                      documento adicional)*:</b
+                    >
+                  </p>
+                  <textarea
+                    class="form-control"
+                    id="justificacionMerca"
+                    name="justificacionMerca"
+                    formControlName="justificacionMerca"
+                    (change)="
+                      setValoresStore(
+                        agregarMercanciasForm,
+                        'datosMercancia.justificacionMerca',
+                        'setJustificacionMerca'
+                      )
+                    "
+                    rows="3"
+                  ></textarea>
+                  @if
+                  (agregarMercanciasForm.get('datosMercancia.justificacionMerca')?.invalid
+                  &&
+                  (agregarMercanciasForm.get('datosMercancia.justificacionMerca')?.dirty
+                  ||
+                  agregarMercanciasForm.get('datosMercancia.justificacionMerca')?.touched))
+                  {
+                  <div class="text-danger">Este campo es obligatorio.</div>
+                  }
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label class="form-label" for="descripcionMercanciaOtro"
+                    >Descripción de la mercancía (marca,modelo,número de serie,
+                    etc)*:</label
+                  >
+                  <textarea
+                    class="form-control"
+                    name="descripcionMercanciaOtro"
+                    (change)="
+                      setValoresStore(
+                        agregarMercanciasForm,
+                        'datosMercancia.descripcionMercanciaOtro',
+                        'setDescripcionMercanciaOtro'
+                      )
+                    "
+                    formControlName="descripcionMercanciaOtro"
+                    rows="3"
+                    id="descripcionMercanciaOtro"
+                  ></textarea>
+                  @if
+                  (agregarMercanciasForm.get('datosMercancia.descripcionMercanciaOtro')?.invalid
+                  &&
+                  (agregarMercanciasForm.get('datosMercancia.descripcionMercanciaOtro')?.dirty
+                  ||
+                  agregarMercanciasForm.get('datosMercancia.descripcionMercanciaOtro')?.touched))
+                  {
+                  <div class="text-danger">Este campo es obligatorio.</div>
+                  }
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <app-catalogo-select
+                  [catalogo]="tipoDeMercancia"
+                  [label]="'Tipo de mercancía'"
+                  formControlName="tipoDeMercancia"
+                  [required]="true"
+                  [isDisabled]="formularioDeshabilitado"
+                  (change)="tipoDeMercanciaSeleccion()"
+                  name="tipoDeMercancia"
+                ></app-catalogo-select>
+              </div>
+              @if(registroDeDonacionState.seleccionadaTipoDeMercancia !== 1) {
+              <div class="col-md-4">
+                <label class="form-label" for="cantidadUMC"
+                  >Cantidad de UMC*:
+                  <span tooltip="Unidad de Medida Comercial"
+                    ><i class="bi bi-question-circle-fill"></i></span
+                ></label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="cantidadUMC"
+                  id="cantidadUMC"
+                  formControlName="cantidadUMC"
+                  (change)="
+                    setValoresStore(
+                      agregarMercanciasForm,
+                      'datosMercancia.cantidadUMC',
+                      'setCantidadUMC'
+                    )
+                  "
+                />
+                @if
+                (agregarMercanciasForm.get('datosMercancia.cantidadUMC')?.invalid
+                &&
+                (agregarMercanciasForm.get('datosMercancia.cantidadUMC')?.dirty
+                ||
+                agregarMercanciasForm.get('datosMercancia.cantidadUMC')?.touched))
+                {
+                <div class="text-danger">Este campo es obligatorio.</div>
+                }
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="cantidadUMT"
+                  >Cantidad de UMT*:
+                  <span tooltip="Unidad de Medida de la Tarifa"
+                    ><i class="bi bi-question-circle-fill"></i></span
+                ></label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="cantidadUMT"
+                  id="cantidadUMT"
+                  formControlName="cantidadUMT"
+                  (change)="
+                    setValoresStore(
+                      agregarMercanciasForm,
+                      'datosMercancia.cantidadUMT',
+                      'setCantidadUMT'
+                    )
+                  "
+                />
+                @if
+                (agregarMercanciasForm.get('datosMercancia.cantidadUMT')?.invalid
+                &&
+                (agregarMercanciasForm.get('datosMercancia.cantidadUMT')?.dirty
+                ||
+                agregarMercanciasForm.get('datosMercancia.cantidadUMT')?.touched))
+                {
+                <div class="text-danger">Este campo es obligatorio.</div>
+                }
+              </div>
+              } @if (registroDeDonacionState.seleccionadaTipoDeMercancia === 1)
+              {
+              <div class="col-md-4">
+                <label class="form-label" for="cantidadUMC"
+                  >Cantidad de UMC*:
+                  <span tooltip="Unidad de Medida Comercial"
+                    ><i class="bi bi-question-circle-fill"></i></span
+                ></label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="cantidadUMCVehiculo"
+                  id="cantidadUMCVehiculo"
+                  formControlName="cantidadUMCVehiculo"
+                  (change)="
+                    setValoresStore(
+                      agregarMercanciasForm,
+                      'datosMercancia.cantidadUMCVehiculo',
+                      'setCantidadUMCVehiculo'
+                    )
+                  "
+                />
+                @if
+                (agregarMercanciasForm.get('datosMercancia.cantidadUMCVehiculo')?.invalid
+                &&
+                (agregarMercanciasForm.get('datosMercancia.cantidadUMCVehiculo')?.dirty
+                ||
+                agregarMercanciasForm.get('datosMercancia.cantidadUMCVehiculo')?.touched))
+                {
+                <div class="text-danger">Este campo es obligatorio.</div>
+                }
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="cantidadUMTVehiculo"
+                  >Cantidad de UMT*:
+                  <span tooltip="Unidad de Medida de la Tarifa"
+                    ><i class="bi bi-question-circle-fill"></i></span
+                ></label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="cantidadUMTVehiculo"
+                  id="cantidadUMTVehiculo"
+                  formControlName="cantidadUMTVehiculo"
+                  (change)="
+                    setValoresStore(
+                      agregarMercanciasForm,
+                      'datosMercancia.cantidadUMTVehiculo',
+                      'setCantidadUMTVehiculo'
+                    )
+                  "
+                />
+                @if
+                (agregarMercanciasForm.get('datosMercancia.cantidadUMTVehiculo')?.invalid
+                &&
+                (agregarMercanciasForm.get('datosMercancia.cantidadUMTVehiculo')?.dirty
+                ||
+                agregarMercanciasForm.get('datosMercancia.cantidadUMTVehiculo')?.touched))
+                {
+                <div class="text-danger">Este campo es obligatorio.</div>
+                }
+              </div>
+              }
+            </div>
+            <div class="row">
+              @if (registroDeDonacionState.seleccionadaTipoDeMercancia !== 1) {
+              <div class="col-md-2">
+                <app-catalogo-select
+                  [catalogo]="unidadMedida"
+                  [label]="'UMC'"
+                  [required]="true"
+                  name="unidadMedida"
+                  formControlName="unidadMedida"
+                  (change)="unidadMedidaSeleccion()"
+                  [isDisabled]="formularioDeshabilitado"
+                  [tooltipQuestionCircle]="true"
+                  [tooltipQuestionCircleText]="'Unidad de Medida Comercial'"
+                ></app-catalogo-select>
+              </div>
+              <div class="col-md-2">
+                <app-catalogo-select
+                  [catalogo]="UMT"
+                  [label]="'UMT'"
+                  [required]="true"
+                  name="UMT"
+                  formControlName="UMT"
+                  (change)="umtSeleccion()"
+                  [isDisabled]="formularioDeshabilitado"
+                  [tooltipQuestionCircle]="true"
+                  [tooltipQuestionCircleText]="'Unidad de Medida de la Tarifa'"
+                ></app-catalogo-select>
+              </div>
+              } @if(registroDeDonacionState.seleccionadaTipoDeMercancia === 1) {
+              <div class="col-md-2">
+                <app-catalogo-select
+                  [catalogo]="unidadMedida"
+                  [label]="'UMC'"
+                  [required]="true"
+                  name="unidadMedida"
+                  formControlName="unidadMedidaVehiculo"
+                  (change)="unidadMedidaSeleccion()"
+                  [isDisabled]="true"
+                  [tooltipQuestionCircle]="true"
+                ></app-catalogo-select>
+              </div>
+              <div class="col-md-2">
+                <app-catalogo-select
+                  [catalogo]="UMT"
+                  [label]="'UMT'"
+                  [required]="true"
+                  name="UMT"
+                  formControlName="UMTVehiculo"
+                  (change)="umtSeleccion()"
+                  [isDisabled]="true"
+                  [tooltipQuestionCircle]="true"
+                ></app-catalogo-select>
+              </div>
+              }
+              <div class="col-md-4">
+                <app-catalogo-select
+                  [catalogo]="paisProcedenciaOtro"
+                  [label]="'País de origen'"
+                  formControlName="paisProcedenciaOtro"
+                  [required]="true"
+                  (change)="paisProcedenciaOtroSeleccion()"
+                  [isDisabled]="formularioDeshabilitado"
+                  name="paisProcedenciaOtro"
+                ></app-catalogo-select>
+              </div>
+              <div class="col-md-4">
+                <app-catalogo-select
+                  [catalogo]="condicionMercancia"
+                  [label]="'Condición de la mercancía'"
+                  [required]="true"
+                  formControlName="condicionMercancia"
+                  (change)="condicionMercanciaSeleccion()"
+                  [isDisabled]="formularioDeshabilitado"
+                  name="condicionMercanciaA"
+                ></app-catalogo-select>
+              </div>
+            </div>
+            @if (registroDeDonacionState.seleccionadaTipoDeMercancia === 1) {
+            <div class="row">
+              <div class="col-md-4">
+                <label class="form-label" for="marca">Marca*:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="marca"
+                  formControlName="marca"
+                  id="marca"
+                  (change)="
+                    setValoresStore(
+                      agregarMercanciasForm,
+                      'datosMercancia.marca',
+                      'setMarca'
+                    )
+                  "
+                />
+                @if (agregarMercanciasForm.get('datosMercancia.marca')?.invalid
+                && (agregarMercanciasForm.get('datosMercancia.marca')?.dirty ||
+                agregarMercanciasForm.get('datosMercancia.marca')?.touched)) {
+                <div class="text-danger">Este campo es obligatorio.</div>
+                }
+              </div>
+              <div class="col-md-4">
+                <app-catalogo-select
+                  [catalogo]="ano"
+                  [label]="'Año'"
+                  formControlName="ano"
+                  [required]="true"
+                  name="ano"
+                  [isDisabled]="formularioDeshabilitado"
+                  (change)="anoSeleccion()"
+                ></app-catalogo-select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="modelo">Modelo*:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="modelo"
+                  formControlName="modelo"
+                  id="modelo"
+                  (change)="
+                    setValoresStore(
+                      agregarMercanciasForm,
+                      'datosMercancia.modelo',
+                      'setModelo'
+                    )
+                  "
+                />
+                @if (agregarMercanciasForm.get('datosMercancia.modelo')?.invalid
+                && (agregarMercanciasForm.get('datosMercancia.modelo')?.dirty ||
+                agregarMercanciasForm.get('datosMercancia.modelo')?.touched)) {
+                <div class="text-danger">Este campo es obligatorio.</div>
+                }
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <label class="form-label" for="serieNumero"
+                  >Número de serie*:</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  name="serieNumero"
+                  formControlName="serieNumero"
+                  id="serieNumero"
+                  (change)="
+                    setValoresStore(
+                      agregarMercanciasForm,
+                      'datosMercancia.serieNumero',
+                      'setSerieNumero'
+                    )
+                  "
+                />
+                @if
+                (agregarMercanciasForm.get('datosMercancia.serieNumero')?.invalid
+                &&
+                (agregarMercanciasForm.get('datosMercancia.serieNumero')?.dirty
+                ||
+                agregarMercanciasForm.get('datosMercancia.serieNumero')?.touched))
+                {
+                <div class="text-danger">Este campo es obligatorio.</div>
+                }
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="pasajerosNumero"
+                  >Número de pasajeros*:</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  name="pasajerosNumero"
+                  formControlName="pasajerosNumero"
+                  id="pasajerosNumero"
+                  (change)="
+                    setValoresStore(
+                      agregarMercanciasForm,
+                      'datosMercancia.pasajerosNumero',
+                      'setPasajerosNumero'
+                    )
+                  "
+                />
+                @if
+                (agregarMercanciasForm.get('datosMercancia.pasajerosNumero')?.invalid
+                &&
+                (agregarMercanciasForm.get('datosMercancia.pasajerosNumero')?.dirty
+                ||
+                agregarMercanciasForm.get('datosMercancia.pasajerosNumero')?.touched))
+                {
+                <div class="text-danger">Este campo es obligatorio.</div>
+                }
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="cilindrada">Cilindrada*:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="cilindrada"
+                  formControlName="cilindrada"
+                  id="cilindrada"
+                  (change)="
+                    setValoresStore(
+                      agregarMercanciasForm,
+                      'datosMercancia.cilindrada',
+                      'setCilindrada'
+                    )
+                  "
+                />
+                @if
+                (agregarMercanciasForm.get('datosMercancia.cilindrada')?.invalid
+                &&
+                (agregarMercanciasForm.get('datosMercancia.cilindrada')?.dirty
+                ||
+                agregarMercanciasForm.get('datosMercancia.cilindrada')?.touched))
+                {
+                <div class="text-danger">Este campo es obligatorio.</div>
+                }
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <label class="form-label" for="combustibleTipo"
+                  >Tipo de combustible*:</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  name="combustibleTipo"
+                  formControlName="combustibleTipo"
+                  id="combustibleTipo"
+                  (change)="
+                    setValoresStore(
+                      agregarMercanciasForm,
+                      'datosMercancia.combustibleTipo',
+                      'setCombustibleTipo'
+                    )
+                  "
+                />
+                @if
+                (agregarMercanciasForm.get('datosMercancia.combustibleTipo')?.invalid
+                &&
+                (agregarMercanciasForm.get('datosMercancia.combustibleTipo')?.dirty
+                ||
+                agregarMercanciasForm.get('datosMercancia.combustibleTipo')?.touched))
+                {
+                <div class="text-danger">Este campo es obligatorio.</div>
+                }
+              </div>
+              <div class="col-md-4">
+                <app-catalogo-select
+                  [catalogo]="vehiculoTipo"
+                  [label]="'Tipo de vehículo'"
+                  formControlName="vehiculoTipo"
+                  name="vehiculoTipo"
+                  [isDisabled]="formularioDeshabilitado"
+                  (change)="vehiculoTipoSeleccion()"
+                ></app-catalogo-select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label class="form-label">Descripción:</label>
+                  <textarea
+                    class="form-control"
+                    id="descripcion"
+                    name="descripcion"
+                    formControlName="descripcion"
+                    (change)="
+                      setValoresStore(
+                        agregarMercanciasForm,
+                        'datosMercancia.descripcion',
+                        'setDescripcion'
+                      )
+                    "
+                    rows="3"
+                  ></textarea>
+                  @if
+                  (agregarMercanciasForm.get('datosMercancia.descripcion')?.invalid
+                  &&
+                  (agregarMercanciasForm.get('datosMercancia.datosMercancia')?.dirty
+                  ||
+                  agregarMercanciasForm.get('datosMercancia.descripcion')?.touched))
+                  {
+                  <div class="text-danger">Este campo es obligatorio.</div>
+                  }
+                </div>
+              </div>
+            </div>
+            }
+          </ng-container>
+
+          @if (registroDeDonacionState.seleccionadaTipoDeMercancia === 2 ||
+          registroDeDonacionState.seleccionadaTipoDeMercancia === 3) {
+          <div class="mt-20">
+            <ng-alert
+              [CONTENIDO]="TEXTOS.REGULACIONES_RESTRICCIONES_NO_ARANCELARIAS"
+            ></ng-alert>
+          </div>
+          }
+
+          <!--COFEPRIS-->
+          @if (registroDeDonacionState.seleccionadaTipoDeMercancia === 2) {
+          <ng-titulo titulo="COFEPRIS"></ng-titulo>
+
+          <ng-container formGroupName="datosCofepris">
+            <div id="seccionVehiculo">
+              <div id="cargaUnitariaVehiculos">
+                <div class="row">
+                  <div class="col-md-4">
+                    <input-fecha
+                      [datos]="fechaCaducidad"
+                      name="fechaCaducidad"
+                      (valorCambiado)="cambioFechaCaducidad($event)"
+                      [setFecha]="
+                        registroDonacionForm.get('fechaCaducidad')?.value
+                      "
+                    ></input-fecha>
+                  </div>
+                  <div class="col-md-4">
+                    <label for="ingredienteActivo" class="form-label"
+                      >Ingrediente activo*:</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="ingredienteActivo"
+                      id="ingredienteActivo"
+                      formControlName="ingredienteActivo"
+                      (change)="
+                        setValoresStore(
+                          agregarMercanciasForm,
+                          'datosCofepris.ingredienteActivo',
+                          'setIngredienteActivo'
+                        )
+                      "
+                    />
+                    @if
+                    (agregarMercanciasForm.get('datosCofepris.ingredienteActivo')?.invalid
+                    &&
+                    (agregarMercanciasForm.get('datosCofepris.ingredienteActivo')?.dirty
+                    ||
+                    agregarMercanciasForm.get('datosCofepris.ingredienteActivo')?.touched))
+                    {
+                    <div class="text-danger">Este campo es obligatorio.</div>
+                    }
+                  </div>
+                  <div class="col-md-4">
+                    <label for="tipoMedicamento" class="form-label"
+                      >Tipo de medicamento*:</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="tipoMedicamento"
+                      id="tipoMedicamento"
+                      formControlName="tipoMedicamento"
+                      (change)="
+                        setValoresStore(
+                          agregarMercanciasForm,
+                          'datosCofepris.tipoMedicamento',
+                          'setTipoMedicamento'
+                        )
+                      "
+                    />
+                    @if
+                    (agregarMercanciasForm.get('datosCofepris.tipoMedicamento')?.invalid
+                    &&
+                    (agregarMercanciasForm.get('datosCofepris.tipoMedicamento')?.dirty
+                    ||
+                    agregarMercanciasForm.get('datosCofepris.tipoMedicamento')?.touched))
+                    {
+                    <div class="text-danger">Este campo es obligatorio.</div>
+                    }
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4 mt-2">
+                    <label for="presentacionFarma" class="fs-15px"
+                      >Forma de presentación farmacéutica*:</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="presentacionFarma"
+                      id="presentacionFarma"
+                      formControlName="presentacionFarma"
+                      (change)="
+                        setValoresStore(
+                          agregarMercanciasForm,
+                          'datosCofepris.presentacionFarma',
+                          'setPresentacionFarma'
+                        )
+                      "
+                    />
+                    @if
+                    (agregarMercanciasForm.get('datosCofepris.presentacionFarma')?.invalid
+                    &&
+                    (agregarMercanciasForm.get('datosCofepris.presentacionFarma')?.dirty
+                    ||
+                    agregarMercanciasForm.get('datosCofepris.presentacionFarma')?.touched))
+                    {
+                    <div class="text-danger">Este campo es obligatorio.</div>
+                    }
+                  </div>
+                  <div class="col-md-4">
+                    <app-catalogo-select
+                      [catalogo]="paisOrigenMedicamento"
+                      formControlName="paisOrigenMedicamento"
+                      [label]="'País de origen'"
+                      [required]="true"
+                      name="paisOrigenMedicamento"
+                      [isDisabled]="formularioDeshabilitado"
+                      (change)="paisOrigenMedicamentoSeleccion()"
+                    ></app-catalogo-select>
+                  </div>
+                  <div class="col-md-4">
+                    <app-catalogo-select
+                      [catalogo]="paisProcedenciaMedicamento"
+                      [label]="'País de procedencia'"
+                      [required]="true"
+                      formControlName="paisProcedenciaMedicamento"
+                      name="paisProcedenciaMedicamento"
+                      [isDisabled]="formularioDeshabilitado"
+                      (change)="paisProcedenciaMedicamentoSeleccion()"
+                    ></app-catalogo-select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          } @if (registroDeDonacionState.seleccionadaTipoDeMercancia === 3) {
+          <ng-titulo titulo="COFEPRIS"></ng-titulo>
+
+          <ng-container formGroupName="datosMedicosCofepris">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label class="form-label"
+                    >Descripción del equipo e insumo médico*:</label
+                  >
+                  <textarea
+                    class="form-control"
+                    id="medicoDescripcion"
+                    name="medicoDescripcion"
+                    formControlName="medicoDescripcion"
+                    (change)="
+                      setValoresStore(
+                        agregarMercanciasForm,
+                        'datosMedicosCofepris.medicoDescripcion',
+                        'setMedicoDescripcion'
+                      )
+                    "
+                    rows="3"
+                  ></textarea>
+                  @if
+                  (agregarMercanciasForm.get('datosMedicosCofepris.medicoDescripcion')?.invalid
+                  &&
+                  (agregarMercanciasForm.get('datosMedicosCofepris.medicoDescripcion')?.dirty
+                  ||
+                  agregarMercanciasForm.get('datosMedicosCofepris.medicoDescripcion')?.touched))
+                  {
+                  <div class="text-danger">Este campo es obligatorio.</div>
+                  }
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <app-catalogo-select
+                  [catalogo]="paisProcedencia"
+                  formControlName="paisProcedencia"
+                  [label]="'País de procedencia'"
+                  [required]="true"
+                  name="paisProcedencia"
+                  [isDisabled]="formularioDeshabilitado"
+                  (change)="paisProcedenciaSeleccion()"
+                ></app-catalogo-select>
+              </div>
+              <div class="col-md-4">
+                <app-catalogo-select
+                  [catalogo]="paisMedicoOrigen"
+                  formControlName="paisMedicoOrigen"
+                  [label]="'País de origen'"
+                  [required]="true"
+                  name="paisMedicoOrigen"
+                  [isDisabled]="formularioDeshabilitado"
+                  (change)="paisMedicoOrigenSeleccion()"
+                ></app-catalogo-select>
+              </div>
+            </div>
+          </ng-container>
+          } @if (registroDeDonacionState.seleccionadaTipoDeMercancia === 2 ||
+          registroDeDonacionState.seleccionadaTipoDeMercancia === 3) {
+          <!--Datos del fabricante-->
+          <div class="row mt-5">
+            <div class="col-md-12">
+              <div class="panel-group ficha-collapse" id="accordion">
+                <div class="panel panel-default mb-3">
+                  <div
+                    class="panel-heading"
+                    (click)="mostrar_colapsable_fabricante()"
+                  >
+                    <h4 class="panel-title">
+                      <a> Datos del fabricante </a>
+                    </h4>
+                    <button
+                      type="button"
+                      class="collpase-button"
+                      [ngClass]="{ collapsed: !colapsable }"
+                    ></button>
+                  </div>
+                  @if(colapsable) {
+                  <div
+                    class="panel-collapse collapse"
+                    [ngClass]="{ in: colapsable }"
+                    id="panel-01"
+                  >
+                    <div class="panel-body">
+                      <app-datos-del-fabricante></app-datos-del-fabricante>
+                    </div>
+                  </div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+          }
+
+          <div id="cargaMasivaMedicamentos" class="mt-20">
+            <ng-alert
+              [CONTENIDO]="TEXTOS.REQUISITOS_CLAVES_CATALOGO_CAMPOS_PLANTILLA"
+            ></ng-alert>
+
+            <div class="row mt-20">
+              <div class="col-md-6">
+                <button
+                  type="button"
+                  for="archivoMedicamentos"
+                  class="file-upload"
+                  (click)="activarSeleccionArchivo()"
+                >
+                  Seleccionar archivo
+                </button>
+                <span class="ml-2">{{ etiquetaDeArchivo }}</span>
+                <input
+                  type="file"
+                  id="archivoMedicamentos"
+                  (change)="onCambioDeArchivo($event)"
+                  class="file-upload"
+                  style="display: none"
+                />
+              </div>
+
+              <div class="col-md-6 text-end">
+                <button
+                  class="btn btn-primary mr-5px"
+                  (click)="cargarArchivo()"
+                >
+                  Cargar archivo
+                </button>
+                <button
+                  class="btn btn-danger"
+                  (click)="eliminacionMedicamento()"
+                >
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer custom-footer">
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="limpiarMercancias()"
+        >
+          Limpiar
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="agregarMercancias()"
+        >
+          Agregar
+        </button>
+        <button
+          type="button"
+          class="btn btn-default"
+          data-bs-dismiss="modal"
+          #closeModal
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

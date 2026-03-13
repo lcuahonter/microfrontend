@@ -1,0 +1,79 @@
+<div class="container pago-de-derechos-container">
+
+  <ng-titulo titulo="Pago de derechos" />
+
+  <form [formGroup]="pagoDerechos">
+    <div class="row d-flex pago-de-derechos-form-container">
+      <div class="col-md-4 mt-5">
+        <div class="form-group">
+          <label class="form-label" for="claveDeReferncia">Clave de referencia:</label>
+          <input class="form-control" type="text" id="claveDeReferncia" formControlName="claveDeReferncia"
+            (input)="updateClaveDeReferncia()" maxlength="9" />
+        </div>
+      </div>
+
+      <div class="col-md-4 mt-5">
+        <div class="form-group">
+          <label class="form-label" for="cadenaDeLaDependencia">Cadena de la dependencia:</label>
+          <input class="form-control" type="text" id="cadenaDeLaDependencia" formControlName="cadenaDeLaDependencia"
+            (input)="updateCadenaDeLaDependencia()" maxlength="14" [ngClass]="{'is-invalid': pagoDerechos.get('cadenaDeLaDependencia')?.invalid && pagoDerechos.get('cadenaDeLaDependencia')?.touched}"/>
+             @if(pagoDerechos.get('cadenaDeLaDependencia')?.invalid && (pagoDerechos.get('cadenaDeLaDependencia')?.touched)) {
+              <div class="mensaje-error">Todos los campos de pago son requeridos</div>
+            }
+        </div>
+      </div>
+
+      <div class="col-md-4 mt-5">
+        <div class="form-group">
+          <app-catalogo-select [catalogo]="dropdownData" [label]="'Banco'" [required]="requiredLabel"
+            name="dropdownData" id="banco" formControlName="banco" (change)="getMunicipios()"
+            placeholder="Seleccione una opción"
+            [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+            @if(pagoDerechos.get('banco')?.invalid && (pagoDerechos.get('banco')?.touched)) {
+              <div class="mensaje-error">Todos los campos de pago son requeridos</div>
+            }
+        </div>
+      </div>
+
+      <div class="col-md-4 mt-5">
+        <div class="form-group">
+          <label class="form-label" for="llaveDePago">Llave de pago:</label>
+          <input class="form-control" type="text" id="llaveDePago" formControlName="llaveDePago"
+            (input)="updateLlaveDePago()" maxlength="30" 
+            [ngClass]="{'is-invalid': pagoDerechos.get('llaveDePago')?.invalid && pagoDerechos.get('llaveDePago')?.touched}" />
+            @if(pagoDerechos.get('llaveDePago')?.invalid && (pagoDerechos.get('llaveDePago')?.touched)) {
+              <div class="mensaje-error">Todos los campos de pago son requeridos</div>
+            }
+        </div>
+      </div>
+
+      <div class="col-md-4 mt-5">
+          <input-fecha [setFecha]="pagoDerechos.get('fechaDePago')?.value" [datos]="fechaFinalInput"
+            (valorCambiado)="cambioFechaDePago($event)"
+            [isDisabled]="esFormularioSoloLectura ? true : false"></input-fecha>
+          <div *ngIf="fechaFuturaSeleccionada" class="mensaje-error mt-1">
+            Todos los campos de pago son requeridos
+          </div>
+      </div>
+
+      <div class="col-md-4 mt-5">
+        <div class="form-group">
+          <label class="form-label" for="importeDePago">Importe de pago:</label>
+          <input class="form-control" type="text" id="importeDePago" formControlName="importeDePago"
+            (input)="updateImporteDePago()" maxlength="16" 
+            [ngClass]="{'is-invalid': pagoDerechos.get('importeDePago')?.invalid && pagoDerechos.get('importeDePago')?.touched}" />
+            @if(pagoDerechos.get('importeDePago')?.invalid && (pagoDerechos.get('importeDePago')?.touched)) {
+              <div class="mensaje-error">Todos los campos de pago son requeridos</div>
+            }
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <!-- borrar datos button -->
+  <div class="col-md-12 text-end mt-3">
+    <button class="btn btn-danger" (click)="onReset()" [disabled]="esFormularioSoloLectura ? true : false">Borrar datos
+      del pago</button>
+  </div>
+
+</div>

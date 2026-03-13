@@ -1,0 +1,81 @@
+<div [formGroup]="renovacionForm">
+    <ng-titulo [titulo]="'Aviso Único de Renovación en el Registro en el Esquema de Certificación de
+    Empresas'"></ng-titulo>
+
+    <div class="row">
+        <div class="col-md-12">
+            <label for="modalidad" class="form-label">Modalidad Comercializadora e Importadora</label>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-12">
+            <label class="form-label">Datos en que se otorgó su Registro en el Esquema de Certificación de Empresas o,
+                en
+                su caso, de la última Renovación</label>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-8">
+            <label for="numeroOficio">Número de oficio*:</label>
+            <input type="text" class="form-control gris-color" formControlName="numeroOficio" readonly required />
+        </div>
+    </div>
+    <div class="row mt-2 mb-5">
+        <div class="col-md-4">
+            <input-fecha [datos]="fechaInicialInput"
+                [setFecha]="renovacionForm.get('fechaInicialInput')?.value"></input-fecha>
+        </div>
+        <div class="col-md-4">
+            <input-fecha [datos]="fechaFinalInput"
+                [setFecha]="renovacionForm.get('fechaFinalInput')?.value"></input-fecha>
+        </div>
+    </div>
+    <div class="row mt-100">
+        <div class="col-md-4">
+            <input-fecha [datos]="fechaPagoInput" name="fechaPago" (valorCambiado)="cambioFechaPago($event)" [isDisabled]="esFormularioSoloLectura" [setFecha]="renovacionForm.get('fechaPago')?.value"></input-fecha>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Monto en moneda nacional*:</label>
+            <input type="text" class="form-control" formControlName="monedaNacional"
+                (change)="setValorStore(renovacionForm, 'monedaNacional')" />
+        </div>
+    </div>
+    <div class="row mt-2 mb-5">
+        <div class="col-md-4">
+            <label class="form-label">Número de operación bancaria*:</label>
+            <input type="text" class="form-control" formControlName="numeroOperacion"
+                (change)="setValorStore(renovacionForm, 'numeroOperacion')" />
+            @if(renovacionForm.controls['numeroOperacion'].invalid &&
+            renovacionForm.controls['numeroOperacion'].touched) {
+            <div class="d-grid">
+                @if(renovacionForm.controls['numeroOperacion'].errors?.['required']) {
+                <span class="mensaje-error">Este campo es obligatorio.</span>
+                }
+                @if(renovacionForm.controls['numeroOperacion'].errors?.['pattern']) {
+                <span class="mensaje-error">Por favor, escribe un número entero válido</span>
+                }
+            </div>
+            }
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Llave de pago*:</label>
+            <input type="text" class="form-control" formControlName="llavePago"
+                (change)="setValorStore(renovacionForm, 'llavePago')" />
+        </div>
+    </div>
+    @for (manifiesto of manifiestos; let i = $index; track i) {
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-info">
+                <input class="form-check-input" type="checkbox" [id]="'manifiesto-' + i"
+                    [value]="manifiesto.declaracion.clave" [checked]="seleccionadaManifiesto.value[i]" class="required" [disabled]="esFormularioSoloLectura"
+                    (change)="onManifiestoCheckboxCambiar($event, i)" />
+                <div class="manifiesto-descripcion">
+                    <label> {{manifiesto.declaracion.descripcion}}</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+</div>

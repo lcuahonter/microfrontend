@@ -1,0 +1,280 @@
+<div class="container">
+    <ng-titulo titulo="Terceros relacionados"></ng-titulo>
+  
+    <div class="row mt-5">
+      <ng-alert
+        [CONTENIDO]="MENSAJE_TABLA_OBLIGATORIA"
+        [CUSTOMECLASS]="infoAlert"
+      ></ng-alert>
+    </div>
+    <div class="row mt-5">
+      <h5>{{ tituloSeccion() }}<span>*</span>:</h5>
+    </div>
+    <div class="row mt-5">
+      <app-tabla-dinamica
+        [configuracionTabla]="configuracionTablaDestinatarioFinal"
+        [tipoSeleccionTabla]="tipoSeleccionTabla"
+        [datos]="tableData"
+        (listaDeFilaSeleccionada)="onSelectedRowsChange($event)"
+        [disableSeleccionTablaCheckBox]="formularioDeshabilitado"
+      ></app-tabla-dinamica>
+    </div>
+  <div class="row mt-5">
+    <div class="col-md-12">
+      <div class="pull-right">
+         <button
+            *ngIf="selectedRows.size > 0"
+            class="btn btn-danger me-2"
+            type="button"
+            (click)="onEliminar()">
+              Eliminar
+            </button>
+            <button
+            *ngIf="selectedRows.size === 1"
+              type="button"
+              class="btn btn-default me-2"
+              (click)="openModificarMercancias()">
+              Modificar
+            </button>
+        <button
+          type="button"
+          name="agregarMercancias"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#modalAgregar"
+          (click)="abrirFormulario()"
+          [disabled]="formularioDeshabilitado">
+          Agregar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  @if (nuevaNotificacion) {
+    <section>
+      <lib-notificaciones 
+        [notificacionInput]="nuevaNotificacion" 
+        (confirmacionModal)="eliminarDestinatario($event)">
+      </lib-notificaciones>
+    </section>
+  }
+
+<div #modalRef class="modal fade test-modal" id="modalAgregar" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="row">
+          <div class="container mt-5">
+            <ng-titulo [titulo]="obtenerTitulo()"></ng-titulo>
+            <h4>Datos generales</h4>
+            <form [formGroup]="destinatarioForm" (ngSubmit)="onGuardar()">
+              <div class="d-flex justify-content-center">
+                <div>
+                  <label class="form-label" for="tipoPersona">Tipo persona*:</label>
+                  <app-input-radio 
+                  [radioOptions]="tipoPersonaRadioOptions" 
+                  (valueChange)="setTipoPersona($event)" 
+                  [showTooltip]="true"
+                  formControlName="tipoPersona" >
+                </app-input-radio>
+              </div>
+              </div>
+              @if (destinatarioForm.get('tipoPersona')?.value === TipoPersonaEnum.FISICA || !destinatarioForm.get('tipoPersona')?.value) {
+              <label class="form-label text-start fs-2">Datos personales</label>
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <label class="form-label" for="nombre">Nombre(s)<span [ngClass]="{'text-danger': destinatarioForm.get('nombre')?.invalid && (destinatarioForm.get('nombre')?.touched || destinatarioForm.get('nombre')?.dirty)}">*</span>:</label>
+                  <input class="form-control" id="nombre" type="text" formControlName="nombre" maxlength="200"
+                  (change)="setValoresStore(destinatarioForm, 'nombre')"/>
+                  <div *ngIf="esInvalido('nombre')" class="text-danger">
+                    @if (destinatarioForm.get('nombre')?.errors?.['required']) {
+                      <small>Este campo es obligatorio</small>
+                    } @else if (destinatarioForm.get('nombre')?.errors?.['pattern']) {
+                      <small>Existen datos incorrectos que no cumplen con el formato esperado</small>
+                    }
+                  </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label class="form-label" for="primerApellido">Primer apellido<span [ngClass]="{'text-danger': destinatarioForm.get('primerApellido')?.invalid && (destinatarioForm.get('primerApellido')?.touched || destinatarioForm.get('primerApellido')?.dirty)}">*</span>:</label>
+                  <input class="form-control" id="primerApellido" type="text" formControlName="primerApellido" maxlength="200"
+                  (change)="setValoresStore(destinatarioForm, 'primerApellido')"/>
+                  <div *ngIf="esInvalido('primerApellido')" class="text-danger">
+                    @if (destinatarioForm.get('primerApellido')?.errors?.['required']) {
+                      <small>Este campo es obligatorio</small>
+                    } @else if (destinatarioForm.get('primerApellido')?.errors?.['pattern']) {
+                      <small>Existen datos incorrectos que no cumplen con el formato esperado</small>
+                    }
+                  </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label class="form-label" for="segundoApellido">Segundo apellido:</label>
+                  <input class="form-control" id="segundoApellido" type="text" formControlName="segundoApellido" maxlength="200"
+                  (change)="setValoresStore(destinatarioForm, 'segundoApellido')"/>
+                  <div *ngIf="esInvalido('segundoApellido')" class="text-danger">
+                    @if (destinatarioForm.get('segundoApellido')?.errors?.['pattern']) {
+                      <small>Existen datos incorrectos que no cumplen con el formato esperado</small>
+                    }
+                  </div>
+                </div>
+              </div>
+              } @if (destinatarioForm.get('tipoPersona')?.value === TipoPersonaEnum.MORAL || !destinatarioForm.get('tipoPersona')?.value) {
+              <div class="row">
+                <div class="col-md-8 mb-3">
+                  <label class="form-label" for="denominacion">Denominación/razón social<span [ngClass]="{'text-danger': destinatarioForm.get('denominacion')?.invalid && (destinatarioForm.get('denominacion')?.touched || destinatarioForm.get('denominacion')?.dirty)}">*</span>:</label>
+                  <input class="form-control" id="denominacion" type="text" formControlName="denominacion" maxlength="250"
+                  (change)="setValoresStore(destinatarioForm, 'denominacion')"/>
+                  <div *ngIf="esInvalido('denominacion')" class="text-danger">
+                    @if (destinatarioForm.get('denominacion')?.errors?.['required']) {
+                      <small>Este campo es obligatorio</small>
+                    } @else if (destinatarioForm.get('denominacion')?.errors?.['pattern']) {
+                      <small>Existen datos incorrectos que no cumplen con el formato esperado</small>
+                    }
+                  </div>
+                </div>
+              </div>
+              }
+              <h4 class="mt-5">Domicilio</h4> 
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <app-catalogo-select 
+                  id=paisData
+                  formControlName="pais"
+                  [catalogo]="paisData.catalogos" 
+                  [label]="'Pais'"
+                  [required]="true"
+                  [isDisabled]="!!destinatarioForm.get('pais')?.disabled"
+                  (change)="setValoresStore(destinatarioForm, 'pais')"
+                  [markTouched]="destinatarioForm.get('pais')?.touched??false"
+                  ></app-catalogo-select>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label class="form-label" for="estado">Estado<span [ngClass]="{'text-danger': destinatarioForm.get('estado')?.invalid && (destinatarioForm.get('estado')?.touched || destinatarioForm.get('estado')?.dirty)}">*</span>:</label>
+                  <input class="form-control" id="estado" type="text" formControlName="estado" 
+                  (change)="setValoresStore(destinatarioForm, 'estado')"/>
+                  @if (destinatarioForm.get('estado')?.invalid && destinatarioForm.get('estado')?.touched) {
+                    <div class="text-danger">
+                      @if (destinatarioForm.get('estado')?.errors?.['required']) {
+                        <small>Este campo es obligatorio</small>
+                      } @else if (destinatarioForm.get('estado')?.errors?.['pattern']) {
+                        <small>Por favor, escribe un valor válido</small>
+                      } @else if (destinatarioForm.get('estado')?.errors?.['maxlength']) {
+                        <small>Por favor, no escribas más de 100 caracteres</small>
+                      }
+                    </div>
+                  }
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label class="form-label" for="codigopostal">Código postal o equivalente<span [ngClass]="{'text-danger': destinatarioForm.get('codigopostal')?.invalid && (destinatarioForm.get('codigopostal')?.touched || destinatarioForm.get('codigopostal')?.dirty)}">*</span>:</label>
+                  <input class="form-control" id="codigopostal" type="text" formControlName="codigopostal" maxlength="12"
+                     (change)="setValoresStore(destinatarioForm, 'codigopostal')" />
+                  @if (destinatarioForm.get('codigopostal')?.invalid && destinatarioForm.get('codigopostal')?.touched) {
+                    <div class="text-danger">
+                      @if (destinatarioForm.get('codigopostal')?.errors?.['required']) {
+                        <small>Este campo es obligatorio</small>
+                      } @else if (destinatarioForm.get('codigopostal')?.errors?.['pattern']) {
+                        <small>Por favor, escribe un número válido</small>
+                      } @else if (destinatarioForm.get('codigopostal')?.errors?.['maxlength']) {
+                        <small>Por favor, no escribas más de 12 caracteres</small>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+              <div class="row">
+                  <div class="col-md-8">
+                      <label class="form-label" for="calle">Calle<span [ngClass]="{'text-danger': destinatarioForm.get('calle')?.invalid && (destinatarioForm.get('calle')?.touched || destinatarioForm.get('calle')?.dirty)}">*</span>: <i
+                        class="bi bi-question-circle-fill ms-1"
+                        data-bs-toggle="tooltip"
+                        title="Domicilio, calle, número interior, número exterior, lote"
+                      ></i></label>
+                              <input class="form-control" id="calle" type="text" formControlName="calle" maxlength="100"
+                              (change)="setValoresStore(destinatarioForm, 'calle')"/>
+                              @if (destinatarioForm.get('calle')?.invalid && destinatarioForm.get('calle')?.touched) {
+                                <div class="text-danger">
+                                  @if (destinatarioForm.get('calle')?.errors?.['required']) {
+                                    <small>Este campo es obligatorio</small>
+                                  } @else if (destinatarioForm.get('calle')?.errors?.['pattern']) {
+                                    <small>Por favor, escribe un valor válido</small>
+                                  } @else if (destinatarioForm.get('calle')?.errors?.['maxlength']) {
+                                    <small>Por favor, no escribas más de 100 caracteres</small>
+                                  }
+                                </div>
+                              }
+                  </div>
+                  <div class="col-md-4">
+                      <label class="form-label" for="numeroexterior">Número exterior<span [ngClass]="{'text-danger': destinatarioForm.get('numeroExterior')?.invalid && (destinatarioForm.get('numeroExterior')?.touched || destinatarioForm.get('numeroExterior')?.dirty)}">*</span>:</label>
+                      <input class="form-control" id="numeroexterior" type="text" formControlName="numeroExterior" maxlength="55"
+                      (change)="setValoresStore(destinatarioForm, 'numeroExterior')"/>
+                      @if (destinatarioForm.get('numeroExterior')?.invalid && destinatarioForm.get('numeroExterior')?.touched) {
+                        <div class="text-danger">
+                          @if (destinatarioForm.get('numeroExterior')?.errors?.['required']) {
+                            <small>Este campo es obligatorio</small>
+                          } @else if (destinatarioForm.get('numeroExterior')?.errors?.['pattern']) {
+                            <small>Por favor, escribe un valor válido</small>
+                          } @else if (destinatarioForm.get('numeroExterior')?.errors?.['maxlength']) {
+                            <small>Por favor, no escribas más de 55 caracteres</small>
+                          }
+                        </div>
+                      }
+                    </div>
+              </div>    
+              <div class="row">
+                  <div class="col-md-4">
+                      <label class="form-label" for="numerointerior">Número interior:</label>
+                      <input class="form-control" id="numerointerior" type="text" formControlName="numeroInterior" maxlength="55"
+                       (change)="setValoresStore(destinatarioForm, 'numeroInterior')"/>
+                     
+                  </div>
+                <div class="col-md-1 mb-3">
+                  <label class="form-label" for="lada">Lada:</label>
+                  <input class="form-control" id="lada" type="text" formControlName="lada" 
+                  (change)="setValoresStore(destinatarioForm, 'lada')" maxlength="5"/>
+                    
+                </div>
+                <div class="col-md-3 mb-3">
+                  <label class="form-label" for="telefono">Teléfono:</label>
+                  <input class="form-control" id="telefono" type="text" formControlName="telefono" maxlength="24"
+                  (change)="setValoresStore(destinatarioForm, 'telefono')"/>
+                  <div *ngIf="esInvalido('telefono')" class="text-danger">
+                    @if (destinatarioForm.get('telefono')?.errors?.['pattern']) {
+                      <small>Existen datos incorrectos que no cumplen con el formato esperado</small>
+                    }
+                  </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label class="form-label" for="correoElectronico">Correo electrónico:
+                     <i
+                      class="bi bi-question-circle-fill ms-1"
+                      data-bs-toggle="tooltip"
+                      title="ejemplo@dominio.com"
+                    ></i>
+                  </label>
+                  <input class="form-control" id="correoElectronico" type="email" formControlName="correoElectronico" maxlength="320"
+                  (change)="setValoresStore(destinatarioForm, 'correoElectronico')"/>
+                  <div *ngIf="esInvalido('correoElectronico')" class="text-danger">
+                    @if (destinatarioForm.get('correoElectronico')?.errors?.['pattern']) {
+                      <small>Por favor, escribe una dirección de correo válida</small>
+                    }
+                  </div>
+                </div>
+              </div>
+            
+            <div class="col-md-12 d-flex justify-content-end mt-5 mb-5">
+            <div class="btn-group">
+              <button class="btn btn-danger" type="button"
+                  id="cancelarCHN"
+                  name="cancelar"
+                  class="btn btn-primary cancel me-2"
+                  data-bs-dismiss="modal">Cancelar</button>
+              <button class="btn btn-danger me-2" type="button" (click)="limpiarFormulario()" >Limpiar</button>
+              <button class="btn btn-primary me-2" type="submit">Guardar</button>
+            </div>
+          </div>
+            </form>
+          </div>
+        </div>  
+      </div>
+    </div>
+  </div>
+</div>
+</div>

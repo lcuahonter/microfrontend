@@ -1,0 +1,291 @@
+<div class="container">
+  <form [formGroup]="transportistaCertificacionForm">
+    <div class="row mt-5">
+      <div class="col-md-12">
+        <div class="panel-group ficha-collapse" id="accordion">
+          @for(panel of transportistasPanels; let i = $index; track i) {
+          <div class="panel panel-default mb-3">
+            <div class="panel-heading" (click)="mostrar_colapsable(i)">
+              <h4 class="panel-title">
+                <a>
+                  {{ panel.label }}
+                </a>
+              </h4>
+              <button
+                type="button"
+                class="collpase-button"
+                [class.collapsed]="panel.isCollapsed"
+                [disabled]="esFormularioSoloLectura"
+              ></button>
+            </div>
+            <div
+              class="panel-collapse"
+              [id]="'panel-' + i"
+              [ngClass]="{
+                collapse: panel.isCollapsed,
+                in: !panel.isCollapsed
+              }"
+            >
+              <div class="panel-body">
+              <div *ngIf="transportistasLista.length === 0 && transportistaCertificacionForm.get('validacionTransportistas')?.touched"
+               class="row mt-3">
+                <div class="col-md-12 text-danger">
+                  <b>Se debe agregar por lo menos una empresa transportista</b>
+                </div>
+                </div>
+                <app-tabla-dinamica
+                  [tipoSeleccionTabla]="tablaSeleccionCheckbox"
+                  [configuracionTabla]="transportistasConfiguracionColumnas"
+                  [datos]="transportistasLista"
+                  (filaSeleccionada)="onFilaSeleccionada($event)"
+                  [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+                >
+                </app-tabla-dinamica>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-end">
+      <div class="d-flex flex-row flex-wrap gap-3">
+        <button
+          type="button"
+          id="agregarTransportista"
+          class="btn btn-primary"
+          (click)="abrirModal1(templateTransposrtistas)"
+          [disabled]="esFormularioSoloLectura"
+        >
+          Agregar
+        </button>
+        <button
+          type="button"
+          id="modificarTransportista"
+          class="btn btn-primary"
+          (click)="modificarTransportista()"
+          [disabled]="esFormularioSoloLectura"
+        >
+          Modificar
+        </button>
+        <button
+          type="button"
+          id="eliminarTransportista"
+          class="btn btn-primary"
+          (click)="eliminarTransportista()"
+          [disabled]="esFormularioSoloLectura"
+        >
+          Eliminar
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- Modal -->
+<ng-template #templateTransposrtistas>
+  <div class="modal-header">
+    <h4 class="modal-title">
+      {{ isEditMode ? 'Modificar' : 'Agregar' }} transportistas
+    </h4>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="transportistaCertificacionForm">
+      <label class="form-label text-left">
+        <span class="text-danger">*</span> RFC
+      </label>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <input
+              class="form-control"
+              id="rfc"
+              formControlName="rfcEnclaveOperativo"
+              type="text"
+            />
+          </div>
+          @if(transportistaCertificacionForm.controls['rfcEnclaveOperativo'].invalid
+          &&
+          transportistaCertificacionForm.controls['rfcEnclaveOperativo'].touched)
+          {
+          <div class="mensaje-error">Este campo es obligatorio.</div>
+          }
+        </div>
+        <div class="col-md-8">
+          <div class="btn-group">
+            <button class="btn btn-default" type="button" (click)="buscarRFC()">
+              Buscar
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label class="form-label" for="rfc">RFC:</label>
+            <input
+              class="form-control"
+              id="rfc"
+              formControlName="enlaceOperativorfc"
+              type="text"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label class="form-label" for="denominacionRazonsocial"
+              >Denominación o razón social</label
+            >
+            <input
+              class="form-control"
+              id="denominacionRazonsocial"
+              formControlName="denominacionRazonsocial"
+              type="text"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label class="form-label" for="domicilio">Domicilio</label>
+            <input
+              class="form-control"
+              id="domicilio"
+              formControlName="domicilio"
+              type="text"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label" for="ccat">Registro CAAT vigente</label>
+            <input
+              class="form-control"
+              id="ccat"
+              formControlName="ccat"
+              type="text"
+            />
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer d-flex justify-content-end">
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="aceptarTransportista()"
+    >
+      {{ isEditMode ? 'Modificar' : 'Aceptar' }}
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="limpiarTransportista()"
+    >
+      Limpiar
+    </button>
+    <button type="button" class="btn btn-danger" (click)="cancelarModal()">
+      Cancelar
+    </button>
+  </div>
+</ng-template>
+
+<!-- Modal de éxito -->
+<ng-template #templateExito>
+  <div class="modal-header">
+    <h4 class="modal-title text-success"></h4>
+  </div>
+  <div class="modal-body">
+    <p class="mb-0">Datos guardados correctamente.</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="cerrarModalExito()">
+      Aceptar
+    </button>
+  </div>
+</ng-template>
+
+<!-- Modal de datos obligatorios -->
+<ng-template #templateDatosObligatorios>
+  <div class="modal-header">
+    <h6 class="modal-title text-warning">Mensaje</h6>
+  </div>
+  <div class="modal-body">
+    <p class="mb-0">Faltan Datos</p>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="cerrarModalDatosObligatorios()"
+    >
+      Aceptar
+    </button>
+  </div>
+</ng-template>
+<!-- Modal de datos obligatorios -->
+<ng-template #templateDatos>
+  <div class="modal-header">
+    <h4 class="modal-title text-warning"></h4>
+  </div>
+  <div class="modal-body">
+    <p class="mb-0">
+      Debe capturar todos los datos marcados como obligatorios.
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="cerrarModalDatos()">
+      Aceptar
+    </button>
+  </div>
+</ng-template>
+<!-- Add selection required modal template -->
+<ng-template #templateSeleccionRequerida>
+  <div class="modal-header">
+    <h6 class="modal-title text-warning">Mensaje</h6>
+  </div>
+  <div class="modal-body">
+    <p class="mb-0">{{ mensajeSeleccion }}</p>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="cerrarModalSeleccionRequerida()"
+    >
+      Aceptar
+    </button>
+  </div>
+</ng-template>
+
+<!-- Add the confirmation modal template -->
+<ng-template #templateConfirmacionEliminacion>
+  <div class="modal-header">
+    <h4 class="modal-title text-danger"></h4>
+  </div>
+  <div class="modal-body">
+    <p class="mb-0">¿Está seguro que desea eliminar los registros marcados?</p>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="confirmarEliminacionTransportista()"
+    >
+      Aceptar
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="cerrarModalConfirmacionEliminacion()"
+    >
+      Cancelar
+    </button>
+  </div>
+</ng-template>

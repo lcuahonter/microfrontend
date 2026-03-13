@@ -1,0 +1,59 @@
+<div class="page">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8">
+          <h2>Evaluar solicitud</h2>
+        </div>
+      </div>
+        <div class="row rounded p-3 bg-light">
+            <div class="col-md-12 rounded p-3 bg-white ">
+                <label class="control-label" for="empleadosImss">Folio del trámite:</label> 
+             </div>
+            <div class="col-md-12 rounded p-3 bg-white">
+                <label class="control-label" for="empleadosImss">Tipo de solicitud:</label> <span>Registro de solicitud de servicios extraordinarios</span>
+            </div>
+        </div>
+        <br>
+        <div *ngIf="!firmar" class="row margin-top">
+            <ul class="nav nav-tabs justify-content-center">
+              <li [ngClass]="indice === 1 ? 'active' : ''">
+                <a data-toggle="tab" (click)="seleccionaTab(1)" (keydown.enter)="seleccionaTab(1)"
+                  (keydown.space)="seleccionaTab(1)" role="button" tabindex="0">Dictamen</a>
+              </li>
+              <li [ngClass]="indice === 2 ? 'active' : ''">
+                <a data-toggle="tab" (click)="seleccionaTab(2)" (keydown.enter)="seleccionaTab(2)"
+                  (keydown.space)="seleccionaTab(2)" role="button" tabindex="2">Requerimiento de información</a>
+              </li>
+            </ul>
+        
+            <ng-container>
+              @switch (indice) {
+              @case (1) {
+                <genera-dictamen></genera-dictamen>
+              }
+              @case (2) {
+                <requerimiento-informacion></requerimiento-informacion>
+              } 
+              }
+            </ng-container>
+        </div>
+        <div *ngIf="firmar" class="row margin-top">
+          <firma-electronica tipo=""></firma-electronica>
+        </div>
+        <div *ngIf="!firmar" class="row margin-top">
+            <div class="col-md-6"></div>
+            <div class="col-md-6 d-flex align-items-rigth">
+                <div class="btn-group">
+                  <button class="btn btn-default" type="button" (click)="guardarFirmar()">Guardar y firmar</button>
+                  <button class="btn btn-default" type="button" >Guardar</button>
+                  <button type="button" class="btn btn-primary ms-2">Cancelar</button> 
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <detalle-tramite></detalle-tramite>
+        </div>
+       
+    </div>
+  </div>
+  

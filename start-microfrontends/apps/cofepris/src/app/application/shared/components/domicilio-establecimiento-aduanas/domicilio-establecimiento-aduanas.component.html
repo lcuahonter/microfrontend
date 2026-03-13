@@ -1,0 +1,540 @@
+<ng-titulo titulo="Domicilio del establecimiento"></ng-titulo>
+<form [formGroup]="domicilio">
+   <div class="row">
+      <div class="col-md-4">
+         <div class="form-group">
+            <label class="form-label" for="codigoPostal">Código postal<span  [ngClass]="{'tiene-error': domicilio.get('codigoPostal')?.invalid && domicilio.get('codigoPostal')?.touched}">*</span>:</label>
+            <input class="form-control" id="codigoPostal" placeholder="" type="text" [maxlength]="12" size="29"
+            [ngClass]="{'tiene-invalido': domicilio.get('codigoPostal')?.invalid && domicilio.get('codigoPostal')?.touched}"
+            formControlName="codigoPostal" (change)="setValoresStore(domicilio, 'codigoPostal', 'setCodigoPostal')" />
+            <div class="d-grid">
+               <div *ngIf="domicilio.get('codigoPostal')?.touched">
+                  <small class="mensaje-error" *ngIf="domicilio.get('codigoPostal')?.hasError('required')">
+                  Este campo es obligatorio.
+                  </small>
+                  <small class="mensaje-error" *ngIf="domicilio.get('codigoPostal')?.hasError('maxlength')">
+                  El código postal no puede exceder los 12 caracteres.
+                  </small>
+                  <small class="mensaje-error" *ngIf="domicilio.get('codigoPostal')?.hasError('pattern')">
+                  Por favor, escribe un número entero válido
+                  </small>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="col-md-4">
+         <app-catalogo-select [catalogo]="estado" formControlName="estado" [label]="'Estado'" [required]="true"
+         name="estado" (change)="setValoresStore(domicilio, 'estado', 'setEstado')"
+         [isDisabled]="esFormularioSoloLectura"></app-catalogo-select>
+         <div class="d-grid">
+            <div *ngIf="domicilio.get('estado')?.touched">
+               <small class="mensaje-error" *ngIf="domicilio.get('estado')?.hasError('required')">
+               Este campo es obligatorio.
+               </small>
+            </div>
+         </div>
+      </div>
+      <div class="col-md-4">
+         <div class="form-group">
+            <label class="form-label" for="muncipio">Municipio y alcaldía<span [ngClass]="{'tiene-error': domicilio.get('muncipio')?.invalid && domicilio.get('muncipio')?.touched}">*</span>:</label>
+            <input class="form-control" id="muncipio" placeholder="" type="text" formControlName="muncipio" [maxlength]="120"
+            [ngClass]="{'tiene-invalido': domicilio.get('muncipio')?.invalid && domicilio.get('muncipio')?.touched || domicilio.get('muncipio')?.hasError('pattern') }"
+            (change)="setValoresStore(domicilio, 'muncipio', 'setMuncipio')" />
+            <div class="d-grid">
+               <div *ngIf=" domicilio.get('muncipio')?.invalid && domicilio.get('muncipio')?.touched">
+                  <small class="mensaje-error" *ngIf="domicilio.get('muncipio')?.hasError('required')">
+                  Este campo es obligatorio.
+                  </small>
+                  <small class="mensaje-error" *ngIf="domicilio.get('muncipio')?.hasError('pattern')">
+                  Este campo solo puede contener letras y espacios.
+                  </small>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-md-4">
+         <div class="form-group">
+            <label class="form-label" for="localidad">Localidad:</label>
+            <input class="form-control" id="localidad" placeholder="" type="text" formControlName="localidad" [maxlength]="120"
+            (change)="setValoresStore(domicilio, 'localidad', 'setLocalidad')" />
+         </div>
+         <div class="d-grid">
+            <div
+               *ngIf="
+               domicilio.get('localidad')?.invalid &&
+               domicilio.get('localidad')?.touched
+               "
+               >
+               <small
+                  class="mensaje-error"
+                  *ngIf="domicilio.get('localidad')?.hasError('pattern')"
+                  >
+               El valor capturado no es válido.
+               </small>
+            </div>
+         </div>
+      </div>
+      <div class="col-md-4">
+         <div class="form-group">
+            <label class="form-label" for="colonia">Colonia:</label>
+            <input class="form-control" id="colonia" placeholder="" type="text" formControlName="colonia" [maxlength]="120"
+            (change)="setValoresStore(domicilio, 'colonia', 'setColonia')" />
+         </div>
+         <div class="d-grid">
+            <div
+               *ngIf="
+               domicilio.get('colonia')?.invalid &&
+               domicilio.get('colonia')?.touched
+               "
+               >
+               <small
+                  class="mensaje-error"
+                  *ngIf="domicilio.get('colonia')?.hasError('pattern')"
+                  >
+               El valor capturado no es válido.
+               </small>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-md-8">
+         <div class="form-group">
+            <label class="form-label" for="calle">Calle<span [ngClass]="{'tiene-error': domicilio.get('calle')?.invalid && domicilio.get('calle')?.touched}">*</span>: 
+            <span class="bi bi-question-circle-fill" tooltip="Domicilio, calle, número interior, número exterior, lote" placement="top"></span>
+            </label>
+            <input class="form-control" id="calle" placeholder="" type="text" formControlName="calle" [maxlength]="100"
+            [ngClass]="{'tiene-invalido': domicilio.get('calle')?.invalid && domicilio.get('calle')?.touched}"
+            (change)="setValoresStore(domicilio, 'calle', 'setCalle')" />
+            <div class="d-grid">
+               <div *ngIf="domicilio.get('calle')?.touched">
+                  <small class="mensaje-error" *ngIf="domicilio.get('calle')?.hasError('required')">
+                  Este campo es obligatorio.
+                  </small>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-md-1">
+         <div class="form-group">
+            <label class="form-label" for="lada">Lada:</label>
+            <input class="form-control" id="lada" placeholder="" type="text" [maxlength]="5" formControlName="lada"
+            (change)="setValoresStore(domicilio, 'lada', 'setLada')" />
+         </div>
+      </div>
+      <div class="col-md-3">
+         <div class="form-group">
+            <label class="form-label" for="telefono">Teléfono<span [ngClass]="{'tiene-error': domicilio.get('telefono')?.invalid && domicilio.get('telefono')?.touched}">*</span>:</label>
+            <input class="form-control" id="telefono" placeholder="" type="text" [maxlength]="24" size="29"
+            [ngClass]="{'tiene-invalido': domicilio.get('telefono')?.invalid && domicilio.get('telefono')?.touched}"
+            formControlName="telefono" (change)="setValoresStore(domicilio, 'telefono', 'setTelefono')" />
+            <div class="d-grid">
+               <div *ngIf="domicilio.get('telefono')?.touched">
+                  <small class="mensaje-error" *ngIf="domicilio.get('telefono')?.hasError('required')">
+                  Este campo es obligatorio.
+                  </small>
+                  <small class="mensaje-error" *ngIf="domicilio.get('telefono')?.hasError('maxlength')">
+                  Por favor, escribe un número entero válido
+                  </small>
+                  <small class="mensaje-error" *ngIf="domicilio.get('telefono')?.hasError('pattern')">
+                  Por favor, escribe un número entero válido
+                  </small>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-md-12 mt-5">
+         <h4>S.C.I.A.N.<span >*</span>:</h4>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-md-12">
+         <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccionCheckbox" [configuracionTabla]="nicoTabla"
+         (listaDeFilaSeleccionada)="onScianSeleccionChange($event)"
+         [datos]="nicoTablaDatos" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura ? true : false"></app-tabla-dinamica>
+      </div>
+      <div class="col-md-12 text-end mt-5">
+         @if(nicoTablaDatos.length > 0) {
+         <button class="btn btn-default me-2" [disabled]="esFormularioSoloLectura ? true : false" (click)="eliminarScian()">
+         Eliminar
+         </button>
+         }
+         <button class="btn btn-primary me-2" [disabled]="esFormularioSoloLectura ? true : false" (click)="abrirModalScian()">
+         Agregar
+         </button>
+      </div>
+   </div>
+   <div class="row align-item-center" *ngIf="!funcionamientoList.includes(idProcedimiento)">
+      <div class="col-md-4 mt-5">
+         <lib-input-check
+         [label]="'Aviso de funcionamiento*'"
+         [id]="'avisoCheckbox'"
+         [required]="true"
+         formControlName="avisoCheckbox"
+         [isDisabled]="esFormularioSoloLectura"
+         (change)="setValoresStore(domicilio, 'avisoCheckbox', 'setAvisoCheckbox');"
+         ></lib-input-check>
+         @if (domicilio.get('avisoCheckbox')?.touched && domicilio.get('avisoCheckbox')?.errors?.['required']) {
+         <div class="mensaje-error mt-2">
+            Este campo es obligatorio.
+         </div>
+         }
+      </div>
+      <div class="col-md-4">
+         <div class="form-group">
+            <label class="form-label" for="licenciaSanitaria">No. de licencia sanitaria<span [ngClass]="{'tiene-error': domicilio.get('licenciaSanitaria')?.invalid && domicilio.get('licenciaSanitaria')?.touched}">*</span>
+            <span class="bi bi-question-circle-fill" tooltip="Número de la autorización indicado en el documento emitido por la autoridad sanitaria competente." placement="top"></span>
+            </label>
+            <input class="form-control" id="licenciaSanitaria" placeholder="" type="text"
+            [maxLength]="50"  
+            formControlName="licenciaSanitaria" 
+            [ngClass]="{'tiene-invalido': domicilio.controls['licenciaSanitaria'].invalid && domicilio.controls['licenciaSanitaria'].touched }"
+            (change)="setValoresStore(domicilio, 'licenciaSanitaria', 'setLicenciaSanitaria')" 
+            />
+         </div>
+         <div class="d-grid">
+            <span class="mensaje-error" *ngIf="domicilio.controls['licenciaSanitaria']?.invalid && domicilio.controls['licenciaSanitaria']?.touched">Este campo es obligatorio.</span>
+            <span class="mensaje-error" *ngIf="domicilio.controls['licenciaSanitaria']?.errors?.['maxlength']">No puede tener más de 50 caracteres</span>
+         </div>
+      </div>
+   </div>
+   <div class="row mt-5">
+      <div class="col-md-12">
+         <crosslist [fechas]="seleccionarOrigenDelPais" [label]="aduanasDeLabel" [botones]="paisDeProcedenciaBotones"
+         [isDisabled]="esFormularioSoloLectura ? true : false">
+         </crosslist>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-md-12 mt-5">
+         <h5>Datos de la mercancía<span >*</span>:</h5>
+      </div>
+   </div>
+   <div class="row mt-5">
+      <div class="col-md-12">
+         <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccionCheckbox" [configuracionTabla]="mercanciasTabla"
+         [datos]="mercanciasTablaDatos"
+         [isInvalida]="domicilio.invalid && domicilio.touched && mercanciasTablaDatos.length === 0"
+         [disableSeleccionTablaCheckBox]="esFormularioSoloLectura ? true : false"
+         (listaDeFilaSeleccionada)="onSeleccionChange($event)" ></app-tabla-dinamica>
+      </div>
+      <div class="col-md-12 text-end mt-5">
+         @if (mercanciasTablaDatos.length) {
+         <button class="btn btn-default me-2" [disabled]="esFormularioSoloLectura ? true : false" (click)="abrirModalMercancia()">
+         Modificar
+         </button>
+         <button class="btn btn-danger me-2" [disabled]="esFormularioSoloLectura ? true : false" (click)="eliminarMercancia()">Eliminar</button>
+         }
+         @if (!mercanciasTablaDatos.length) {
+         <button class="btn btn-primary me-2" [disabled]="esFormularioSoloLectura ? true : false" (click)="abrirModalMercancia()">
+         Agregar
+         </button>
+         }
+      </div>
+   </div>
+</form>
+<div class="modal fade" #modalAddAgentScian id="modalAddAgent" tabindex="-1" aria-labelledby="modalAddAgentLabel" aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content overflow-auto">
+         <div class="modal-header">
+            <h4 class="modal-title">Clave S.C.I.A.N.</h4>
+         </div>
+         <div class="modal-body">
+            <form [formGroup]="formAgente">
+               <div class="form-group">
+                  <app-catalogo-select [catalogo]="estado" formControlName="claveScianModal" [label]="'Clave S.C.I.A.N.'"
+                  [required]="true" name="claveScianModal" [isDisabled]="esFormularioSoloLectura || formAgente.get('claveScianModal')?.disabled ? true : false"
+                  (change)="onClaveScianChange($event);setValoresStore(formAgente, 'claveScianModal', 'setClaveScianModal')" ></app-catalogo-select>
+               </div>
+               <div class="form-group">
+                  <app-catalogo-select [catalogo]="estadoDescripcion" formControlName="claveDescripcionModal"
+                  [label]="'Descripción del S.C.I.A.N.'" [required]="false" name="claveDescripcionModal"
+                  [isDisabled]="esFormularioSoloLectura ? true : false"
+                  (change)="setValoresStore(formAgente, 'claveDescripcionModal', 'setClaveDescripcionModal')"></app-catalogo-select>
+               </div>
+            </form>
+         </div>
+         <div class="mt-5 mb-5 d-flex justify-content-between align-items-center col-md-12">
+            <div>
+               <p class="text-muted m-0">* Campos obligatorios</p>
+            </div>
+            <div class="d-flex">
+               <button type="button" class="btn btn-default me-3" [disabled]="esFormularioSoloLectura ? true : false" (click)="limpiarScianForm()">
+               Limpiar
+               </button>
+               <button type="button" class="btn btn-default me-3" [disabled]="esFormularioSoloLectura ? true : false"
+                  data-bs-dismiss="modal">
+               Cancelar
+               </button>
+               <button type="button" class="btn btn-primary me-3" [disabled]="esFormularioSoloLectura ? true : false"
+               (click)="guardarScian()">
+               Agregar
+               </button>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<div class="modal fade" #modalAddAgentMercancias tabindex="-1" aria-labelledby="modalAddAgentMercanciasLabel"
+   aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h4 class="modal-title">Datos mercancías</h4>
+         </div>
+         <div class="modal-body modal-height">
+            <form [formGroup]="formMercancias">
+               <ng-titulo titulo="Identificación del producto"></ng-titulo>
+               <div class="form-group">
+                  <label for="nombreComercial">Nombre comercial<span [ngClass]="{'tiene-error': formMercancias.get('nombreComercial')?.invalid && formMercancias.get('nombreComercial')?.touched}">*</span>:</label>
+                  <input type="text" id="nombreComercial" formControlName="nombreComercial" class="form-control" [maxlength]="1000"
+                  (change)="setValoresStore(formMercancias, 'nombreComercial', 'setNombreComercial')" />
+                  <div class="d-grid">
+                     <div *ngIf="formMercancias.get('nombreComercial')?.touched">
+                        <small class="mensaje-error" *ngIf="formMercancias.get('nombreComercial')?.hasError('required')">
+                        Este campo es obligatorio.
+                        </small>
+                     </div>
+                  </div>
+               </div>
+               <div class="form-group">
+                  <label for="nombreComun">Nombre común<span [ngClass]="{'tiene-error': formMercancias.get('nombreComun')?.invalid && formMercancias.get('nombreComun')?.touched}">*</span>:</label>
+                  <input type="text" id="nombreComun" formControlName="nombreComun" class="form-control" [maxlength]="256"
+                  [ngClass]="{'tiene-invalido': formMercancias.get('nombreComun')?.invalid && formMercancias.get('nombreComun')?.touched}"
+                  (change)="setValoresStore(formMercancias, 'nombreComun', 'setNombreComun')" />
+                  <div class="d-grid">
+                     <div *ngIf="formMercancias.get('nombreComun')?.touched">
+                        <small class="mensaje-error" *ngIf="formMercancias.get('nombreComun')?.hasError('required')">
+                        Este campo es obligatorio.
+                        </small>
+                     </div>
+                  </div>
+               </div>
+               <div class="form-group">
+                  <label *ngIf="idProcedimiento !== 260512; else nombreCientificoAlt" for="nombreCientifico">Nombre científico*:</label>
+                  <ng-template #nombreCientificoAlt>
+                     <label for="nombreCientifico">Nombre químico o científico <span [ngClass]="{'tiene-error':formMercancias.get('nombreCientifico')?.invalid && formMercancias.get('nombreCientifico')?.touched}">*</span>:</label>
+                  </ng-template>
+                  <input type="text" id="nombreCientifico" formControlName="nombreCientifico" class="form-control" [maxlength]="256"
+                  [ngClass]="{'tiene-invalido': formMercancias.get('nombreCientifico')?.invalid && formMercancias.get('nombreCientifico')?.touched}"
+                  (change)="setValoresStore(formMercancias, 'nombreCientifico', 'setNombreCientifico')" />
+                  <div class="d-grid">
+                     <div *ngIf="formMercancias.get('nombreCientifico')?.touched">
+                        <small class="mensaje-error" *ngIf="formMercancias.get('nombreCientifico')?.hasError('required')">
+                        Este campo es obligatorio.
+                        </small>
+                     </div>
+                  </div>
+               </div>
+               <div class="form-group">
+                  <label for="usoEspecifico" class="form-label text-start">Uso específico<span [ngClass]="{'tiene-error': formMercancias.get('usoEspecifico')?.invalid && formMercancias.get('usoEspecifico')?.touched}">*</span>:</label>
+                  <textarea id="usoEspecifico" class="form-control" formControlName="usoEspecifico" [maxlength]="5000"
+                  [ngClass]="{'tiene-invalido': formMercancias.get('usoEspecifico')?.invalid && formMercancias.get('usoEspecifico')?.touched}"
+                  (change)="setValoresStore(formMercancias, 'usoEspecifico', 'setUsoEspecifico')"></textarea>
+                  <div class="d-grid">
+                     <div *ngIf="formMercancias.get('usoEspecifico')?.touched">
+                        <small class="mensaje-error" *ngIf="formMercancias.get('usoEspecifico')?.hasError('required')">
+                        Este campo es obligatorio.
+                        </small>
+                     </div>
+                  </div>
+               </div>
+               <div class="form-group">
+                  <app-catalogo-select [catalogo]="estado" formControlName="estadofisico" [label]="'Estado físico'"
+                  [required]="true" name="estadofisico" [isDisabled]="esFormularioSoloLectura ? true : false"
+                  (change)="setValoresStore(formMercancias, 'estadofisico', 'setEstadoFisico')"></app-catalogo-select>
+               </div>
+               <div class="form-group">
+                  <label for="fraccionArancelaria">Fracción arancelaria<span [ngClass]="{'tiene-error': formMercancias.get('fraccionArancelaria')?.invalid && formMercancias.get('fraccionArancelaria')?.touched}">*</span>:
+                  <span class="bi bi-question-circle-fill mx-2" tooltip="Descripción numérica o desglose de un código de clasificación que otorga el Sistema Armonizado" placement="top"></span>
+                  </label>
+                  <input type="text" id="fraccionArancelaria" formControlName="fraccionArancelaria" class="form-control" [maxlength]="8"  [ngClass]="{'tiene-invalido': formMercancias.get('fraccionArancelaria')?.invalid && formMercancias.get('fraccionArancelaria')?.touched}"
+                  (change)="setValoresStore(formMercancias, 'fraccionArancelaria', 'setFraccionArancelaria'); obtenerFormaControlDatos('fraccionArancelaria')" />
+                  <div class="d-grid">
+                    <div *ngIf="formMercancias.get('fraccionArancelaria')?.touched">
+  @if (formMercancias.get('fraccionArancelaria')?.hasError('required')) {
+    <small class="mensaje-error">Este campo es obligatorio</small>
+  } @else if (formMercancias.get('fraccionArancelaria')?.hasError('pattern')) {
+    <small class="mensaje-error">Por favor, sólo escribe dígitos</small>
+  } @else if (formMercancias.get('fraccionArancelaria')?.hasError('minlength')) {
+    <small class="mensaje-error">Por favor, no escribas menos de 8 caracteres</small>
+  } @else if (formMercancias.get('fraccionArancelaria')?.hasError('maxlength')) {
+    <small class="mensaje-error">Por favor, no escribas más de 8 caracteres</small>
+  }
+</div>
+
+                  </div>
+               </div>
+               <div class="form-group">
+                  <label for="descripcionFraccion">Descripción de la fracción arancelaria<span [ngClass]="{'text-error': formMercancias.get('descripcionFraccion')?.invalid && formMercancias.get('descripcionFraccion')?.touched}">*</span>:</label>
+                  <input type="text" id="descripcionFraccion" formControlName="descripcionFraccion" class="form-control"
+                     (change)="setValoresStore(formMercancias, 'descripcionFraccion', 'setDescripcionFraccion')" />
+                  <div class="d-grid">
+                     <div *ngIf="formMercancias.get('descripcionFraccion')?.touched">
+                        <small class="mensaje-error" *ngIf="formMercancias.get('descripcionFraccion')?.hasError('required')">
+                        Este campo es obligatorio.
+                        </small>
+                     </div>
+                  </div>
+               </div>
+               <div class="form-group row">
+                  <div class="col-md-6">
+                     <label for="cantidadUMT">Cantidad UMT<span [ngClass]="{'tiene-error': formMercancias.get('cantidadUMT')?.invalid && formMercancias.get('cantidadUMT')?.touched}">*</span>:</label>
+                     <input type="text" id="cantidadUMT" formControlName="cantidadUMT" class="form-control"
+                        (change)="setValoresStore(formMercancias, 'cantidadUMT', 'setCantidadUMT'); obtenerFormaControlDatos('cantidadUMT')" />
+                     <div class="d-grid">
+                        <div *ngIf="formMercancias.get('cantidadUMT')?.touched">
+                           <small class="mensaje-error" *ngIf="formMercancias.get('cantidadUMT')?.hasError('required')">
+                           Este campo es obligatorio.
+                           </small>
+                             <small class="mensaje-error" *ngIf="formMercancias.get('cantidadUMT')?.hasError('pattern')">
+                             Este campo permite quince números enteros y hasta tres decimales
+                           </small>
+                        </div>
+                        
+                     </div>
+                  </div>
+                  <div class="col-md-6">
+                     <label for="UMT">UMT<span [ngClass]="{'tiene-error': formMercancias.get('UMT')?.invalid && formMercancias.get('UMT')?.touched}">*</span>:
+                     <span class="bi bi-question-circle-fill mx-2" tooltip="Unidad de medida de la tarifa" placement="top"></span>
+                     </label>
+                     <input type="text" id="UMT" formControlName="UMT" class="form-control"
+                        (change)="setValoresStore(formMercancias, 'UMT', 'setUMT')" />
+                     <div class="d-grid">
+                        <div *ngIf="formMercancias.get('UMT')?.touched">
+                           <small class="mensaje-error" *ngIf="formMercancias.get('UMT')?.hasError('required')">
+                           Este campo es obligatorio.
+                           </small>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-md-6">
+                     <div class="form-group">
+                        <label for="cantidadUMC">Cantidad UMC<span [ngClass]="{'tiene-error': formMercancias.get('cantidadUMC')?.invalid && formMercancias.get('cantidadUMC')?.touched}">*</span>:</label>
+                        <input type="text" id="cantidadUMC" formControlName="cantidadUMC" class="form-control" [maxlength]="20"
+                        (change)="setValoresStore(formMercancias, 'cantidadUMC', 'setCantidadUMC')" />
+                        <div class="d-grid">
+                           <div *ngIf="formMercancias.get('cantidadUMC')?.touched">
+                              <small class="mensaje-error" *ngIf="formMercancias.get('cantidadUMC')?.hasError('required')">
+                              Este campo es obligatorio.
+                              </small>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-md-6">
+                     <div class="form-group">
+                        <app-catalogo-select [catalogo]="estado" formControlName="UMC" [label]="'UMC'" [required]="true"
+                        name="UMC"  [tooltipQuestionCircle]="true" [tooltipQuestionCircleText]="'Unidad de medida de comercialización'" [isDisabled]="esFormularioSoloLectura ? true : false"
+                        (change)="setValoresStore(formMercancias, 'UMC', 'setUMC')"></app-catalogo-select>
+                     </div>
+                  </div>
+               </div>
+               <div class="form-group">
+                  <label for="numerocas">Número CAS<span [ngClass]="{'tiene-error': formMercancias.get('numerocas')?.invalid && formMercancias.get('numerocas')?.touched}">*</span>:</label>
+                  <input type="text" id="numerocas" formControlName="numerocas" class="form-control" [maxlength]="20"
+                  (change)="setValoresStore(formMercancias, 'numerocas', 'setNumerocas')" />
+                  <div class="d-grid">
+                     <div *ngIf="formMercancias.get('numerocas')?.touched">
+                        <small class="mensaje-error" *ngIf="formMercancias.get('numerocas')?.hasError('required')">
+                        Este campo es obligatorio.
+                        </small>
+                     </div>
+                  </div>
+               </div>
+               <div class="form-group">
+                  <label for="porcentajeConcentracion">Porcentaje de concentración<span [ngClass]="{'tiene-error': formMercancias.get('porcentajeConcentracion')?.invalid && formMercancias.get('porcentajeConcentracion')?.touched}">*</span>:</label>
+                  <input type="text" id="porcentajeConcentracion" formControlName="porcentajeConcentracion"
+                  class="form-control" [maxlength]="100"
+                  (change)="setValoresStore(formMercancias, 'porcentajeConcentracion', 'setPorcentajeConcentracion')" />
+                  <div class="d-grid">
+                     <div *ngIf="formMercancias.get('porcentajeConcentracion')?.touched">
+                        <small class="mensaje-error"
+                           *ngIf="formMercancias.get('porcentajeConcentracion')?.hasError('required')">
+                        Este campo es obligatorio.
+                        </small>
+                     </div>
+                  </div>
+               </div>
+               <div class="form-group mt-5">
+                  <div class="panel-group ficha-collapse" id="accordion">
+                     <div class="panel panel-default">
+                        <div class="panel-heading" (click)="mostrar_colapsableTres()" tabindex="0">
+                           <p class="panel-title">País de origen</p>
+                           <button type="button" class="collpase-button" [ngClass]="{ 'collapsed': !colapsableTres }"></button>
+                        </div>
+                        @if(colapsableTres){
+                        <div class="panel-collapse collapse in" id="panel-01">
+                           <div class="panel-body">
+                              <crosslist [fechas]="seleccionarOrigenDelPaisTres" [label]="paisDeOrigenLabel"
+                              [botones]="paisDeProcedenciaBotones" [isDisabled]="esFormularioSoloLectura ? true : false">
+                              </crosslist>
+                           </div>
+                        </div>
+                        }
+                     </div>
+                  </div>
+               </div>
+               <div class="form-group mt-5">
+                  <div class="panel-group ficha-collapse" id="accordion">
+                     <div class="panel panel-default">
+                        <div class="panel-heading" (click)="mostrar_colapsableDuos()" tabindex="0">
+                           <p class="panel-title">País de procedencia/País del último puerto de embarque</p>
+                           <button type="button" class="collpase-button" [ngClass]="{ 'collapsed': !colapsableDuos }"></button>
+                        </div>
+                        @if(colapsableDuos){
+                        <div class="panel-collapse collapse in" id="panel-01">
+                           <div class="panel-body">
+                              <crosslist [fechas]="seleccionarOrigenDelPaisCuatro" [label]="paisDeProcedenciaLabel"
+                              [botones]="paisDeProcedenciaBotones" [isDisabled]="esFormularioSoloLectura ? true : false">
+                              </crosslist>
+                           </div>
+                        </div>
+                        }
+                     </div>
+                  </div>
+               </div>
+               <div class="form-group">
+                  <app-catalogo-select [catalogo]="estado" formControlName="clasificacionToxicologica"
+                  [label]="'Clasificación toxicológica'" [required]="true" name="clasificacionToxicologica"
+                  [isDisabled]="esFormularioSoloLectura ? true : false"
+                  (change)="setValoresStore(formMercancias, 'clasificacionToxicologica', 'setClasificacionToxicologica')"></app-catalogo-select>
+               </div>
+               <div class="form-group">
+                  <app-catalogo-select [catalogo]="estado" formControlName="objetoImportacion"
+                  [label]="'Objeto de importación'" [required]="true" name="objetoImportacion"
+                  [isDisabled]="esFormularioSoloLectura ? true : false"
+                  (change)="setValoresStore(formMercancias, 'objetoImportacion', 'setObjetoImportacion')"></app-catalogo-select>
+               </div>
+            </form>
+         </div>
+         <div class="mt-5 mb-5 d-flex justify-content-between align-items-center col-md-12">
+            <div>
+               <p class="text-muted m-0">* Campos obligatorios</p>
+            </div>
+            <div class="d-flex">
+               <button type="button" class="btn btn-default ms-2" [disabled]="esFormularioSoloLectura ? true : false"
+               (click)="limpiarMercanciaForm()">
+               Limpiar
+               </button>
+               <button type="button" class="btn btn-default ms-2" [disabled]="esFormularioSoloLectura ? true : false"
+                  data-bs-dismiss="modal">
+               Cancelar
+               </button>
+               <button type="button" class="btn btn-primary ms-2" [disabled]="esFormularioSoloLectura ? true : false"
+               (click)="agregarMercancia()">
+               Agregar
+               </button>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>

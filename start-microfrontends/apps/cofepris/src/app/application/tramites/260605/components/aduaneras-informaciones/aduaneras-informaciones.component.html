@@ -1,0 +1,63 @@
+<form [formGroup]="aduanerasInformacionesForm">
+  <div class="container">
+    <div class="row w-100">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="importPermitNumber">Número de permiso de importación de PLAFEST*:<span class="bi bi-question-circle-fill" tooltip="Número de permiso de importación de PLAFEST"></span></label>
+          <input class="form-control" id="numeroDPmiso" formControlName="numeroDePermiso" type="text"
+            (change)="setValoresStore(aduanerasInformacionesForm,'numeroDePermiso', 'setNumeroDPmiso')"
+            [ngClass]="{'is-invalid': aduanerasInformacionesForm.get('numeroDePermiso')?.invalid && aduanerasInformacionesForm.get('numeroDePermiso')?.touched}"
+           />
+            <div *ngIf="aduanerasInformacionesForm.get('numeroDePermiso')?.touched && aduanerasInformacionesForm.get('numeroDePermiso')?.hasError('required')" class="text-danger mt-1 small">
+              Este campo es obligatorio
+            </div>
+            <div *ngIf="aduanerasInformacionesForm.get('numeroDePermiso')?.touched && aduanerasInformacionesForm.get('numeroDePermiso')?.hasError('notNumeric')" class="text-danger mt-1 small">
+              Por favor, escribe un número entero válido
+            </div>
+        </div>
+      </div>
+      <div class="col-md-4 m-top">
+        <div class="btn-group">
+          <button class="btn btn-default" type="button" (click)="enEnviar()" [disabled]="esFormularioSoloLectura">Cargar Aduanas</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="esFormularioValido">
+    <div class="container">
+      <div class="row w-100">
+        <!-- Available Items and Buttons -->
+        <div class="col-md-6">
+          <label>Aduanas actuales*:</label>
+            <textarea class="form-control cstm-ht" id="aduanaActual" formControlName="aduanaActual"
+              rows="3"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <crosslist [isDisabled]="esFormularioSoloLectura" [fechas]="seleccionarAduanasEntrada" [label]="paisDeOriginLabel" [botones]="paisDeProcedenciaBotons"
+            (fechasSeleccionadasChange)="paisDeOriginSeleccionadasChange($event)"></crosslist>
+        </div>
+        <div class="col-md-8">
+          <div class="form-group">
+            <label class="form-label" for="technicalJustification">Justificación técnica para importar o exportar la
+              cantidad solicitada*:<span class="bi bi-question-circle-fill" tooltip="Justificación técnica para importar o exportar la
+              cantidad solicitada"></span></label>
+            <textarea class="form-control cstm-ht" id="cstumbresAtuales" formControlName="cstumbresAtuales"
+              (change)="setValoresStore(aduanerasInformacionesForm,'cstumbresAtuales', 'setCstumbresAtuales')"
+              rows="3"
+              [ngClass]="{'is-invalid': aduanerasInformacionesForm.get('cstumbresAtuales')?.invalid && aduanerasInformacionesForm.get('cstumbresAtuales')?.touched}"
+           ></textarea>
+              <div *ngIf="aduanerasInformacionesForm.get('cstumbresAtuales')?.touched && aduanerasInformacionesForm.get('cstumbresAtuales')?.hasError('required')" class="text-danger mt-1 small">
+              Este campo es obligatorio
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</form>

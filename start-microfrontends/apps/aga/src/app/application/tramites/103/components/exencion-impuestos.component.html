@@ -1,0 +1,425 @@
+<div class="container">
+  <form [formGroup]="tramiteForm" (ngSubmit)="validarDestinatarioFormulario()" class="row mt-5">
+    <div class="col-md-12">
+      <ng-container formGroupName="exencionImpuestos">
+        <div class="alert alert-info">
+          <input type="checkbox" formControlName="manifesto" id="manifesto"
+            (change)="setValoresStore(exencionImpuestos, 'manifesto', 'setManifesto')" />
+          <div class="custom-checkbox-label">
+            <label for="">*Manifiesto bajo protesta de decir verdad que el donante de la mercancía es extranjero</label>
+          </div>
+          @if (tramiteForm.get('exencionImpuestos.manifesto')?.invalid &&
+          (tramiteForm.get('exencionImpuestos.manifesto')?.touched ||
+          tramiteForm.get('exencionImpuestos.manifesto')?.dirty)) {
+          <div class="text-danger small mt-1">Este campo es obligatorio.</div>
+          }
+        </div>
+        <div class="row mt-5">
+          <div class="col-md-8">
+            <app-catalogo-select [catalogo]="aduana" [label]="'Aduana por la que ingresará la mercancía'"
+              formControlName="aduana" [required]="true" (change)="aduanaSeleccion()" name="aduana"
+              [isDisabled]="soloLectura"></app-catalogo-select>
+          </div>
+          <div class="col-md-4 d-flex justify-content-center align-items-end">
+            <label>
+              <input type="checkbox" id="organismoPublico" formControlName="organismoPublico"
+                (change)="organismoPublico()" [disabled]="soloLectura" />
+              Organismo público
+            </label>
+          </div>
+        </div>
+
+        <ng-titulo titulo="Mercancía" />
+        <div class="row">
+          <div class="col-md-8">
+            <div class="form-group">
+              <app-catalogo-select [catalogo]="destinoMercancia" [label]="'Fin al cual se destinará la mercancía'"
+                formControlName="destinoMercancia" [required]="true"
+                (selectionChange)="tramiteForm.get('exencionImpuestos.destinoMercancia')?.setValue($event.id); destinoMercanciaSeleccion()"
+                name="aduana" [isDisabled]="soloLectura"></app-catalogo-select>
+            </div>
+          </div>
+          <div class="table-container mt-5">
+            <app-tabla-dinamica [tipoSeleccionTabla]="tipoSeleccionTabla" [disableSeleccionTablaCheckBox]="soloLectura" [configuracionTabla]="mercanciaHeaderData"
+              [datos]="mercanciaBodyData" (listaDeFilaSeleccionada)="manejarSeleccionMultiple($event)">
+            </app-tabla-dinamica>
+          </div>
+          <div class="col-md-12 mt-5 d-flex justify-content-end">
+            <button type="button" class="btn btn-default" [disabled]="soloLectura || filasSeleccionadas.length !== 1"
+              (click)="editarFila(filaSeleccionada)">Modificar</button>
+            <button type="button" class="btn btn-danger ms-3" [disabled]="soloLectura || filasSeleccionadas.length === 0"
+              data-bs-toggle="modal" data-bs-target="#confirmarModalCancelar" (click)="prepararEliminarFila()">Eliminar</button>
+            <button type="button" class="btn btn-primary ms-3" data-bs-toggle="modal"
+              data-bs-target="#modalAgregarMercancias" (click)="abrirDialogoMercancias()"
+              [disabled]="soloLectura">Agregar</button>
+          </div>
+        </div>
+      </ng-container>
+      <ng-titulo titulo="Datos del donante extrajero" />
+      <ng-container formGroupName="importadorExportador">
+        <div class="row">
+          <div class="col-md-4">
+            <label>Nombre*:</label>
+            <input type="text" class="form-control" id="nombre" formControlName="nombre" maxlength="120" size="80"
+              (change)="setValoresStore(importadorExportador, 'nombre', 'setNombre')" />
+            @if (tramiteForm.get('importadorExportador.nombre')?.invalid &&
+            (tramiteForm.get('importadorExportador.nombre')?.touched ||
+            tramiteForm.get('importadorExportador.nombre')?.dirty)) {
+            <div class="text-danger small mt-1">Este campo es obligatorio.</div>
+            }
+          </div>
+          <div class="col-md-8 d-flex justify-content-center align-items-center">
+            <label>
+              <input type="checkbox" id="personaMoral" formControlName="personaMoral"
+                (change)="personaMoral()" [disabled]="soloLectura" />
+              Persona física
+            </label>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-4">
+            <app-catalogo-select [catalogo]="pais" [label]="'País'" [required]="true" formControlName="pais"
+              (change)="paisSeleccion()" name="pais" [isDisabled]="soloLectura"></app-catalogo-select>
+          </div>
+          <div class="col-md-4">
+            <label>Código postal*:</label>
+            <input type="text" class="form-control" id="codigoPostal" formControlName="codigoPostal" maxlength="5" size="1"
+              (change)="setValoresStore(importadorExportador, 'codigoPostal', 'setCodigoPostal')" />
+            @if (tramiteForm.get('importadorExportador.codigoPostal')?.invalid &&
+            (tramiteForm.get('importadorExportador.codigoPostal')?.touched ||
+            tramiteForm.get('importadorExportador.codigoPostal')?.dirty)) {
+            <div class="text-danger small mt-1">Este campo es obligatorio.</div>
+            }
+          </div>
+          <div class="col-md-4">
+            <label>Estado*:</label>
+            <input type="text" class="form-control" id="estado" formControlName="estado" maxlength="30" size="30"
+              (change)="setValoresStore(importadorExportador, 'estado', 'setEstado')" />
+            @if (tramiteForm.get('importadorExportador.estado')?.invalid &&
+            (tramiteForm.get('importadorExportador.estado')?.touched ||
+            tramiteForm.get('importadorExportador.estado')?.dirty)) {
+            <div class="text-danger small mt-1">Este campo es obligatorio.</div>
+            }
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-4">
+            <label>Calle*:</label>
+            <input type="text" class="form-control" maxlength="100" id="calle" formControlName="calle" maxlength="80" size="30"
+              (change)="setValoresStore(importadorExportador, 'calle', 'setCalle')" />
+            @if (tramiteForm.get('importadorExportador.calle')?.invalid &&
+            (tramiteForm.get('importadorExportador.calle')?.touched ||
+            tramiteForm.get('importadorExportador.calle')?.dirty)) {
+            <div class="text-danger small mt-1">Este campo es obligatorio.</div>
+            }
+          </div>
+          <div class="col-md-4">
+            <label>Número exterior*:</label>
+            <input type="text" maxlength="40" size="11" class="form-control" id="numeroExterior"
+              formControlName="numeroExterior"
+              (change)="setValoresStore(importadorExportador, 'numeroExterior', 'setNumeroExterior')" />
+            @if (tramiteForm.get('importadorExportador.numeroExterior')?.invalid &&
+            (tramiteForm.get('importadorExportador.numeroExterior')?.touched ||
+            tramiteForm.get('importadorExportador.numeroExterior')?.dirty)) {
+            <div class="text-danger small mt-1">Este campo es obligatorio.</div>
+            }
+          </div>
+          <div class="col-md-4">
+            <label>Número interior:</label>
+            <input type="text" class="form-control" maxlength="30" size="11" id="numeroInterior" formControlName="numeroInterior"
+              (change)="setValoresStore(importadorExportador, 'numeroInterior', 'setNumeroInterior')" />
+          </div>
+        </div>
+        <div class="row mt-3 mb-3">
+          <div class="col-md-4">
+            <label>Colonia*:</label>
+            <input type="text" class="form-control" id="colonia" formControlName="colonia" maxlength="80" size="5"
+              (change)="setValoresStore(importadorExportador, 'colonia', 'setColonia')" />
+            @if (tramiteForm.get('importadorExportador.colonia')?.invalid &&
+            (tramiteForm.get('importadorExportador.colonia')?.touched ||
+            tramiteForm.get('importadorExportador.colonia')?.dirty)) {
+            <div class="text-danger small mt-1">Este campo es obligatorio.</div>
+            }
+          </div>
+          <div class="col-md-4">
+            <label>Correo electrónico:</label>
+            <input type="email" class="form-control" maxlength="50" size="40" id="correoElectronico"
+              formControlName="correoElectronico"
+              (change)="setValoresStore(importadorExportador, 'correoElectronico', 'setCorreoElectronico')" />
+            @if (tramiteForm.get('importadorExportador.correoElectronico')?.errors?.['email']) {
+            <div class="text-danger">
+              <small>Por favor, escribe una dirección de correo válida.</small>
+            </div>
+            }
+          </div>
+          <div class="col-md-4">
+            <label>Teléfono:</label>
+            <input type="text" class="form-control" id="telefono" formControlName="telefono" maxlength="30" size="25"
+              (change)="setValoresStore(importadorExportador, 'telefono', 'setTelefono')" />
+            @if (tramiteForm.get('importadorExportador.telefono')?.errors?.['pattern']) {
+            <div class="text-danger">
+              <small>Por favor, sólo escribe dígitos.</small>
+            </div>
+            }
+          </div>
+        </div>
+        <div class="row mt-5">
+          <label>Señale si la mercancía formará parte del patrimonio de su representada*:</label>
+          <div>
+            <div class="form-check mb-2" *ngFor="let option of radioOpcions">
+              <input class="form-check-input" type="radio" [id]="'opcion_' + option.value" [value]="option.value"
+                formControlName="opcion"
+                [checked]="importadorExportador.get('opcion')?.value === option.value"
+                (change)="cambiarRadio(option.value); setValoresStore(importadorExportador, 'opcion', 'setOpcion')">
+              <label class="form-check-label ms-2" [for]="'opcion_' + option.value">{{ option.label }}</label>
+            </div>
+          </div>
+          @if (tramiteForm.get('importadorExportador.opcion')?.invalid &&
+          (tramiteForm.get('importadorExportador.opcion')?.touched ||
+          tramiteForm.get('importadorExportador.opcion')?.dirty)) {
+          <div class="text-danger small mt-1">Este campo es obligatorio.</div>
+          }
+        </div>
+      </ng-container>
+    </div>
+  </form>
+</div>
+
+<div class="modal fade" id="modalAgregarMercancias" #modalAgregarMercancias tabindex="-1" aria-labelledby="modalAgregarMercanciasLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form [formGroup]="agregarMercanciasForm">
+          <div class="alert alert-info d-flex justify-content-center">
+            <span>Debes capturar la descripción de la mercancía en los mismos términos de la carta de donación</span>
+          </div>
+          <ng-titulo titulo="Datos de la mercancía"></ng-titulo>
+          <ng-container formGroupName="datosMercancia">
+            <div class="row">
+              <div class="col-md-8">
+                <label for="tipoDeMercancia">Tipo de mercancía*:</label>
+                <input type="text" class="form-control" formControlName="tipoDeMercancia" id="tipoDeMercancia"
+                  maxlength="200"
+                  size="100"
+                  (change)="setValoresStore(exencionImpuestos, 'datosMercancia.tipoDeMercancia', 'setTipoDeMercancia')" />
+                @if (agregarMercanciasForm.get('datosMercancia.tipoDeMercancia')?.invalid &&
+                (agregarMercanciasForm.get('datosMercancia.tipoDeMercancia')?.touched ||
+                agregarMercanciasForm.get('datosMercancia.tipoDeMercancia')?.dirty)) {
+                <div class="text-danger small mt-1">
+                  Este campo es obligatorio.
+                </div>
+                }
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-md-8">
+                <label for="usoEspecifico">Uso específico de la mercancía*:</label>
+                <input type="text" class="form-control" formControlName="usoEspecifico" id="usoEspecifico"
+                maxlength="512"
+                size="50"  
+                  (change)="setValoresStore(exencionImpuestos, 'datosMercancia.usoEspecifico', 'setUsoEspecifico')" />
+                @if (agregarMercanciasForm.get('datosMercancia.usoEspecifico')?.invalid &&
+                (agregarMercanciasForm.get('datosMercancia.usoEspecifico')?.touched ||
+                agregarMercanciasForm.get('datosMercancia.usoEspecifico')?.dirty)) {
+                <div class="text-danger small mt-1">
+                  Este campo es obligatorio.
+                </div>
+                }
+              </div>
+              <div class="col-md-4 seleccionar-desplegable">
+                <app-catalogo-select [catalogo]="condicionMercancia" [label]="'Condición de la mercancía*'"
+                  [required]="true" formControlName="condicionMercancia" (change)="condicionMercanciaSeleccion()"
+                  name="condicionMercancia" [isDisabled]="soloLectura"></app-catalogo-select>
+                @if (agregarMercanciasForm.get('datosMercancia.condicionMercancia')?.invalid &&
+                  (agregarMercanciasForm.get('datosMercancia.condicionMercancia')?.touched ||
+                  agregarMercanciasForm.get('datosMercancia.condicionMercancia')?.dirty || envioIntentado)) {
+                  <div class="text-danger small mt-1">Este campo es obligatorio.</div>
+                }
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-md-8">
+                <label for="cantidadComercial">Cantidad*:</label>
+                <input type="text" class="form-control" formControlName="cantidad" id="cantidad" maxlength="20" size="20"
+                  (change)="setValoresStore(exencionImpuestos, 'datosMercancia.cantidad', 'setCantidad')" />
+                  @if (
+                    agregarMercanciasForm.get('datosMercancia.cantidad')?.errors?.['required'] &&
+                    (agregarMercanciasForm.get('datosMercancia.cantidad')?.touched ||
+                    agregarMercanciasForm.get('datosMercancia.cantidad')?.dirty || envioIntentado)
+                  ) {
+                    <div class="text-danger small mt-1">Este campo es obligatorio.</div>
+                  } @else if (
+                    agregarMercanciasForm.get('datosMercancia.cantidad')?.errors?.['pattern'] &&
+                    (agregarMercanciasForm.get('datosMercancia.cantidad')?.touched ||
+                    agregarMercanciasForm.get('datosMercancia.cantidad')?.dirty)
+                  ) {
+                    <div class="text-danger small mt-1">Este campo permite hasta 12 números enteros y 3 decimales</div>
+                  } @else if (
+                    agregarMercanciasForm.get('datosMercancia.cantidad')?.errors?.['min'] &&
+                    (agregarMercanciasForm.get('datosMercancia.cantidad')?.touched ||
+                    agregarMercanciasForm.get('datosMercancia.cantidad')?.dirty)
+                  ) {
+                    <div class="text-danger small mt-1">Por favor, escribe un valor mayor o igual a 1</div>
+                  }
+              </div>
+              <div class="col-md-4 seleccionar-desplegable">
+                <app-catalogo-select [catalogo]="unidadMedida" [label]="'Unidad de medida*'" [required]="true"
+                  name="unidadMedida" formControlName="unidadMedida" (change)="unidadMedidaSeleccion()"
+                  [isDisabled]="soloLectura"></app-catalogo-select>
+                @if (agregarMercanciasForm.get('datosMercancia.unidadMedida')?.invalid &&
+                  (agregarMercanciasForm.get('datosMercancia.unidadMedida')?.touched ||
+                  agregarMercanciasForm.get('datosMercancia.unidadMedida')?.dirty || envioIntentado)) {
+                  <div class="text-danger small mt-1">Este campo es obligatorio.</div>
+                }
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div class="col-md-4">
+                <label>
+                  <input type="checkbox" id="vehiculo" formControlName="vehiculo" (change)="vehiculo()" />
+                  Vehículo
+                </label>
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-md-4">
+                <label for="marca">Marca:</label>
+                <input type="text" class="form-control" formControlName="marca" id="marca" maxlength="100" size="30"
+                  (change)="setValoresStore(exencionImpuestos, 'datosMercancia.marca', 'setMarca')" />
+                @if (agregarMercanciasForm.get('datosMercancia.vehiculo')?.value &&
+                agregarMercanciasForm.get('datosMercancia.marca')?.invalid &&
+                (agregarMercanciasForm.get('datosMercancia.marca')?.touched ||
+                agregarMercanciasForm.get('datosMercancia.marca')?.dirty || envioIntentado)) {
+                <div class="text-danger small mt-1">Este campo es obligatorio.</div>
+                }
+              </div>
+              <div class="col-md-4 seleccionar-desplegable">
+                <app-catalogo-select [catalogo]="ano" [label]="'Año'" name="ano" formControlName="ano" [required]="true"
+                  (change)="anoSeleccion()" [isDisabled]="soloLectura"></app-catalogo-select>
+                @if (agregarMercanciasForm.get('datosMercancia.vehiculo')?.value &&
+                agregarMercanciasForm.get('datosMercancia.ano')?.invalid &&
+                (agregarMercanciasForm.get('datosMercancia.ano')?.touched ||
+                agregarMercanciasForm.get('datosMercancia.ano')?.dirty || envioIntentado)) {
+                <div class="text-danger small mt-1">Este campo es obligatorio.</div>
+                }
+              </div>
+              <div class="col-md-4">
+                <label for="modelo">Modelo:</label>
+                <input type="text" class="form-control" formControlName="modelo" id="modelo" maxlength="50" size="30"
+                  (change)="setValoresStore(exencionImpuestos, 'datosMercancia.modelo', 'setModelo')" />
+                @if (agregarMercanciasForm.get('datosMercancia.vehiculo')?.value &&
+                agregarMercanciasForm.get('datosMercancia.modelo')?.invalid &&
+                (agregarMercanciasForm.get('datosMercancia.modelo')?.touched ||
+                agregarMercanciasForm.get('datosMercancia.modelo')?.dirty || envioIntentado)) {
+                <div class="text-danger small mt-1">Este campo es obligatorio.</div>
+                }
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-md-8">
+                <label for="serie">Número de serie:</label>
+                <input type="text" class="form-control" formControlName="serie" id="serie" size="50" maxlength="25"
+                  (change)="setValoresStore(exencionImpuestos, 'datosMercancia.serie', 'setSerie')" />
+                @if (agregarMercanciasForm.get('datosMercancia.vehiculo')?.value &&
+                agregarMercanciasForm.get('datosMercancia.serie')?.invalid &&
+                (agregarMercanciasForm.get('datosMercancia.serie')?.touched ||
+                agregarMercanciasForm.get('datosMercancia.serie')?.dirty || envioIntentado)) {
+                <div class="text-danger small mt-1">Este campo es obligatorio.</div>
+                }
+              </div>
+            </div>
+          </ng-container>
+        </form>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mt-5 d-flex justify-content-end">
+          <div class="modal-footer custom-footer">
+            <button type="button" class="btn btn-default" [disabled]="soloLectura"
+              (click)="limpiarAgregarMercanciasForm()">Limpiar</button>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal" #closeModal [disabled]="soloLectura"
+              (click)="cancelarAgregarMercanciasForm()">Cancelar</button>
+            <button type="button" class="btn btn-primary" (click)="agregarMercanciasConfirm()"
+              [disabled]="soloLectura">Agregar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmar modal (Ningún vehículo registrado) -->
+<div id="confirmarModal" aria-labelledby="confirmarModalLabel" class="modal fade" tabindex="-1" role="dialog"
+  aria-hidden="true" #confirmarModal>
+  <div class="modal-dialog modal-sm confirmar-modal-small" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+      </div>
+      <div class="modal-body">
+        <label>No se ha registrado ningún vehículo en el año fiscal 2025.</label>
+      </div>
+      <div class="modal-footer modal-footer-centered">
+        <button type="button" class="btn btn-primary" (click)="agregarMercancias()" data-bs-dismiss="modal"
+          #closeConfirmarModal [disabled]="soloLectura">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmar Modal Agregar (Sin marcar casilla de verificación) -->
+<div id="confirmarModalAgregar" aria-labelledby="confirmarModalAgregarLabel" class="modal fade confirmar-modal-agregar" role="dialog"
+  aria-hidden="true" #confirmarModalAgregar>
+  <div class="modal-dialog modal-sm confirmar-modal-small" role="document">
+    <div class="modal-content">
+      <div class="modal-header"></div>
+      <div class="modal-body">
+        <label id="confirmarModalAgregarLabel">La mercancía fue agregada correctamente.</label>
+      </div>
+      <div class="modal-footer modal-footer-centered">
+        <button type="button" class="btn btn-primary" (click)="agregarMercanciasAceptar()"
+          #closeConfirmarModal [disabled]="soloLectura">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Confirmar Cancelar Modal (Confirmación de eliminación)-->
+<div id="confirmarModalCancelar" aria-labelledby="confirmarModalCancelarLabel" class="modal fade" tabindex="-1" role="dialog"
+  aria-hidden="true" #confirmarModalCancelar>
+  <div class="modal-dialog modal-sm modal-cancelar confirmar-modal-large" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        
+      </div>
+      <div class="modal-body">
+        <label>¿Estás seguro que deseas eliminar los registros marcados?</label>
+      </div>
+      <div class="modal-footer modal-footer-centered">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="eliminarMercancias()" data-bs-dismiss="modal"
+          #closeConfirmarModal [disabled]="soloLectura">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modalidad de confirmación del vehículo -->
+<div id="confirmarModalVehiculo" aria-labelledby="confirmarModalVehiculoLabel" class="modal fade modal-vehiculo-confirmation" tabindex="-1" role="dialog"
+  aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" #confirmarModalVehiculo>
+  <div class="modal-dialog modal-sm confirmar-modal-medium" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+      </div>
+      <div class="modal-body">
+        <p><strong>No se ha registrado ningún vehículo en el año fiscal 2025.</strong></p>
+      </div>
+      <div class="modal-footer modal-footer-centered">
+        <button type="button" class="btn btn-primary" (click)="confirmarVehiculo()" data-bs-dismiss="modal"
+          [disabled]="soloLectura">
+          Aceptar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

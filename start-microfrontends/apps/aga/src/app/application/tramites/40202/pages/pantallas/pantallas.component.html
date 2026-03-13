@@ -1,0 +1,55 @@
+<div class="page">
+  <div class="container">
+
+    @if(!esNaviero){ <div class="row pt-5">
+      <div class="col-md-12">
+        <div class="alert alert-info" [innerHTML]="mensajeAgenteNaviero"></div>
+      </div>
+    </div>}@else{
+    <div class="row">
+      @if(indice === 1){
+      <div class="col-md-12">
+        <h3>Registro del código alfanumérico armonizado del transportista</h3>
+      </div>
+      }
+
+      @if (indice === 2) {
+      <div class="col-md-12">
+        <h1 class="titulo titulo-gold">Firmar</h1>
+      </div>
+      }
+
+      @if(!esValido) {
+      <ng-alert [CONTENIDO]="ALERTA" [CUSTOMECLASS]="infoError"></ng-alert>
+      }
+
+      <app-wizard [listaPasos]="pantallasPasos"></app-wizard>
+    </div>
+
+    <div class="row">
+      @switch (indice) { @case (1) {
+      <app-datos></app-datos>
+      } @case (2) {
+      <paso-firma [idSolicitud]="estadoSolicitud.idSolicitud" [procedureUrl]="'modificar-caat-maritimo'"
+        [procedure]="40202" />
+      } }
+    </div>
+
+    <btn-continuar [datos]="datosPasos" (anteriorEvento)="getValorIndice($event)"
+      (continuarEvento)="getValorIndice($event)">
+    </btn-continuar>
+
+    @if (indice === 1) {
+    <ng-alert [CONTENIDO]="TEXTOS" [CUSTOMECLASS]="infoAlert"></ng-alert>
+    }
+    }
+  </div>
+</div>
+
+
+@if(nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+  </lib-notificaciones>
+</section>
+}

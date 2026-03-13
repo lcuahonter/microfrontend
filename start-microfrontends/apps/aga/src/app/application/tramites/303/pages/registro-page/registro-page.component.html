@@ -1,0 +1,36 @@
+<div class="page">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <h2>Registro del despacho de mercancías de las empresas</h2>
+      </div>
+
+      <app-wizard [listaPasos]="pasos"></app-wizard>
+
+    </div>
+
+    <div class="row">
+      @switch (indice) {
+      @case (1) {
+      <paso-uno></paso-uno>
+      }
+      @case (2) {
+      <paso-dos [cargaArchivosEvento]="cargarArchivosEvento" [regresarSeccionCargarDocumentoEvento]="
+            regresarSeccionCargarDocumentoEvento
+          " (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+        (reenviarCargaRealizada)="cargaRealizada($event)"></paso-dos>
+      }
+      @case (3) {
+      <paso-tres></paso-tres>
+      }
+      }
+      <btn-continuar [datos]="datosPasos" (continuarEvento)="getValorIndice($event)"></btn-continuar>
+    </div>
+  </div>
+</div>
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+  </lib-notificaciones>
+</section>
+}

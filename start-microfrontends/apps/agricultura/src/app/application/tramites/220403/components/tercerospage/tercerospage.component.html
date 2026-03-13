@@ -1,0 +1,232 @@
+<div class="container">
+  <ng-titulo titulo="Terceros relacionados"></ng-titulo>
+
+  <ng-alert [CONTENIDO]="TEXTO_DE_ALERTA"></ng-alert>
+
+  <div class="row mt-5">
+    <div class="col-md-12">
+      <label class="form-label" for="empresaProductora"
+        >Empresa Productora</label
+      >
+      <app-tabla-dinamica
+        [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX"
+        [configuracionTabla]="empresaProductoraConfiguracionTabla"
+        [datos]="empresaProductoraDatos"
+        [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+      ></app-tabla-dinamica>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <div class="col-md-12">
+      <label class="form-label" for="importadorDatos"
+        >Datos del Importador</label
+      >*
+      <app-tabla-dinamica
+        [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX"
+        [configuracionTabla]="importadorConfiguracionTabla"
+        [datos]="importadorDatos"
+        [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+      ></app-tabla-dinamica>
+    </div>
+  </div>
+  @if (importadorDatos.length <= 0) {
+  <div class="row">
+    <div class="col-md-12 text-end">
+      <button
+        type="button"
+        name="agregarMercancias"
+        class="btn btn-primary ms-2"
+        data-bs-toggle="modal"
+        data-bs-target="#modalAgregarImportador"
+        [disabled]="esFormularioSoloLectura"
+        (click)="abrirDialogoImportador()"
+      >
+        Agregar
+      </button>
+    </div>
+  </div>
+  }
+</div>
+
+<div
+  class="modal fade"
+  id="modalAgregarImportador"
+  tabindex="-1"
+  aria-labelledby="modalAgregarImportadorLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <ng-titulo titulo="Agregar datos del importador"></ng-titulo>
+        <form [formGroup]="agregarImportadorForm">
+          <div formGroupName="tercerosRelacionados">
+            <div class="row">
+              <div class="col-md-12">
+                <label class="form-label" for="tipoPersona"
+                  >Tipo persona*:</label
+                >
+                <app-input-radio
+                  [radioOptions]="opcionDeBotonDeRadio"
+                  [isRequired]="true"
+                  [layout]="'vertical'"
+                  formControlName="tipoPersona"
+                ></app-input-radio>
+              </div>
+            </div>
+
+            <ng-titulo titulo="Datos personales"></ng-titulo>
+
+            @if (seccionState.tercerosRelacionados.tipoPersona !== 'moral') {
+            <div class="row">
+              <div class="col-md-4">
+                <label class="form-label" for="nombre">Nombre(s)*:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="nombre"
+                  formControlName="nombre"
+                  id="nombre"
+                />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="apellidoPaterno"
+                  >Primer apellido*:</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  name="apellidoPaterno"
+                  formControlName="apellidoPaterno"
+                  id="apellidoPaterno"
+                />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="apellidoMaterno"
+                  >Segundo apellido:</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  name="apellidoMaterno"
+                  formControlName="apellidoMaterno"
+                  id="apellidoMaterno"
+                />
+              </div>
+            </div>
+            } @if (seccionState.tercerosRelacionados.tipoPersona !== 'fisica') {
+            <div class="row">
+              <div class="col-md-8">
+                <label class="form-label" for="razonSocial"
+                  >Denominación/razón social*:</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  name="razonSocial"
+                  formControlName="razonSocial"
+                  id="razonSocial"
+                />
+              </div>
+            </div>
+            }
+            <div class="row">
+              <div class="col-md-4">
+                <app-catalogo-select
+                  [catalogo]="pais"
+                  [label]="'País'"
+                  formControlName="pais"
+                  [required]="true"
+                  (change)="paisSeleccion()"
+                  [isDisabled]="esFormularioSoloLectura"
+                  name="pais"
+                ></app-catalogo-select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-8">
+                <div class="form-group">
+                  <label class="form-label">Domicilio*:</label>
+                  <textarea
+                    class="form-control"
+                    id="domicilio"
+                    name="domicilio"
+                    formControlName="domicilio"
+                    rows="5"
+                    maxlength="4000"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-1">
+                <label class="form-label" for="lada">Lada:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="lada"
+                  formControlName="lada"
+                  id="lada"
+                />
+              </div>
+              <div class="col-md-3">
+                <label class="form-label" for="telefono">Teléfono:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="telefono"
+                  formControlName="telefono"
+                  id="telefono"
+                />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="correoElectronico"
+                  >Correo electrónico:
+                  <span
+                    class="bi bi-question-circle-fill"
+                    title="ejemplo@dominio.com"
+                    data-bs-toggle="tooltip"
+                  ></span
+                ></label>
+                <input
+                  type="email"
+                  class="form-control"
+                  name="correoElectronico"
+                  formControlName="correoElectronico"
+                  id="correoElectronico"
+                />
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer mt-5 custom-footer">
+        <button
+          type="button"
+          id="btnLimpiarFrmDatosTercero"
+          class="btn btn-default"
+          (click)="limpiarImportador()"
+        >
+          Limpiar
+        </button>
+        <button
+          type="button"
+          id="btnCancelarFrmDatosTercero"
+          class="btn btn-danger"
+          data-bs-dismiss="modal"
+          #closeModal
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          id="btnGuardarFrmDatosTercero"
+          class="btn btn-primary"
+          (click)="guardarImportador()"
+        >
+          Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

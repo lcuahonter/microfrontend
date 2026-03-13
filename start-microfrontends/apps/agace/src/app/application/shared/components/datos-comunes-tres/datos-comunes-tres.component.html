@@ -1,0 +1,489 @@
+<div class="page">
+    <div class="container">
+        <form [formGroup]="datosComunesForm">
+            <div class="row mt-5">
+                <label class="form-label text-start">Señale el sector productivo o servicio al que pertenece</label>
+            </div>
+            <div class="row">
+                <formas-dinamicas
+                [forma]="ninoFormGroupUno"
+                [formularioDatos]="formDataUno"
+                [templateMap]="templateMap"
+                [estado]="datosComunesTresState"
+                [soloLectura]="consultaState.readonly"
+                (emitirCambioDeValor)="establecerCambioDeValorUno($event)"
+                ></formas-dinamicas>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12">
+                <ng-titulo titulo="Clientes y Proveedores en el Extranjero" />
+              </div>
+              <div class="col-md-12">
+                <label class="form-label text-start"
+                  >Anexe un archivo que contenga el nombre y dirección de sus clientes
+                  y proveedores en el extranjero directa o indirectamente vinculados
+                  con el régimen aduanero con el que se solicita el registro, con los
+                  que realizó operaciones de comercio exterior durante los últimos
+                  doce meses
+                </label>
+                <div class="mt-3">
+                  <b>Para descargar plantilla del archivo de excel de click </b>
+                  <a href="/assets/pdf/carga_proveedoresExtranjeros_aviso.xlsx">aquí</a>
+                </div>
+                <div class="row" style="margin-top: 20px">
+                  <div class="col-md-4">
+                    <input type="file" accept=".xlsx" class="form-control sfile" name="archivoExtranjero" id="archivoExtranjero" formControlName="archivoExtranjero" (change)="cambioEvento($event, 'archivoExtranjero')" title="Examinar"/>
+                  </div>
+                  <div class="col-md-4">
+                    <p class="mt-2">{{ archivoSeleccionado }}</p>
+                  </div>
+                  <div class="col-md-4 d-flex justify-content-end">
+                    <button type="button" name="cargaArchivoProcesos" id="cargaArchivoProcesos" class="btn btn-primary me-md-3" (click)="anexar()" [disabled]="consultaState.readonly">Anexar</button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 mt-4">
+                <label class="form-label text-start" for="actualmente1" >Registros que existen actualmente.</label>
+                <input type="text" class="form-control" formControlName="clientesActualmente" name="clientesActualmente" id="clientesActualmente" (change)="cambioEvento($event, 'clientesActualmente')"/>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12">
+                <ng-titulo titulo="Proveedores" />
+              </div>
+
+              <div class="col-md-12">
+                <label class="form-label text-start"
+                  >Anexe un archivo que contenga el nombre y clave en el R F C de sus
+                  proveedores de insumos adquiridos en territorio nacional, vinculados
+                  al proceso bajo el régimen que solicita, de los últimos 6
+                  meses</label>
+                <div class="mt-3">
+                  <b>Para descargar plantilla del archivo de excel de click </b>
+                  <a href="/assets/pdf/carga_proveedoresExtranjeros_aviso.xlsx">aquí</a>
+                </div>
+                <div class="row" style="margin-top: 20px">
+                  <div class="col-md-4">
+                    <input type="file" accept=".xlsx" class="form-control sfile" name="proveedoresExtranjero" id="proveedoresExtranjero" formControlName="proveedoresExtranjero" title="Examinar" (change)="cambioEvento($event, 'proveedoresExtranjero')"/>
+                  </div>
+                  <div class="col-md-4">
+                    <p class="mt-2">{{ proveedoresSeleccionado }}</p>
+                  </div>
+                  <div class="col-md-4 d-flex justify-content-end">
+                    <button type="button" name="cargaArchivoProcesos" id="cargaArchivoProcesos" class="btn btn-primary me-md-3" (click)="anexar()" [disabled]="consultaState.readonly">Anexar</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-4 mt-4">
+                <label class="form-label text-start">Registros que existen actualmente.</label>
+                <input type="text" class="form-control" formControlName="proveedoresActualmente" name="proveedoresActualmente" id="proveedoresActualmente" (change)="cambioEvento($event, 'proveedoresActualmente')"/>
+              </div>
+              
+              <div class="col-md-12 mt-5">
+                <div class="alert alert-info">
+                  <div class="form-check">
+                    <p><b> Nota:</b> Los proveedores nacionales que se declaren deberán
+                    contar con la opinión positiva del cumplimiento de las
+                    obligaciones fiscales prevista en el artículo 32-D del código en
+                    la RFM.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12">
+                <ng-titulo titulo="Querella" />
+              </div>
+              <div class="col-md-12 mt-4">
+                <label class="form-label text-start">
+                  Señale si el SAT ha interpuesto querella o denuncia penal en contra
+                  de los socios, accionistas, según corresponda, representante legal,
+                  e integrantes de la administración de la empresa solicitante o
+                  declaratoria de perjuicio, según corresponda, durante los últimos
+                  tres años anteriores a la presentación de la solicitud de
+                  certificación. *
+                </label>
+                <app-input-radio
+                  formControlName="senaleSiElSAT"
+                  [radioOptions]="sinoOpciones"
+                  [isRequired]="true"
+                  [layout]="'horizontal'"
+                  [gridLayout]="true"
+                  (valueChange)="cambioEvento($event, 'senaleSiElSAT')"
+                ></app-input-radio>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12">
+                <formas-dinamicas
+                formularioTitulo="Control Inventarios"
+                [forma]="ninoFormGroupDos"
+                [formularioDatos]="formDataDos"
+                [estado]="datosComunesTresState"
+                [soloLectura]="consultaState.readonly"
+                (emitirCambioDeValor)="establecerCambioDeValorDos($event)"
+                ></formas-dinamicas>
+              </div>
+              <div class="col-md-12 d-flex justify-content-end">
+                <button type="button" name="" id="" class="btn btn-primary me-md-3" (click)="agregarControlInventarios()" [disabled]="consultaState.readonly">Agregar</button>
+              </div>
+
+              <div class="col-md-12 mt-4">
+                <label class="form-label text-start">Control Inventarios</label>
+              </div>
+              <div class="col-md-12 mt-4">
+                <app-tabla-con-entrada
+                  [tipoSeleccionTabla]="tablaSeleccionCheckbox"
+                  [configuracionTabla]="inventariosConfiguracionColumnas"
+                  [datos]="inventariosDatos"
+                  [disableSeleccionTablaCheckBox]="consultaState.readonly"
+                  (listaDeFilaSeleccionada)="seleccionarInventariosDatos($event)"
+                >
+                </app-tabla-con-entrada>
+              </div>
+              <div class="col-md-12 mt-5">
+                  <div class="d-flex justify-content-end mt-4">
+                    <button type="button" id="modificar" class="btn btn-default ms-3" (click)="modificarControlInventarios()" [disabled]="consultaState.readonly">Modificar</button>
+                    <button type="button" id="eliminar" class="btn btn-danger ms-3" (click)="eliminarInventariosDatos()" [disabled]="consultaState.readonly">Eliminar</button>
+                  </div>
+              </div>
+              <div class="col-md-12 mt-4">
+                <div class="alert alert-info">
+                  <div class="form-check text-start">
+                    Deberá anexar un archivo con el reporte de saldos de mercancía de
+                    importación temporal o de mercancías objeto de operaciones de
+                    comercio exterior, de un periodo de un mes, que se encuentre
+                    dentro de los tres meses anteriores a la presentación de la
+                    solicitud.
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-12 mt-4">
+                <label class="form-label text-start"
+                  >Señale si ingresa mensualmente su información contable a través del
+                  portal del SAT, de conformidad con el artículo 28, fracción IV, del
+                  CFF y las reglas 2.8.1.5. y la 2.8.1.6. de la RMF. *</label
+                >
+                <app-input-radio
+                  formControlName="senaleSiIngresaMensualmente"
+                  [radioOptions]="sinoOpciones"
+                  [isRequired]="true"
+                  [layout]="'horizontal'"
+                  [gridLayout]="true"
+                  (valueChange)="cambioEvento($event, 'senaleSiIngresaMensualmente')"
+                ></app-input-radio>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12">
+                <ng-titulo titulo="Agregar miembro de la empresa" />
+              </div>
+
+              <div class="col-md-12 custom-section">
+                <p>
+                  Señale si los socios, accionistas, según corresponda, representante
+                  legal con facultad para actos de dominio e integrantes de la
+                  administración de conformidad con la constitución de la empresa
+                  solicitante, se encuentran al corriente en el cumplimiento de sus
+                  obligaciones fiscales. *
+                </p>
+              </div>
+
+              <div class="col-md-12 mt-4">
+                <label class="form-label text-start">Miembro de la empresa</label>
+              </div>
+
+              <div class="col-md-12 mt-4">
+                <app-tabla-dinamica
+                  [tipoSeleccionTabla]="tablaSeleccionCheckbox"
+                  [configuracionTabla]="seccionSociosICConfiguracionColumnas"
+                  [datos]="listaSeccionSociosIC"
+                  [disableSeleccionTablaCheckBox]="consultaState.readonly"
+                  (listaDeFilaSeleccionada)="seleccionarlistaSeccionSociosIC($event)"
+                >
+                </app-tabla-dinamica>
+              </div>
+
+              <div class="col-md-12 mt-5">
+                <div class="d-flex justify-content-end mt-4">
+                  <button type="button" id="agregar" class="btn btn-primary" (click)="agregarMiembrosEmpresa()" [disabled]="consultaState.readonly">Agregar</button>
+                  <button type="button" id="modificar" class="btn btn-default ms-3" (click)="modificarMiembrosEmpresa()" [disabled]="consultaState.readonly || seleccionarListaSeccionSociosIC.length !== 1">Modificar</button>
+                  <button type="button" id="eliminar" class="btn btn-danger ms-3" (click)="eliminarlistaSeccionSociosIC()" [disabled]="consultaState.readonly || seleccionarListaSeccionSociosIC.length === 0">Eliminar</button>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <formas-dinamicas
+                  [forma]="ninoFormGroupTres"
+                  [formularioDatos]="formDataTres"
+                  [estado]="datosComunesTresState"
+                  [soloLectura]="consultaState.readonly"
+                  (emitirCambioDeValor)="establecerCambioDeValorTres($event)"
+                  ></formas-dinamicas>
+                </div>
+              </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<ng-template #customTemplate1>
+    <div class="alert alert-info">
+        <div class="form-check">
+        <p><b>Nota: </b>Si no encuadra en los sectores o los servicios de los
+        catálogos, deberá seleccionar el más cercano a sus actividades.</p>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #customTemplate2>
+    @if (mostrarNumeroSolicitudSeccion) {
+        <div class="col-md-12 mt-3 custom-section">
+            <p>Mencione el nombre, RFC y número de empleados que le proveen las empresas que le prestan el servicio de subcontratación*</p>
+        </div>
+        <div class="col-md-12">
+        <label class="form-label text-start"
+          >Número de empleados que le proveen en el último bimestre anterior a
+          su solicitud</label
+        >
+        <app-tabla-dinamica
+          [tipoSeleccionTabla]="tablaSeleccionCheckbox"
+          [configuracionTabla]="numeroDeEmpleadosConfiguracionColumnas"
+          [datos]="numeroDeEmpleadosLista"
+          [disableSeleccionTablaCheckBox]="consultaState.readonly"
+          (listaDeFilaSeleccionada)="seleccionarNumeroDeEmpleadosDato($event)"
+        >
+        </app-tabla-dinamica>
+      </div>
+
+      <div class="col-md-12 mt-3">
+        <div class="d-flex justify-content-end mt-4">
+          <button type="button" id="agregar" class="btn btn-primary" (click)="agregarSubcontratados()" [disabled]="consultaState.readonly">Agregar</button>
+          <button type="button" id="modificar" class="btn btn-default ms-3" (click)="modificarSubcontratados()" [disabled]="consultaState.readonly">Modificar</button>
+          <button type="button" id="eliminar" class="btn btn-danger ms-3" (click)="eliminarNumeroDeEmpleadosDato()" [disabled]="consultaState.readonly">Eliminar</button>
+        </div>
+      </div>
+    }
+</ng-template>
+
+<ng-template #customTemplate3>
+    <div class="alert alert-info">
+        <div class="form-check">
+          <p><b> Nota:</b> De contar con un programa IMMEX activo y vigente al
+            momento de ingresar la solicitud, se mostrarn los domicilios
+            registrados ante la Secretaria de Economia. Asi mismo, podra incluir
+            otros domicilios que se encuentren relacionados con el RFC del
+            solicitante, dando click en el boton "Agregar" y seleccionado la
+            Entidad Federativa.
+          </p>
+        </div>
+    </div>
+    <div class="col-md-12 mt-5">
+      <app-tabla-dinamica
+        [tipoSeleccionTabla]="tablaSeleccionCheckbox"
+        [configuracionTabla]="domiciliosConfiguracionColumnas"
+        [datos]="domiciliosDatos"
+        [disableSeleccionTablaCheckBox]="consultaState.readonly"
+        (listaDeFilaSeleccionada)="seleccionarDomiciliosDato($event)"
+      >
+      </app-tabla-dinamica>
+    </div>
+    <div class="col-md-12 mt-5">
+      <div class="d-flex justify-content-end mt-4">
+        <button type="button" id="modificar" class="btn btn-default" (click)="modificarInstalacionesPrincipales()" [disabled]="consultaState.readonly || seleccionarDomiciliosDatos.length !== 1">Modificar</button>
+        <button type="button" id="eliminar" class="btn btn-danger ms-3" (click)="eliminarDomiciliosDatos()" [disabled]="consultaState.readonly || seleccionarDomiciliosDatos.length === 0">Eliminar</button>
+        <button type="button" id="agregar" class="btn btn-primary ms-3" (click)="agregarInstalacionesPrincipales()" [disabled]="consultaState.readonly">Agregar</button>
+      
+      </div>
+    </div>
+</ng-template>
+
+<div class="modal fade" #modalSeccionSubcontratados tabindex="-1" aria-labelledby="modalSeccionSubcontratadosLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="row">
+          <formas-dinamicas
+            formularioTitulo="Agregar"
+            [forma]="ninoFormGroupmodal1"
+            [formularioDatos]="formDataModalUno"
+            [estado]="datosComunesTresState"
+            [soloLectura]="consultaState.readonly"
+            (emitirEventoDeClic)="buscarEvento()"
+            (emitirCambioDeValor)="establecerCambioDeValorDos($event)"
+            ></formas-dinamicas>
+        </div>
+        <div class="row mt-3 mb-4">
+          <div class="d-flex justify-content-end mt-4">
+            <button type="button" id="aceptar" class="btn btn-primary" (click)="aceptarModalUno()" [disabled]="consultaState.readonly">Aceptar</button>
+            <button type="button" id="cancelar" class="btn btn-danger ms-3" data-bs-dismiss="modal" #closeModal [disabled]="consultaState.readonly">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" #modalInstalacionesPrincipales tabindex="-1" aria-labelledby="modalInstalacionesPrincipalesLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <formas-dinamicas
+              formularioTitulo="Agregar"
+              [forma]="ninoFormGroupmodal2"
+              [formularioDatos]="formDataModalDuo"
+              (emitirEventoDeClic)="buscarEvento()"
+              [templateMap]="templateMap"
+              [soloLectura]="consultaState.readonly"
+              [estado]="datosComunesTresState"
+              (emitirCambioDeValor)="establecerCambioDeValorModalDuo($event)"
+              ></formas-dinamicas>
+          </div>
+          <ng-template #customTemplate4>
+            <div class="col-md-12 mt-3">
+                <label class="form-label text-start">Instalaciones</label>
+              </div>
+
+              <div class="col-md-12 mt-4">
+                <app-tabla-dinamica
+                  [tipoSeleccionTabla]="tablaSeleccionCheckbox"
+                  [configuracionTabla]="instalacionesConfiguracionColumnas"
+                  [datos]="instalacionesTablaDatos"
+                  [disableSeleccionTablaCheckBox]="consultaState.readonly"
+                  (listaDeFilaSeleccionada)="seleccionarlistaInstalaciones($event)"
+                >
+                </app-tabla-dinamica>
+              </div>
+
+              <div class="row mt-3 mb-4">
+                <div class="d-flex justify-content-end mt-4">
+                  <button type="button" id="aceptar" class="btn btn-primary" (click)="aceptarModalDuo()" [disabled]="consultaState.readonly">Aceptar</button>
+                  <button type="button" id="cancelar" class="btn btn-danger ms-3" data-bs-dismiss="modal" #closeModal [disabled]="consultaState.readonly">Cancelar</button>
+                </div>
+              </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" #modalConfirmacion id="modalConfirmacion" tabindex="-1" aria-labelledby="modalConfirmacionLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+        <div class="modal-header">
+            <p></p>
+        </div>
+        <div class="modal-body">
+            <p>Es un requisito obligatorio para acceder al Registro en el Esquema de 
+            Certificacion de Empresas, de conformidad con la regla 7.1.1 de las RGCE.</p>
+        </div>
+        <div class="modal-footer custom-footer">
+            <button type="button" class="btn btn-default" data-bs-dismiss="modal" [disabled]="consultaState.readonly">Aceptar</button>
+        </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" #modalModificar tabindex="-1" aria-labelledby="modalModificarLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-body">
+          <div class="row">
+            <formas-dinamicas
+              formularioTitulo="Modificar"
+              [forma]="ninoFormGroupmodal3"
+              [formularioDatos]="formDataModalTres"
+              [estado]="datosComunesTresState"
+              [soloLectura]="consultaState.readonly"
+              (emitirCambioDeValor)="establecerCambioDeValorModalDuo($event)"
+              ></formas-dinamicas>
+          </div>  
+          <div class="row mt-3 mb-4">
+            <div class="d-flex justify-content-end mt-4">
+              <button type="button" id="aceptar" class="btn btn-primary" (click)="aceptarModalTres()" [disabled]="consultaState.readonly">Aceptar</button>
+              <button type="button" id="cancelar" class="btn btn-danger ms-3" data-bs-dismiss="modal" #closeModal [disabled]="consultaState.readonly">Cancelar</button>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" #modalGuardadosCorrectamente tabindex="-1" aria-labelledby="modalGuardarosCorrectamenteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+        <div class="modal-header">
+            <p></p>
+        </div>
+        <div class="modal-body">
+            <p>Datos guardados correctamente</p>
+        </div>
+        <div class="modal-footer custom-footer">
+            <button type="button" class="btn btn-default" data-bs-dismiss="modal" [disabled]="consultaState.readonly">Aceptar</button>
+        </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" #modalprogreso tabindex="-1" aria-labelledby="modalprogresoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md modal-dialog-centered">
+    <div class="modal-content">
+        <div class="modal-header">
+            <p>Cargando</p>
+        </div>
+        <div class="modal-body">
+            <p class="d-flex justify-content-between align-items-center w-100">
+              <span class="d-flex align-items-center gap-2">
+                <span class="check-icon">
+                  <span class="checkmark">&#10003;</span>
+                </span>
+                Los registros se realizaron correctamente.
+              </span>
+              <span class="percent">{{ progresoPercent }} %</span>
+            </p>
+
+            <div class="progress-bar">
+                <div class="progress-fill" [style.width.%]="progresoPercent"></div>
+            </div>
+        </div>
+        <div class="modal-footer custom-footer">
+            <button type="button" class="btn btn-default" data-bs-dismiss="modal" [disabled]="consultaState.readonly">Ok</button>
+        </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" #modalAgregarMiembrosEmpresa tabindex="-1" aria-labelledby="modalAgregarMiembrosEmpresaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="col-md-12">
+          <formas-dinamicas
+            formularioTitulo="Agregar miembro de la empresa"
+            [forma]="ninoFormGroupmodal4"
+            [formularioDatos]="formDataModalCuatro"
+            [estado]="datosComunesTresState"
+            [soloLectura]="consultaState.readonly"
+            (emitirCambioDeValor)="establecerCambioDeValorModalCuatro($event)"
+            ></formas-dinamicas>
+        </div>
+        <div class="row mt-3 mb-4">
+          <div class="d-flex justify-content-end mt-4">
+            <button type="button" id="aceptar" class="btn btn-primary" (click)="aceptarModalCuatro()" [disabled]="consultaState.readonly">Aceptar</button>
+            <button type="button" id="cancelar" class="btn btn-danger ms-3" data-bs-dismiss="modal" #closeModal [disabled]="consultaState.readonly">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

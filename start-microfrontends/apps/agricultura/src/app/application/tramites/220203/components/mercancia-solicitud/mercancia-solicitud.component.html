@@ -1,0 +1,465 @@
+    <div class="container">
+    @if (esFormaInValido) {<div class="col-md-12">
+      <ng-alert [CONTENIDO]="FORM_ERROR_ALERT" [CUSTOMECLASS]="'alert-danger'"></ng-alert>
+    </div>}
+    <div class="row">
+      <div class="col-md-12">
+        <ng-titulo [titulo]="'Datos mercancía'"></ng-titulo>
+      </div>
+    </div>
+    <div class="row" [formGroup]="mercanciaGroup">
+      <div class="col-md-4">
+        <app-catalogo-select
+          [catalogo]="detallesCatalogo.tipoRequisitoList"
+          formControlName="tipoRequisito"
+          [label]="'Tipo de requisito'"
+          [required]="true"
+          name="tipoRequisito"
+          [isDisabled]="esFormularioSoloLectura"
+          [markTouched]="mercanciaGroup.get('tipoRequisito')?.touched || false"
+        ></app-catalogo-select>
+      </div>
+      <div class="col-md-4 form-group">
+        <label class="form-label" for="requisito">Requisito *:</label>
+        <input
+          class="form-control"
+          id="requisito"
+          formControlName="requisito"
+          placeholder=""
+          name="requisito"
+          type="text"
+           [maxlength]="50"
+           [ngClass]="
+            mercanciaGroup.get('requisito')?.invalid &&
+            mercanciaGroup.get('requisito')?.touched
+              ? 'required'
+              : ''
+          "
+        />
+        @if (mercanciaGroup.get('requisito')?.hasError('required') &&
+        mercanciaGroup.get('requisito')?.touched) {
+        <div class="text-danger">
+          <small>Este campo es obligatorio</small>
+        </div>
+        }
+      </div>
+      <div class="col-md-4 form-group">
+        <label class="form-label" for="numeroCertificadoInternacional"
+          >Número de certificado internacional<i class="bi bi-question-circle-fill" style="margin-bottom: '5px'"
+              [title]="'Si la normatividad no le solicita el Certificado puede capturar NO APLICA ó'"></i> *:</label
+        >
+        <input
+          class="form-control"
+          id="numeroCertificadoInternacional"
+          formControlName="numeroCertificadoInternacional"
+          placeholder=""
+          name="numeroCertificadoInternacional"
+          type="text"
+          [maxlength]="50"
+        [ngClass]="
+            mercanciaGroup.get('numeroCertificadoInternacional')?.invalid &&
+            mercanciaGroup.get('numeroCertificadoInternacional')?.touched
+              ? 'required'
+              : ''
+          "
+        />
+        @if
+        (mercanciaGroup.get('numeroCertificadoInternacional')?.hasError('required')
+        && mercanciaGroup.get('numeroCertificadoInternacional')?.touched) {
+        <div class="text-danger">
+          <small>Este campo es obligatorio</small>
+        </div>
+        }
+      </div>
+      <div class="col-md-4">
+        <app-catalogo-select
+          [catalogo]="detallesCatalogo.arancelariaList"
+          formControlName="fraccionArancelaria"
+          [label]="'Fracción arancelaria'"
+          [required]="true"
+          name="fraccionArancelaria"
+          [isDisabled]="esFormularioSoloLectura"
+          [tooltipQuestionCircle]="true"
+          [tooltipQuestionCircleText]="'Fracción arancelaria de la mercancía'"
+          (change)="setValoresStore(mercanciaGroup, 'fraccionArancelaria')"
+          [markTouched]="mercanciaGroup.get('fraccionArancelaria')?.touched || false"
+
+        ></app-catalogo-select>
+      </div>
+      <div class="col-md-8 form-group">
+        <label class="form-label" for="descripcionFraccion"
+          >Descripción de la fracción arancelaria  *:</label
+        >
+        <input
+          class="form-control"
+          id="descripcionFraccion"
+          formControlName="descripcionFraccion"
+          placeholder=""
+          name="descripcionFraccion"
+          type="text"
+       />        
+      </div>
+      <div class="col-md-4">
+        <app-catalogo-select
+          [catalogo]="detallesCatalogo.nicoList"
+          formControlName="nico"
+          [label]="'Nico'"
+          [required]="true"
+          name="nico"
+          (change)="setValoresStore(mercanciaGroup, 'nico')"
+          [isDisabled]="esFormularioSoloLectura"
+          [markTouched]="mercanciaGroup.get('nico')?.touched || false"
+
+        ></app-catalogo-select>
+      </div>
+      <div class="col-md-8 form-group">
+        <label class="form-label" for="descripcionNico"
+          >Descripción Nico <i class="bi bi-question-circle-fill" style="margin-bottom: '5px'"
+              [title]="'Ingrese una fracción Nico'"></i>*:</label
+        >
+        <input
+          class="form-control"
+          id="descripcionNico"
+          formControlName="descripcionNico"
+          placeholder=""
+          name="descripcionNico"
+          type="text"
+        />
+      </div>
+      <div class="col-md-12">
+        <label for="descripcion">Descripción *:</label>
+        <textarea
+          class="form-control"
+          name="descripcion"
+          id="descripcion"
+          rows="10"
+          formControlName="descripcion"
+        [ngClass]="
+            mercanciaGroup.get('descripcion')?.invalid &&
+            mercanciaGroup.get('descripcion')?.touched
+              ? 'required'
+              : ''
+          "
+        ></textarea>
+@if (mercanciaGroup.get('descripcion')?.hasError('required') &&
+mercanciaGroup.get('descripcion')?.touched) {
+<div class="text-danger">
+  <small>Este campo es obligatorio</small>
+</div>
+} @else if ( mercanciaGroup.get('descripcion')?.hasError('maxlength') &&
+mercanciaGroup.get('descripcion')?.touched){
+<div class="text-danger">
+  <small>Por favor, no escribas más de 1000 caracteres</small>
+</div>
+}
+      </div>
+      <div class="col-md-4 form-group">
+        <label class="form-label" for="cantidadUMT">Cantidad UMT*:</label>
+        <input
+          class="form-control"
+          id="cantidadUMT"
+          formControlName="cantidadUMT"
+          placeholder=""
+          name="cantidadUMT"
+          type="text"
+          [maxlength]="16"
+          (change)="setValoresStore(mercanciaGroup, 'cantidadUMT')"
+         [ngClass]="
+            mercanciaGroup.get('cantidadUMT')?.invalid &&
+            mercanciaGroup.get('cantidadUMT')?.touched
+              ? 'required'
+              : ''
+          "
+         />
+        @if ( mercanciaGroup.get('cantidadUMT')?.hasError('pattern') &&
+        mercanciaGroup.get('cantidadUMT')?.touched){
+        <div class="text-danger">
+          <small>Por favor, escribe un valor menor o igual a 999999999999.999</small>
+        </div>
+        } @else if ( mercanciaGroup.get('cantidadUMT')?.hasError('maxDecimals') &&
+        mercanciaGroup.get('cantidadUMT')?.touched){
+        <div class="text-danger">
+          <small>Este campo permite doce números enteros y hasta tres
+            decimales</small>
+        </div>
+        } @else if (
+        mercanciaGroup.get('cantidadUMT')?.hasError('maxWholeNumbers') &&
+        mercanciaGroup.get('cantidadUMT')?.touched) {
+        <div class="text-danger">
+          <small>Por favor, escribe un valor menor o igual a 999999999999.999</small>
+        </div>
+        } @else if ( mercanciaGroup.get('cantidadUMT')?.hasError('required') &&
+        mercanciaGroup.get('cantidadUMT')?.touched) {
+        <div class="text-danger">
+          <small>Este campo es obligatorio</small>
+        </div>
+        }
+      </div>
+      <div class="col-md-4 form-group">
+        <label class="form-label" for="umt">UMT*:<i class="bi bi-question-circle-fill" style="margin-bottom: '5px'"
+              [title]="'Sólo para usuarios que cuenten con la contraseña UCON e importen productos cárnicos'"></i></label>
+        <input
+          class="form-control"
+          id="descripcionUMT"
+          formControlName="descripcionUMT"
+          placeholder=""
+          name="descripcionUMT"
+          type="text"
+          [maxlength]="100"
+          />
+      </div>
+      <div class="col-md-4"></div>
+      <div class="col-md-4 form-group">
+        <label class="form-label" for="cantidadUMC">Cantidad UMC*:</label>
+        <input
+          class="form-control"
+          id="cantidadUMC"
+          formControlName="cantidadUMC"
+          placeholder=""
+          name="cantidadUMC"
+          type="text"
+          [maxlength]="16"
+        [ngClass]="
+            mercanciaGroup.get('cantidadUMC')?.invalid &&
+            mercanciaGroup.get('cantidadUMC')?.touched
+              ? 'required'
+              : ''
+          "
+         />
+        <div
+          *ngIf="
+                                                                                                                                                                                    mercanciaGroup.get('cantidadUMC')?.hasError('pattern') &&
+                                                                                                                                                                                    mercanciaGroup.get('cantidadUMC')?.touched
+                                                                                                                                                                                  "
+          class="text-danger">
+          <small>Por favor, escribe un valor menor o igual a 999999999999.999</small>
+        </div>
+        <div
+          *ngIf="mercanciaGroup.get('cantidadUMC')?.hasError('maxDecimals') &&
+          mercanciaGroup.get('cantidadUMC')?.touched" 
+          class="text-danger">
+          <small>Este campo permite doce números enteros y hasta tres
+            decimales</small>
+        </div>
+        <div
+          *ngIf="mercanciaGroup.get('cantidadUMC')?.hasError('maxWholeNumbers') 
+          && mercanciaGroup.get('cantidadUMC')?.touched"
+          class="text-danger">
+          <small>Por favor, escribe un valor menor o igual a 999999999999.999</small>
+        </div>
+        <div
+          *ngIf="mercanciaGroup.get('cantidadUMC')?.hasError('required') &&
+          mercanciaGroup.get('cantidadUMC')?.touched"
+          class="text-danger">
+          <small>Este campo es obligatorio</small>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <app-catalogo-select
+          [catalogo]="detallesCatalogo.umcList"
+          formControlName="umc"
+          [label]="'UMC'"
+          [required]="true"
+          name="umc" 
+          [isDisabled]="esFormularioSoloLectura"
+          [tooltipQuestionCircle]="true"
+          [tooltipQuestionCircleText]="'Unidad de medida comercial de la mercancía'"
+          [markTouched]="mercanciaGroup.get('umc')?.touched || false"
+        ></app-catalogo-select>
+      </div>
+      <div class="col-md-4">
+        <app-catalogo-select
+          [catalogo]="detallesCatalogo.usoList"
+          formControlName="uso"
+          [label]="'Uso'"
+          [required]="true"
+          name="uso"
+          [isDisabled]="esFormularioSoloLectura"
+          [markTouched]="mercanciaGroup.get('uso')?.touched || false"
+        ></app-catalogo-select>
+      </div>
+      <div class="col-md-4 form-group">
+        <label class="form-label" for="numeroDeLote">Número de lote*:</label>
+        <input
+          class="form-control"
+          id="numeroDeLote"
+          formControlName="numeroDeLote"
+          placeholder=""
+          name="numeroDeLote"
+          type="text"
+          [maxlength]="16"
+        [ngClass]="
+            (mercanciaGroup.get('numeroDeLote')?.invalid &&
+            mercanciaGroup.get('numeroDeLote')?.touched) ||
+            (mercanciaGroup.get('numeroDeLote')?.disabled && 
+            (!mercanciaGroup.get('numeroDeLote')?.value || mercanciaGroup.get('numeroDeLote')?.value === ''))
+              ? 'required'
+              : ''
+          "
+        />
+        @if ((mercanciaGroup.get('numeroDeLote')?.hasError('required') &&
+        mercanciaGroup.get('numeroDeLote')?.touched) ||
+        (mercanciaGroup.get('numeroDeLote')?.disabled &&
+        (!mercanciaGroup.get('numeroDeLote')?.value || mercanciaGroup.get('numeroDeLote')?.value === ''))) {
+        <div class="text-danger">
+          <small>Este campo es obligatorio</small>
+        </div>
+        } @else if ( mercanciaGroup.get('numeroDeLote')?.hasError('maxlength') &&
+        mercanciaGroup.get('numeroDeLote')?.touched){
+        <div class="text-danger">
+          Por favor, no escribas más de 16 caracteres
+        </div>
+        }
+      </div>
+      <div class="col-md-4 form-group">
+        <label class="form-label" for="faseDeDesarrollo"
+          >Fase de desarrollo*:</label
+        >
+        <input
+          class="form-control"
+          id="faseDeDesarrollo"
+          formControlName="faseDeDesarrollo"
+          placeholder=""
+          name="faseDeDesarrollo"
+          type="text"
+            [maxlength]="50"
+         [ngClass]="
+            (mercanciaGroup.get('faseDeDesarrollo')?.invalid &&
+            mercanciaGroup.get('faseDeDesarrollo')?.touched) ||
+            (mercanciaGroup.get('faseDeDesarrollo')?.disabled && 
+            (!mercanciaGroup.get('faseDeDesarrollo')?.value || mercanciaGroup.get('faseDeDesarrollo')?.value === ''))
+              ? 'required'
+              : ''
+          "
+        />
+        @if ((mercanciaGroup.get('faseDeDesarrollo')?.hasError('required') &&
+        mercanciaGroup.get('faseDeDesarrollo')?.touched) ||
+        (mercanciaGroup.get('faseDeDesarrollo')?.disabled &&
+        (!mercanciaGroup.get('faseDeDesarrollo')?.value || mercanciaGroup.get('faseDeDesarrollo')?.value === ''))) {
+        <div class="text-danger">
+          <small>Este campo es obligatorio</small>
+        </div>
+        } @else if ( mercanciaGroup.get('faseDeDesarrollo')?.hasError('maxlength') &&
+        mercanciaGroup.get('faseDeDesarrollo')?.touched){
+        <div class="text-danger">
+          Por favor, no escribas más de 50 caracteres
+        </div>
+        }
+      </div>
+      <div class="col-md-4 form-group">
+        <label class="form-label" for="especie">Especie*:</label>
+        <input
+          class="form-control"
+          id="especie"
+          formControlName="especie"
+          placeholder=""
+          name="especie"
+          type="text"
+            [maxlength]="50"
+         [ngClass]="
+            (mercanciaGroup.get('especie')?.invalid &&
+            mercanciaGroup.get('especie')?.touched) ||
+            (mercanciaGroup.get('especie')?.disabled && 
+            (!mercanciaGroup.get('especie')?.value || mercanciaGroup.get('especie')?.value === ''))
+              ? 'required'
+              : ''
+          "
+        />
+        @if ((mercanciaGroup.get('especie')?.hasError('required') &&
+        mercanciaGroup.get('especie')?.touched) ||
+        (mercanciaGroup.get('especie')?.disabled &&
+        (!mercanciaGroup.get('especie')?.value || mercanciaGroup.get('especie')?.value === ''))) {
+        <div class="text-danger">
+          <small>Este campo es obligatorio</small>
+        </div>
+        } @else if ( mercanciaGroup.get('especie')?.hasError('maxlength') &&
+        mercanciaGroup.get('especie')?.touched){
+        <div class="text-danger">
+          Por favor, no escribas más de 50 caracteres
+        </div>
+        }
+      </div>
+      <div class="col-md-8">
+        <app-catalogo-select
+          [catalogo]="detallesCatalogo.paisDeOrigenList"
+          formControlName="paisDeOrigen"
+          [label]="'País de origen'"
+          [required]="true"
+          name="paisDeOrigen"
+          [isDisabled]="esFormularioSoloLectura"
+          [markTouched]="mercanciaGroup.get('paisDeOrigen')?.touched || false"
+
+        ></app-catalogo-select>
+      </div>
+      <div class="col-md-8">
+        <app-catalogo-select
+          [catalogo]="detallesCatalogo.paisDeProcedenciaList"
+          formControlName="paisDeProcedencia"
+          [label]="'País de procedencia'"
+          [required]="true"
+          name="paisDeProcedencia"
+          [isDisabled]="esFormularioSoloLectura"
+          [markTouched]="mercanciaGroup.get('paisDeProcedencia')?.touched || false"
+
+        ></app-catalogo-select>
+      </div>
+    </div>
+       <div class="row">
+      <ng-titulo [titulo]="'Detalle'"></ng-titulo>
+       </div>
+       <form [formGroup]="detallesGroup">
+      <div class="row" >
+      <div class="col-md-8 form-group">
+        <label class="form-label" for="especie">Nombre científico:</label>
+        <input
+          class="form-control"
+          id="nombreCientifico"
+          formControlName="nombreCientifico"
+          placeholder=""
+          name="nombreCientifico"
+          type="text"
+          [maxlength]="40"          
+        />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 mt-2 d-flex justify-content-end">
+        <div>
+          <button class="btn btn-danger me-2" type="button" (click)="eliminarFilaDetalle()">
+            Eliminar detalle
+          </button>
+        </div>
+        <div>
+          <button class="btn btn-primary" type="button" (click)="agregarFilaDetalle()">Agregar detalle</button>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <label class="form-label" for="especie">Detalle:</label>
+      </div>
+      <div class="col-md-4">
+        <app-tabla-dinamica
+          [tipoSeleccionTabla]="tipoSeleccion"
+          [configuracionTabla]="configuracionColumnas"
+          [datos]="cuerpoTablaDetalle"
+          (listaDeFilaSeleccionada)="seleccionTabla($event)"
+        ></app-tabla-dinamica>
+      </div>
+       <div class="col-md-12 d-flex justify-content-end mb-2">
+          <button type="button" class="btn btn-default me-5" [disabled]="esFormularioSoloLectura"
+                            (click)="onLimpiarDestinatario()">
+                            Limpiar
+                        </button>
+                        <button type="button" class="btn btn-danger me-5" [disabled]="esFormularioSoloLectura"
+                          (click)="eliminarFila()">
+                            Cancelar
+                        </button>
+                          <button class="btn btn-primary me-2" type="button" (click)="agregarFila()">Agregar</button>
+
+      </div>
+    </div>
+    </form> 
+      @if(eliminarDatosTabla){
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+      (confirmacionModal)="eliminarPedimentoDatos($event)"></lib-notificaciones>
+    }
+    </div>

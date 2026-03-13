@@ -1,0 +1,620 @@
+<div class="container">
+  <div class="row mt-5" *ngIf="mostrarOpcionesDePrellenado">
+    <div class="col-md-12">
+      <div class="panel-group ficha-collapse" id="accordion">
+        <div class="panel panel-default">
+          <div class="panel-heading" (click)="mostrarColapsable()" (keyup.enter)="mostrarColapsable()" tabindex="0">
+            <h4 class="panel-title">
+              <a aria-label="Repeat"><i class="bi bi-repeat" aria-hidden="true"></i></a>
+            </h4>
+            <button type="button" class="collpase-button collapsed" (keydown)="mostrarColapsable()"
+              [disabled]="esFormularioSoloLectura"> </button>
+          </div>
+          @if(plegable){
+          <div class="panel-collapse collapse in" id="panel-01">
+            <div class="panel-body">
+              <ng-alert [CONTENIDO]="TEXTOS"></ng-alert>
+              <div class="row">
+
+                <div class=" d-flex justify-content-end">
+                  <button type="button" class="btn btn-primary" [disabled]="esFormularioSoloLectura">
+                    Cargar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div [formGroup]="datosSolicitudForm">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <label class="form-label" for="justificacion">Justificación<span class="required-field">*</span>:</label>
+          <textarea class="form-control custom-textarea" id="justificacion" formControlName="justificacion"
+            (change)="setValoresStore(datosSolicitudForm, 'justificacion', 'setJustificacion')"></textarea>
+        </div>
+        @if(datosSolicitudForm.controls['justificacion'].invalid &&
+        datosSolicitudForm.controls['justificacion'].touched) {
+        <div class="d-grid">
+          @if(datosSolicitudForm.controls['justificacion'].errors?.['required']) {
+          <span class="mensaje-error">Este campo es obligatorio</span>
+          }
+        </div>
+        }
+      </div>
+    </div>
+
+    <ng-titulo titulo="Datos del trámite a realizar" />
+
+
+    <div class="row pb-20">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="aduana">Aduana de ingreso*:</label>
+          <input class="form-control" id="aduana" formControlName="aduana" type="text"
+            (change)="setValoresStore(datosSolicitudForm, 'aduana', 'setAduana')" />
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="oficina">Oficina de inspección de Sanidad Agropecuaria*:</label>
+          <input class="form-control" id="oficina" formControlName="oficina" type="text"
+            (change)="setValoresStore(datosSolicitudForm, 'oficina', 'setOficina')" />
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="punto">Punto de inspección*:</label>
+          <input class="form-control" id="punto" formControlName="punto" type="text"
+            (change)="setValoresStore(datosSolicitudForm, 'punto', 'setPunto')" />
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="clave">Clave UCON: <span class="bi bi-question-circle-fill fs-4 m-1"
+              title="Sólo para usuarios que cuenten con la contraseña UCON e importen productos cárnicos"
+              ata-bs-toggle="tooltip"></span></label>
+          <input class="form-control" id="clave" formControlName="clave" type="text" maxlength="15" size="29"
+            (change)="setValoresStore(datosSolicitudForm, 'clave', 'setClave')" />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <app-catalogo-select [catalogo]="establecimiento" [label]="'Establecimiento TIF'"
+            [placeholder]="'Seleccione un opción'" [required]="false" name="establecimiento"
+            formControlName="establecimiento" [isDisabled]="esFormularioSoloLectura"
+            (change)="setValoresStore(datosSolicitudForm, 'establecimiento', 'setEstablecimiento')"
+            data-bs-toggle="modal" data-bs-target="#modalAgregarMercancias">
+          </app-catalogo-select>
+
+        </div>
+      </div>
+
+      <div class="col-md-8">
+        <div class="form-group">
+          <app-catalogo-select [catalogo]="veterinario" [label]="'Nombre del médico veterinario'"
+            [placeholder]="'Seleccione una opción'" [isDisabled]="esFormularioSoloLectura" name="veterinario"
+            formControlName="veterinario" [isDisabled]="esFormularioSoloLectura"
+            (change)="setValoresStore(datosSolicitudForm, 'veterinario', 'setVeterinario')">
+          </app-catalogo-select>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="guia">Número de guía:</label>
+          <input class="form-control" id="guia" formControlName="guia" type="text" maxlength="50" size="29"
+            (change)="setValoresStore(datosSolicitudForm, 'guia', 'setGuia')" />
+          <div class="d-grid">
+            <div *ngIf="datosSolicitudForm.get('guia')?.touched">
+              <small class="mensaje-error" *ngIf="datosSolicitudForm.get('guia')?.hasError('maxlength')">
+                El número de guía no puede exceder los 50 caracteres.
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="form-group">
+          <app-catalogo-select [catalogo]="regimen" [label]="'Régimen'" [required]="true" name="regimen"
+            [isDisabled]="esFormularioSoloLectura"
+            [tooltipQuestionCircleText]="'Régimen al que se destinará la mercancía'" [tooltipQuestionCircle]="true"
+            formControlName="regimen" (change)="setValoresStore(datosSolicitudForm, 'regimen', 'setRegimen')"
+            [placeholder]="'Seleccione un opción'">
+          </app-catalogo-select>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="row m-0">
+      <ng-titulo titulo="Tipo de mercancía" />
+      <p class="fw-bold">Captura de datos de mercancía*:</p>
+      <app-input-radio id="capturaMercancia" formControlName="capturaMercancia" [radioOptions]="opcionDeBotonDeRadio"
+        [selectedValue]="valorSeleccionado" [layout]="'vertical'"
+        (valueChange)="cambioValorRadio('exentoPago', $event.toString())">
+      </app-input-radio>
+      <div style="text-align: center;">
+        <ng-alert [CONTENIDO]="MERCANCIA"></ng-alert>
+      </div>
+    </div>
+    <div class="row m-0">
+      <h6 class="fw-bold">Mercancías</h6>
+      <!-- Update the tabla-dinamica to handle selection -->
+      <!-- Main mercancia table -->
+      <app-tabla-dinamica 
+        [configuracionTabla]="configuracionTabla" 
+        [datos]="mercancias"
+        [disableSeleccionTablaCheckBox]="esFormularioSoloLectura ? true : false"
+        [tipoSeleccionTabla]="checkbox"
+        (listaDeFilaSeleccionada)="onMercanciaSelectionChange($event)">
+      </app-tabla-dinamica>
+
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+          <li class="page-item"><a class="page-link">1</a></li>
+        </ul>
+      </nav>
+    </div>
+
+
+    <div class="col-md-12 mt-5 d-flex justify-content-end">
+      <button type="button" class="btn btn-default" [disabled]="esFormularioSoloLectura">Modificar</button>
+      <button type="button" class="btn btn-danger ms-3" [disabled]="esFormularioSoloLectura">Eliminar</button>
+      <button type="button" class="btn btn-primary ms-3" [disabled]="esFormularioSoloLectura"
+        (click)="tercerosAgregar()">Agregar</button>
+    </div>
+  </div>
+  <app-modal [active]="showtercerosModal">
+
+    <form [formGroup]="mercanciaForm">
+      <ng-titulo titulo="Datos Generales de la Mercancía Animal" />
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <app-catalogo-select formControlName="paisOrigen" [catalogo]="veterinario" [label]="'Tipo requisito'"
+            [required]="true" [placeholder]="'Seleccione un opción'" maxlength="50">
+          </app-catalogo-select>
+          <div class="d-grid">
+            <div *ngIf="mercanciaForm.get('paisOrigen')?.touched">
+              <small class="mensaje-error" *ngIf="mercanciaForm.get('paisOrigen')?.hasError('required')">
+                Este campo es obligatorio.
+              </small>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Requisito*:</label>
+          <input class="form-control" formControlName="regulacion" />
+          <div class="d-grid">
+            <div *ngIf="mercanciaForm.get('regulacion')?.touched">
+              <small class="mensaje-error" *ngIf="mercanciaForm.get('regulacion')?.hasError('required')">
+                Este campo es obligatorio.
+              </small>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label custum-numero">Número de certificado internacional*:<span
+              class="bi bi-question-circle-fill fs-4 m-1" title="Title" ata-bs-toggle="tooltip"></span></label>
+          <input class="form-control" formControlName="nombreProducto" maxlength="50" />
+          <div class="d-grid">
+            <div *ngIf="mercanciaForm.get('nombreProducto')?.touched">
+              <small class="mensaje-error" *ngIf="mercanciaForm.get('nombreProducto')?.hasError('required')">
+                Este campo es obligatorio.
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <app-catalogo-select formControlName="fracciónArancelaria" [catalogo]="veterinario"
+            [label]="'Fracción arancelaria'"
+            [required]="true"
+            [placeholder]="'Seleccione un opción'">
+          </app-catalogo-select>
+          <div class="d-grid">
+            <div *ngIf="mercanciaForm.get('fracciónArancelaria')?.touched">
+              <small class="mensaje-error" *ngIf="mercanciaForm.get('fracciónArancelaria')?.hasError('required')">
+                Este campo es obligatorio.
+              </small>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <label class="form-label">Descripción de la fracción arancelaria*:<span
+              class="bi bi-question-circle-fill fs-4 m-1" title="Ingrese una fracción"
+              ata-bs-toggle="tooltip"></span></label>
+          <input class="form-control" formControlName="unidad2" />
+          <div class="d-grid">
+            <div *ngIf="mercanciaForm.get('unidad2')?.touched">
+              <small class="mensaje-error" *ngIf="mercanciaForm.get('unidad2')?.hasError('required')">
+                Este campo es obligatorio.
+              </small>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <app-catalogo-select formControlName="nico" [catalogo]="veterinario" [label]="'Nico'"
+            [required]="true"
+            [placeholder]="'Seleccione una opción'">
+          </app-catalogo-select>
+
+          <div class="d-grid">
+            <div *ngIf="mercanciaForm.get('nico')?.touched">
+              <small class="mensaje-error" *ngIf="mercanciaForm.get('nico')?.hasError('required')">
+                Este campo es obligatorio.
+              </small>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <label class="form-label">Descripción Nico:<span class="bi bi-question-circle-fill fs-4 m-1"
+              title="Ingrese una fracción Nico" ata-bs-toggle="tooltip"></span></label>
+          <input class="form-control" formControlName="unidad1" />
+
+          <div class="d-grid">
+            <div *ngIf="mercanciaForm.get('unidad1')?.touched">
+              <small class="mensaje-error" *ngIf="mercanciaForm.get('unidad1')?.hasError('required')">
+                Este campo es obligatorio.
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <label class="form-label d-flex">Descripción*:</label>
+        <textarea class="form-control custom-textarea" formControlName="observaciones" rows="3"
+          maxlength="1000"></textarea>
+        <div class="d-grid">
+          <div *ngIf="mercanciaForm.get('observaciones')?.touched">
+            <small class="mensaje-error" *ngIf="mercanciaForm.get('observaciones')?.hasError('maxlength')">
+              Por favor, no escribas más de 1000 caracteres.
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label class="form-label">Cantidad UMT*:</label>
+          <input class="form-control" formControlName="cantidadUmt" />
+
+          <div class="d-grid">
+            <div *ngIf="mercanciaForm.get('cantidadUmt')?.touched">
+              <small class="mensaje-error" *ngIf="mercanciaForm.get('cantidadUmt')?.hasError('required')">
+                Este campo es obligatorio.
+              </small>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">UMT*:<span class="bi bi-question-circle-fill fs-4 m-1"
+              title="Unidad de medida de la tarifa" ata-bs-toggle="tooltip"></span></label>
+          <input class="form-control" formControlName="umt" />
+
+          <div class="d-grid">
+            <div *ngIf="mercanciaForm.get('umt')?.touched">
+              <small class="mensaje-error" *ngIf="mercanciaForm.get('umt')?.hasError('required')">
+                Este campo es obligatorio.
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label class="form-label">Cantidad UMC*:</label>
+          <input class="form-control" formControlName="cantidadUmc" />
+
+          <div class="d-grid">
+            <div *ngIf="mercanciaForm.get('cantidadUmc')?.touched">
+              <small class="mensaje-error" *ngIf="mercanciaForm.get('cantidadUmc')?.hasError('required')">
+                Este campo es obligatorio.
+              </small>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">UMC*:<span class="bi bi-question-circle-fill fs-4 m-1"
+              title="Unidad de medida de comercialización" ata-bs-toggle="tooltip"></span></label>
+          <input class="form-control" formControlName="umc" />
+
+          <div class="d-grid">
+            <div *ngIf="mercanciaForm.get('umc')?.touched">
+              <small class="mensaje-error" *ngIf="mercanciaForm.get('umc')?.hasError('required')">
+                Este campo es obligatorio.
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <app-catalogo-select formControlName="especie" [catalogo]="veterinario" [label]="'Especie'" [required]="true"
+            [placeholder]="'Seleccione una opción'">
+          </app-catalogo-select>
+
+          <div class="d-grid">
+            <div *ngIf="mercanciaForm.get('especie')?.touched">
+              <small class="mensaje-error" *ngIf="mercanciaForm.get('especie')?.hasError('required')">
+                Este campo es obligatorio.
+              </small>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <app-catalogo-select formControlName="edadAnimal" [catalogo]="veterinario" [label]="'Uso'" [required]="true"
+            [placeholder]="'Seleccione una opción'">
+          </app-catalogo-select>
+
+          <div class="d-grid">
+            <div *ngIf="mercanciaForm.get('edadAnimal')?.touched">
+              <small class="mensaje-error" *ngIf="mercanciaForm.get('edadAnimal')?.hasError('required')">
+                Este campo es obligatorio.
+              </small>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <app-catalogo-select formControlName="paisOrigen1" [catalogo]="veterinario" [label]="'País de origen'"
+            [required]="true" [placeholder]="'Seleccione una opción'">
+          </app-catalogo-select>
+
+          <div class="d-grid">
+            <div *ngIf="mercanciaForm.get('paisOrigen1')?.touched">
+              <small class="mensaje-error" *ngIf="mercanciaForm.get('paisOrigen1')?.hasError('required')">
+                Este campo es obligatorio.
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <app-catalogo-select formControlName="paisdeprocedencia" [catalogo]="veterinario"
+            [label]="'País de procedencia*'" [placeholder]="'Seleccione una opción'" [required]="true">
+          </app-catalogo-select>
+
+          <div class="d-grid">
+            <div *ngIf="mercanciaForm.get('paisdeprocedencia')?.touched">
+              <small class="mensaje-error" *ngIf="mercanciaForm.get('paisdeprocedencia')?.hasError('required')">
+                Este campo es obligatorio.
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <app-catalogo-select formControlName="presentacion" [catalogo]="veterinario" [label]="'Presentación'"
+            [placeholder]="'Seleccione una opción'">
+          </app-catalogo-select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Cantidad de presentación:</label>
+          <input class="form-control" formControlName="cantidadPresentacion" />
+        </div>
+
+        <div class="col-md-4">
+          <app-catalogo-select formControlName="tipoPresentacion" [catalogo]="veterinario" [label]="'Tipo presentación'"
+            [placeholder]="'Seleccione una opción'">
+          </app-catalogo-select>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <app-catalogo-select formControlName="tipoPlanta" [catalogo]="veterinario" [label]="'Tipo planta'"
+            [placeholder]="'Seleccione una opción'">
+          </app-catalogo-select>
+        </div>
+        <div class="col-md-4">
+          <app-catalogo-select formControlName="plantaAutorizadaOrigen" [catalogo]="veterinario"
+            [label]="'Planta autorizada de origen'" [placeholder]="'Seleccione una opción'">
+          </app-catalogo-select>
+        </div>
+      </div>
+
+      <ng-titulo titulo="Detalle" />
+      <div class="row mb-3">
+        <div class="col-md-3">
+          <label class="form-label">Número de lote:</label>
+          <input class="form-control" formControlName="numeroLote" />
+        </div>
+        <div class="col-md-3 custom-ms">
+          <h6 class="fw-bold">Rango de fechas:</h6>
+          <app-input-radio id="rangoFecha" formControlName="rangoFecha" [radioOptions]="opcionesRangoFecha"
+            [selectedValue]="mercanciaForm.get('rangoFecha')?.value || ''" [layout]="'vertical'"
+            (valueChange)="cambiarOpcionRangoFecha($event.toString())">
+          </app-input-radio>
+        </div>
+      </div>
+
+      <!-- Date range fields - shown when "No" is selected -->
+      <div class="row mb-3" *ngIf="opcionSiSeleccionada">
+        <div class="row">
+          <div class="col-md-4">
+            <label class="form-label">Fecha de elaboración o empaque o proceso</label>
+          </div>
+          <div class="col-md-8">
+            <div class="col-md-6">
+              <input-fecha [datos]="INPUT_FECHA_CONFIGURACION" [setFecha]="mercanciaForm.get('fechaDesde')?.value || ''"
+                (valorCambiado)="cambioFechaDesde($event)">
+              </input-fecha>
+            </div>
+            <div class="col-md-6">
+              <input-fecha [datos]="INPUT_FECHA_CONFIGURACION" [setFecha]="mercanciaForm.get('fechaHasta')?.value || ''"
+                (valorCambiado)="cambioFechaHasta($event)">
+              </input-fecha>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <label class="form-label">Fecha de producción o sacrificio</label>
+          </div>
+          <div class="col-md-8">
+            <div class="col-md-6">
+              <input-fecha [datos]="INPUT_FECHA_CONFIGURACION" [setFecha]="mercanciaForm.get('FechadeSacrificio')?.value || ''"
+                (valorCambiado)="cambioFechadeSacrificio($event)">
+              </input-fecha>
+            </div>
+            <div class="col-md-6">
+              <input-fecha [datos]="INPUT_FECHA_CONFIGURACION" [setFecha]="mercanciaForm.get('FechadelSacrificio')?.value || ''"
+                (valorCambiado)="cambioFechadelSacrificio($event)">
+              </input-fecha>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <label class="form-label">Fecha de caducidad del producto o consumo preferente</label>
+          </div>
+          <div class="col-md-8">
+            <div class="col-md-6">
+              <input-fecha [datos]="INPUT_FECHA_CONFIGURACION" [setFecha]="mercanciaForm.get('FechadeCaducidad')?.value || ''"
+                (valorCambiado)="cambioFechadeCaducidad($event)">
+              </input-fecha>
+            </div>
+
+            <div class="col-md-6">
+              <input-fecha [datos]="INPUT_FECHA_CONFIGURACION" [setFecha]="mercanciaForm.get('FechadelCaducidad')?.value || ''"
+                (valorCambiado)="cambioFechadelCaducidad($event)">
+              </input-fecha>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Individual date fields - shown when "Sí" is selected -->
+      <div *ngIf="mostrarRangoFechas">
+        <div class="row mb-3">
+          <div class="col-md-8">
+            <label class="form-label">Fecha de elaboración o empaque o proceso</label>
+          </div>
+          <div class="col-md-4">
+            <input-fecha [datos]="INPUT_FECHA_CONFIGURACION"
+              [setFecha]="mercanciaForm.get('fechaElaboracion')?.value || ''"
+              (valorCambiado)="cambioFechaElaboracion($event)">
+            </input-fecha>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-8">
+            <label class="form-label">Fecha de producción o sacrificio</label>
+          </div>
+          <div class="col-md-4">
+            <input-fecha [datos]="INPUT_FECHA_CONFIGURACION"
+              [setFecha]="mercanciaForm.get('fechaProduccion')?.value || ''"
+              (valorCambiado)="cambioFechaProduccion($event)">
+            </input-fecha>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-8">
+            <label class="form-label">Fecha de caducidad del producto o consumo preferente</label>
+          </div>
+          <div class="col-md-4">
+            <input-fecha [datos]="INPUT_FECHA_CONFIGURACION"
+              [setFecha]="mercanciaForm.get('fechaCaducidad')?.value || ''" (valorCambiado)="cambioFechaFinal($event)">
+            </input-fecha>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12 mt-4 d-flex justify-content-end">
+        <button class="btn btn-primary" type="button" (click)="eliminarDetalle()">Eliminar detalle</button>
+        <button class="btn btn-primary ms-3" type="button" (click)="guardarMercancia()">Agregar detalle</button>
+
+      </div>
+    </form>
+    <form>
+      <div class="row">
+        <h6 class="fw-bold">Detalle</h6>
+        <!-- Detalle table -->
+        <app-tabla-dinamica 
+          [configuracionTabla]="configuracionTablaDelLate" 
+          [datos]="mercanciasdellate"
+          [disableSeleccionTablaCheckBox]="esFormularioSoloLectura ? true : false"
+          [tipoSeleccionTabla]="checkbox"
+          (listaDeFilaSeleccionada)="onMercanciaDelLateSelectionChange($event)">
+        </app-tabla-dinamica>
+        <nav aria-label="Page navigation example">
+          <ul class="pagination justify-content-center">
+            <li class="page-item"><a class="page-link">1</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="col-md-12 mt-5 d-flex justify-content-end">
+        <button type="button" class="btn btn-default" [disabled]="esFormularioSoloLectura">Limpiar</button>
+        <button type="button" class="btn btn-danger ms-3" [disabled]="esFormularioSoloLectura"
+          (click)="cerrarModal()">Cancelar</button>
+        <button type="button" class="btn btn-primary ms-3" [disabled]="esFormularioSoloLectura">Agregar</button>
+      </div>
+    </form>
+  </app-modal>
+</div>
+
+<div class="modal fade" id="modalAgregarMercancias" tabindex="-1" aria-labelledby="modalAgregarMercanciasLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <label class="header">Establecimiento TIF</label>
+      <div class="modal-body">
+        Los datos del destinatario previamente capturados, serán sustituidos por los datos del Establecimiento TIE
+      </div>
+      <div class="modal-footer custom-footer d-flex justify-content-end">
+        <button type="button" [disabled]="esFormularioSoloLectura" class="btn btn-default">
+          Cancelar
+        </button>
+        <button type="button" [disabled]="esFormularioSoloLectura" class="btn btn-primary" data-bs-dismiss="modal"
+          #closeModal>
+          Aceptar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+@if(confirmacionAlertaMercancia){
+<section>
+  <lib-notificaciones [notificacionInput]="notificacionMercancia"
+    (confirmacionModal)="onConfirmacionMercancia($event)">
+  </lib-notificaciones>
+</section>
+}
+
+@if(mostrarAlertaMercancia){
+<section>
+  <lib-notificaciones [notificacionInput]="notificacionMercancia" 
+    (confirmacionModal)="onAlertaMercancia()">
+  </lib-notificaciones>
+</section>
+}
+

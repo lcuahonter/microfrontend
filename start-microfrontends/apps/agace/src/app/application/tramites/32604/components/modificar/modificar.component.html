@@ -1,0 +1,105 @@
+<div class="container">
+    <form [formGroup]="form">
+        <div class="col-md-12 p-0">
+            <ng-titulo titulo="Modificar" />
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-8 mt-3">
+            <label class="form-label text-start">Instalaciones principales<span [class]="deberiasMostrarErrorRadio('instalacionPrincipal') ? 'text-danger' : ''">*</span>:</label>
+                <app-input-radio
+                  [radioOptions]="sinoOpcion.radioOptions"
+                  [isRequired]="true"
+                  [layout]="'horizontal'"
+                  formControlName="instalacionPrincipal"
+                  (valueChange)="actualizar290($event)"
+                ></app-input-radio>
+                @if (deberiasMostrarErrorRadio('instalacionPrincipal')) {
+                  <small class="mensaje-error">Este campo es obligatorio</small>
+                }
+            </div>
+            <div class="col-md-4 mt-3">
+                <label for="municipio" class="form-label">Municipio o alcaldía:</label>
+                <input type="text" id="municipio" class="form-control" formControlName="municipioDelegacion"/>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <app-catalogo-select 
+                    [catalogo]="contenedores.catalogos" 
+                    [label]="contenedores.labelNombre" 
+                    [placeholder]="contenedores.primerOpcion" 
+                    [required]="true"
+                    [markTouched]="!!form.get('tipoInstalacion')?.touched"
+                    formControlName="tipoInstalacion">
+                </app-catalogo-select>
+            </div>
+            <div class="col-md-4">
+                <label for="entidad" class="form-label">Entidad federativa:</label>
+                <input type="text" id="entidad" class="form-control" formControlName="entidadFederativa"/>
+            </div>
+            <div class="col-md-4">
+                <label for="registro" class="form-label">Registro ante SE/SAT:</label>
+                <input type="text" id="registro" class="form-control" formControlName="registroSESAT"/>
+            </div>
+        </div>        
+        <div class="row mb-3">
+             <div class="col-md-8">
+                <label for="colonia" class="form-label">Colonia, calle y número:</label>
+                <input type="text" id="colonia" class="form-control" formControlName="direccion"/>
+            </div>
+            <div class="col-md-4">
+                <label for="codigoPostal" class="form-label">Código postal:</label>
+                <input type="text" id="codigoPostal" class="form-control" formControlName="codigoPostal"/>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-3 mt-3">
+            <label class="form-label text-start">Proceso productivo<span [class]="deberiasMostrarErrorRadio('procesoProductivo') ? 'text-danger' : ''">*</span>:</label>                
+                <app-input-radio
+                  [radioOptions]="sinoOpcion.radioOptions"
+                  [isRequired]="true"
+                  [layout]="'horizontal'"
+                  formControlName="procesoProductivo"
+                  (valueChange)="actualizarProcesoProductivo($event)"
+                ></app-input-radio>
+                @if (deberiasMostrarErrorRadio('procesoProductivo')) {
+                  <small class="mensaje-error">Este campo es obligatorio</small>
+                }
+            </div>
+            <div class="col-md-5 mt-3">
+            <label class="form-label text-start">Acreditación del uso y goce del inmueble<span [class]="deberiasMostrarErrorRadio('acreditaInmueble') ? 'text-danger' : ''">*</span>:</label>                
+                <app-input-radio
+                  [radioOptions]="sinoOpcion.radioOptions"
+                  [isRequired]="true"
+                  [layout]="'horizontal'"
+                  formControlName="acreditaInmueble"
+                  (valueChange)="actualizarGoceDelInmueble($event)"
+                ></app-input-radio>
+                @if (deberiasMostrarErrorRadio('acreditaInmueble')) {
+                  <small class="mensaje-error">Este campo es obligatorio</small>
+                }
+            </div>            
+        </div>
+        <div class="d-flex justify-content-end mt-4 mb-5">
+          <button
+            type="button"
+            id="aceptar"
+            class="btn btn-primary"
+            (click)="guardarModificaciones()"
+            #closeModal
+          >
+            Aceptar
+          </button>
+
+          <button
+            type="button"
+            id="cancelar"
+            class="btn btn-danger ms-3"
+            (click)="cancelarModificacion()"
+            #closeModal
+          >
+            Cancelar
+          </button>
+        </div>
+    </form>
+</div>

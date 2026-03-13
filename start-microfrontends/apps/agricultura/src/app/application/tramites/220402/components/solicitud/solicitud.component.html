@@ -1,0 +1,521 @@
+<div class="container">
+  <form [formGroup]="FormSolicitud">
+    @if(consultaDatos.parameter === "READ_PROCEDURE"){
+    <ng-titulo titulo="Datos generales" />
+    } @else {
+      <ng-titulo titulo="Datos del trámite a realizar" />
+    }
+    <ng-container formGroupName="datosDelTramiteRealizar">
+      <div class="row">
+        <div class="col-md-4">
+          <label class="form-label" for="tipoDeCertificado">Tipo de certificado*:</label>
+        </div>
+      </div>
+
+      <div class="row mt-2">
+        <div class="col-md-8  mt-2">
+          <app-input-radio [radioOptions]="radioOpcions" id="opcion" formControlName="tipoDeCertificado"
+            (change)="tipoDeCertificadoCambio()" [layout]="'horizontal'" class="tipo-certificado"></app-input-radio>
+          @if (FormSolicitud.get('datosDelTramiteRealizar.tipoDeCertificado')?.errors?.['required'] && 
+          FormSolicitud.get('datosDelTramiteRealizar.tipoDeCertificado')?.touched) {
+          <p class="mensaje-error">Este campo es obligatorio.</p>
+          }
+        </div>
+      </div>
+
+      <div class="row mt-2">
+        <div class="col-md-8">
+          <app-catalogo-select [catalogo]="seccionAduaneraLista" formControlName="seccionAduanera"
+            [label]="'Aduana de salida/lugar de embarque'" [required]="true"
+            (change)="setValoresStore(datosDelTramiteRealizar,'seccionAduanera', 'setSeccionAduanera');"
+            [isDisabled]="soloLectura" [placeholder]="'Seleccione un valor'"></app-catalogo-select>
+          @if (FormSolicitud.get('datosDelTramiteRealizar.seccionAduanera')?.errors?.['required'] && 
+          FormSolicitud.get('datosDelTramiteRealizar.seccionAduanera')?.touched) {
+          <p class="mensaje-error">Este campo es obligatorio.</p>
+          }
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label class="form-label" for="puntoDestino">Punto de ingreso en el país de destino<span
+                [ngClass]="isValid(datosDelTramiteRealizar,'puntoDestino') ? 'red-require ' : ''">*</span>:</label>
+            <input class="form-control" id="puntoDestino" type="text" formControlName="puntoDestino"
+              [ngClass]="isValid(datosDelTramiteRealizar,'puntoDestino') ? 'required' : ''"
+              maxlength="245"
+              (input)="setValoresStore(datosDelTramiteRealizar,'puntoDestino', 'setPuntoDestino')" />
+            @if (FormSolicitud.get('datosDelTramiteRealizar.puntoDestino')?.errors?.['required'] &&
+            FormSolicitud.get('datosDelTramiteRealizar.puntoDestino')?.touched) {
+            <p class="mensaje-error">Este campo es obligatorio.</p>
+            }
+            @else if (FormSolicitud.get('datosDelTramiteRealizar.puntoDestino')?.errors?.['maxlength'] &&
+            FormSolicitud.get('datosDelTramiteRealizar.puntoDestino')?.touched) {
+            <p class="mensaje-error">Por favor, no escribas más de 245 caracteres</p>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class=" row mt-3">
+        <div class="col-md-8">
+          <app-catalogo-select [catalogo]="paisLista" formControlName="paisDeDestino" [label]="'País de destino'"
+            [required]="true" (change)="setValoresStore(datosDelTramiteRealizar,'paisDeDestino', 'setPaisDeDestino');"
+            [isDisabled]="soloLectura" [placeholder]="'Seleccione un valor'"></app-catalogo-select>
+          @if (FormSolicitud.get('datosDelTramiteRealizar.paisDeDestino')?.errors?.['required'] && 
+          FormSolicitud.get('datosDelTramiteRealizar.paisDeDestino')?.touched) {
+          <p class="mensaje-error">Este campo es obligatorio.</p>
+          }
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-md-8">
+          <app-catalogo-select [catalogo]="paisLista" formControlName="paisDeProcedencia" [label]="'País de procedencia'"
+            [required]="true" [isDisabled]="true"
+            (change)="setValoresStore(datosDelTramiteRealizar,'paisDeProcedencia', 'setPaisDeProcedencia');"
+            [placeholder]="'Seleccione un valor'"></app-catalogo-select>
+          @if (FormSolicitud.get('datosDelTramiteRealizar.paisDeProcedencia')?.errors?.['required'] && 
+          FormSolicitud.get('datosDelTramiteRealizar.paisDeProcedencia')?.touched) {
+          <p class="mensaje-error">Este campo es obligatorio.</p>
+          }
+        </div>
+      </div>
+
+    </ng-container>
+
+    <ng-titulo titulo="Fecha de inspección de la mercancía" />
+    <ng-container formGroupName="datosMercancia">
+      <div class="row mt-3">
+        <div class="col-md-4">
+          <label for="fechaInicio" class="form-label d-block text-left ">Fecha de inspección*:</label>
+          <label for="fechaInicio" class="form-label">Inicio*:</label>
+          <input class="form-control" type="date" name="fechaInicio" id="fechaInicio" formControlName="fechaInicio"
+            [ngClass]="isValid(datosMercancia,'fechaInicio') ? 'required' : ''"
+            (change)="setValoresStore(datosMercancia,'fechaInicio', 'setFechaInicio')">
+
+          @if (FormSolicitud.get('datosMercancia.fechaInicio')?.errors?.['required'] && 
+          FormSolicitud.get('datosMercancia.fechaInicio')?.touched) {
+          <p class="mensaje-error">Este campo es obligatorio.</p>
+          }
+          @if (isValid(datosMercancia,'fechaInicio')) {
+          <p class="mensaje-error">Fecha no válida, elija otro día</p>
+          }
+        </div>
+        <div class="col-md-4">
+          <div>
+            <label class="form-check-label rango-de-fechas-label" for="rangoDeFechas">Rango de fechas:</label>
+            <input class="form-check-input me-3" type="checkbox" value="" id="rangoDeFechas"
+              formControlName="rangoDeFechas"
+              (change)="setValoresStore(datosMercancia,'rangoDeFechas', 'setRangoDeFechas')">
+          </div>
+          @if (FormSolicitud.get('datosMercancia.rangoDeFechas')?.value) {
+          <label for="fechaFinal" class="form-label">Fin*:</label>
+          <input class="form-control" type="date" name="fechaFinal" id="fechaFinal" formControlName="fechaFinal"
+            [ngClass]="isValid(datosMercancia,'fechaFinal') ? 'required' : ''" [min]="diaMinimo"
+            (change)="changeFechaFinal()">
+
+          @if (FormSolicitud.get('datosMercancia.fechaFinal')?.errors?.['required'] && 
+          FormSolicitud.get('datosMercancia.fechaFinal')?.touched) {
+          <p class="mensaje-error">Este campo es obligatorio.</p>
+          }
+          @if (isValid(datosMercancia,'fechaFinal')) {
+          <p class="mensaje-error">Fecha no válida, elija otro día</p>
+          }
+
+          @if (intervaloFechaError()) {
+          <p class="mensaje-error">Intervalo de fecha no válido</p>
+          }
+          }
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-md-12">
+          <h6>Datos Generales de la Mercancía</h6>
+          <app-tabla-dinamica [configuracionTabla]="configuracionTablaDatos" [datos]="datosGeneralesArr"
+            [tipoSeleccionTabla]="checkbox" [disableSeleccionTablaCheckBox]="soloLectura"
+            (listaDeFilaSeleccionada)="seleccionarTabla($event)"></app-tabla-dinamica>
+          <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+              <li class="page-item"><a class="page-link">1</a></li>
+            </ul>
+          </nav>
+        </div>
+        <div class="col-md-12 mt-5 pt-5 d-flex justify-content-end">
+          @if(datosGeneralesArr.length){
+          <button type="button" class="btn btn-default" [disabled]="soloLectura"
+            (click)="modificar()">Modificar</button>
+          <button type="button" class="btn btn-danger ms-3" [disabled]="soloLectura" (click)="eliminar()">
+            Eliminar </button>
+          }
+          <button type="button" class="btn btn-primary ms-3" [disabled]="soloLectura"
+            (click)="agregar()">Agregar</button>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-titulo titulo="Datos de la unidad de verificación" />
+    <ng-container formGroupName="unidadDeVerificacion">
+      <div class="row mt-3">
+
+        <div class="col-md-4">
+          <app-catalogo-select [catalogo]="unidadVerificationLista" formControlName="unidadDeVerificar"
+            [label]="'Nombre de la unidad de verificación'" [required]="true"
+            (change)="setValoresStore(unidadDeVerificacion,'unidadDeVerificar', 'setUnidadDeVerificar');getTerceroEspecialistaLista()"
+            [isDisabled]="soloLectura" [placeholder]="'Seleccione un valor'"></app-catalogo-select>
+          @if (FormSolicitud.get('unidadDeVerificacion.unidadDeVerificar')?.errors?.['required'] && 
+          FormSolicitud.get('unidadDeVerificacion.unidadDeVerificar')?.touched) {
+          <p class="mensaje-error">Este campo es obligatorio.</p>
+          }
+        </div>
+
+        <div class="col-md-8">
+          <app-catalogo-select [catalogo]="terceroEspecialistaLista" formControlName="terceroEspecialista"
+            [label]="'Nombre del tercero especialista fitosanitario'" [required]="true"
+            (change)="setValoresStore(unidadDeVerificacion,'terceroEspecialista', 'setTerceroEspecialista')"
+            [isDisabled]="soloLectura" [placeholder]="'Seleccione un valor'"></app-catalogo-select>
+          @if (FormSolicitud.get('unidadDeVerificacion.terceroEspecialista')?.errors?.['required'] && 
+          FormSolicitud.get('unidadDeVerificacion.terceroEspecialista')?.touched) {
+          <p class="mensaje-error">Este campo es obligatorio.</p>
+          }
+        </div>
+      </div>
+
+    </ng-container>
+
+    <ng-titulo titulo="Unidad Expedidora del certificado fitosanitario SAGARPA" />
+    <ng-container formGroupName="unidadExpedidoraFitosanitario">
+      <div class="row mt-3">
+        <div class="col-md-5">
+          <app-catalogo-select [catalogo]="getEntidadFederativaUnidadExpedidoraLista" formControlName="entidadFederative"
+            [label]="'Entidad Federativa de Unidad Expedidora'" [required]="true"
+            (change)="setValoresStore(unidadExpedidoraFitosanitario,'entidadFederative', 'setEntidadFederative');getModulosFitosanitariaLista()"
+            [isDisabled]="soloLectura" [placeholder]="'Seleccione un valor'"></app-catalogo-select>
+          @if (FormSolicitud.get('unidadExpedidoraFitosanitario.entidadFederative')?.errors?.['required'] && 
+          FormSolicitud.get('unidadExpedidoraFitosanitario.entidadFederative')?.touched) {
+          <p class="mensaje-error">Este campo es obligatorio.</p>
+          }
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-md-8">
+          <app-catalogo-select [catalogo]="modulosFitosanitariaLista" formControlName="fitosanitario"
+            [label]="'Módulo de certificado fitosanitario'" [required]="true"
+            (change)="setValoresStore(unidadExpedidoraFitosanitario,'fitosanitario', 'setFitosanitario')"
+            [isDisabled]="soloLectura" [placeholder]="'Seleccione un valor'"></app-catalogo-select>
+          @if (FormSolicitud.get('unidadExpedidoraFitosanitario.fitosanitario')?.errors?.['required'] && 
+          FormSolicitud.get('unidadExpedidoraFitosanitario.fitosanitario')?.touched) {
+          <p class="mensaje-error">Este campo es obligatorio.</p>
+          }
+        </div>
+      </div>
+
+    </ng-container>
+
+
+  </form>
+</div>
+<div class="modal fade" id="modalGeneralesMercancia" tabindex="-1" #modalGeneralesMercancia
+  aria-labelledby="modalGeneralesMercancia" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form class="form" [formGroup]="generalesMercanciaForm">
+          <ng-titulo titulo="Datos generales de la mercancía" />
+          <ng-container formGroupName="datosGenerales">
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <app-catalogo-select [catalogo]="nombreComunLista" formControlName="nombreComun" [label]="'Nombre común'"
+                  [required]="true" (change)="setValoresStore(datosGenerales,'nombreComun', 'setNombreComun');"
+                  [isDisabled]="soloLectura" [placeholder]="'Seleccione un valor'"></app-catalogo-select>
+                @if (generalesMercanciaForm.get('datosGenerales.nombreComun')?.errors?.['required'] && 
+                generalesMercanciaForm.get('datosGenerales.nombreComun')?.touched) {
+                <p class="mensaje-error">Este campo es obligatorio.</p>
+                }
+              </div>
+              <div class="col-md-4">
+                <app-catalogo-select [catalogo]="nombreClientifioLista" formControlName="nombreCientifico"
+                  [label]="'Nombre científico'" [required]="true"
+                  (change)="setValoresStore(datosGenerales,'nombreCientifico', 'setNombreCientifico');"
+                  [isDisabled]="soloLectura" [placeholder]="'Seleccione un valor'"></app-catalogo-select>
+                @if (generalesMercanciaForm.get('datosGenerales.nombreCientifico')?.errors?.['required'] && 
+                generalesMercanciaForm.get('datosGenerales.nombreCientifico')?.touched) {
+                <p class="mensaje-error">Este campo es obligatorio.</p>
+                }
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-8">
+                <div class="form-group">
+                  <label class="form-label" for="fraccionArancelaria">Descripción adicional del producto*:<span
+                      tooltip="Describa algún dato adicional del producto: Ej. Para siembra, para consumo, etc.">
+                      <i class="bi bi-question-circle-fill"></i>
+                    </span></label>
+                  <textarea class="form-control" id="descripcionProducto" rows="2" height="50" placeholder=""
+                    style="height: 100px" formControlName="descripcionProducto"
+                    [ngClass]="isValid(datosGenerales,'descripcionProducto') ? 'required' : ''"
+                    (change)="setValoresStore(datosGenerales,'descripcionProducto', 'setDescripcionProducto')"></textarea>
+                  @if (generalesMercanciaForm.get('datosGenerales.descripcionProducto')?.errors?.['required'] &&
+                  generalesMercanciaForm.get('datosGenerales.descripcionProducto')?.touched) {
+                  <p class="mensaje-error">Este campo es obligatorio.</p>
+                  }
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="fraccionArancelaria">Fracción arancelaria:</label>
+                  <input class="form-control" id="fraccionArancelaria" placeholder="" type="text"
+                    formControlName="fraccionArancelaria" [maxlength]="8"
+                    (change)="setValoresStore(datosGenerales,'fraccionArancelaria', 'setFraccionArancelaria');fraccionArancelariaActualizar()" />
+                  <div
+                    *ngIf="datosGenerales.get('fraccionArancelaria')?.invalid && datosGenerales.get('fraccionArancelaria')?.touched">
+                    @if(datosGenerales.get('fraccionArancelaria')?.errors?.['maxlength']){
+                    <p class="mensaje-error">
+                      Por favor, no escribas más de 8 caracteres
+                    </p>
+                    }@else if (datosGenerales.get('fraccionArancelaria')?.errors?.['minlength']) {
+                    <p class="mensaje-error">
+                      Debe tener al menos 8 dígitos.
+                    </p>
+                    }@else if (datosGenerales.get('fraccionArancelaria')?.errors?.['pattern']) {
+                    <p class="mensaje-error">
+                      Por favor, sólo escribe dígitos
+                    </p>
+                    }
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-8">
+                <div class="form-group">
+                  <label class="form-label" for="descdelaFraccion">Descripción de la fracción arancelaria: <span
+                      tooltip="Ingresa una fracción">
+                      <i class="bi bi-question-circle-fill"></i>
+                    </span></label>
+                  <input class="form-control" id="descdelaFraccion" placeholder="" type="text"
+                    formControlName="descdelaFraccion"
+                    (change)="setValoresStore(datosGenerales,'descdelaFraccion', 'setDescdelaFraccion')" />
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="cantidadUMT">Cantidad UMT:</label>
+                  <input class="form-control" id="cantidadUMT" placeholder="" type="text" formControlName="cantidadUMT"
+                    (change)="setValoresStore(datosGenerales,'cantidadUMT', 'setCantidadUMT')" />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="UMT">UMT: <span tooltip="Unidad de medida de la tarifa">
+                      <i class="bi bi-question-circle-fill"></i>
+                    </span></label>
+                  <input class="form-control" id="UMT" placeholder="" type="text" formControlName="UMT"
+                    (change)="setValoresStore(datosGenerales,'UMT', 'setUMT')" />
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="cantidadUMC">Cantidad UMC<span
+                      [ngClass]="isValid(datosGenerales,'cantidadUMC') ? 'red-require ' : ''">*</span>
+                    :</label>
+                  <input class="form-control" maxlength="15" id="cantidadUMC" placeholder="" type="text" formControlName="cantidadUMC"
+                    [ngClass]="isValid(datosGenerales,'cantidadUMC') ? 'required' : ''"
+                    (change)="setValoresStore(datosGenerales,'cantidadUMC', 'setCantidadUMC')" />
+                  @if(datosGenerales.get('cantidadUMC')?.invalid &&
+                  datosGenerales.get('cantidadUMC')?.touched){
+                  @if(datosGenerales.get('cantidadUMC')?.errors?.['required']){
+                  <p class="mensaje-error">
+                    Este campo es obligatorio.
+                  </p>
+                  }
+                  @else if (datosGenerales.get('cantidadUMC')?.errors?.['maxlength']) {
+                  <p class="mensaje-error">
+                    Por favor, no escribas más de 15 caracteres
+                  </p>
+                  }@else if (datosGenerales.get('cantidadUMC')?.errors?.['pattern']) {
+                  <p class="mensaje-error">
+                    Por favor, escribe un número entero válido
+                  </p>
+                  }
+                  }
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <app-catalogo-select [catalogo]="UnidadMedidaCommercialLista" formControlName="UMC" [label]="'UMC'" [required]="true"
+                    (change)="setValoresStore(datosGenerales,'UMC', 'setUMC')" [isDisabled]="soloLectura"
+                    [tooltipQuestionCircle]="true" [placeholder]="'Seleccione un valor'"></app-catalogo-select>
+                  @if (generalesMercanciaForm.get('datosGenerales.UMC')?.errors?.['required'] && 
+                  generalesMercanciaForm.get('datosGenerales.UMC')?.touched) {
+                  <p class="mensaje-error">Este campo es obligatorio.</p>
+                  }
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-8">
+                <app-catalogo-select [catalogo]="paisLista" formControlName="paisdeOrigen" [label]="'País de origen'"
+                  [required]="true" (change)="setValoresStore(datosGenerales,'paisdeOrigen', 'setPaisdeOrigen')"
+                  [isDisabled]="soloLectura || tipoCertificado==='EXPORTACION'" [placeholder]="'Seleccione un valor'"></app-catalogo-select>
+                @if (generalesMercanciaForm.get('datosGenerales.paisdeOrigen')?.errors?.['required'] && 
+                generalesMercanciaForm.get('datosGenerales.paisdeOrigen')?.touched) {
+                <p class="mensaje-error">Este campo es obligatorio.</p>
+                }
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <app-catalogo-select [catalogo]="getEntidadFederativaUnidadExpedidoraLista" formControlName="entidadFederativadeOrigen"
+                  [label]="'Entidad federativa de origen'" [required]="tipoCertificado === 'EXPORTACION'"
+                  (change)="setValoresStore(datosGenerales,'entidadFederativadeOrigen', 'setEntidadFederativadeOrigen');cargarMunicipios()"
+                  [isDisabled]="soloLectura || tipoCertificado!=='EXPORTACION'" [placeholder]="'Seleccione un valor'"></app-catalogo-select>
+                @if (generalesMercanciaForm.get('datosGenerales.entidadFederativadeOrigen')?.errors?.['required'] && 
+                generalesMercanciaForm.get('datosGenerales.entidadFederativadeOrigen')?.touched) {
+                <p class="mensaje-error">Este campo es obligatorio.</p>
+                }
+              </div>
+              <div class="col-md-4">
+                <label for="municipiodeOrigen" class="form-label">Municipio de origen
+                  @if(tipoCertificado === 'EXPORTACION') {
+                  <span class="red-require">*</span>
+                  }
+                  :
+                  <span tooltip="Mantén presionada la tecla Ctrl para que puedas realizar una selección múltiple">
+                    <i class="bi bi-question-circle-fill"></i>
+                  </span></label>
+                <select multiple class="form-select" id="municipiodeOrigen" formControlName="municipiodeOrigen"
+                  [ngClass]="isValid(datosGenerales, 'municipiodeOrigen') ? 'required' : ''"
+                  (change)="setValoresStore(datosGenerales,'municipiodeOrigen', 'setMunicipiodeOrigen')">
+                  <option value="{{opcion?.clave}}" *ngFor="let opcion of municipiodeOpcions; let i = index">
+                    {{opcion?.descripcion}}</option>
+                </select>
+                @if (generalesMercanciaForm.get('datosGenerales.municipiodeOrigen')?.errors?.['required'] &&
+                generalesMercanciaForm.get('datosGenerales.municipiodeOrigen')?.touched) {
+                <p class="mensaje-error">Este campo es obligatorio.</p>
+                }
+              </div>
+              @if (tipoCertificado==='EXPORTACION') {
+              <div class="col-md-4">
+                <div class="btn-group multi-select">
+                  <div class="d-flex justify-content-center">
+                    <button type="button" class="btn btn-primary" (click)="municipioAgregar()"
+                      [disabled]="soloLectura">Agregar</button>
+                  </div>
+                  <div class="d-flex justify-content-center">
+                    <button type="button" class="btn btn-danger" (click)="municipioEliminar()"
+                      [disabled]="soloLectura">Eliminar</button>
+                  </div>
+                </div>
+              </div>
+              }
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-8">
+                <app-tabla-dinamica [configuracionTabla]="configuracionTablaMercancia" [datos]="origenArr"
+                  [tipoSeleccionTabla]="checkbox" [disableSeleccionTablaCheckBox]="soloLectura"
+                  (listaDeFilaSeleccionada)="seleccionarDatos($event)"></app-tabla-dinamica>
+                <nav aria-label="Page navigation example">
+                  <ul class="pagination justify-content-center">
+                    <li class="page-item"><a class="page-link">1</a></li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="marcasDistintivas">Marcas distintivas:</label>
+                  <input class="form-control" maxlength="60" id="marcasDistintivas" placeholder="" type="text"
+                    formControlName="marcasDistintivas"
+                    [ngClass]="isValid(datosGenerales,'marcasDistintivas') ? 'required' : ''"
+                    (change)="setValoresStore(datosGenerales,'marcasDistintivas', 'setMarcasDistintivas')" />
+                  @if(datosGenerales.get('marcasDistintivas')?.invalid &&
+                  datosGenerales.get('marcasDistintivas')?.touched){
+                
+                  @if (datosGenerales.get('marcasDistintivas')?.errors?.['maxlength']) {
+                  <p class="mensaje-error">
+                    Por favor, no escribas más de 60 caracteres
+                  </p>
+                  }@else if (datosGenerales.get('marcasDistintivas')?.errors?.['pattern']) {
+                  <p class="mensaje-error">
+                    Por favor, ingresa un formato válido
+                  </p>
+                  }
+                  }
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <app-catalogo-select [catalogo]="usoMercaniaList" formControlName="USO" [label]="'USO'" [required]="true"
+                    (change)="setValoresStore(datosGenerales,'USO', 'setUSO')" [isDisabled]="soloLectura"
+                    [placeholder]="'Seleccione un valor'"></app-catalogo-select>
+                  @if (generalesMercanciaForm.get('datosGenerales.USO')?.errors?.['required'] && 
+                  generalesMercanciaForm.get('datosGenerales.USO')?.touched) {
+                  <p class="mensaje-error">Este campo es obligatorio.</p>
+                  }
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <ng-titulo titulo="Número y descripción de los empaques" />
+          <ng-container formGroupName="numeroDescDeLosEmpaques">
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="numero">Número<span
+                      [ngClass]="isValid(numeroDescDeLosEmpaques,'numero') ? 'red-require ' : ''">*</span>:</label>
+                  <input class="form-control" id="numero" placeholder="" type="text" formControlName="numero"
+                    [ngClass]="isValid(numeroDescDeLosEmpaques,'numero') ? 'required' : ''"
+                    (change)="setValoresStore(numeroDescDeLosEmpaques,'numero', 'setNumero')" />
+                  @if(numeroDescDeLosEmpaques.get('numero')?.invalid &&
+                  numeroDescDeLosEmpaques.get('numero')?.touched){
+                  @if(numeroDescDeLosEmpaques.get('numero')?.errors?.['required']){
+                  <p class="mensaje-error">
+                    Este campo es obligatorio.
+                  </p>
+                  }@else if (numeroDescDeLosEmpaques.get('numero')?.errors?.['pattern']) {
+                  <p class="mensaje-error">
+                    Por favor, escribe un número entero válido
+                  </p>
+                  }
+                  }
+                </div>
+              </div>
+              <div class="col-md-4">
+                <app-catalogo-select [catalogo]="descripcionEmpaqueLista" formControlName="empaques"
+                  [label]="'Descripción de los empaques'" [required]="true"
+                  (change)="setValoresStore(numeroDescDeLosEmpaques,'empaques', 'setEmpaques')"
+                  [isDisabled]="soloLectura" [placeholder]="'Seleccione un valor'"></app-catalogo-select>
+                @if (generalesMercanciaForm.get('numeroDescDeLosEmpaques.empaques')?.errors?.['required'] && 
+                generalesMercanciaForm.get('numeroDescDeLosEmpaques.empaques')?.touched) {
+                <p class="mensaje-error">Este campo es obligatorio.</p>
+                }
+              </div>
+            </div>
+          </ng-container>
+        </form>
+      </div>
+      <div class="modal-footer custom-footer mt-4 justify-content-end">
+        <button type="button" class="btn btn-default" [disabled]="soloLectura" (click)="limpiar()">Limpiar</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" #closeGeneralesMercancia
+          [disabled]="soloLectura">
+          Cancelar </button>
+        <button type="button" class="btn btn-primary" [disabled]="soloLectura" (click)="agregarModel()">Agregar</button>
+      </div>
+    </div>
+  </div>
+</div>
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones class="reexportacion" [notificacionInput]="nuevaNotificacion"
+    (confirmacionModal)="confirmacionModal($event)">
+  </lib-notificaciones>
+</section>
+}

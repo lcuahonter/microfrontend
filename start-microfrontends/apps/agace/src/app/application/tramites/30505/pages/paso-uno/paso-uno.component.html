@@ -1,0 +1,109 @@
+<div class="container">
+  <div class="row">
+    <ul class="nav nav-tabs">
+      <li [ngClass]="indice === 1 ? 'active' : ''">
+        <a
+          data-toggle="tab"
+          (click)="seleccionaTab(1)"
+          (keydown.enter)="seleccionaTab(1)"
+          (keydown.space)="seleccionaTab(1)"
+          tabindex="1"
+          role="button"
+          >Solicitante</a
+        >
+      </li>
+      <li [ngClass]="indice === 2 ? 'active' : ''">
+        <a
+          data-toggle="tab"
+          (click)="seleccionaTab(2)"
+          (keydown.enter)="seleccionaTab(1)"
+          (keydown.space)="seleccionaTab(1)"
+          tabindex="2"
+          role="button"
+          >Tipo de aviso</a
+        >
+      </li>
+      <li [ngClass]="indice === 3 ? 'active' : ''">
+        <a
+          data-toggle="tab"
+          (click)="seleccionaTab(3)"
+          (keydown.enter)="seleccionaTab(3)"
+          (keydown.space)="seleccionaTab(3)"
+          tabindex="3"
+          role="button"
+          >Terceros relacionados</a
+        >
+      </li>
+
+      <li *ngIf="selectedCheckboxes.includes('avisoDeFusion')" [ngClass]="indice === 4 ? 'active' : ''">
+        <a data-toggle="tab" tabindex="4" role="button" [ngClass]="indice === 4 ? 'custom-li-active' : ''" 
+        (click)="seleccionaTab(4)"
+        (keydown.enter)="seleccionaTab(4)"
+        (keydown.space)="seleccionaTab(4)">
+        Aviso por
+          fusión o escisión de dos o más empresas que cuenten con la autorización en el registro del despacho de
+          mercancías de las empresas, resulta una nueva sociedad, extinguiéndose una o más empresas.</a>
+      </li>
+      <li *ngIf="selectedCheckboxes.includes('avisoDeMod')" [ngClass]="indice === 5 ? 'active' : ''">
+        <a data-toggle="tab" tabindex="5" role="button" [ngClass]="indice === 5 ? 'custom-li-active' : ''"
+        (click)="seleccionaTab(5)"
+        (keydown.enter)="seleccionaTab(5)"
+        (keydown.space)="seleccionaTab(5)">
+         Aviso por cambio de modificación de apoderado aduanal, agente
+          aduanal o agente aduanal y transportistas.</a>
+      </li>
+      <li *ngIf="selectedCheckboxes.includes('avisoDeCal')" [ngClass]="indice === 6 ? 'active' : ''">
+        <a data-toggle="tab" tabindex="6" role="button" [ngClass]="indice === 6 ? 'custom-li-active' : ''" 
+        (click)="seleccionaTab(6)"
+        (keydown.enter)="seleccionaTab(6)"
+        (keydown.space)="seleccionaTab(6)">
+        Aviso de Cálculo al que se refiere el artículo 99 de la Ley,
+          correspondiente al ejercicio inmediato anterior.</a>
+      </li>
+  
+      <li *ngIf="selectedCheckboxes.includes('avisoDenom')" [ngClass]="indice === 7 ? 'active' : ''">
+        <a data-toggle="tab" tabindex="7" role="button" [ngClass]="indice === 7 ? 'custom-li-active' : ''"
+        (click)="seleccionaTab(7)"
+        (keydown.enter)="seleccionaTab(7)"
+        (keydown.space)="seleccionaTab(7)">Aviso por cambio de denominación o razón social.</a>
+      </li>
+
+    </ul>
+
+    <ng-container>
+      @switch (indice) { @case (1) {
+        <solicitante></solicitante>
+      } @case (2) { 
+          @if(esDatosRespuesta){
+        <app-tipo-de-aviso (checkboxChange)="toggleDataVisibility($event)" [soloLectura]="esFormularioSoloLectura"></app-tipo-de-aviso>
+          }
+      } @case (3) { 
+        @if(esDatosRespuesta){
+         <app-terceros-relacionados [soloLectura]="esFormularioSoloLectura"></app-terceros-relacionados>
+        }
+      }
+      @case (4){
+          @if(esDatosRespuesta){
+    <app-fusion-o-escision [soloLectura]="esFormularioSoloLectura"></app-fusion-o-escision>
+          }
+      }
+
+      @case(5){
+          @if(esDatosRespuesta){
+      <app-aviso-agente [soloLectura]="esFormularioSoloLectura"></app-aviso-agente>
+          }
+      }
+      @case(6){
+          @if(esDatosRespuesta){
+      <app-aviso-calculo [soloLectura]="esFormularioSoloLectura"></app-aviso-calculo>
+          }
+      }
+      @case(7){
+          @if(esDatosRespuesta){
+       <app-cambio-denominacion-razon-social [soloLectura]="esFormularioSoloLectura"></app-cambio-denominacion-razon-social> 
+          }
+      }
+    }
+    </ng-container>
+  </div>
+</div>

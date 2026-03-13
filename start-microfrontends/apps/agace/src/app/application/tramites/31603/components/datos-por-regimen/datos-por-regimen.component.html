@@ -1,0 +1,89 @@
+<div class="container mt-4">
+    @if (mostrarSoloImportaciones){
+    <form [formGroup]="importacionesForm">
+        <div class="row mb-3">
+            <p class="fw-bold"><span class="text-danger">* </span>
+                Indique si realiza o realizará
+                importaciones temporales de mercancías de las fracciones arancelarias
+                listadas en el Anexo II del Decreto IMMEX y/o de las fracciones
+                arancelarias listadas en el Anexo 28.
+              </p>
+              <div class="col-md-12">
+                <app-input-radio
+                    [radioOptions]="radioOpcions"
+                    [selectedValue]="valorSeleccionado"
+                    (valueChange)="onImportacionesCambio($event)"
+                    id="cumplimiento"
+                    [isRequired]="true"
+                    formControlName="importaciones"
+                    [layout]="'horizontal'">
+                </app-input-radio>
+              </div>
+        </div>
+    </form>
+    }
+    @if(valorSeleccionado) {
+        <form [formGroup]="indiqueSiForma">
+            <div class="row mb-3">  
+                <formas-dinamicas 
+                    [formularioTitulo]="'Importación temporal bajo la modalidad del programa IMMEX'"
+                    [forma]="importacionTemporalFormGroup" 
+                    [formularioDatos]="importacionTemporalDatos"
+                    [estado]="solicitudState"
+                    [soloLectura]="consultaState.readonly"
+                    (emitirCambioDeValor)="establecerCambioDeValor($event)"
+                    >
+                </formas-dinamicas>
+            </div>
+        </form>
+        <app-conceptos [siONo]="valorSeleccionado"></app-conceptos>
+    }
+    @if (mostrarSoloDepositoFiscal) {
+    <form [formGroup]="depositoFiscalForma">
+        <div class="row mb-3">  
+            <formas-dinamicas 
+                [formularioTitulo]="'Depósito fiscal para someterse al proceso de ensamble y fabricación de vehículos'"
+                [formularioSubtitulo]="'Deberá anexar una copia simple de autorización para el establecimiento del depósito fiscal para someterse al proceso de ensamble y fabricación de vehículos a empresas de la industria terminal vigente'"
+                [forma]="depositoFiscalFormGroup" 
+                [formularioDatos]="depositoFiscalDatos"
+                [estado]="solicitudState"
+                [soloLectura]="consultaState.readonly"
+                (emitirCambioDeValor)="establecerCambioDeValor($event)"
+                >
+            </formas-dinamicas>
+        </div>
+    </form>
+}
+@if (mostrarSoloElaboracion) {
+    <form [formGroup]="elaboracionForma">
+        <div class="row mb-3">  
+            <formas-dinamicas 
+                [formularioTitulo]="'Elaboración, transformación o reparación en recinto fiscalizado'"
+                [formularioSubtitulo]="'Deberá anexar copia simple de la autorización vigente emitida por el SAT para la elaboración, transformación o reparación en recinto fiscalizado.'"
+                [forma]="elaboracionFormGroup" 
+                [formularioDatos]="elaboracionDatos"
+                [estado]="solicitudState"
+                [soloLectura]="consultaState.readonly"
+                (emitirCambioDeValor)="establecerCambioDeValor($event)"
+                >
+            </formas-dinamicas>
+        </div>
+    </form>
+}
+@if (mostrarSoloRecinto) {
+    <form [formGroup]="recintoForma">
+        <div class="row mb-3">  
+            <formas-dinamicas 
+                [formularioTitulo]="'Recinto fiscalizado estratégico'"
+                [formularioSubtitulo]="'Deberá anexar copia simple de la autorización vigente emitida por el SAT para la elaboración, transformación o reparación en recinto fiscalizado estratégico.'"
+                [forma]="recintoFiscalizadoFormGroup" 
+                [formularioDatos]="recintoFiscalizadoDatos"
+                [estado]="solicitudState"
+                [soloLectura]="consultaState.readonly"
+                (emitirCambioDeValor)="establecerCambioDeValor($event)"
+                >
+            </formas-dinamicas>
+        </div>
+    </form>
+}
+</div>

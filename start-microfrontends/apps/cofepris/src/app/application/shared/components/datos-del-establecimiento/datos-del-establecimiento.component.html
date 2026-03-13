@@ -1,0 +1,68 @@
+<div class="container">
+  <ng-titulo titulo="Datos del establecimiento" />
+  <form [formGroup]="datosDelForm">
+    <div class="container text-end mt-5">
+    <span tooltip="Selecciona para habilitar los campos del establecimiento" placement="left">
+      <button 
+       class="btn btn-primary" (click)="abrirModal()"
+       [disabled]="establecimientoSeleccionado || esFormularioSoloLectura">
+       Seleccionar establecimiento
+       </button>      
+    </span>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="denominacion">Denominación o razón social*:</label>
+          <input class="form-control" id="denominacion" placeholder="" type="text" formControlName="denominacion" (change)="setValoresStore(datosDelForm,'denominacion', 'setDenominacion')" [disabled]="!establecimientoSeleccionado || esFormularioSoloLectura">
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="correoElectronico">Correo electrónico:
+            <span tooltip="ejemplo@dominio.com" placement="top">
+              <i class="bi bi-question-circle-fill"></i>
+            </span>
+          </label>
+          <input class="form-control" id="correoElectronico" formControlName="correoElectronico" maxlength="320"
+            type="text" (change)="setValoresStore(datosDelForm,'correoElectronico', 'setCorreoElectronico')" [disabled]="!establecimientoSeleccionado || esFormularioSoloLectura">
+          @if(datosDelForm.get('correoElectronico')?.invalid && datosDelForm.get('correoElectronico')?.touched){
+            <div class="text-danger">
+              @if(datosDelForm.get('correoElectronico')?.errors?.['pattern']){
+               <small>El valor Ingresado no es una dirección válida de correo electrónico</small>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="container mt-4">
+  <div class="modal fade" id="modalAgregar" tabindex="-1" aria-labelledby="modalAgregarLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"></h5>
+        </div>
+        <div class="modal-body">
+          Por el momento no hay comunicación con el
+          Sistema de COFEPRIS, favor
+          de capturar su establecimiento.
+        </div>
+
+        <div class="modal-footer custom-footer justify-content-center">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" #closeModal>Agregar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (nuevaNotificacion && mostrarNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion" (confirmacionModal)="onModalAcceptAction()">
+  </lib-notificaciones>
+</section>
+}

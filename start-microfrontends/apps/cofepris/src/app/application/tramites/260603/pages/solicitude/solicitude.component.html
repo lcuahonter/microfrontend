@@ -1,0 +1,72 @@
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-6">
+      @if (indice === 1) {
+      <h1>{{ tituloMensaje }}</h1>
+      }
+      @if (indice === 2) {
+      <h1>Cargar archivos</h1>
+      }
+      @if (indice === 3) {
+      <h1>Firmar</h1>
+      }
+    </div>
+    @if(esFormaValido){
+    <div class="col-12">
+      <ng-alert [CONTENIDO]="errorAlerta" [CUSTOMECLASS]="infoError"></ng-alert>
+    </div>
+    }
+  </div>
+
+  <app-wizard [listaPasos]="pantallasPasos"></app-wizard>
+
+  <div class="row">
+    @switch (indice) { @case (1) {
+    <app-datos-page></app-datos-page>
+    } @case (2) {
+    <app-paso-carga-documento [idSolicitud]="solicitudState.idSolicitud" [idTipoTRamite]="'260603'"
+      [cargaArchivosEvento]="cargarArchivosEvento" (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+      (reenviarCargaRealizada)="cargaRealizada($event)"
+      (cargaEnProgreso)="onCargaEnProgreso($event)"></app-paso-carga-documento>
+    } @case (3) {
+    <paso-firma [idSolicitud]="solicitudState.idSolicitud" [procedure]="260603"
+      [procedureUrl]="'aviso-de-importacion/SolicitudePage'"></paso-firma>
+    } }
+
+    <div class="row">
+      <div class="col-md-12">
+        @if (indice === 1) {
+        <btn-continuar [datos]="datosPasos" (continuarEvento)="getValorIndice($event)"
+          (anteriorEvento)="getValorIndice($event)"></btn-continuar>
+        }
+        @if (indice === 2) {
+        <div class="mt-5 mb-3 d-flex justify-content-end">
+          <button type="button" class="btn btn-default" (click)="anterior()">
+            Anterior
+          </button>
+
+          <button class="btn btn-primary ms-3" (click)="
+              seccionCargarDocumentos ? onClickCargaArchivos() : siguiente()
+            "
+            [disabled]="(seccionCargarDocumentos && !activarBotonCargaArchivos) || (!seccionCargarDocumentos && cargaEnProgreso)">
+            {{ seccionCargarDocumentos ? 'Cargar archivos' : 'Continuar' }}
+          </button>
+        </div>
+        }
+
+        @if (indice === 3){
+        <div class="mt-5 mb-3 d-flex justify-content-end">
+          <button type="button" class="btn btn-default  ms-3" (click)="anterior()">
+            Anterior
+          </button>
+        </div>
+        }
+
+
+      </div>
+    </div>
+    @if (indice === 1) {
+    <ng-alert [CONTENIDO]="aviso"></ng-alert>
+    }
+  </div>
+</div>

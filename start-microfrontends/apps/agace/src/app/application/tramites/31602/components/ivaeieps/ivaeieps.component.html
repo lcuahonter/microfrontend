@@ -1,0 +1,193 @@
+<div class="conatainer">
+    <form [formGroup]="forma">
+        <div class="row mb-3">
+            <formas-dinamicas 
+                [forma]="ninoFormGroup" 
+                [formularioDatos]="permisoDesistirFormDatos"
+                [soloLectura]="esFormularioSoloLectura"
+                >
+            </formas-dinamicas>
+        </div>
+    </form>
+    <form [formGroup]="ivaEiepsFormGroup">
+        <div class="row mb-3">
+            <label class="fw-bold"><span class="text-danger">* </span>
+                Indique si para efectos del presente
+                trámite se acredita como parte de un mismo grupo de conformidad con la
+                regla 7.1.7.
+            </label>
+            <div class="col-md-12 ps-3">
+                <app-input-radio
+                    [radioOptions]="radioBtn"
+                    [selectedValue]="predeterminadoSeleccionar"
+                    (valueChange)="cambioDeValorIndique($event)"
+                    [isRequired]="true"
+                    [layout]="'horizontal'"
+                    [gap]="'50px'"
+                    formControlName="indiqueIva"
+                    (change)="setValoresStore(ivaEiepsFormGroup,'indiqueIva', 'setIndiqueIva')"
+                    >
+                </app-input-radio>
+            </div>
+            @if(predeterminadoSeleccionar === 'Si') {
+                <div class="col-md-12">
+                    <p class="mt-4 fw-bold">
+                        Para acreditar que forma parte de un grupo, posteriormente deberán anexar
+                        un diagrama de la estructura accionaria y corporativa, así como copia de
+                        las escrituras públicas, en la que conste la participación accionaria de
+                        las empresas que formen parte del grupo.
+                    </p>
+                    <p class="fw-bold">
+                      Tratándose de las empresas que se mencionan en la regla 7.1.2., apartado
+                      B, cuando no se hubiese realizado operaciones en los últimos 12 meses
+                      previos a la presentación de la solicitud y que quieran acreditar el
+                      requisito mediante una de las empresas del grupo, deberán anexar un
+                      escrito en el que asuma la responsabilidad solidaria a que se refiere la
+                      fracción VIII del artículo 26 del Código Fiscal de la Federación, de los
+                      créditos fiscales que llegaran a originarse.
+                    </p>
+                    <ng-titulo titulo="Empresas del grupo certificadas en materia de IVA e IEPS"/>
+                    <p class="fw-bold">
+                        Indique cual(es) de las empresas que forman parte del grupo cuentan con la
+                        Certificación en materia de IVA e IEPS, o en su caso, se encuentran en
+                        proceso de solicitud, o se van a certificar de conformidad con el
+                        calendario establecido en el articulo Segundo de la Sexta Resolución de
+                        Modificaciones a las Reglas de Carácter General en Materia de Comercio
+                        Exterior para 2013.
+                    </p>
+                  
+                      <div class="table-container">
+                        <div class="table-header pb-2">
+                          <h5>Empresas del grupo certificadas en materia de IVA e IEPS</h5>
+                        </div>
+                        <app-tabla-dinamica
+                            [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+                            [tipoSeleccionTabla]="tablaSeleccionCheckbox" 
+                            [configuracionTabla]="configuracionTabla"
+                            [datos]="empresasDelGrupoDatos">
+                        </app-tabla-dinamica>
+                      </div>
+                  
+                      <div class="d-flex justify-content-end">
+                        <button class="btn btn-primary" (click)="abrirModal(template)" [disabled]="esFormularioSoloLectura">
+                          Agregar
+                        </button>
+                        <button class="btn btn-default ms-2" [disabled]="esFormularioSoloLectura">Modificar</button>
+                        <button class="btn btn-default ms-2" [disabled]="esFormularioSoloLectura">Eliminar</button>
+                      </div>
+                      <section class="fw-medium mt-3">
+                        <span class="text-danger">*</span> Señale, en su caso, el tipo de
+                        información que la solicitante acredita, a través de alguna de las
+                        empresas que forman parte del mismo grupo:
+                      </section>
+                  
+                      <div class="checkbox-container">
+                        <lib-input-check 
+                          [id]="'empleados'" 
+                          formControlName="empleados"
+                          [label]="'Empleados'" 
+                          [required]="false"
+                          [isDisabled]="esFormularioSoloLectura"
+                          (change)="setValoresStore(ivaEiepsFormGroup,'empleados', 'setEmpleados')">
+                        </lib-input-check>
+
+                        <lib-input-check 
+                          [id]="'infraestructura'" 
+                          formControlName="infraestructura"
+                          [label]="'Infraestructura'" 
+                          [required]="false"
+                          [isDisabled]="esFormularioSoloLectura"
+                          (change)="setValoresStore(ivaEiepsFormGroup,'infraestructura', 'setInfraestructura')">
+                        </lib-input-check>
+
+                        <lib-input-check 
+                          [id]="'monto'" 
+                          formControlName="monto"
+                          [label]="'Monto de Inversión'" 
+                          [required]="false"
+                          [isDisabled]="esFormularioSoloLectura"
+                          (change)="setValoresStore(ivaEiepsFormGroup,'monto', 'setMonto')">
+                        </lib-input-check>
+
+                        <lib-input-check 
+                          [id]="'antiguedad'" 
+                          formControlName="antiguedad"
+                          [label]="'Antigüedad (Únicamente tratándose de las empresas que se mencionan en el apartado B, regla 7.1.2)'" 
+                          [required]="false"
+                          [isDisabled]="esFormularioSoloLectura"
+                          (change)="setValoresStore(ivaEiepsFormGroup,'antiguedad', 'setAntiguedad')">
+                        </lib-input-check>
+                      </div>
+                </div>
+            }
+          </div>
+    </form>
+    <div class="mb-3">
+        <app-ivaeieps-dos [esFormularioSoloLectura]="esFormularioSoloLectura"></app-ivaeieps-dos>
+    </div>
+</div>
+
+
+
+<!-- Estructura modal -->
+
+<ng-template #template>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Agregar</h4>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="ivaForm">
+            <div class="form-group">
+              <span class="text-danger">*</span><label for="rfc"> RFC </label>
+              <div class="d-flex align-items-center">
+                <input
+                  type="text"
+                  id="rfc"
+                  class="form-control me-2 w-50"
+                  formControlName="rfc"
+                />
+                <button class="btn btn-primary">Buscar</button>
+              </div>
+              @if (ivaForm.get('rfc')?.invalid && ivaForm.get('rfc')?.touched) {
+              <div class="text-danger">
+                @if (ivaForm.get('rfc')?.errors?.['required']) {
+                <small>Este campo es obligatorio.</small>
+                } @if (ivaForm.get('rfc')?.errors?.['pattern']) {
+                <small>Formato RFC no válido.</small>
+                }
+              </div>
+              }
+            </div>
+  
+            <div class="form-group">
+              <label for="denominacion">Denominación o razón social</label>
+              <input
+                type="text"
+                id="denominacion"
+                class="form-control"
+                formControlName="denominacion"
+                readonly
+              />
+            </div>
+  
+            <div class="form-group">
+              <label for="domicilio">Domicilio</label>
+              <textarea
+                id="domicilio"
+                class="form-control"
+                formControlName="domicilio"
+                readonly
+              ></textarea>
+            </div>
+          </form>
+    </div>
+    <div class="modal-footer d-flex justify-content-end">
+        <button class="btn btn-primary me-2" (click)="modalRef?.hide()">
+            Aceptar
+        </button>
+        <button class="btn btn-default">Limpiar</button>
+        <button class="btn btn-danger">
+            Cancelar
+        </button>
+    </div>
+  </ng-template>

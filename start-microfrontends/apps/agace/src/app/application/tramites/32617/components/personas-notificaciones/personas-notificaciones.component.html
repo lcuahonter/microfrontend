@@ -1,0 +1,32 @@
+<div class="container form-container">
+    <ng-titulo titulo="Personas para oír y recibir notificaciones" />
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <div class="panel-group ficha-collapse" id="accordion">
+                @for(panel of panels; let i = $index; track i) {
+                <div class="panel panel-default mb-3">
+                    <div class="panel-heading"  (click)="mostrar_colapsable(i)">
+                        <h4 class="panel-title">
+                            <a>
+                                {{ panel.label }}
+                            </a>
+                        </h4>
+                        <button type="button" class="collpase-button" [class.collapsed]="panel.isCollapsed"  [disabled]="esFormularioSoloLectura"></button>
+                    </div>
+                    <div class="panel-collapse" [id]="'panel-' + i"
+                        [ngClass]="{'collapse': panel.isCollapsed, 'in': !panel.isCollapsed}">
+                        <div class="panel-body">
+                          <app-tabla-dinamica 
+                            [configuracionTabla]="configuracionTabla" 
+                            [datos]="enlaceOperativoData"
+                            [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX"
+                            [disableSeleccionTablaCheckBox]="esFormularioSoloLectura">
+                          </app-tabla-dinamica>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

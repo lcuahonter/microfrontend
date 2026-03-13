@@ -1,0 +1,90 @@
+<div class="container">
+  <ng-titulo titulo="Ingresar pago de contenedores:" />
+  <form [formGroup]="formSolicitud">
+    <div formGroupName="pagoDeDerechos">
+      <div class="row" style="padding-bottom: 20px">
+        <div class="form-group d-flex align-items-end">
+          <label class="form-label " for="linea">Monto a pagar:</label>
+          <input class="form-control form-control-width" id="montoPagar" formControlName="montoPagar" type="text" />
+        </div>
+        <div class="row" style="padding-left: 40px;
+                padding-right: 30px;
+                padding-top: 20px;
+                padding-bottom: 5px;">
+          <p><b>Una vez realizado el pago se deberá ingresar la información correspondiente de la línea de captura del
+              pago para que sea validada</b></p>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="linea"> Línea de captura*:</label>
+            <input class="form-control" id="linea" formControlName="linea" type="text" (change)="
+                                        setValoresStore(formSolicitud, 'pagoDeDerechos.linea', 'setLinea')" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="monto">Monto*:</label>
+            <input class="form-control" id="monto" formControlName="monto" type="text" />
+          </div>
+        </div>
+      </div>
+      <div class="row" style="padding-bottom: 20px; text-align: right">
+        <div>
+          <button class="btn btn-default btn-space" type="button"
+              (click)="eliminarLineaCaptura()">
+            Limpiar
+          </button>
+          <button type="button" class="btn btn-primary btn-space" (click)="validarPago()">
+            Agregar
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+          <app-tabla-dinamica
+            [tipoSeleccionTabla]="tablaSeleccionPagos.CHECKBOX"
+            [configuracionTabla]="encabezadoDeTablaPagos"
+            [datos]="datosTablaPagos"
+            [itemsPerPage]="10"
+            [tableId]="'tablaPagos'"
+            [showPagination]="true" [mode]="'client'"
+            (listaDeFilaSeleccionada)="lineaCapturaSeleccionados = $event"
+          >
+          </app-tabla-dinamica>
+        
+      </div>
+    </div>
+    <div class="row mt-3 mb-5">
+      <p>
+        <strong>
+          A través del siguiente vinculo puedes ingresar a la página para
+          generar la línea de captura de la constancia que se solicita:
+        </strong>
+      </p>
+      <a href="https://pccem.mat.sat.gob.mx/PTSC/cet/FmpceContr/faces/resources/pages/pagos/formularioMultiplePago.jsf" target="_blank" class="custom-link">Generar línea de captura</a>
+</div>
+    <div class="text-right">
+         <div class="pull-left text-muted text-vertical-align-button" id="lblCamposObligatorios">
+              {{ mensajeCamposObligatorios }}
+            </div>
+        <button type="button" class="btn btn-danger me-3" (click)="cancelar()">
+            Anterior
+        </button>
+         <button type="submit"  class="btn btn-primary" [hidden]="datosTablaPagos.length === 0" (click)="pagosGuardar()">
+            Continuar
+        </button>
+    </div>
+    </div>
+  </form>
+</div>
+@if(nuevaNotificacion) {
+<section>
+  <lib-notificaciones
+    [notificacionInput]="nuevaNotificacion"
+    [forma]="datosServicio"
+    (confirmacionModal)="confirmacionModal($event)"
+  >
+  </lib-notificaciones>
+</section>
+}

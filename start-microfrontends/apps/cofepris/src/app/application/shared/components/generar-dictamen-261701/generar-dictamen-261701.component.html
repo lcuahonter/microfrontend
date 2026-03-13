@@ -1,0 +1,107 @@
+<form [formGroup]="dictamenForm">
+    <div class="row ">
+        @if (mostrarTitulo) {
+        <div class="col-md-12">
+            <h3 class="titulo-dictamen">{{tituloComponente}}</h3>
+        </div>
+        }
+        <div class="row col-md-12">
+            <div class="col-md-3 d-flex align-items-center">
+                <label class="form-label" style="min-width: 150px;">Sentido dictamen<span
+                        [ngClass]="dictamenForm.get('cumplimiento')?.errors?.['required'] ? 'mensaje-error' : ''">*</span>:</label>
+            </div>
+            @if(inputSentidos === true) {
+            <div class="col-md-5">
+                <input type="text" class="form-control" [value]="resultadoEvaluacion" [disabled]="true">
+            </div>
+            }
+            @else {
+
+            @if(opcionesSentidosDisponibles.length > 0) {
+            <div class="col-md-8 d-flex justify-content-center">
+                <div class="d-flex gap-3">
+                    <div *ngFor="let opcion of opcionesSentidosDisponibles"
+                        class="border px-4 py-2 d-flex align-items-center radio-button">
+                        <input class="form-check-input me-3 seleccion-radio" type="radio" formControlName="cumplimiento"
+                            name="cumplimiento" [value]="opcion.clave" [id]="'sentidoDictamen' + opcion.clave"
+                            [ngClass]="{ 'radio-invalid': dictamenForm.get('cumplimiento')?.invalid && dictamenForm.get('cumplimiento')?.touched }" />
+                        <label class="control-label mb-0" [for]="'sentidoDictamen' + opcion.clave">
+                            {{ opcion.descripcion }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            }
+
+            @else {
+            <div class="col-md-8 d-flex justify-content-center">
+                <div class="d-flex gap-3">
+                    <div class="border px-4 py-2 d-flex align-items-center radio-button">
+                        <input class="form-check-input me-3 seleccion-radio" type="radio" formControlName="cumplimiento"
+                            name="cumplimiento" value="SEDI.AC" id="sentidoDictamenAceptado"
+                             [ngClass]="{ 'radio-invalid': dictamenForm.get('cumplimiento')?.invalid && dictamenForm.get('cumplimiento')?.touched }">
+                        <label class="control-label mb-0" for="sentidoDictamenAceptado">Aceptado</label>
+                    </div>
+                    <div class="border px-4 py-2 d-flex align-items-center radio-button">
+                        <input class="form-check-input me-3 seleccion-radio" type="radio" formControlName="cumplimiento"
+                            name="cumplimiento" value="SEDI.RZ" id="sentidoDictamenRechazado" 
+                            [ngClass]="{ 'radio-invalid': dictamenForm.get('cumplimiento')?.invalid && dictamenForm.get('cumplimiento')?.touched }">
+                        <label class="control-label mb-0" for="sentidoDictamenRechazado">Rechazado</label>
+                    </div>
+                </div>
+            </div>
+            }
+            }
+        </div>
+        <div class="col-md-12 d-flex align-items-center text-danger mt-2"
+            *ngIf="dictamenForm.get('cumplimiento')?.invalid && dictamenForm.get('cumplimiento')?.touched">
+            Este campo es obligatorio.
+        </div>
+
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-6 mt-3">
+            <label class="form-label" for="justificacionDictamen">Justificación del dictamen<span
+                    [ngClass]="dictamenForm.get('justificacion')?.errors?.['required'] ? 'mensaje-error' : ''">*</span>:</label>
+            <textarea id="justificacionDictamen" class="form-control" formControlName="justificacion"
+                [ngClass]="{ 'is-invalid': dictamenForm.get('justificacion')?.invalid && dictamenForm.get('justificacion')?.touched }"></textarea>
+            <div class="mensaje-error" *ngIf="dictamenForm.get('justificacion')?.errors?.['required'] && dictamenForm.get('justificacion')?.touched">
+                Este campo es obligatorio.
+            </div>
+        </div>
+    </div>
+
+  
+ @if (dictamenForm.get('cumplimiento')?.value === 'SEDI.AC' && esVistaPrevia){
+    <div class="row">
+        <div class="col-md-12 text-end d-flex align-items-center justify-content-end" style="gap: 1rem;">
+            <button type="button" class="btn btn-primary ms-3" style="margin-top: 12px; margin-bottom: 12px;"
+                (click)="vistaPreliminar('VistaPreliminarAceptado')">
+                Vista Previa
+            </button>
+        </div>
+    </div>
+    }
+
+    @if (dictamenForm.get('cumplimiento')?.value === 'SEDI.RZ' && esVistaPrevia) {
+    <div class="row">
+        <div class="col-md-12 text-end d-flex align-items-center justify-content-end" style="gap: 1rem;">
+            <button type="button" class="btn btn-primary ms-3" style="margin-top: 12px; margin-bottom: 12px;"
+                (click)="vistaPreliminar('VistaPreliminarRechazado')">
+                Vista Previa
+            </button>
+        </div>
+    </div>
+    }
+   
+      @if(!soloLectura) {
+    <div class="row mt-5 mb-5">
+        <div class="col-md-12 d-flex justify-content-end">
+            <button type="button" class="btn btn-primary me-3" (click)="firmar()">Guardar y firmar</button>
+            <button type="button" class="btn btn-primary me-3" (click)="guardar()">Guardar</button>
+            <button type="button" class="btn btn-default me-3" (click)="cancelar()">Cancelar</button>
+        </div>
+    </div>
+    }
+</form>

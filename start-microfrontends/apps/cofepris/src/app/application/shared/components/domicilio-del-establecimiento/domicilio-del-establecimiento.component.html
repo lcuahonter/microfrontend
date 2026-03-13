@@ -1,0 +1,443 @@
+<div class="container">
+    <ng-titulo titulo="Domicilio del establecimiento" />
+    <form [formGroup]="domicilioForm">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label" for="codigoPostal">Código postal*:</label>
+                    <input class="form-control" id="codigoPostal" formControlName="codigoPostal" type="text" maxlength="12"
+                    size="29" (change)="setValoresStore(domicilioForm,'codigoPostal', 'setCodigoPostal')" [disabled]="!establecimientoSeleccionado || esFormularioSoloLectura"
+                    [ngClass]="esInvalido('codigoPostal') ? 'required' : ''" />
+                   @if(domicilioForm.get('codigoPostal')?.invalid && domicilioForm.get('codigoPostal')?.touched){
+                     <div class="text-danger">
+                       @if(domicilioForm.get('codigoPostal')?.errors?.['required']){
+                         <small>Este campo es obligatorio</small>
+                       } @else if (domicilioForm.get('codigoPostal')?.errors?.['pattern']) {
+                         <small>Por favor, escribe un número entero válido</small>
+                       }
+                     </div>
+                    }
+                </div>
+            </div>
+            <div class="col-md-4">
+                <app-catalogo-select [label]="'Estado'"  [placeholder]="'Selecciona una opción'" [catalogo]="datosEstado" [required]="true"
+                    formControlName="estado" (change)="setValoresStore(domicilioForm,'estado', 'setEstado')"[isDisabled]="esFormularioSoloLectura || !establecimientoSeleccionado">
+                </app-catalogo-select>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label" for="municipio">Municipio o alcaldía*:</label>
+                    <input class="form-control" id="municipio" formControlName="municipio" type="text"  maxlength="120"
+                    size="29" (change)="setValoresStore(domicilioForm,'municipio', 'setMunicipio')"
+                    [ngClass]="esInvalido('municipio') ? 'required' : ''" />
+                   @if(domicilioForm.get('municipio')?.invalid && domicilioForm.get('municipio')?.touched){
+                     <div class="text-danger">
+                       @if(domicilioForm.get('municipio')?.errors?.['required']){
+                         <small>Este campo es obligatorio</small>
+                       }
+                     </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label" for="localidad">Localidad*:</label>
+                    <input class="form-control" id="localidad" formControlName="localidad" type="text" maxlength="120" (change)="setValoresStore(domicilioForm,'localidad', 'setLocalidad')"
+                    [ngClass]="esInvalido('localidad') ? 'required' : ''" />
+                    @if(domicilioForm.get('localidad')?.invalid && domicilioForm.get('localidad')?.touched){
+                     <div class="text-danger">
+                       @if(domicilioForm.get('localidad')?.errors?.['required']){
+                         <small>Este campo es obligatorio</small>
+                       }
+                     </div>
+                    }
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label" for="colonia">Colonia*:</label>
+                    <input class="form-control" id="colonia" formControlName="colonia" type="text" maxlength="120" size="29" (change)="setValoresStore(domicilioForm,'colonia', 'setColonia')"
+                    [ngClass]="esInvalido('colonia') ? 'required' : ''" />
+                    @if(domicilioForm.get('colonia')?.invalid && domicilioForm.get('colonia')?.touched){
+                     <div class="text-danger">
+                       @if(domicilioForm.get('colonia')?.errors?.['required']){
+                         <small>Este campo es obligatorio</small>
+                       }
+                     </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label class="form-label" for="calle">Calle*:
+                        <span tooltip="Domicilio, calle, numero interior, numero exterior, lote" placement="top">
+                            <i class="bi bi-question-circle-fill"></i>
+                        </span>
+                    </label>
+                    <input class="form-control" id="calle" formControlName="calle" type="text" maxlength="100" (change)="setValoresStore(domicilioForm,'calle', 'setCalle')"
+                    [ngClass]="esInvalido('calle') ? 'required' : ''" />
+                    @if(domicilioForm.get('calle')?.invalid && domicilioForm.get('calle')?.touched){
+                     <div class="text-danger">
+                       @if(domicilioForm.get('calle')?.errors?.['required']){
+                         <small>Este campo es obligatorio</small>
+                       }
+                     </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1">
+                <div class="form-group">
+                    <label class="form-label" for="lada">Lada:</label>
+                    <input class="form-control" id="lada" formControlName="lada" type="text" (change)="setValoresStore(domicilioForm,'lada', 'setLada')"/>
+                    @if(domicilioForm.get('lada')?.invalid && domicilioForm.get('lada')?.touched){
+                     <div class="text-danger">
+                       @if(domicilioForm.get('lada')?.errors?.['pattern']){
+                         <small>Por favor, escribe un número entero válido</small>
+                       }
+                     </div>
+                    }
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="form-label" for="telefono">Teléfono:</label>
+                    <input class="form-control" id="telefono" formControlName="telefono" type="text" maxlength="30" (change)="setValoresStore(domicilioForm,'telefono', 'setTelefono')"/>
+                    @if(domicilioForm.get('telefono')?.invalid && domicilioForm.get('telefono')?.touched){
+                     <div class="text-danger">
+                       @if(domicilioForm.get('telefono')?.errors?.['pattern']){
+                         <small>Por favor, escribe un número entero válido</small>
+                       }
+                     </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="row" class="mt-5">
+            <div class="form-group">
+                <label class="form-label" for="scian">S.C.I.A.N.*:</label>
+                <app-tabla-dinamica [configuracionTabla]="configuracionTabla" [datos]="datosData"
+                    [tipoSeleccionTabla]="tipoSeleccionTabla.CHECKBOX" formcontrolname="scian" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura">
+                </app-tabla-dinamica>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-danger mx-2" [disabled]="esFormularioSoloLectura">
+                Eliminar
+            </button>
+            <button type="button" class="btn btn-primary btn-space" data-bs-toggle="modal" data-bs-target="#modalClave"
+                (click)="mostrarModeloClave()" [disabled]="esFormularioSoloLectura">
+                Agregar
+            </button>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+            <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="aviso" value="" name="aviso"
+            formControlName="aviso" (change)="toggleNoLicenciaSanitaria($event);setValoresStore(domicilioForm,'aviso', 'setAviso')"/>
+            <label class="form-check-label" for="aviso">
+            Aviso de funcionamiento:
+            </label>
+            </div>
+            </div>
+            <div class="col-md-4">
+            <div class="form-group">
+            <label class="form-label" for="noLicenciaSanitaria">No. de licencia sanitaria*:
+                <span tooltip="Número de la autorización indicado en el documento emitido por la autoridad sanitaria competente" placement="top">
+                <i class="bi bi-question-circle-fill"></i>
+                </span>
+            </label>
+            <input class="form-control" id="noLicenciaSanitaria" formControlName="noLicenciaSanitaria"
+            placeholder="" type="text" (change)="setValoresStore(domicilioForm,'noLicenciaSanitaria', 'setNoLicenciaSanitaria')"/>
+            </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+            <div class="form-group btn-space">
+                <app-catalogo-select [label]="'Régimen al que se destinará*'"  [placeholder]="'Selecciona una opción'" [tooltipQuestionCircle]="true" [tooltipQuestionCircleText]="'la mercancÍa'"
+                [catalogo]="datosEstado" formControlName="regimenDestinado" (change)="setValoresStore(domicilioForm,'regimenDestinado', 'setRegimenDestinado')" [isDisabled]="esFormularioSoloLectura">
+                </app-catalogo-select>
+            </div>
+            </div>
+            <div class="col-md-8">
+            <div class="form-group"> <app-catalogo-select [label]="'Aduana*'" [placeholder]="'Seleccione un valor'"
+                [catalogo]="datosEstado" formControlName="aduana" (change)="setValoresStore(domicilioForm,'aduana', 'setAduana')" [isDisabled]="esFormularioSoloLectura">
+                </app-catalogo-select>
+            </div>
+            </div>
+        </div>
+
+        <div class="row" class="mt-5">
+            <div class="form-group">
+                <label class="form-label" for="scian">Datos del producto*:</label>
+                <app-tabla-dinamica [configuracionTabla]="configuracionTablaProductoDatos" [datos]="datosProducto" [styleCenter]="true"
+                    [tipoSeleccionTabla]="tipoSeleccionTabla.CHECKBOX" formcontrolname="datosProducto" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura">
+                </app-tabla-dinamica>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-primary btn-space" data-bs-toggle="modal" data-bs-target="#datosDelProducto"
+                (click)="datosDelProducto()" [disabled]="esFormularioSoloLectura">
+                Agregar
+            </button>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+            <label for="confidentialInfo">Los datos o anexos pueden contener información confidencial ¿Está de acuerdo en hacerlos públicos?*:</label>
+            </div>
+            <div class="form-group">
+                <app-input-radio
+                [radioOptions]="radioOptions"
+                [selectedValue]="defaultSelect"
+                [isRequired]="true"
+                [layout]="'horizontal'"
+                [gap]="'493px'"
+                [labelMargin]="'0px'"
+                formControlName="autorizacionIVAIEPS"
+                (change)="setValoresStore(domicilioForm,'autorizacionIVAIEPS', 'setAutorizacionIVAIEPS')"
+                 ></app-input-radio>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+
+<div class="container mt-4">
+    <div class="modal fade" id="modalClave" tabindex="-1" aria-labelledby="modalAgregarLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Clave S.C.I.A.N.</h5>
+                </div>
+                <div class="modal-body">
+                    <form [formGroup]="claveScianForm">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <app-catalogo-select [label]="'Clave S.C.I.A.N.*:'"
+                                    [placeholder]="'Seleccione un valor'" [catalogo]="claveScian"
+                                    formControlName="claveScian" (change)="setValoresStore(claveScianForm,'claveScian', 'setClaveScian')"[isDisabled]="esFormularioSoloLectura">
+                                </app-catalogo-select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <app-catalogo-select [label]="'Descripción del S.C.I.A.N.:'"
+                                    [placeholder]="'Seleccione un valor'" [catalogo]="descripcionScian"
+                                    formControlName="descripcionScian" (change)="setValoresStore(claveScianForm,'descripcionScian', 'setDescripcionScian')"[isDisabled]="esFormularioSoloLectura">
+                                </app-catalogo-select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer custom-footer justify-content-center">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" #closeModal>Cancelar</button>
+                    <button type="button" class="btn btn-primary">Limpiar</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" #closeModal [disabled]="esFormularioSoloLectura">Agregar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-4">
+    <div class="modal fade" id="datosDelProducto" tabindex="-1" aria-labelledby="modalAgregarLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Datos mercancía</h5>
+                </div>
+                <div class="modal-body">
+                    <form [formGroup]="DatosMercanciaForm">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                     <app-catalogo-select [label]="'Clasificación del producto*:'"
+                                    [placeholder]="'Seleccione un valor'" [catalogo]="clasificacionProducto"
+                                    formControlName="clasificacionProducto" (change)="setValoresStore(DatosMercanciaForm,'clasificacionProducto', 'setClasificacionProducto')">
+                                </app-catalogo-select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group"> 
+                                    <app-catalogo-select [label]="'Especificar clasificación del producto*:'"
+                                    [placeholder]="'Seleccione un valor'" [catalogo]="descripcionScian"
+                                    formControlName="especificarClasificacion" (change)="setValoresStore(DatosMercanciaForm,'especificarClasificacion', 'setEspecificarClasificacion')">
+                                </app-catalogo-select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="marcaComercial">Marca comercial o denominación distintiva*:</label>
+                                    <input class="form-control" id="marcaComercial" formControlName="marcaComercial" type="text" (change)="setValoresStore(DatosMercanciaForm,'marcaComercial', 'setMarcaComercial')"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="denominacionGenerica">Denominación común internacional (DCI) o denominación genérica*:</label>
+                                    <input class="form-control" id="denominacionGenerica" formControlName="denominacionGenerica" type="text" (change)="setValoresStore(DatosMercanciaForm,'denominacionGenerica', 'setDenominacionGenerica')"/>
+                                </div>
+                            </div>
+                            </div>
+                       
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <app-catalogo-select [label]="'Tipo de producto*:'"
+                                    [placeholder]="'Seleccione un valor'" [catalogo]="descripcionScian"
+                                    formControlName="tipoProducto" (change)="setValoresStore(DatosMercanciaForm,'tipoProducto', 'setTipoProducto')">
+                                </app-catalogo-select>
+                                </div>
+                            </div>
+                            
+                            </div>
+                     
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                  <app-catalogo-select [label]="'Estado físico*:'"
+                                    [placeholder]="'Seleccione un valor'" [catalogo]="descripcionScian"
+                                    formControlName="estadoFisico" (change)="setValoresStore(DatosMercanciaForm,'estadoFisico', 'setEstadoFisico')">
+                                </app-catalogo-select>
+                                </div>
+                            </div>
+                         
+                            </div>
+                    
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="fraccionArancelaria">Fracción arancelaria*:</label>
+                                    <input class="form-control" id="fraccionArancelaria" formControlName="fraccionArancelaria" type="text" (change)="setValoresStore(DatosMercanciaForm,'fraccionArancelaria', 'setFraccionArancelaria')"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="descripcionFraccionArancelaria">Descripción de la fracción arancelaria*:</label>
+                                    <input class="form-control" id="descripcionFraccionArancelaria" formControlName="descripcionFraccionArancelaria" type="text" (change)="setValoresStore(DatosMercanciaForm,'descripcionFraccionArancelaria', 'setDescripcionFraccionArancelaria')"/>
+                                </div>
+                            </div>
+                        </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label" for="cantidadUMC">Cantidad UMC*:</label>
+                                        <input class="form-control" id="cantidadUMC" formControlName="cantidadUMC" type="text" (change)="setValoresStore(DatosMercanciaForm,'cantidadUMC', 'setCantidadUMC')"/>
+                                    </div>
+                              </div>
+                               
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                       
+                                        <app-catalogo-select [label]="'UMC*:'"
+                                        [placeholder]="'Seleccione un valor'" [catalogo]="descripcionScian"
+                                        formControlName="umc" (change)="setValoresStore(DatosMercanciaForm,'umc', 'setUmc')">
+                                    </app-catalogo-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label" for="porcentajeConcentracion">Porcentaje de concentración*:</label>
+                                        <input class="form-control" id="porcentajeConcentracion" formControlName="porcentajeConcentracion" type="text" (change)="setValoresStore(DatosMercanciaForm,'porcentajeConcentracion', 'setPorcentajeConcentracion')"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label" for="valorComercial">Valor comercial (dólares)*:</label>
+                                        <input class="form-control" id="valorComercial" formControlName="valorComercial" type="text" (change)="setValoresStore(DatosMercanciaForm,'valorComercial', 'setValorComercial')"/>
+                                    </div>
+                                </div>
+                                </div>
+                           
+                            <div class="row">
+                                <div class="col-md-12"></div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="fechaMovimiento">Fecha de movimiento en caso de importación o exportación*:</label>
+                                        <input class="form-control" id="fechaMovimiento" formControlName="fechaMovimiento" type="date" />
+                                    </div>
+                                </div>
+                         
+                            <div class="row">
+                                <div class="col-md-12"></div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="presentacionFarmaceutica">Presentación farmacéutica o tipo de envase*:</label>
+                                        <input class="form-control" id="presentacionFarmaceutica" formControlName="presentacionFarmaceutica" type="text" (change)="setValoresStore(DatosMercanciaForm,'presentacionFarmaceutica', 'setPresentacionFarmaceutica')"/>
+                                    </div>
+                                </div>
+                            <div class="row">
+                                <div class="col-md-12"></div>
+                                    <div class="form-group">
+                                        <app-catalogo-select [label]="'País de destino*:'"
+                                        [placeholder]="'Seleccione un valor'" [catalogo]="descripcionScian"
+                                        formControlName="paisDestino" (change)="setValoresStore(DatosMercanciaForm,'paisDestino', 'setPaisDestino')">
+                                    </app-catalogo-select>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12"></div>
+                                        <div class="form-group">
+                                            <app-catalogo-select [label]="'País de procedencia*:'"
+                                            [placeholder]="'Selecciona una opción'" [catalogo]="descripcionScian"
+                                            formControlName="paisProcedencia" (change)="setValoresStore(DatosMercanciaForm,'paisProcedencia', 'setPaisProcedencia')">
+                                        </app-catalogo-select>
+                                    </div>
+                                </div>
+                                    
+                               <div class="form-group mt-5">
+                                    <div class="panel-group ficha-collapse" id="accordion">
+                                      <div class="panel panel-default">
+                                        <div
+                                          class="panel-heading"
+                                          (click)="mostrar_colapsable()"
+                                          tabindex="0"
+                                        >
+                                          <p class="panel-title">Uso específico</p>
+                                          <button type="button" class="collpase-button collapsed"></button>
+                                        </div>
+                                        @if(colapsable){
+                                        <div class="panel-collapse collapse in" id="panel-01">
+                                          <div class="panel-body">
+                                            <crosslist
+                                                [fechas]="seleccionarOrigenDelPais"
+                                                [label]="paisDeProcedenciaLabel"
+                                                [botones]="paisDeProcedenciaBotons"
+                                            ></crosslist>
+                                          </div>
+                                        </div>
+                                        }
+                                      </div>
+                                    </div>
+                                </div>
+                    </form>
+                </div>
+                <div class="modal-footer custom-footer justify-content-center">
+                    <button type="button" class="btn btn-primary">Limpiar</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" #closeModal>Cancelar</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" #closeModal>Agregar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

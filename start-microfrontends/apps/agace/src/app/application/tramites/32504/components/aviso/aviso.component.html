@@ -1,0 +1,120 @@
+<div class="container">
+  <div class="col-md-12 mt-5">
+  </div>
+  <form>
+    <div class="form" [formGroup]="formEmpresa">
+      <ng-titulo
+        titulo="Datos de la empresa IMMEX que transfiere y presenta el aviso, asi como el mes al que corresponde" />
+      <div class="row mb-3 align-items-center">
+        <div class="col-md-4">
+          <label class="form-label" for="numero_programa_immex">Número de programa IMMEX<span
+              [ngClass]="campoInvalido('numero_programa_immex') ? 'has-error' : ''">*</span>:</label>
+
+          <input class="form-control" maxlength="9" libSoloNumeros
+            [ngClass]="campoInvalido('numero_programa_immex') ? 'required' : ''" type="item.props.tipo_input"
+            id="item.props.campo" (change)="setValoresStore()" formControlName="numero_programa_immex" />
+          <div
+            *ngIf="formEmpresa.get('numero_programa_immex')?.invalid && formEmpresa.get('numero_programa_immex')?.touched"
+            class="has-error">
+           <div [innerHTML]="mensajeCampoObligatorio"></div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label" for="clave_permiso_sedena">Año de programa IMMEX<span
+              [ngClass]="campoInvalido('clave_permiso_sedena') ? 'has-error' : ''">*</span>:</label>
+
+          <input class="form-control" [ngClass]="campoInvalido('clave_permiso_sedena') ? 'required' : ''" maxlength="4"
+            libSoloNumeros type="item.props.tipo_input" id="item.props.campo" (change)="setValoresStore()"
+            formControlName="clave_permiso_sedena" libUppercase />
+          <div
+            *ngIf="formEmpresa.get('clave_permiso_sedena')?.invalid && formEmpresa.get('clave_permiso_sedena')?.touched"
+            class="has-error">
+           <div [innerHTML]="mensajeCampoObligatorio"></div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <app-catalogo-select [catalogo]="mesesCatalogo" (selectionChange)="setValoresStore()"
+            [markTouched]="campoInvalido('ide_generica2') ?? false" [label]="'Mes al que corresponde el aviso'"
+            [required]="true" formControlName="ide_generica2" name="ide_generica2" />
+        </div>
+
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <app-catalogo-select [catalogo]="anioCatalogo" (selectionChange)="setValoresStore()"
+            [markTouched]="campoInvalido('ide_generica3') ?? false" [label]="'Año al que corresponde el aviso'"
+            [required]="true" formControlName="ide_generica3" name="ide_generica3" />
+        </div>
+      </div>
+
+      <div class="w-100"></div>
+
+      <ng-titulo titulo="Tipo de carga" />
+      <div class="tipo-carga">
+        <label class="form-label mb-0" for="tipo_carga">
+          Tipo de carga
+          <span>*</span>:
+        </label>
+        <app-input-radio id="tipo_carga" [radioOptions]="RADIOS" [isRequired]="true" [layout]="'horizontal'"
+          (change)="onRadioChange()" formControlName="tipo_carga"></app-input-radio>
+      </div>
+    </div>
+
+
+    @if (formEmpresa.get('tipo_carga')?.value === cargaManualValor) {
+    <div class="form mt-5">
+      <ng-titulo titulo="Datos del aviso" />
+      <div class="row">
+        <app-tabla-dinamica [styleCenter]="true" [filasSeleccionadas]="filasSeleccionadas"
+          [configuracionTabla]="avisosDomicilioConfig" [datos]="avisoDomicilios"
+          [tipoSeleccionTabla]="TablaSeleccion.RADIO" (filaSeleccionada)="onFilasSeleccionadas($event)"
+          [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"></app-tabla-dinamica>
+
+        <div class="d-flex justify-content-end">
+          <button type="button" class="btn btn-danger ms-3" [disabled]="itemsSeleccionados.size === 0"
+            (click)="accionesBotones(botonAccionesTipos.ELIMINAR)">
+            Eliminar
+          </button>
+          <button type="button" class="btn btn-primary ms-3" [disabled]="itemsSeleccionados.size === 0"
+            (click)="accionesBotones(botonAccionesTipos.MODIFICAR)">
+            Modificar
+          </button>
+          <button type="button" class="btn btn-primary ms-3" [disabled]="esFormularioSoloLectura"
+            (click)="accionesBotones(botonAccionesTipos.AGREGAR)">
+            Agregar
+          </button>
+        </div>
+      </div>
+    </div>
+    }@else{
+    <app-carga-masiva #appMasiva></app-carga-masiva>
+    }
+
+  </form>
+
+</div>
+
+
+<div class="modal fade" #modalAgregarManual id="modalAgregarManual" tabindex="-5"
+  aria-labelledby="modalAgregarManualLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+      <app-manual-aviso #manualAviso [domicilioInput]="domicilioAModificar" (cerrarModalAction)="cerrarModal()"
+        (agregarFila)="agregarFilaTabla()"></app-manual-aviso>
+    </div>
+  </div>
+</div>
+
+
+@if (mostrarInfo) {
+<lib-notificaciones [notificacionInput]="nuevaNotificacionInfo"
+  (confirmacionModal)="aceptarInfo($event)"></lib-notificaciones>
+}
+
+@if (mostrarAlertaSimple) {
+<lib-notificaciones [notificacionInput]="nuevaNotificacionInfo"
+  (confirmacionModal)="aceptarAlerta()"></lib-notificaciones>
+}

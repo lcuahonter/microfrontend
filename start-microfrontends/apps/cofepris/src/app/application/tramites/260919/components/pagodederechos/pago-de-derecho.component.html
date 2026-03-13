@@ -1,0 +1,226 @@
+<div class="container">
+  <ng-titulo titulo="Pago de derechos" />
+  <form [formGroup]="pagoDeDerechosForm">
+    <ng-container formGroupName="pagoDeDerechos">
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label class="form-label" for="clavedereferencia"
+            >Clave de referencia:</label
+          >
+          <input
+            class="form-control"
+            id="clavedereferencia"
+            type="text"
+            formControlName="clavedereferencia"
+            maxlength="9"
+           [ngClass]="{
+      'is-invalid':
+        pagoDeDerechos.get('clavedereferencia')?.invalid &&
+        pagoDeDerechos.get('clavedereferencia')?.touched
+    }"
+    (blur)="pagoDeDerechos.get('clavedereferencia')?.markAsTouched()"
+            
+            (change)="
+              setValoresStore(
+                pagoDeDerechos,
+                'clavedereferencia',
+                'setClaveDeReferencia'
+              )
+            "
+            [disabled]="esFormularioSoloLectura"
+          />
+         <div
+    *ngIf="
+      pagoDeDerechos.get('clavedereferencia')?.invalid &&
+      pagoDeDerechos.get('clavedereferencia')?.touched
+    "
+    class="text-danger"
+  >
+    <small
+      *ngIf="pagoDeDerechos.get('clavedereferencia')?.errors?.['required']"
+    >
+      Este campo es obligatorio.
+    </small>
+    <small
+      *ngIf="pagoDeDerechos.get('clavedereferencia')?.errors?.['maxlength']"
+    >
+      Solo se permiten 9 caracteres alfanuméricos.
+    </small>
+    <small
+      *ngIf="pagoDeDerechos.get('clavedereferencia')?.errors?.['pattern']"
+    >
+      Solo se permiten caracteres alfanuméricos.
+    </small>
+  </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label" for="cadenadeladependencia"
+            >Cadena de la dependencia:</label
+          >
+          <input
+            class="form-control"
+            id="cadenadeladependencia"
+            type="text"
+            formControlName="cadenadeladependencia"
+            maxlength="40"
+            [ngClass]="{
+      'is-invalid':
+        pagoDeDerechos.get('cadenadeladependencia')?.invalid &&
+        pagoDeDerechos.get('cadenadeladependencia')?.touched
+    }"
+    (blur)="pagoDeDerechos.get('cadenadeladependencia')?.markAsTouched()"
+            (change)="
+              setValoresStore(
+                pagoDeDerechos,
+                'cadenadeladependencia',
+                'setCadenaDelaDependencia'
+              )
+            "
+            [disabled]="esFormularioSoloLectura"
+          />
+          <div
+    *ngIf="
+      pagoDeDerechos.get('cadenadeladependencia')?.invalid &&
+      pagoDeDerechos.get('cadenadeladependencia')?.touched
+    "
+    class="text-danger"
+  >
+    <small
+      *ngIf="pagoDeDerechos.get('cadenadeladependencia')?.errors?.['required']"
+    >
+      Este campo es obligatorio.
+    </small>
+    <small
+      *ngIf="pagoDeDerechos.get('cadenadeladependencia')?.errors?.['maxlength']"
+    >
+      Solo se permiten 40 caracteres alfanuméricos.
+    </small>
+    <small
+      *ngIf="pagoDeDerechos.get('cadenadeladependencia')?.errors?.['pattern']"
+    >
+      Solo se permiten caracteres alfanuméricos.
+    </small>
+  </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <app-catalogo-select
+            id="bancoData"
+            formControlName="banco"
+            [catalogo]="bancoData.catalogos"
+            [label]="'Banco'"
+            [placeholder]="bancoData.primerOpcion"
+            (change)="setValoresStore(pagoDeDerechos, 'banco', 'setBanco')"
+            [isDisabled]="esFormularioSoloLectura ? true : false"
+          >
+          </app-catalogo-select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label class="form-label" for="llavedepago">Llave de pago:</label>
+          <input
+            class="form-control"
+            id="llavedepago"
+            type="text"
+            formControlName="llavedepago"
+            maxlength="30"
+            [ngClass]="{
+              'is-invalid':
+                pagoDeDerechos.get('llavedepago')?.invalid &&
+                pagoDeDerechos.get('llavedepago')?.touched
+            }"
+            (change)="
+              setValoresStore(pagoDeDerechos, 'llavedepago', 'setLlavedoPago')
+            "
+            [disabled]="esFormularioSoloLectura"
+          />
+          <div
+            *ngIf="
+              pagoDeDerechos.get('llavedepago')?.invalid &&
+              pagoDeDerechos.get('llavedepago')?.touched
+            "
+            class="text-danger"
+          >
+            <small
+              *ngIf="pagoDeDerechos.get('llavedepago')?.errors?.['required']"
+            >
+              Este campo es obligatorio.
+            </small>
+            <small
+              *ngIf="pagoDeDerechos.get('llavedepago')?.errors?.['maxlength']"
+            >
+              Solo se permiten 30 caracteres alfanuméricos.
+            </small>
+            <small
+              *ngIf="pagoDeDerechos.get('llavedepago')?.errors?.['pattern']"
+            >
+              Existen datos incorrectos que no cumplen con el formato esperado.
+            </small>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <input-fecha
+           formControlName="fechadepago"
+            [datos]="fechaPago"
+            [setFecha]="
+              pagoDeDerechosForm.get('pagoDeDerechos.fechadepago')?.value
+            "
+            (valorCambiado)="seleccionarFechaInicio($event)"
+          ></input-fecha>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label" for="importedepago">Importe de pago:</label>
+          <input
+            class="form-control"
+            id="importedepago"
+            type="text"
+            formControlName="importedepago"
+            maxlength="16"
+            [ngClass]="{
+              'is-invalid':
+                pagoDeDerechos.get('importedepago')?.invalid &&
+                pagoDeDerechos.get('importedepago')?.touched
+            }"
+            (change)="
+              setValoresStore(
+                pagoDeDerechos,
+                'importedepago',
+                'setImportedePago'
+              )
+            "
+            [disabled]="esFormularioSoloLectura"
+          />
+          <div
+            *ngIf="
+              pagoDeDerechos.get('importedepago')?.invalid &&
+              pagoDeDerechos.get('importedepago')?.touched
+            "
+            class="text-danger"
+          >
+            <small
+              *ngIf="pagoDeDerechos.get('importedepago')?.errors?.['required']"
+            >
+              Este campo es obligatorio.
+            </small>
+            <small
+              *ngIf="pagoDeDerechos.get('importedepago')?.errors?.['pattern']"
+            >
+              Por favor, escribe un número entero válido.
+            </small>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 d-flex justify-content-end">
+        <button
+          type="button"
+          name="borarrdatosdelpago"
+          class="btn btn-primary ms-2"
+          (click)="clearForm()"
+          [disabled]="esFormularioSoloLectura"
+        >
+          Borrar datos del pago
+        </button>
+      </div>
+    </ng-container>
+  </form>
+</div>

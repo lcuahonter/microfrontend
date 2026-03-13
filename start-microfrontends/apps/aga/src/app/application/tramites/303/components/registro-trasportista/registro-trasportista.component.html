@@ -1,0 +1,134 @@
+<div [config]="{ show: true, backdrop: 'static' }" (onHidden)="onHidden()" bsModal #modal="bs-modal" class="modal fade"
+    tabindex="-1" role="dialog" aria-labelledby="dialog-auto-name">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="dialog-auto-name" class="modal-title pull-left">
+                    {{ titulo }}
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="FormTrasportista" class="formulario">
+                    <!-- Nacionalidad -->
+                    <div class="row mb-4">
+                        <div class="col-md-5">
+                            <label class="form-label text-title mb-0">Transportista</label>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check d-flex justify-content-center">
+                                <input type="radio" id="nacSi" class="form-check-input" formControlName="nacionalidad"
+                                    value="nacional" />
+                                <label for="nacSi" class="form-check-label ms-2">Nacional</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check d-flex justify-content-center">
+                                <input type="radio" id="nacNo" class="form-check-input" formControlName="nacionalidad"
+                                    value="extranjero" />
+                                <label for="nacNo" class="form-check-label ms-2">Extranjero</label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Tipo de persona -->
+                    <div class="row mb-4">
+                        <div class="col-md-5">
+                            <label class="form-label text-title mb-0">Tipo de persona:</label>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check d-flex justify-content-center">
+                                <input type="radio" id="fisica" class="form-check-input" formControlName="tipoPersona"
+                                    value="fisica" />
+                                <label for="fisica" class="form-check-label ms-2">Persona Física</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check d-flex justify-content-center">
+                                <input type="radio" id="moral" class="form-check-input" formControlName="tipoPersona"
+                                    value="moral" />
+                                <label for="moral" class="form-check-label ms-2">Persona Moral</label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- RFC -->
+                    <div class="row" *ngIf="ESNACIONALFISICA || ESNACIONALMORAL">
+                        <div class="col-md-6">
+                            <label for="rfc" class="form-label">RFC*:</label>
+                            <input type="text" id="rfc" class="form-control" formControlName="rfc" />
+                            <div *ngIf="FormTrasportista.get('rfc')?.touched && FormTrasportista.get('rfc')?.invalid"
+                                class="text-danger">
+                                El RFC es obligatorio.
+                            </div>
+                        </div>
+                        <div class="col-md-6 d-flex align-items-end justify-content-lg-end">
+                            <button class="btn btn-primary ms-2" type="button"
+                                (click)="buscarTrasportista()">Buscar</button>
+                        </div>
+                    </div>
+                    <!-- Nombre y Apellidos -->
+                    <div class="row" *ngIf="ESNACIONALFISICA || ESEXTRANJEROFISICA">
+                        <div class="col-md-4">
+                            <label for="nombre" class="form-label">Nombre(s)*:</label>
+                            <input type="text" id="nombre" class="form-control" formControlName="nombre" />
+                            <div *ngIf="FormTrasportista.get('nombre')?.touched && FormTrasportista.get('nombre')?.invalid"
+                                class="text-danger">
+                                El nombre es obligatorio.
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="apellidoPaterno" class="form-label">Apellido Paterno*:</label>
+                            <input type="text" id="apellidoPaterno" class="form-control"
+                                formControlName="apellidoPaterno" />
+                            <div *ngIf="FormTrasportista.get('apellidoPaterno')?.touched && FormTrasportista.get('apellidoPaterno')?.invalid"
+                                class="text-danger">
+                                El apellido paterno es obligatorio.
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="apellidoMaterno" class="form-label">Apellido Materno:</label>
+                            <input type="text" id="apellidoMaterno" class="form-control"
+                                formControlName="apellidoMaterno" />
+                        </div>
+                    </div>
+                    <!-- Tax ID -->
+                    <div class="row" *ngIf="ESEXTRANJEROFISICA || ESEXTRANJEROMORAL">
+                        <div class="col-md-6">
+                            <label for="taxID" class="form-label">Tax ID*:</label>
+                            <input type="text" id="taxID" class="form-control" formControlName="taxID" />
+                            <div *ngIf="FormTrasportista.get('taxID')?.touched && FormTrasportista.get('taxID')?.invalid"
+                                class="text-danger">
+                                El Tax ID es obligatorio.
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Razón Social -->
+                    <div class="row" *ngIf="ESNACIONALMORAL || ESEXTRANJEROMORAL">
+                        <div class="col-md-12">
+                            <label for="razonSocial" class="form-label">Denominación o Razón social*:</label>
+                            <input type="text" id="razonSocial" class="form-control" formControlName="razonSocial" />
+                            <div *ngIf="FormTrasportista.get('razonSocial')?.touched && FormTrasportista.get('razonSocial')?.invalid"
+                                class="text-danger">
+                                La razón social es obligatoria.
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer center">
+                <button class="btn btn-primary ms-2" type="button" (click)="FormTrasportista.reset()">Limpiar</button>
+                <button type="button" class="btn btn-default ms-2" (click)="cancelar()">Cancelar</button>
+                <button class="btn btn-primary ms-2" type="button" (click)="guardar()">
+                    {{ modoEdicion ? 'Modificar' : 'Agregar' }}
+                </button>
+                <div *ngIf="alerta === 'error'" class="alert alert-danger" role="alert">
+                    Por favor, completa los campos obligatorios antes de continuar.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@if (nuevaNotificacion) {
+<section>
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+    </lib-notificaciones>
+</section>
+}

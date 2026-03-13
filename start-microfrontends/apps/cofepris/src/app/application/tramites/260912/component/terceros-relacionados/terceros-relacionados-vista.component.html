@@ -1,0 +1,102 @@
+<!-- ...existing code... -->
+<app-terceros-relacionados
+  [fabricanteTablaDatos]="fabricanteTablaDatos"
+  [destinatarioFinalTablaDatos]="destinatarioFinalTablaDatos"
+  [proveedorTablaDatos]="proveedorTablaDatos"
+  [facturadorTablaDatos]="facturadorTablaDatos"
+  (proveedorSeleccifabricanteTablaDatosonadoDatos)="onProveedorSeleccionado($event)"
+  (facturadorSeleccionadoDatos)="onFacturadorSeleccionado($event)"
+  [estaOculto]="botonDesactivarParaProrrogar"
+  [idProcedimiento]="idProcedimiento"
+  (agregarFabricante)="abrirModalAgregarFabricante()"
+  (agregarDestinatarioFinal)="abrirModalAgregarDestinatarioFinal()"
+  [formularioDeshabilitado]="esFormularioSoloLectura || isFabricanteTablaDatosDisabled || isDestinatarioFinalTablaDatosDisabled || isProveedorTablaDatosDisabled || isFacturadorTablaDatosDisabled"
+  (fabricanteEventoModificar)="abrirModalEditarFabricante(fabricanteSeleccionadoDatos[0])"
+  (fabricanteEventoModificarModal)="abrirModalEditarFabricante($event[0])"
+   (listaDeFilaSeleccionada)="onFabricanteSeleccionado($event)"
+   (filaSeleccionada)="onFabricanteSeleccionado([$event])"
+></app-terceros-relacionados>
+
+<!-- Modal para Editar Fabricante -->
+<div class="modal fade" id="modalEditarFabricante" tabindex="-1" aria-labelledby="modalEditarFabricanteLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" [ngClass]="{show: mostrarModalEditarFabricante}" [ngStyle]="{display: mostrarModalEditarFabricante ? 'block' : 'none'}">
+  <div class="modal-dialog modal-xl" style="max-width: 98vw;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalEditarFabricanteLabel">Modificar Fabricante</h5>
+      </div>
+      <div class="modal-body" style="overflow-y: auto; max-height: 80vh;">
+        <app-agregar-fabricante-contenedora
+          [idProcedimiento]="idProcedimiento"
+          [fabricanteTablaDatos]="fabricanteTablaDatos"
+          [tramiteState]="tramiteState"
+          [datoSeleccionado]="fabricanteSeleccionadoParaEditar"
+          (updateFabricanteTablaDatos)="updateFabricanteTablaDatos($event)"
+          (cancelar)="cerrarModalEditarFabricante()"
+          (guardarYSalir)="cerrarModalEditarFabricante()"
+        ></app-agregar-fabricante-contenedora>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="modalAgregarFabricante" tabindex="-1" aria-labelledby="modalAgregarFabricanteLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-xl" style="max-width: 98vw;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalAgregarFabricanteLabel">Agregar Fabricante</h5>
+      </div>
+      <div class="modal-body" style="overflow-y: auto; max-height: 80vh;">
+        <app-agregar-fabricante-contenedora
+          [idProcedimiento]="idProcedimiento"
+          [fabricanteTablaDatos]="fabricanteTablaDatos"
+          [tramiteState]="tramiteState"
+          [datoSeleccionado]="fabricanteSeleccionadoDatos"
+          (updateFabricanteTablaDatos)="updateFabricanteTablaDatos($event)"
+          (cancelar)="cerrarModalAgregarFabricante()"
+          (guardarYSalir)="cerrarModalAgregarFabricante()"
+        ></app-agregar-fabricante-contenedora>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal para Editar Destinatario Final -->
+<div class="modal fade" id="modalEditarDestinatarioFinal" tabindex="-1" aria-labelledby="modalEditarDestinatarioFinalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" [ngClass]="{show: mostrarModalEditarDestinatarioFinal}" [ngStyle]="{display: mostrarModalEditarDestinatarioFinal ? 'block' : 'none'}">
+  <div class="modal-dialog modal-xl" style="max-width: 98vw;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalEditarDestinatarioFinalLabel">Modificar Destinatario Final</h5>
+      </div>
+      <div class="modal-body" style="overflow-y: auto; max-height: 80vh;">
+        <app-agregar-destinatario-final-contenedora
+          [idProcedimiento]="idProcedimiento"
+          [tramiteState]="tramiteState"
+          [destinatarioFinalTablaDatos]="destinatarioFinalTablaDatos"
+          [datoSeleccionado]="destinatarioFinalSeleccionadoParaEditar"
+          (updateDestinatarioFinalTablaDatos)="updateDestinatarioFinalTablaDatos($event)"
+          (cancelarDestinario)="cerrarModalEditarDestinatarioFinal()"
+          (guardarYSalir)="cerrarModalEditarDestinatarioFinal()"
+        ></app-agregar-destinatario-final-contenedora>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal para Agregar Destinatario Final -->
+<div class="modal fade" id="modalAgregarDestinatarioFinal" tabindex="-1" aria-labelledby="modalAgregarDestinatarioFinalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-xl" style="max-width: 98vw;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalAgregarDestinatarioFinalLabel">Agregar Destinatario Final</h5>
+      </div>
+      <div class="modal-body" style="overflow-y: auto; max-height: 80vh;">
+        <app-agregar-destinatario-final-contenedora
+          [idProcedimiento]="idProcedimiento"
+          [tramiteState]="tramiteState"
+          [datoSeleccionado]="destinatarioFinalSeleccionadoParaEditar"
+          [destinatarioFinalTablaDatos]="destinatarioFinalTablaDatos"
+          (updateDestinatarioFinalTablaDatos)="updateDestinatarioFinalTablaDatos($event)"
+          (cancelarDestinario)="cerrarModalAgregarDestinatarioFinal()"
+          (guardarYSalir)="cerrarModalAgregarDestinatarioFinal()"
+        ></app-agregar-destinatario-final-contenedora>
+      </div>
+    </div>
+  </div>
+</div>

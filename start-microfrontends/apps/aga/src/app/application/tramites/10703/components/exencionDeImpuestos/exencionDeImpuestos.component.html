@@ -1,0 +1,376 @@
+<div class="container">
+  <form [formGroup]="tramiteForm" class="row mt-5">
+    <div class="col-12">
+      <ng-container formGroupName="importadorExportador">
+        <div class="alert alert-info">
+          <label style="font-weight: normal">
+            <input
+              type="checkbox"
+              formControlName="manifesto"
+              [ngClass]="{
+                'bi bi-ban': tramiteForm.get('importadorExportador')?.disabled
+              }"
+              id="manifesto"
+            />
+            *Manifesto bajo protesta de decir verdad que el donante de la
+            mercancía es extranjero
+          </label>
+        </div>
+        <div class="row mt-5">
+          <div class="col-8">
+            <app-catalogo-select
+              [catalogo]="aduana"
+              [label]="'Aduana por la que ingresará la mercancía'"
+              formControlName="aduana"
+              [required]="true"
+              [isDisabled]="esFormularioSoloLectura"
+              (change)="aduanaSeleccion()"
+              name="aduana"
+            >
+            </app-catalogo-select>
+          </div>
+          <div class="col-4" style="margin-top: 35px">
+            <lib-input-check
+              [id]="'organismoPublico'"
+              [label]="'Organismo público'"
+              [required]="true"
+              formControlName="organismoPublico"
+              [isDisabled]="true"
+            ></lib-input-check>
+          </div>
+        </div>
+        <ng-titulo titulo="Mercancía" />
+        <div class="row">
+          <div class="col-4">
+            <app-catalogo-select
+              [catalogo]="usoEspecifico"
+              [label]="'Fin al cual se destinará la mercancía'"
+              formControlName="usoEspecifico"
+              [required]="true"
+              [isDisabled]="true"
+              name="usoEspecifico"
+            >
+            </app-catalogo-select>
+          </div>
+          <div class="col-12">
+            <div class="table-container" style="margin-top: 20px">
+              <app-tabla-dinamica
+                [tipoSeleccionTabla]="tipoSeleccionTabla"
+                [configuracionTabla]="ParqueAgentes"
+                [datos]="mercanciaDatos"
+                [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+                (listaDeFilaSeleccionada)="manejarFilaSeleccionada($event)"
+              >
+              </app-tabla-dinamica>
+            </div>
+          </div>
+          <div class="col-md-12 mt-5 d-flex justify-content-end">
+            <button
+              type="button"
+              class="btn btn-primary ms-3"
+              [disabled]="esFormularioSoloLectura"
+              (click)="abrirDialogoMercancias()"
+            >
+              Consultar
+            </button>
+          </div>
+        </div>
+        <ng-titulo titulo="Datos del donante extranjero" />
+        <div class="row">
+          <div class="col-md-8">
+            <label>Nombre(s):</label>
+            <input
+              type="text"
+              required="true"
+              class="form-control"
+              id="nombre"
+              formControlName="nombre"
+            />
+          </div>
+          <div class="col-4" style="margin-top: 35px">
+            <lib-input-check
+              [id]="'personaFisica'"
+              [label]="'Persona física'"
+              [required]="false"
+              formControlName="personaFisica"
+              [isDisabled]="true"
+            ></lib-input-check>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-8">
+            <label>Calle:</label>
+            <input
+              type="text"
+              required="true"
+              class="form-control"
+              maxlength="100"
+              id="calle"
+              formControlName="calle"
+            />
+          </div>
+          <div class="col-md-4">
+            <label>Número exterior:</label>
+            <input
+              type="number"
+              required="true"
+              maxlength="55"
+              class="form-control"
+              id="numeroExterior"
+              formControlName="numeroExterior"
+            />
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-4">
+            <label>Número interior:</label>
+            <input
+              type="number"
+              class="form-control"
+              maxlength="55"
+              id="numeroInterior"
+              formControlName="numeroInterior"
+            />
+          </div>
+          <div class="col-md-4">
+            <label>Estado:</label>
+            <input
+              type="number"
+              required="true"
+              class="form-control"
+              id="estado"
+              formControlName="estado"
+            />
+          </div>
+          <div class="col-md-4">
+            <label>Colonia:</label>
+            <input
+              type="number"
+              required="true"
+              class="form-control"
+              id="colonia"
+              formControlName="colonia"
+            />
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-4">
+            <label>Código postal:</label>
+            <input
+              type="number"
+              required="true"
+              class="form-control"
+              id="codigoPostal"
+              formControlName="codigoPostal"
+            />
+          </div>
+          <div class="col-md-4">
+            <app-catalogo-select
+              [catalogo]="pais"
+              [label]="'País'"
+              [placeholder]="'país'"
+              id="pais"
+              [isDisabled]="true"
+              formControlName="pais"
+            ></app-catalogo-select>
+          </div>
+          <div class="col-md-4">
+            <label>Correo electrónico:</label>
+            <input
+              type="email"
+              class="form-control"
+              maxlength="50"
+              id="correoElectronico"
+              formControlName="correoElectronico"
+            />
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-4">
+            <label>Teléfono:</label>
+            <input
+              type="number"
+              class="form-control"
+              id="telefono"
+              formControlName="telefono"
+              maxlength="30"
+            />
+          </div>
+        </div>
+
+        <div class="row mt-5">
+          <label required="true"
+            >Señale si la mercancía formará parte del patrimonio de su
+            representada*:</label
+          >
+          <app-input-radio
+            [radioOptions]="radioOptions"
+            id="opcion"
+            formControlName="opcion"
+          >
+          </app-input-radio>
+        </div>
+      </ng-container>
+    </div>
+  </form>
+</div>
+
+<div
+  class="modal fade"
+  id="modalAgregarMercancias"
+  tabindex="-1"
+  aria-labelledby="modalAgregarMercanciasLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form [formGroup]="agregarMercanciasForm">
+          <!--Datos de la mercancía-->
+          <ng-titulo titulo="Datos de la mercancía"></ng-titulo>
+          <ng-container formGroupName="datosMercancia">
+            <div class="row">
+              <div class="col-md-8">
+                <label for="tipoDeMercancia"
+                  >Tipo de mercancía<span class="require">*</span>:</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="tipoDeMercancia"
+                  id="tipoDeMercancia"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-8">
+                <label for="especificoMercancia"
+                  >Uso específico de la mercancía*:</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="especificoMercancia"
+                  id="especificoMercancia"
+                />
+              </div>
+              <div class="col-md-4">
+                <app-catalogo-select
+                  [catalogo]="condicionMercancia"
+                  [label]="'Condición de la mercancía'"
+                  [required]="true"
+                  formControlName="condicionMercancia"
+                  name="condicionMercancia"
+                  [isDisabled]="true"
+                ></app-catalogo-select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-8">
+                <label for="cantidadComercial"
+                  >Cantidad<span class="require">*</span>:</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="cantidad"
+                  id="cantidad"
+                  maxlength="12"
+                  [required]="true"
+                />
+              </div>
+              <div class="col-md-4">
+                <app-catalogo-select
+                  [catalogo]="unidadMedida"
+                  [label]="'Unidad de medida'"
+                  [required]="true"
+                  name="unidadMedida"
+                  formControlName="unidadMedida"
+                  [isDisabled]="true"
+                ></app-catalogo-select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12" style="margin-top: 15px">
+                <lib-input-check
+                  [id]="'vehiculo'"
+                  [label]="'Vehículo'"
+                  [required]="true"
+                  formControlName="vehiculo"
+                  [isDisabled]="true"
+                ></lib-input-check>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="marca">Marca:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="marca"
+                    id="marca"
+                    maxlength="100"
+                  />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <app-catalogo-select
+                  [catalogo]="ano"
+                  [label]="'Año'"
+                  name="ano"
+                  formControlName="ano"
+                  [isDisabled]="true"
+                ></app-catalogo-select>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="modelo">Modelo:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="modelo"
+                    id="modelo"
+                    maxlength="50"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-8">
+                <div class="form-group">
+                  <label for="serie">Número de serie:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="serie"
+                    id="serie"
+                    size="50"
+                    maxlength="25"
+                  />
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </form>
+      </div>
+      <div class="modal-footer custom-footer justify-content-end">
+        <button
+          type="button"
+          class="btn btn-default m-5"
+          data-bs-dismiss="modal"
+          #closeModal
+        >
+          Regresar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+  </lib-notificaciones>
+</section>
+}

@@ -1,0 +1,133 @@
+<div class="container">
+  <ng-titulo titulo="Ingresar pago de derechos:" />
+  <form *ngIf="FormSolicitud" [formGroup]="FormSolicitud">
+    <div formGroupName="pagodederechos">
+      <div class="row" style="padding-bottom: 20px">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="linea"> Linea de captura*:</label>
+            <input
+              class="form-control"
+              id="linea"
+              formControlName="linea"
+              type="text"
+              maxlength="20"
+              [ngClass]="{ 'required': isInvalid() }"
+              (input)="manejarEntradaMayusculas($event)"
+              (change)="
+                setValoresStore(
+                  FormSolicitud,
+                  'pagodederechos.linea',
+                  'setLinea'
+                )
+              "
+            />
+            @if (lineaControl?.touched) {
+              @if (lineaControl?.hasError('required')) {
+                <div class="mensaje-error">Este campo es obligatorio.</div>
+              } @else if (lineaControl?.hasError('pattern')) {
+                <div class="mensaje-error">El formato de linea de captura no es correcto.</div>
+              }
+            }
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="monto">Monto*:</label>
+            <input
+              class="form-control"
+              id="monto"
+              formControlName="monto"
+              type="text"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row" style="padding-bottom: 20px; text-align: right">
+        <div>
+          <button type="button" class="btn btn-default btn-space" [disabled]="esFormularioSoloLectura" (click)="limpiar()">
+            Limpiar
+          </button>
+          <button type="button" class="btn btn-primary btn-space" [disabled]="esFormularioSoloLectura" (click)="agregar()">
+            Agregar
+          </button>
+        </div>
+      </div>
+      @if(datosTabla.length > 0){
+      <div class="row justify-content-center">
+        <div class="col-md-4">
+          <div class="row">
+            <app-tabla-dinamica
+              [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX"
+              [configuracionTabla]="encabezadoDeTabla"
+              [datos]="datosTabla"
+              [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+              (listaDeFilaSeleccionada)="listaDeFilaSeleccionada($event)">
+            </app-tabla-dinamica>
+        </div>
+        <div class="row"> 
+          <app-table-pagination [showCurrentPage]="true"></app-table-pagination>
+        </div>
+        </div>
+      </div>
+      }
+
+      <nav aria-label="Page navigation example">
+        <ul class="pagination d-flex justify-content-center">
+          <!-- <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                    </li> -->
+          <!-- <li class="page-item"><a class="page-link" href="#">1</a></li> -->
+          <!-- <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li> -->
+          <!-- <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                    </li> -->
+        </ul>
+      </nav>
+      <div class="row" style="text-align: right">
+        <div>
+          <button class="btn btn-danger" type="button" [disabled]="esFormularioSoloLectura" (click)="eliminar()">Eliminar</button>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-md-12">
+          <p>
+            <strong>
+              A través del siguiente vinculo puedes ingresar a la página para
+              generar la línea de captura de la constancia que se solicita:
+            </strong>
+          </p>
+        </div>
+        <div class="col-md-6">
+          <a class="custom-link" [href]="generarLineaCapturaURL" target="_blank" [ngClass]="{ 'disabled-link': esFormularioSoloLectura }">Generar línea de captura</a>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="modal fade" #modalConfirmacionRef id="modalConfirmacion" tabindex="-1" aria-labelledby="modalConfirmacionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <p></p>
+        </div>
+        <div class="modal-body">
+          <p>No se puede agregar línea de captura, porque ya se encuentra agregada.</p>
+          <div class="modal-footer custom-footer">
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" #closeModal>Aceptar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+@if(nuevaNotificacion) {
+<section>
+  <lib-notificaciones
+    [notificacionInput]="nuevaNotificacion"
+    (confirmacionModal)="confirmacionModal($event)"
+  >
+  </lib-notificaciones>
+</section>
+}

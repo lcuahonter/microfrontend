@@ -1,0 +1,314 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <ng-titulo [titulo]="this.destinatarioForm.valid ? 'Modificar destinatario (destino final)' : 'Agregar destinatario (destino final)'" />
+        </div>
+        <form [formGroup]="destinatarioForm">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        <label for="certficacion_a">Tipo persona<span
+                                    [class.text-danger]="destinatarioForm.get('nombre')?.hasError('required') && destinatarioForm.get('nombre')?.touched">*</span>:</label>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="radio" id="tipoMercancia" formControlName="tipoMercancia" name="tipoMercancia"
+                            value="tif" [checked]="destinatarioForm.value.tipoMercancia === 'tif'"
+                            (change)="enCambioValorRadio()" [disabled]="esFormularioSoloLectura" />
+                        <label class="form-label  ms-3" for="planta">Planta TIF</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="tipoMercancia" formControlName="tipoMercancia" name="tipoMercancia"
+                            value="yes" [checked]="destinatarioForm.value.tipoMercancia === 'yes'"
+                            (change)="enCambioValorRadio()" [disabled]="esFormularioSoloLectura" />
+                        <label class="form-label  ms-3" for="planta">Física</label><br>
+                        <input type="radio" id="tipoMercancia" formControlName="tipoMercancia" name="tipoMercancia"
+                            value="no" [checked]="destinatarioForm.value.tipoMercancia === 'no'"
+                            (change)="enCambioValorRadio()" [disabled]="esFormularioSoloLectura" />
+                        <label class="form-label  ms-3" for="planta">Moral</label>
+                    </div>
+                    <div *ngIf="destinatarioForm.get('tipoMercancia')?.hasError('required') && destinatarioForm.get('tipoMercancia')?.touched"
+                        class="text-danger">
+                        <small>Este campo es obligatorio.</small>
+                    </div>
+                </div>
+            </div>
+            <div class="row" *ngIf="destinatarioForm.value.tipoMercancia !== 'tif'">
+                <div class="col-md-12">
+                    <ng-titulo titulo="Datos personales" />
+                </div>
+                <div class="row"
+                    *ngIf="destinatarioForm.value.tipoMercancia === 'yes' || destinatarioForm.value.tipoMercancia === ''">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Nombre(s)<span
+                                    [class.text-danger]="destinatarioForm.get('nombre')?.hasError('required') && destinatarioForm.get('nombre')?.touched">*</span>:</label>
+                            <input class="form-control" id="nombre" placeholder="" type="text" libUppercase
+                                [class.is-invalid]="destinatarioForm.get('nombre')?.hasError('required') && destinatarioForm.get('nombre')?.touched"
+                                formControlName="nombre" />
+                            <div *ngIf="destinatarioForm.get('nombre')?.hasError('required') && destinatarioForm.get('nombre')?.touched"
+                                class="text-danger">
+                                <small>Este campo es obligatorio.</small>
+                            </div>
+                            <div *ngIf="destinatarioForm.get('nombre')?.hasError('maxLength') && destinatarioForm.get('nombre')?.touched"
+                                class="text-danger">
+                                <small>No escribas más de 200 caracteres.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Primer apellido<span
+                                    [class.text-danger]="destinatarioForm.get('primerApellido')?.hasError('required') && destinatarioForm.get('primerApellido')?.touched">*</span>:</label>
+                            <input class="form-control" id="primerApellido" placeholder="" type="text" libUppercase
+                                [class.is-invalid]="destinatarioForm.get('primerApellido')?.hasError('required') && destinatarioForm.get('primerApellido')?.touched"
+                                formControlName="primerApellido" />
+                            <div *ngIf="destinatarioForm.get('primerApellido')?.hasError('required') && destinatarioForm.get('primerApellido')?.touched"
+                                class="text-danger">
+                                <small>Este campo es obligatorio.</small>
+                            </div>
+                            <div *ngIf="destinatarioForm.get('primerApellido')?.hasError('maxLength') && destinatarioForm.get('primerApellido')?.touched"
+                                class="text-danger">
+                                <small>No escribas más de 200 caracteres.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Segundo apellido</label>:
+                            <input class="form-control" id="segundoApellido" placeholder="" type="text" libUppercase
+                                maxlength="200"
+                                [class.is-invalid]="destinatarioForm.get('segundoApellido')?.invalid && destinatarioForm.get('segundoApellido')?.touched"
+                                formControlName="segundoApellido" />
+                            <div *ngIf="destinatarioForm.get('segundoApellido')?.hasError('required') && destinatarioForm.get('segundoApellido')?.touched"
+                                class="text-danger">
+                                <small>Este campo es obligatorio.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" *ngIf="destinatarioForm.value.tipoMercancia !== 'yes'">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label>Denominación/razón social<span
+                                    [class.text-danger]="destinatarioForm.get('razonSocial')?.hasError('required') && destinatarioForm.get('razonSocial')?.touched">*</span>:</label>
+                            <input class="form-control" id="razonSocial" placeholder="" type="text" libUppercase
+                                [class.is-invalid]="destinatarioForm.get('razonSocial')?.hasError('required') && destinatarioForm.get('razonSocial')?.touched"
+                                formControlName="razonSocial" />
+                            <div *ngIf="destinatarioForm.get('razonSocial')?.hasError('required') && destinatarioForm.get('razonSocial')?.touched"
+                                class="text-danger">
+                                <small>Este campo es obligatorio.</small>
+                            </div>
+                            <div *ngIf="destinatarioForm.get('razonSocial')?.hasError('maxlength') && destinatarioForm.get('razonSocial')?.touched"
+                                class="text-danger">
+                                <small>No escribas más de 250 caracteres.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <app-catalogo-select [catalogo]="pairsCatalog" [label]="'País'" [required]="true" name="pais"
+                            (change)="municipioCatalogChange();" formControlName="pais"
+                            [isDisabled]="true"></app-catalogo-select>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Código postal:</label>
+                            <input class="form-control" id="codigoPostal" placeholder="" type="text" libUppercase
+                                formControlName="codigoPostal" />
+                            <div *ngIf="destinatarioForm.get('codigoPostal')?.hasError('minlength') && destinatarioForm.get('codigoPostal')?.touched"
+                                class="text-danger">
+                                <small>Por favor, no escribas menos de 5 caracteres</small>
+                            </div>
+                            <div *ngIf="destinatarioForm.get('codigoPostal')?.hasError('maxlength') && destinatarioForm.get('codigoPostal')?.touched"
+                                class="text-danger">
+                                <small>Por favor, no escribas más de 5 caracteres</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Estado<span
+                                    [class.text-danger]="destinatarioForm.get('nombre')?.hasError('required') && destinatarioForm.get('nombre')?.touched">*</span>:</label>
+                            <select class="form-select form-control" id="estado" formControlName="estado"
+                                (change)="tomaEstado();" [disabled]="esFormularioSoloLectura"
+                                [class.is-invalid]="destinatarioForm.get('estado')?.invalid && destinatarioForm.get('estado')?.touched">
+                                <option value="">Seleccione una opción</option>
+                                <option *ngFor="let item of estadoCatalog" [value]="item.clave">
+                                    {{ item.descripcion }}
+                                </option>
+                            </select>
+                            <div *ngIf="destinatarioForm.get('estado')?.hasError('required') &&
+                                    destinatarioForm.get('estado')?.touched" class="text-danger">
+                                <small>Este campo es obligatorio.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <app-catalogo-select [catalogo]="municipioCatalog" [label]="'Municipio o Alcaldía'"
+                            [required]="false" name="municipio" [isDisabled]="esFormularioSoloLectura"
+                            (change)="tomaMunicipio();" formControlName="municipio"></app-catalogo-select>
+                    </div>
+                    <div class="col-md-4">
+                        <app-catalogo-select [catalogo]="coloniaCatalog" [label]="'Colonia'" [required]="false"
+                            name="colonia" [isDisabled]="esFormularioSoloLectura"
+                            formControlName="colonia"></app-catalogo-select>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Calle<span
+                                    [class.text-danger]="destinatarioForm.get('calle')?.hasError('required') && destinatarioForm.get('calle')?.touched">*</span>:</label>
+                            <input class="form-control" id="calle" placeholder="" type="text" libUppercase
+                                [class.is-invalid]="destinatarioForm.get('calle')?.hasError('required') && destinatarioForm.get('calle')?.touched"
+                                formControlName="calle" />
+                            <div *ngIf="destinatarioForm.get('calle')?.hasError('required') && destinatarioForm.get('calle')?.touched"
+                                class="text-danger">
+                                <small>Este campo es obligatorio.</small>
+                            </div>
+                            <div *ngIf="destinatarioForm.get('calle')?.hasError('maxLength') && destinatarioForm.get('calle')?.touched"
+                                class="text-danger">
+                                <small>No escribas más de 100 caracteres.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Número exterior<span
+                                    [class.text-danger]="destinatarioForm.get('numeroExterior')?.hasError('required') && destinatarioForm.get('numeroExterior')?.touched">*</span>:</label>
+                            <input class="form-control" id="numeroExterior" placeholder="" type="text" libUppercase
+                                [class.is-invalid]="destinatarioForm.get('numeroExterior')?.hasError('required') && destinatarioForm.get('numeroExterior')?.touched"
+                                formControlName="numeroExterior" />
+                            <div *ngIf="destinatarioForm.get('numeroExterior')?.hasError('required') && destinatarioForm.get('numeroExterior')?.touched"
+                                class="text-danger">
+                                <small>Este campo es obligatorio.</small>
+                            </div>
+                            <div *ngIf="destinatarioForm.get('numeroExterior')?.hasError('maxLength') && destinatarioForm.get('numeroExterior')?.touched"
+                                class="text-danger">
+                                <small>No escribas más de 55 caracteres.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label" for="numeroInterior">Número interior: </label>
+                            <input class="form-control" id="numeroInterior" placeholder="" type="text" libUppercase
+                                formControlName="numeroInterior" />
+                            <div *ngIf="destinatarioForm.get('numeroInterior')?.hasError('maxLength') && destinatarioForm.get('numeroInterior')?.touched"
+                                class="text-danger">
+                                <small>No escribas más de 55 caracteres.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <label>Lada:</label>
+                            <input class="form-control" id="lada" placeholder="" type="text" libUppercase
+                                formControlName="lada" />
+                            <div *ngIf="destinatarioForm.get('lada')?.hasError('maxLength') && destinatarioForm.get('lada')?.touched"
+                                class="text-danger">
+                                <small>No escribas más de 5 caracteres.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="form-label" for="telefono">Teléfono: </label>
+                            <input class="form-control" id="telefono" placeholder="" type="text" libUppercase
+                                formControlName="telefono" />
+                            <div *ngIf="destinatarioForm.get('telefono')?.hasError('maxLength') && destinatarioForm.get('telefono')?.touched"
+                                class="text-danger">
+                                <small>No escribas más de 30 caracteres.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label" for="correo">Correo electrónico: </label>
+                            <span tooltip="ejemplo@dominio.com">
+                                <i class="bi bi-question-circle-fill"></i>
+                            </span>
+                            <input class="form-control" id="correo" placeholder="" type="text" libUppercase
+                                formControlName="correo" />
+                            <div *ngIf="destinatarioForm.get('correo')?.hasError('maxLength') && destinatarioForm.get('correo')?.touched"
+                                class="text-danger">
+                                <small>No escribas más de 320 caracteres.</small>
+                            </div>
+                            <div *ngIf="destinatarioForm.get('correo')?.hasError('email') && destinatarioForm.get('correo')?.touched"
+                                class="text-danger">
+                                <small>Por favor, escribe una dirección de correo válida</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-5 mb-5">
+                    <div class="col-md-12 justify-content-end d-flex ">
+                        <button type="button" class="btn btn-default me-5" [disabled]="esFormularioSoloLectura"
+                            (click)="onLimpiarDestinatario()">
+                            Limpiar
+                        </button>
+                        <button type="button" class="btn btn-danger me-5" [disabled]="esFormularioSoloLectura"
+                            (click)="onCancelarDestinatario()">
+                            Cancelar
+                        </button>
+                        <button type="button" class="btn btn-primary me-5" [disabled]="esFormularioSoloLectura"
+                            (click)="onGuardarDestinatario()">
+                            Guardar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="row" *ngIf="destinatarioForm.value.tipoMercancia === 'tif'">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-12">
+                    <ng-titulo titulo="Planta TIF" />
+                </div>
+            </div>
+
+            <form [formGroup]="plantaTifForm">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label" for="nombreEstablecimiento">
+                                <strong>Nombre establecimiento TIF:</strong>
+                            </label>
+                            <input type="text" class="form-control" id="nombreEstablecimiento"
+                                formControlName="nombreEstablecimiento"
+                                placeholder="Ingrese el nombre del establecimiento">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label" for="numeroEstablecimiento">
+                                <strong>Número establecimiento TIF:</strong>
+                            </label>
+                            <input type="text" class="form-control" id="numeroEstablecimiento"
+                                formControlName="numeroEstablecimiento"
+                                placeholder="Ingrese el número de establecimiento">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-outline-secondary" (click)="onLimpiar()">
+                            Limpiar
+                        </button>
+                        <button type="button" class="btn btn-primary" (click)="onBuscar()">
+                            Buscar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

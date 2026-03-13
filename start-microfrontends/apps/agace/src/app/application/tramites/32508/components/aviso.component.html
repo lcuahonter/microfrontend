@@ -1,0 +1,614 @@
+<form [formGroup]="avisoForm" (ngSubmit)="validarDestinatarioFormulario()">
+  <div class="row mt-5" *ngIf="!esFormularioSoloLectura">
+    <div class="col-md-4">
+      <label>ADACE:</label>
+      <input type="text" class="form-control" formControlName="adace"
+        [ngClass]="{'is-invalid': avisoForm.get('adace')?.invalid && avisoForm.get('adace')?.touched}"
+        (change)=" setValoresStore( avisoForm, 'adace', 'setAdace' ) " [disabled]="esFormularioSoloLectura" required />
+      <div class="invalid-feedback" *ngIf="avisoForm.get('adace')?.invalid && avisoForm.get('adace')?.touched">
+        Este campo es requerido
+      </div>
+    </div>
+  </div>
+  <ng-titulo titulo="Datos del recinto fiscalizado que presenta el dictamen" />
+  <div class="row mt-5">
+    <div class="col-md-4">
+      <label>Clave de recinto fiscalizado*:</label>
+      <input type="text" class="form-control" required formControlName="claveFiscalizado" libSoloNumeros
+        [ngClass]="{'is-invalid': avisoForm.get('claveFiscalizado')?.invalid && avisoForm.get('claveFiscalizado')?.touched}"
+        (change)=" setValoresStore( avisoForm, 'claveFiscalizado', 'setClaveFiscalizador' ) " [disabled]="esFormularioSoloLectura" />
+      <div class="invalid-feedback" *ngIf="avisoForm.get('claveFiscalizado')?.invalid && avisoForm.get('claveFiscalizado')?.touched">
+        Este campo es requerido
+      </div>
+    </div>
+  </div>
+  <!-- Tipo de dictamen -->
+  <ng-titulo titulo="Tipo de dictamen" />
+  <div class="row mt-5 radios">
+    <app-input-radio [selectedValue]="valorSeleccionado" [radioOptions]="radioOpcions" [isRequired]="true"
+      [layout]="'horizontal'" formControlName="tipoDictamen"
+      (change)=" setValoresStore( avisoForm, 'tipoDictamen', 'setTipoDictamen' ) " [disabled]="esFormularioSoloLectura"></app-input-radio>
+  </div>
+  <ng-titulo titulo="Datos del CPI que elaboró el dictamen" />
+  <div class="row mt-5">
+    <div class="col-md-4">
+      <label>RFC*:</label>
+      <input type="text" class="form-control" required formControlName="rfcCpi" maxlength="13"
+        [ngClass]="{'is-invalid': avisoForm.get('rfcCpi')?.invalid && avisoForm.get('rfcCpi')?.touched}"
+        (change)=" setValoresStore( avisoForm, 'rfcCpi', 'setRfcCpi' ) " [disabled]="esFormularioSoloLectura" />
+      <div class="invalid-feedback" *ngIf="avisoForm.get('rfcCpi')?.invalid && avisoForm.get('rfcCpi')?.touched">
+        Este campo es requerido
+      </div>
+    </div>
+    <div class="col-md-6">
+      <label>Nombre*:</label>
+      <input type="text" class="form-control" formControlName="nombre"
+        [ngClass]="{'is-invalid': avisoForm.get('nombre')?.invalid && avisoForm.get('nombre')?.touched}"
+        (change)=" setValoresStore( avisoForm, 'nombre', 'setNombre' ) " [disabled]="esFormularioSoloLectura" required />
+      <div class="invalid-feedback" *ngIf="avisoForm.get('nombre')?.invalid && avisoForm.get('nombre')?.touched">
+        Este campo es requerido
+      </div>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <div class="col-md-4">
+      <label>Número de inscripción o registro*:</label>
+      <input type="text" class="form-control" required formControlName="numeroInscripcion" libSoloNumeros
+        [ngClass]="{'is-invalid': avisoForm.get('numeroInscripcion')?.invalid && avisoForm.get('numeroInscripcion')?.touched}"
+        (change)=" setValoresStore( avisoForm, 'numeroInscripcion', 'setNumeroInscripcion' ) " [disabled]="esFormularioSoloLectura" />
+      <div class="invalid-feedback" *ngIf="avisoForm.get('numeroInscripcion')?.invalid && avisoForm.get('numeroInscripcion')?.touched">
+        Este campo es requerido
+      </div>
+    </div>
+  </div>
+  <ng-titulo titulo="Datos del dictamen que se presenta" />
+  <div class="row mt-5">
+    <div class="col-md-4">
+      <app-catalogo-select [catalogo]="anoCatalogo.catalogos" [placeholder]="'Seleccione una opción'"
+        [label]="'Año del periodo reportado*'" formControlName="ano"
+        (selectionChange)="onAnoSeleccionado($event)" [isDisabled]="esFormularioSoloLectura"></app-catalogo-select>
+      <div class="text-danger" style="font-size: 0.875em;" *ngIf="avisoForm.get('ano')?.invalid && avisoForm.get('ano')?.touched">
+        Este campo es requerido
+      </div>
+    </div>
+    <div class="col-md-4">
+      <app-catalogo-select [catalogo]="mesCatalogo.catalogos" [placeholder]="'Seleccione una opción'"
+        [label]="'Mes del periodo reportado*'" formControlName="mes"
+        (selectionChange)="onMesSeleccionado($event)" [isDisabled]="esFormularioSoloLectura"></app-catalogo-select>
+      <div class="text-danger" style="font-size: 0.875em;" *ngIf="avisoForm.get('mes')?.invalid && avisoForm.get('mes')?.touched">
+        Este campo es requerido
+      </div>
+    </div>
+    <div class="col-md-4">
+      <input-fecha [setFecha]="avisoForm.get('fechaElaboracion')?.value" [datos]="fechaInitialInput"
+        (valorCambiado)="cambioFechaInitial($event)" [isDisabled]="esFormularioSoloLectura"></input-fecha>
+      <div class="text-danger" style="font-size: 0.875em;" *ngIf="avisoForm.get('fechaElaboracion')?.invalid && avisoForm.get('fechaElaboracion')?.touched">
+        Este campo es requerido
+      </div>
+    </div>
+  </div>
+  <ng-titulo titulo="Resultado del periodo" />
+  <div class="row">
+    <div class="col-auto">
+      <label class="label-spacing">{{textoParcial}}</label>
+    </div>
+    <div class="col" style="margin-left: 245px;">
+      <app-input-radio [selectedValue]="valorSeleccionadoParcial" [radioOptions]="radioParcial"
+        [isRequired]="true" [layout]="'horizontal'" formControlName="radioParcial"
+        (change)=" setValoresStore( avisoForm, 'radioParcial', 'setRadioPartial' ) " [disabled]="esFormularioSoloLectura"></app-input-radio>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-auto">
+      <label class="label-spacing">{{textoTotal}}</label>
+    </div>
+    <div class="col" style="margin-left: 350px;">
+      <app-input-radio [selectedValue]="valorSeleccionadoTotal" [radioOptions]="radioTotal" [isRequired]="true"
+        [layout]="'horizontal'" formControlName="radioTotal"
+        (change)=" setValoresStore( avisoForm, 'radioTotal', 'setRadioTotal' ) " [disabled]="esFormularioSoloLectura"></app-input-radio>
+    </div>
+  </div>
+  <ng-titulo titulo="Cantidades del periodo dictaminado" />
+  <!-- Cantidades del periodo dictaminado for disminucion-->
+  <div *ngIf="monstrarDisminucion && !mostrarCompensacion && !mostrarDisminucionYCompensacion">
+    <div class="row mt-5">
+      <div class="col-md-6">
+        <label>Saldo pendiente de disminuir del dictamen anterior*:</label>
+        <input type="text" class="form-control" required formControlName="saldoPendienteDisminuirAnterior" libSoloNumeros
+          [ngClass]="{'is-invalid': avisoForm.get('saldoPendienteDisminuirAnterior')?.invalid && avisoForm.get('saldoPendienteDisminuirAnterior')?.touched}"
+          (change)=" setValoresStore( avisoForm, 'saldoPendienteDisminuirAnterior', 'setSaldoPendienteDisminuirAnterior' ) " [disabled]="esFormularioSoloLectura" />
+        <div class="invalid-feedback" *ngIf="avisoForm.get('saldoPendienteDisminuirAnterior')?.invalid && avisoForm.get('saldoPendienteDisminuirAnterior')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-4">
+        <label>Aprovechamiento total a cargo*:</label>
+        <input type="text" class="form-control" required formControlName="aprovechamiento" libSoloNumeros
+          [ngClass]="{'is-invalid': avisoForm.get('aprovechamiento')?.invalid && avisoForm.get('aprovechamiento')?.touched}"
+          (change)=" setValoresStore( avisoForm, 'aprovechamiento', 'setAprovechamiento' ) " [disabled]="esFormularioSoloLectura" />
+        <div class="invalid-feedback" *ngIf="avisoForm.get('aprovechamiento')?.invalid && avisoForm.get('aprovechamiento')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label>Disminución aplicada*:</label>
+        <input type="text" class="form-control" required formControlName="disminucionAplicada" libSoloNumeros
+          [ngClass]="{'is-invalid': avisoForm.get('disminucionAplicada')?.invalid && avisoForm.get('disminucionAplicada')?.touched}"
+          (change)=" setValoresStore( avisoForm, 'disminucionAplicada', 'setDisminucionAplicada' ) " [disabled]="esFormularioSoloLectura" />
+        <div class="invalid-feedback" *ngIf="avisoForm.get('disminucionAplicada')?.invalid && avisoForm.get('disminucionAplicada')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label>Saldo pendiente de disminuir*:</label>
+        <input type="text" class="form-control" required formControlName="saldoPendienteDisminuir" libSoloNumeros
+          [ngClass]="{'is-invalid': avisoForm.get('saldoPendienteDisminuir')?.invalid && avisoForm.get('saldoPendienteDisminuir')?.touched}"
+          (change)=" setValoresStore( avisoForm, 'saldoPendienteDisminuir', 'setSaldoPendienteDisminuir' ) " [disabled]="esFormularioSoloLectura" />
+        <div class="invalid-feedback" *ngIf="avisoForm.get('saldoPendienteDisminuir')?.invalid && avisoForm.get('saldoPendienteDisminuir')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+    </div>
+    <div *ngIf="disminucionParcial" class="row mt-5">
+      <div class="col-md-4">
+        <label>Cantidad pagada*:</label>
+        <input type="text" class="form-control" required formControlName="cantidad" libSoloNumeros
+          [ngClass]="{'is-invalid': avisoForm.get('cantidad')?.invalid && avisoForm.get('cantidad')?.touched}"
+          (change)=" setValoresStore( avisoForm, 'cantidad', 'setCantidad' ) " [disabled]="esFormularioSoloLectura" />
+        <div class="invalid-feedback" *ngIf="avisoForm.get('cantidad')?.invalid && avisoForm.get('cantidad')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label>Llave de Pago o Línea de Captura*:</label>
+        <input type="text" class="form-control" required formControlName="llaveDePago"
+          [ngClass]="{'is-invalid': avisoForm.get('llaveDePago')?.invalid && avisoForm.get('llaveDePago')?.touched}"
+          (change)=" setValoresStore( avisoForm, 'llaveDePago', 'setLlaveDePago' ) " [disabled]="esFormularioSoloLectura" />
+        <div class="invalid-feedback" *ngIf="avisoForm.get('llaveDePago')?.invalid && avisoForm.get('llaveDePago')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+      <div class="col-md-4">
+        <input-fecha
+          [datos]="fechaPago"
+          [isDisabled]="esFormularioSoloLectura"
+          [setFecha]="avisoForm.get('fechaPago')?.value"
+          (valorCambiado)="actualizarFechaPago($event)"
+        >
+        </input-fecha>
+        <div class="text-danger" style="font-size: 0.875em;" *ngIf="avisoForm.get('fechaPago')?.invalid && avisoForm.get('fechaPago')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-6">
+        <label>Total de Ingresos por la prestación de los servicios de manejo, almacenaje y custodia de mercancías de comercio exterior*:</label>
+        <input type="text" class="form-control" required formControlName="ingresos" libSoloNumeros
+          [ngClass]="{'is-invalid': avisoForm.get('ingresos')?.invalid && avisoForm.get('ingresos')?.touched}"
+          (change)=" setValoresStore( avisoForm, 'ingresos', 'setIngresos' ) " [disabled]="esFormularioSoloLectura" />
+        <div class="invalid-feedback" *ngIf="avisoForm.get('ingresos')?.invalid && avisoForm.get('ingresos')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label>Cantidad dictaminada en el mes*:</label>
+        <input type="text" class="form-control" required formControlName="dictaminadaCantidad" libSoloNumeros
+          [ngClass]="{'is-invalid': avisoForm.get('dictaminadaCantidad')?.invalid && avisoForm.get('dictaminadaCantidad')?.touched}"
+          (change)=" setValoresStore( avisoForm, 'dictaminadaCantidad', 'setDictaminadaCantidad' ) " [disabled]="esFormularioSoloLectura" />
+        <div class="invalid-feedback" *ngIf="avisoForm.get('dictaminadaCantidad')?.invalid && avisoForm.get('dictaminadaCantidad')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+    </div>
+    <div class="row mt-5"></div>
+    <div class="row mt-5"></div>
+    @if (esFormularioSoloLectura) {
+      <div class="row mt-5">
+        <label>Plantilla de disminución*:</label>
+        <label>Para descargar el archivo excel da click
+          <a class="link-style" (click)="descargaPlantilla('disminucion')">aquí</a>
+        </label>
+      </div>
+    } @else {
+    <div class="row mt-5">
+      <label>Plantilla de disminución*:</label>
+      <label>Para descargar plantilla del archivo excel da click <a href="aqui" (click)="esFormularioSoloLectura ? $event.preventDefault() : null"
+        [class.disabled]="esFormularioSoloLectura">aquí</a>
+      </label>
+    </div>
+    <div class="row mt-3">
+      <div class="bottom-buffer">
+        <div class="row">
+          <div class="col-md-8">
+            <div class="form-group">
+              <div>
+                <label class="control-label"> Archivo excel a incorporar: </label>
+              </div>
+              <input class="visually-hidden-file" type="file" id="archivoAdjuntarDisminucion" size="60" accept=".xls,.xlsx"
+                (change)="alSeleccionarArchivo($event)" formControlName="archivo"
+                (change)=" setValoresStore( avisoForm, 'archivo', 'setArchivo' ) " [disabled]="esFormularioSoloLectura" />
+              <label class="custome-file-label" for="archivoAdjuntarDisminucion" value="Seleccionar archivo"
+                style="background-color: lightgrey; font-weight: bold">Seleccionar archivo</label>
+              <p style="display: inline-block"> {{ nombreArchivo || 'Sin archivos seleccionados' }} </p>
+              <br />
+            </div>
+          </div>
+          <div class="col-md-4 mt-5 d-flex justify-content-end">
+            <button type="button" class="btn btn-primary ms-3" (click)="cargaArchivo('disminucion')"
+              [disabled]="!avisoForm.get('archivo')?.value"> Cargar archivo </button>
+          </div>
+        </div>
+        <div class="row" *ngIf="cargarArchivo">
+          <p>El archivo fue procesado exitosamente.</p>
+        </div>
+        <div class="row" *ngIf="mostrarErrorArchivo && !cargarArchivo">
+          <p class="text-danger" style="font-size: 0.875em;">Este campo es requerido</p>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+  <!-- Cantidades del periodo dictaminado for compensacion-->
+  <div *ngIf="mostrarCompensacion && !monstrarDisminucion && !mostrarDisminucionYCompensacion">
+    <div class="row mt-5">
+      <div class="col-md-6">
+        <label>Saldo pendiente de compensar del dictamen anterior*:</label>
+        <input type="text" class="form-control" required formControlName="saldoPendienteCompensarAnterior" libSoloNumeros
+          [ngClass]="{'is-invalid': avisoForm.get('saldoPendienteCompensarAnterior')?.invalid && avisoForm.get('saldoPendienteCompensarAnterior')?.touched}"
+          (change)=" setValoresStore( avisoForm, 'saldoPendienteCompensarAnterior', 'setSaldoPendienteCompensarAnterior' ) " [disabled]="esFormularioSoloLectura" />
+        <div class="invalid-feedback" *ngIf="avisoForm.get('saldoPendienteCompensarAnterior')?.invalid && avisoForm.get('saldoPendienteCompensarAnterior')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-4">
+        <label>Aprovechamiento total a cargo*:</label>
+        <input type="text" class="form-control" required formControlName="aprovechamiento" libSoloNumeros
+          [ngClass]="{'is-invalid': avisoForm.get('aprovechamiento')?.invalid && avisoForm.get('aprovechamiento')?.touched}"
+          (change)=" setValoresStore( avisoForm, 'aprovechamiento', 'setAprovechamiento' ) " [disabled]="esFormularioSoloLectura" />
+        <div class="invalid-feedback" *ngIf="avisoForm.get('aprovechamiento')?.invalid && avisoForm.get('aprovechamiento')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label>Compensación aplicada*:</label>
+        <input type="text" class="form-control" required formControlName="compensacionAplicada" libSoloNumeros
+          [ngClass]="{'is-invalid': avisoForm.get('compensacionAplicada')?.invalid && avisoForm.get('compensacionAplicada')?.touched}"
+          (change)=" setValoresStore( avisoForm, 'compensacionAplicada', 'setCompensacionAplicada' ) " [disabled]="esFormularioSoloLectura" />
+        <div class="invalid-feedback" *ngIf="avisoForm.get('compensacionAplicada')?.invalid && avisoForm.get('compensacionAplicada')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label>Saldo pendiente de compensar*:</label>
+        <input type="text" class="form-control" required formControlName="saldoPendienteCompensar" libSoloNumeros
+          [ngClass]="{'is-invalid': avisoForm.get('saldoPendienteCompensar')?.invalid && avisoForm.get('saldoPendienteCompensar')?.touched}"
+          (change)=" setValoresStore( avisoForm, 'saldoPendienteCompensar', 'setSaldoPendienteCompensar' ) " [disabled]="esFormularioSoloLectura" />
+        <div class="invalid-feedback" *ngIf="avisoForm.get('saldoPendienteCompensar')?.invalid && avisoForm.get('saldoPendienteCompensar')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+    </div>
+    <div *ngIf="disminucionParcial" class="row mt-5">
+      <div class="col-md-4">
+        <label>Cantidad pagada*:</label>
+        <input type="text" class="form-control" required formControlName="cantidad" libSoloNumeros
+          [ngClass]="{'is-invalid': avisoForm.get('cantidad')?.invalid && avisoForm.get('cantidad')?.touched}"
+          (change)=" setValoresStore( avisoForm, 'cantidad', 'setCantidad' ) " [disabled]="esFormularioSoloLectura" />
+        <div class="invalid-feedback" *ngIf="avisoForm.get('cantidad')?.invalid && avisoForm.get('cantidad')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label>Llave de Pago o Línea de Captura*:</label>
+        <input type="text" class="form-control" required formControlName="llaveDePago"
+          [ngClass]="{'is-invalid': avisoForm.get('llaveDePago')?.invalid && avisoForm.get('llaveDePago')?.touched}"
+          (change)=" setValoresStore( avisoForm, 'llaveDePago', 'setLlaveDePago' ) " [disabled]="esFormularioSoloLectura" />
+        <div class="invalid-feedback" *ngIf="avisoForm.get('llaveDePago')?.invalid && avisoForm.get('llaveDePago')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+      <div class="col-md-4">
+        <input-fecha
+          [datos]="fechaPago"
+          [isDisabled]="esFormularioSoloLectura"
+          [setFecha]="avisoForm.get('fechaPago')?.value"
+          (valorCambiado)="actualizarFechaPago($event)"
+        >
+        </input-fecha>
+        <div class="text-danger" style="font-size: 0.875em;" *ngIf="avisoForm.get('fechaPago')?.invalid && avisoForm.get('fechaPago')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-6">
+        <label>Total de Ingresos por la prestación de los servicios de manejo, almacenaje y custodia de mercancías de comercio exterior*:</label>
+        <input type="text" class="form-control" required formControlName="ingresos" libSoloNumeros
+          [ngClass]="{'is-invalid': avisoForm.get('ingresos')?.invalid && avisoForm.get('ingresos')?.touched}"
+          (change)=" setValoresStore( avisoForm, 'ingresos', 'setIngresos' ) " [disabled]="esFormularioSoloLectura" />
+        <div class="invalid-feedback" *ngIf="avisoForm.get('ingresos')?.invalid && avisoForm.get('ingresos')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label>Cantidad dictaminada en el mes*:</label>
+        <input type="text" class="form-control" required formControlName="dictaminadaCantidad" libSoloNumeros
+          [ngClass]="{'is-invalid': avisoForm.get('dictaminadaCantidad')?.invalid && avisoForm.get('dictaminadaCantidad')?.touched}"
+          (change)=" setValoresStore( avisoForm, 'dictaminadaCantidad', 'setDictaminadaCantidad' ) " [disabled]="esFormularioSoloLectura" />
+        <div class="invalid-feedback" *ngIf="avisoForm.get('dictaminadaCantidad')?.invalid && avisoForm.get('dictaminadaCantidad')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+    </div>
+    <div class="row mt-5"></div>
+    <div class="row mt-5"></div>
+    @if (esFormularioSoloLectura) {
+      <div class="row mt-5">
+        <label>Plantilla de compensación*:</label>
+        <label>Para descargar el archivo excel da click
+          <a class="link-style" (click)="descargaPlantilla('compensacion')">aquí</a>
+        </label>
+      </div>
+    } @else {
+      <div class="row mt-5">
+        <label>Plantilla de compensación*:</label>
+        <label>Para descargar plantilla del archivo excel da click <a href="aqui" (click)="esFormularioSoloLectura ? $event.preventDefault() : null"
+                                                                      [class.disabled]="esFormularioSoloLectura" >aquí</a>
+        </label>
+      </div>
+      <div class="row mt-3">
+        <div class="bottom-buffer">
+          <div class="row">
+            <div class="col-md-8">
+              <div class="form-group">
+                <div>
+                  <label class="control-label"> Archivo excel a incorporar: </label>
+                </div>
+                <input class="visually-hidden-file" type="file" id="archivoAdjuntarCompensacion" size="60" accept=".xls,.xlsx"
+                       (change)="alSeleccionarArchivo($event)" formControlName="archivo"
+                       (change)=" setValoresStore( avisoForm, 'archivo', 'setArchivo' ) " [disabled]="esFormularioSoloLectura" />
+                <label class="custome-file-label" for="archivoAdjuntarCompensacion" value="Seleccionar archivo"
+                       style="background-color: lightgrey; font-weight: bold">Seleccionar archivo</label>
+                <p style="display: inline-block"> {{ nombreArchivo || 'Sin archivos seleccionados' }} </p>
+                <br />
+              </div>
+            </div>
+            <div class="col-md-4 mt-5 d-flex justify-content-end">
+              <button type="button" class="btn btn-primary ms-3" (click)="cargaArchivo('compensacion')"
+                      [disabled]="!avisoForm.get('archivo')?.value"> Cargar archivo </button>
+            </div>
+          </div>
+          <div class="row" *ngIf="cargarArchivo">
+            <p>El archivo fue procesado exitosamente.</p>
+          </div>
+          <div class="row" *ngIf="mostrarErrorArchivo && !cargarArchivo">
+            <p class="text-danger" style="font-size: 0.875em;">Este campo es requerido</p>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+  <!-- Cantidades del periodo dictaminado for disminucionYCompensacion-->
+  <div *ngIf="mostrarDisminucionYCompensacion && !monstrarDisminucion && !mostrarCompensacion">
+    <div class="row mt-5">
+      <div class="col-md-6">
+        <label>Saldo pendiente de compensar del dictamen anterior*:</label>
+        <input type="text" class="form-control" required formControlName="saldoPendienteCompensarAnterior" libSoloNumeros
+          [ngClass]="{'is-invalid': avisoForm.get('saldoPendienteCompensarAnterior')?.invalid && avisoForm.get('saldoPendienteCompensarAnterior')?.touched}"
+          (change)=" setValoresStore( avisoForm, 'saldoPendienteCompensarAnterior', 'setSaldoPendienteCompensarAnterior' ) " [disabled]="esFormularioSoloLectura" />
+        <div class="invalid-feedback" *ngIf="avisoForm.get('saldoPendienteCompensarAnterior')?.invalid && avisoForm.get('saldoPendienteCompensarAnterior')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+      <div class="col-md-6">
+        <label>Saldo pendiente de disminuir del dictamen anterior*:</label>
+        <input type="text" class="form-control" required formControlName="saldoPendienteDisminuirAnterior" libSoloNumeros
+          [ngClass]="{'is-invalid': avisoForm.get('saldoPendienteDisminuirAnterior')?.invalid && avisoForm.get('saldoPendienteDisminuirAnterior')?.touched}"
+          (change)=" setValoresStore( avisoForm, 'saldoPendienteDisminuirAnterior', 'setSaldoPendienteDisminuirAnterior' ) " [disabled]="esFormularioSoloLectura" />
+        <div class="invalid-feedback" *ngIf="avisoForm.get('saldoPendienteDisminuirAnterior')?.invalid && avisoForm.get('saldoPendienteDisminuirAnterior')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-4">
+        <label>Aprovechamiento total a cargo*:</label>
+        <input type="text" class="form-control" required formControlName="aprovechamiento" libSoloNumeros
+          [ngClass]="{'is-invalid': avisoForm.get('aprovechamiento')?.invalid && avisoForm.get('aprovechamiento')?.touched}"
+          (change)=" setValoresStore( avisoForm, 'aprovechamiento', 'setAprovechamiento' ) " [disabled]="esFormularioSoloLectura" />
+        <div class="invalid-feedback" *ngIf="avisoForm.get('aprovechamiento')?.invalid && avisoForm.get('aprovechamiento')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label>Compensación aplicada*:</label>
+        <input type="text" class="form-control" required formControlName="compensacionAplicada" libSoloNumeros
+          [ngClass]="{'is-invalid': avisoForm.get('compensacionAplicada')?.invalid && avisoForm.get('compensacionAplicada')?.touched}"
+          (change)=" setValoresStore( avisoForm, 'compensacionAplicada', 'setCompensacionAplicada' ) " [disabled]="esFormularioSoloLectura" />
+        <div class="invalid-feedback" *ngIf="avisoForm.get('compensacionAplicada')?.invalid && avisoForm.get('compensacionAplicada')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label>Disminución aplicada*:</label>
+        <input type="text" class="form-control" required formControlName="disminucionAplicada" libSoloNumeros
+          [ngClass]="{'is-invalid': avisoForm.get('disminucionAplicada')?.invalid && avisoForm.get('disminucionAplicada')?.touched}"
+          (change)=" setValoresStore( avisoForm, 'disminucionAplicada', 'setDisminucionAplicada' ) " [disabled]="esFormularioSoloLectura" />
+        <div class="invalid-feedback" *ngIf="avisoForm.get('disminucionAplicada')?.invalid && avisoForm.get('disminucionAplicada')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-4">
+        <label>Saldo pendiente de compensar*:</label>
+        <input type="text" class="form-control" required formControlName="saldoPendienteCompensar" libSoloNumeros
+          [ngClass]="{'is-invalid': avisoForm.get('saldoPendienteCompensar')?.invalid && avisoForm.get('saldoPendienteCompensar')?.touched}"
+          (change)=" setValoresStore( avisoForm, 'saldoPendienteCompensar', 'setSaldoPendienteCompensar' ) " [disabled]="esFormularioSoloLectura" />
+        <div class="invalid-feedback" *ngIf="avisoForm.get('saldoPendienteCompensar')?.invalid && avisoForm.get('saldoPendienteCompensar')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label>Saldo pendiente de disminuir*:</label>
+        <input type="text" class="form-control" required formControlName="saldoPendienteDisminuir" libSoloNumeros
+          [ngClass]="{'is-invalid': avisoForm.get('saldoPendienteDisminuir')?.invalid && avisoForm.get('saldoPendienteDisminuir')?.touched}"
+          (change)=" setValoresStore( avisoForm, 'saldoPendienteDisminuir', 'setSaldoPendienteDisminuir' ) " [disabled]="esFormularioSoloLectura" />
+        <div class="invalid-feedback" *ngIf="avisoForm.get('saldoPendienteDisminuir')?.invalid && avisoForm.get('saldoPendienteDisminuir')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+      <div *ngIf="disminucionParcial" class="col-md-4">
+        <label>Cantidad pagada*:</label>
+        <input type="text" class="form-control" required formControlName="cantidad" libSoloNumeros
+          [ngClass]="{'is-invalid': avisoForm.get('cantidad')?.invalid && avisoForm.get('cantidad')?.touched}"
+          (change)=" setValoresStore( avisoForm, 'cantidad', 'setCantidad' ) " [disabled]="esFormularioSoloLectura" />
+        <div class="invalid-feedback" *ngIf="avisoForm.get('cantidad')?.invalid && avisoForm.get('cantidad')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+    </div>
+    <div *ngIf="disminucionParcial" class="row mt-5">
+      <div class="col-md-4">
+        <label>Llave de Pago o Línea de Captura*:</label>
+        <input type="text" class="form-control" required formControlName="llaveDePago"
+          [ngClass]="{'is-invalid': avisoForm.get('llaveDePago')?.invalid && avisoForm.get('llaveDePago')?.touched}"
+          (change)=" setValoresStore( avisoForm, 'llaveDePago', 'setLlaveDePago' ) " [disabled]="esFormularioSoloLectura" />
+        <div class="invalid-feedback" *ngIf="avisoForm.get('llaveDePago')?.invalid && avisoForm.get('llaveDePago')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+      <div class="col-md-4">
+        <input-fecha
+          [datos]="fechaPago"
+          [isDisabled]="esFormularioSoloLectura"
+          [setFecha]="avisoForm.get('fechaPago')?.value"
+          (valorCambiado)="actualizarFechaPago($event)"
+        >
+        </input-fecha>
+        <div class="text-danger" style="font-size: 0.875em;" *ngIf="avisoForm.get('fechaPago')?.invalid && avisoForm.get('fechaPago')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-6">
+        <label>Total de Ingresos por la prestación de los servicios de manejo, almacenaje y custodia de mercancías de comercio exterior*:</label>
+        <input type="text" class="form-control" required formControlName="ingresos" libSoloNumeros
+          [ngClass]="{'is-invalid': avisoForm.get('ingresos')?.invalid && avisoForm.get('ingresos')?.touched}"
+          (change)=" setValoresStore( avisoForm, 'ingresos', 'setIngresos' ) " [disabled]="esFormularioSoloLectura" />
+        <div class="invalid-feedback" *ngIf="avisoForm.get('ingresos')?.invalid && avisoForm.get('ingresos')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label>Cantidad dictaminada en el mes*:</label>
+        <input type="text" class="form-control" required formControlName="dictaminadaCantidad" libSoloNumeros
+          [ngClass]="{'is-invalid': avisoForm.get('dictaminadaCantidad')?.invalid && avisoForm.get('dictaminadaCantidad')?.touched}"
+          (change)=" setValoresStore( avisoForm, 'dictaminadaCantidad', 'setDictaminadaCantidad' ) " [disabled]="esFormularioSoloLectura" />
+        <div class="invalid-feedback" *ngIf="avisoForm.get('dictaminadaCantidad')?.invalid && avisoForm.get('dictaminadaCantidad')?.touched">
+          Este campo es requerido
+        </div>
+      </div>
+    </div>
+    <ng-titulo titulo="Plantillas" />
+    @if (esFormularioSoloLectura) {
+      <div class="row mt-5">
+        <label>Plantilla de compensación*:</label>
+        <label>Para descargar el archivo excel da click
+          <a class="link-style" (click)="descargaPlantilla('compensacion')">aquí</a>
+        </label>
+      </div>
+      <div class="row mt-5">
+        <label>Plantilla de disminución*:</label>
+        <label>Para descargar el archivo excel da click
+          <a class="link-style" (click)="descargaPlantilla('disminucion')">aquí</a>
+        </label>
+      </div>
+    } @else {
+      <!-- Plantilla de compensación -->
+      <div class="row mt-5">
+        <label>Plantilla de compensación*:</label>
+        <label>Para descargar plantilla del archivo excel da click <a href="aqui" (click)="esFormularioSoloLectura ? $event.preventDefault() : null"
+                                                                      [class.disabled]="esFormularioSoloLectura">aquí</a>
+        </label>
+      </div>
+      <div class="row mt-3">
+        <div class="bottom-buffer">
+          <div class="row">
+            <div class="col-md-8">
+              <div class="form-group">
+                <div>
+                  <label class="control-label"> Archivo excel a incorporar: </label>
+                </div>
+                <input class="visually-hidden-file" type="file" id="archivoAdjuntarDyC_Compensacion" size="60" accept=".xls,.xlsx"
+                       (change)="alSeleccionarArchivo($event, 'compensacion')" formControlName="archivoCompensacion"
+                       [disabled]="esFormularioSoloLectura" />
+                <label class="custome-file-label" for="archivoAdjuntarDyC_Compensacion" value="Seleccionar archivo"
+                       style="background-color: lightgrey; font-weight: bold">Seleccionar archivo</label>
+                <p style="display: inline-block"> {{ nombreArchivoCompensacion || 'Sin archivos seleccionados' }} </p>
+                <br />
+              </div>
+            </div>
+            <div class="col-md-4 mt-5 d-flex justify-content-end">
+              <button type="button" class="btn btn-primary ms-3" (click)="cargaArchivo('compensacion')"
+                      [disabled]="!avisoForm.get('archivoCompensacion')?.value"> Cargar archivo </button>
+            </div>
+          </div>
+          <div class="row" *ngIf="cargarArchivoCompensacion">
+            <p>El archivo fue procesado exitosamente.</p>
+          </div>
+          <div class="row" *ngIf="mostrarErrorArchivo && !cargarArchivoCompensacion">
+            <p class="text-danger" style="font-size: 0.875em;">Este campo es requerido</p>
+          </div>
+        </div>
+      </div>
+      <!-- Plantilla de disminución -->
+      <div class="row mt-5">
+        <label>Plantilla de disminución*:</label>
+        <label>Para descargar plantilla del archivo excel da click <a href="aqui" (click)="esFormularioSoloLectura ? $event.preventDefault() : null"
+                                                                      [class.disabled]="esFormularioSoloLectura">aquí</a>
+        </label>
+      </div>
+      <div class="row mt-3">
+        <div class="bottom-buffer">
+          <div class="row">
+            <div class="col-md-8">
+              <div class="form-group">
+                <div>
+                  <label class="control-label"> Archivo excel a incorporar: </label>
+                </div>
+                <input class="visually-hidden-file" type="file" id="archivoAdjuntarDyC_Disminucion" size="60" accept=".xls,.xlsx"
+                       (change)="alSeleccionarArchivo($event, 'disminucion')" formControlName="archivoDisminucion"
+                       [disabled]="esFormularioSoloLectura" />
+                <label class="custome-file-label" for="archivoAdjuntarDyC_Disminucion" value="Seleccionar archivo"
+                       style="background-color: lightgrey; font-weight: bold">Seleccionar archivo</label>
+                <p style="display: inline-block"> {{ nombreArchivoDisminucion || 'Sin archivos seleccionados' }} </p>
+                <br />
+              </div>
+            </div>
+            <div class="col-md-4 mt-5 d-flex justify-content-end">
+              <button type="button" class="btn btn-primary ms-3" (click)="cargaArchivo('disminucion')"
+                      [disabled]="!avisoForm.get('archivoDisminucion')?.value"> Cargar archivo </button>
+            </div>
+          </div>
+          <div class="row" *ngIf="cargarArchivoDisminucion">
+            <p>El archivo fue procesado exitosamente.</p>
+          </div>
+          <div class="row" *ngIf="mostrarErrorArchivo && !cargarArchivoDisminucion">
+            <p class="text-danger" style="font-size: 0.875em;">Este campo es requerido</p>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+  @if (nuevaNotificacion) { <section>
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+                        (confirmacionModal)="eliminarPedimento($event)"></lib-notificaciones>
+  </section> }
+</form>

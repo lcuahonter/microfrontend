@@ -1,0 +1,70 @@
+<div class="container">
+  <form [formGroup]="forma">
+    <div class="row mt-5" *ngIf="noRequerido">
+      <div class="panel-group ficha-collapse" id="accordion">
+        <div class="panel panel-default">
+          <div class="panel-heading" (click)="mostrar_colapsable()" tabindex="0">
+            <p class="panel-title"> Opciones de pre-llenado de Solicitud </p>
+            <button type="button" class="collpase-button collapsed" [disabled]="soloLectura"></button>
+          </div> 
+          @if(colapsable){ 
+            <div class="panel-collapse collapse in" id="panel-01">
+              <div class="panel-body">
+                <ng-alert [CONTENIDO]="TEXTOS.AlDar"></ng-alert>
+              </div>
+            </div> 
+          }
+        </div>
+      </div>
+    </div>
+    <div class="mt-5">
+      <label class="form-label" for="">Seleccione el tipo de operación que desea realizar*:</label>
+      <app-input-radio [radioOptions]="radioOptions" [isRequired]="true" formControlName="tipoOperacion" [layout]="'horizontal'" (valueChange)="setTipoOperacion($event)"></app-input-radio>
+    </div>
+    <div class="row mt-3">
+      <div class="col-md-12 mb-3">
+        <label>Justificación*:</label>
+        <textarea class="text-area" cols="80" rows="5" formControlName="tipoOperacionJustificacion" (change)=" setValoresStore(forma, 'tipoOperacionJustificacion', 'setTipoOperacionJustificacion' ) "></textarea>
+      </div>
+    </div>
+    <ng-titulo titulo="Datos del establecimiento"></ng-titulo>
+    <div class="row">
+      <div class="col-md-8"></div>
+      <div class="col-md-4 d-flex justify-content-end">
+        <button type="button" class="btn btn-primary" (click)="toggleFormControls()" [disabled]="soloLectura"> Seleccionar establecimiento </button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="rfcResponsableSanitario">RFC del responsable sanitario:</label>
+          <input class="form-control" id="rfcResponsableSanitario" placeholder="" type="text" formControlName="rfcResponsableSanitario" (change)="setValoresStore(forma,'rfcResponsableSanitario', 'setRfcResponsableSanitario')" />
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="denominacion">Denominación o razón social*:</label>
+          <input class="form-control" id="denominacion" placeholder="" type="text" formControlName="denominacion" (change)="setValoresStore(forma,'denominacion', 'setDenominacion')" />
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="correo">Correo electrónico*:</label>
+          <span class="bi bi-question-circle-fill" title="Correo electrónico" data-bs-toggle="tooltip"></span>
+          <input class="form-control" id="correo" placeholder="" type="text" formControlName="correo" (change)="setValoresStore(forma,'correo', 'setCorreo')" />
+        </div>
+      </div>
+    </div>
+  </form>
+  <app-domicillo [soloLectura]="soloLectura"></app-domicillo>
+  <app-manifiestos [soloLectura]="soloLectura"></app-manifiestos>
+  <app-representante-legal [soloLectura]="soloLectura"></app-representante-legal>
+</div>
+@if (nuevaNotificacion) {
+  <section>
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+    </lib-notificaciones>
+  </section>
+  }

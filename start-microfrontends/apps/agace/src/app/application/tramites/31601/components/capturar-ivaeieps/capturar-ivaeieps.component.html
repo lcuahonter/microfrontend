@@ -1,0 +1,304 @@
+<div class="capturar-container">
+  <form [formGroup]="ivaForm" class="mt-4">
+    <section class="body-text fw-bold mb-2">
+      <span class="text-danger">*</span> Manifieste si los proveedores
+      nacionales señalados anteriormente, se encuentran a la fecha de
+      presentación de la solicitud, en las publicaciones a que hace referencia
+      el artículo 69-B, cuarto párrafo del CFF.
+    </section>
+
+    <app-input-radio [radioOptions]="radioBtn" [selectedValue]="valorSeleccionado" [isRequired]="true"
+      [layout]="'horizontal'" [gap]="'50px'" class="fw-bold" formControlName="manifieste"
+      (change)="setValoresStore(ivaForm,'manifieste', 'setManifieste')"></app-input-radio>
+
+    <section class="body-text fw-bold mb-2 mt-2">
+      <span class="text-danger">*</span> Indique si para efectos del presente
+      trámite se acredita como parte de un mismo grupo de conformidad con la
+      regla 7.1.7.
+    </section>
+
+    <app-input-radio [radioOptions]="radioBtn" [selectedValue]="predeterminadoSeleccionar" [isRequired]="true"
+      class="fw-bold" [layout]="'horizontal'" [gap]="'50px'" formControlName="indiqueIva"
+      (change)="setValoresStore(ivaForm,'indiqueIva', 'setIndiqueIva')"></app-input-radio>
+    <div *ngIf="ivaForm.get('indiqueIva')?.value === 'Si'">
+      <p class="mt-4 fw-bold">
+        Para acreditar que forma parte de un grupo, posteriormente deberán anexar
+        un diagrama de la estructura accionaria y corporativa, así como copia de
+        las escrituras públicas, en la que conste la participación accionaria de
+        las empresas que formen parte del grupo.
+      </p>
+      <p class="fw-bold">
+        Tratándose de las empresas que se mencionan en la regla 7.1.2., apartado
+        B, cuando no se hubiese realizado operaciones en los últimos 12 meses
+        previos a la presentación de la solicitud y que quieran acreditar el
+        requisito mediante una de las empresas del grupo, deberán anexar un
+        escrito en el que asuma la responsabilidad solidaria a que se refiere la
+        fracción VIII del artículo 26 del Código Fiscal de la Federación, de los
+        créditos fiscales que llegaran a originarse.
+      </p>
+      <div *ngIf="mostrarSeccionCertificacion">
+        <ng-titulo titulo="Empresas del grupo certificadas en materia de IVA e IEPS" />
+
+        <section class="mb-4 fw-bold">
+          Indique cual (es) de las empresas que forman parte del grupo cuentan con la
+          Certificación en materia de IVA e IEPS, o en su caso, se encuentran en
+          proceso de solicitud, o se van a certificar de conformidad con el
+          calendario establecido en el articulo Segundo de la Sexta Resolución de
+          Modificaciones a las Reglas de Carácter General en Materia de Comercio
+          Exterior para 2013.
+        </section>
+
+        <div class="table-container">
+          <div class="table-header pb-2">
+            <h3>Empresas del grupo certificadas en materia de IVA e IEPS</h3>
+            <button (click)="alternarContenido()" class="toggle-btn">
+              <i class="bi fs-5 m-1" [ngClass]="{
+              'bi-chevron-down': !mostrarContenido,
+              'bi-chevron-up': mostrarContenido
+            }">
+              </i>
+            </button>
+          </div>
+
+
+          <app-tabla-dinamica [configuracionTabla]="configuracionTablaDatos" [datos]="destinatario"
+            [tipoSeleccionTabla]="checkbox" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura? true : false"
+            (filaSeleccionada)="onFilaSeleccionadaDestinatario($event)"
+            (listaDeFilaSeleccionada)="filasSeleccionadas = $event"></app-tabla-dinamica>
+        </div>
+
+        <div class="button-container">
+          <button class="btn btn-primary" (click)="agregarOpenModal()"
+            [disabled]="esFormularioSoloLectura || filasSeleccionadas.length > 0">
+            Agregar
+          </button>
+          <button class="btn btn-default ms-2" [disabled]="esFormularioSoloLectura || filasSeleccionadas.length !== 1"
+            (click)="modificarOpenModal()">Modificar</button>
+          <button class="btn btn-default ms-2" [disabled]="esFormularioSoloLectura || filasSeleccionadas.length === 0"
+            (click)="eliminarValor()">Eliminar</button>
+        </div>
+      </div>
+      <section class="fw-medium mt-3">
+        <span class="text-danger">*</span> Señale, en su caso, el tipo de
+        información que la solicitante acredita, a través de alguna de las
+        empresas que forman parte del mismo grupo:
+      </section>
+
+      <div class="checkbox-container">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="empleados" formControlName="empleados"
+            (change)="setValoresStore(ivaForm,'empleados', 'setEmpleados')" />
+          <label class="fw-normal" for="empleados">Empleados</label>
+        </div>
+
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="infraestructura" formControlName="infraestructura"
+            (change)="setValoresStore(ivaForm,'infraestructura', 'setInfraestructura')" />
+          <label class="fw-normal" for="infraestructura">Infraestructura</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="monto" formControlName="monto"
+            (change)="setValoresStore(ivaForm,'monto', 'setMonto')" />
+          <label class="fw-normal" for="monto">Monto de Inversión</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="antiguedad" formControlName="antiguedad"
+            (change)="setValoresStore(ivaForm,'antiguedad', 'setAntiguedad')" />
+          <label class="fw-normal" for="antiguedad">Antigüedad (Únicamente tratándose de las empresas que se mencionan
+            en
+            el apartado B, regla 7.1.2)</label>
+        </div>
+      </div>
+    </div>
+
+    <h6>Indica el monto aproximado de su inversión en territorio nacional.</h6>
+
+    <div class="row m-0">
+      <div class="col-5">
+        <app-catalogo-select [catalogo]="tipoDeInversion" [label]="'Tipo de inversión'" [required]="false" name="tipoDe"
+          class="fw-bold" formControlName="tipoDe" [isDisabled]="esFormularioSoloLectura ? true : false"
+          (change)="setValoresStore(ivaForm,'tipoDe', 'setTipoDe')"></app-catalogo-select>
+      </div>
+
+      <div class="col-6">
+        <label class="form-label" for="valorPesos">valor en Pesos</label>
+        <input class="form-control" type="text" id="valorPesos" name="hora" formControlName="valorPesos"
+          (change)="setValoresStore(ivaForm,'valorPesos', 'setValorPesos')" />
+      </div>
+      <div class="col-4">
+        <label class="form-label" for="descripcion">Descripción general</label>
+        <input class="form-control" type="text" name="hora" formControlName="descripcion"
+          (change)="setValoresStore(ivaForm,'descripcion', 'setDescripcion')" />
+      </div>
+      <div class="col-8 d-flex align-items-end justify-content-end">
+        <button class="btn btn-primary" [disabled]="esFormularioSoloLectura" (click)="agregarData()">Agregar</button>
+      </div>
+    </div>
+    <h5>Monto aproximado de su inversión en territorio nacional</h5>
+    <div class="table-container m-3">
+      <div class="table-header pb-2 d-flex align-items-center justify-content-between">
+        <h3>Datos de la inversión</h3>
+        <button (click)="alternarContenido()" [disabled]="esFormularioSoloLectura" class="toggle-btn">
+          <i class="bi fs-5 m-1" [ngClass]="{
+              'bi-chevron-down': !mostrarContenido,
+              'bi-chevron-up': mostrarContenido
+            }"></i>
+        </button>
+      </div>
+
+      <ng-table *ngIf="mostrarContenido" [commonTableHeader]="datosDeInversion.tableHeader"
+        [commonTableBody]="datosDeInversion.tableBody">
+      </ng-table>
+    </div>
+
+    <div class="button-container">
+      <button class="btn btn-default ms-2" [disabled]="esFormularioSoloLectura">Modificar</button>
+      <button class="btn btn-default ms-2" [disabled]="esFormularioSoloLectura" (click)="eliminar()">Eliminar</button>
+    </div>
+
+    <p class="fw-bold">
+      <span class="text-danger"> *</span>Ha contado previamente con la
+      Certificación en materia de IVA e IEPS, el Registro en el Esquema de
+      Certificación de Empresas bajo la modalidad IVA e IEPS o Garantia del interés
+      fiscal del IVA e IEPS
+    </p>
+
+    <app-input-radio [radioOptions]="radioBtn" [selectedValue]="valorSeleccionado" [isRequired]="true"
+      (valueChange)="cambioDeValor($event)" [layout]="'horizontal'" [gap]="'50px'" class="fw-bold"
+      formControlName="haContado" (change)="setValoresStore(ivaForm,'haContado', 'setHaContado')"></app-input-radio>
+
+    <p class="fw-bold">
+      <span class="text-danger"> *</span>En caso afirmativo, señale si se
+      encuentra al corriente en el cumplimiento de las obligaciones relativas al
+      Anexo 30 sobre dicho registro:
+    </p>
+    <app-input-radio [radioOptions]="radioBtn" [selectedValue]="predeterminadoSeleccionar" [isRequired]="true"
+      (valueChange)="cambioDeValorIndique($event)" [layout]="'horizontal'" [gap]="'50px'" class="fw-bold"
+      formControlName="enCasoIva" (change)="setValoresStore(ivaForm,'enCasoIva', 'setEnCasoIva')"></app-input-radio>
+
+    <div class="row">
+      <ng-titulo titulo="Pago de derechos" />
+      <form [formGroup]="formularioDePago">
+        <div class="col-md-6">
+          <span class="require">*</span><label class="form-label width-unset" for="claveReferencia">Clave de
+            referencia</label>
+          <input type="text" class="form-control" id="claveReferencia" readonly [disabled]="true"
+            formControlName="claveReferencia" />
+        </div>
+
+        <div class="col-md-6">
+          <span class="require">*</span><label class="form-label width-unset" for="numeroOperacion">Número de
+            operación</label>
+          <input type="text" class="form-control" id="numeroOperacion" formControlName="numeroOperacion"
+            (change)="setValoresStore(formularioDePago,'numeroOperacion', 'setNumeroOperacion')" />
+        </div>
+        <div class="col-md-6">
+          <span class="require">*</span><label class="form-label width-unset" for="cadenaDependencia">
+            Cadena de la dependencia</label>
+          <input type="text" class="form-control" id="cadenaDependencia" readonly [disabled]="true"
+            formControlName="cadenaDependencia" />
+        </div>
+        <div class="col-md-6">
+          <app-catalogo-select [catalogo]="tipoDeInversion" [label]="'Banco'" [required]="true" name="banco"
+            formControlName="banco" [isDisabled]="esFormularioSoloLectura ? true : false"
+            (change)="setValoresStore(formularioDePago,'banco', 'setBanco')"></app-catalogo-select>
+        </div>
+        <div class="col-md-3">
+          <span class="require">*</span><label class="form-label width-unset" for="llavePago">
+            Llave de pago</label>
+          <input type="text" class="form-control" id="llavePago" formControlName="llavePago"
+            (change)="setValoresStore(formularioDePago,'llavePago', 'setLlavePago')" />
+          <div class="error" *ngIf="
+              formularioDePago.get('llavePago')?.invalid &&
+              formularioDePago.get('llavePago')?.touched
+            ">
+            <span *ngIf="formularioDePago.get('llavePago')?.errors?.['required']">
+              Este campo es obligatorio.
+            </span>
+            <span *ngIf="formularioDePago.get('llavePago')?.errors?.['pattern']">
+              Solo se permiten letras y números.
+            </span>
+            <span *ngIf="formularioDePago.get('llavePago')?.errors?.['maxlength']">
+              Máximo 20 caracteres permitidos.
+            </span>
+          </div>
+        </div>
+        <div class="col-md-3">
+            <input-fecha [datos]="fechaFinalInput" name="fechaPago" [setFecha]="formularioDePago.get('fechaPago')?.value" (valorCambiado)="onFechaCambiada($event)" ></input-fecha>
+
+        </div>
+        <div class="col-md-3">
+          <span class="require">*</span><label class="form-label width-unset" for="importePago">
+            Importe de pago</label>
+          <input type="text" class="form-control" id="importePago" readonly [disabled]="true"
+            formControlName="importePago" />
+        </div>
+
+        <div class="col-md-12 text-end mt-3">
+          <button class="btn btn-danger" [disabled]="esFormularioSoloLectura">Borrar datos del pago</button>
+        </div>
+      </form>
+    </div>
+  </form>
+</div>
+<!-- Estructura modal -->
+<div class="modal fade" tabindex="-1" role="dialog" id="myModal" [class.show]="mostrarModal"
+  [style.display]="mostrarModal ? 'block' : 'none'" aria-hidden="true">
+
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Instalaciones</h5>
+        <button type="button" class="close position-absolute top-0 end-0 m-3" (click)="cerrarModal()" aria-label="Close"
+          [disabled]="esFormularioSoloLectura">
+          <span class="color-white" aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="ivaForm">
+          <div class="form-group">
+            <span class="text-danger">*</span><label for="rfc"> RFC </label>
+            <div class="d-flex align-items-center">
+              <input type="text" id="rfc" class="form-control me-2 w-50" formControlName="rfc" />
+              <button class="btn btn-info" [disabled]="esFormularioSoloLectura" (click)="buscarDatos()">Buscar</button>
+            </div>
+            @if (ivaForm.get('rfc')?.invalid && ivaForm.get('rfc')?.touched) {
+            <div class="text-danger">
+              @if (ivaForm.get('rfc')?.errors?.['required']) {
+              <small>This field is required</small>
+              } @if (ivaForm.get('rfc')?.errors?.['pattern']) {
+              <small>Invalid RFC format</small>
+              }
+            </div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="denominacion">Denominación o razón social</label>
+            <input type="text" id="denominacion" class="form-control" formControlName="denominacion" readonly />
+          </div>
+
+          <div class="form-group">
+            <label for="domicilio">Domicilio</label>
+            <textarea id="domicilio" class="form-control" formControlName="domicilio" readonly></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary p-2" (click)="agregarDatos()">
+          Aceptar
+        </button>
+        <button type="button" class="btn btn-secondary" [disabled]="esFormularioSoloLectura">Limpiar</button>
+        <button type="button" class="btn btn-danger p-2" (click)="cerrarModal()" [disabled]="esFormularioSoloLectura">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+  </lib-notificaciones>
+</section>
+}

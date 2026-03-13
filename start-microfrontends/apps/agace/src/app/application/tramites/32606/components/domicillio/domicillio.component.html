@@ -1,0 +1,211 @@
+<form [formGroup]="domicillioForm">
+  <div class="col-md-12">
+    <ng-titulo titulo="" />
+  </div>
+  <div class="row">
+    <div class="col-md-6" style="margin-top: 10px;">
+      <app-catalogo-select [catalogo]="domicillio.catalogos" [label]="''" formControlName="domicillio" (change)="setValoresStore( domicillioForm, 'domicillio', 'setDomicillio' )"></app-catalogo-select>
+    </div>
+  </div>
+  <div class="row mt-12" style="margin-top: 10px;">
+    <label class="form-label text-start">{{ enumEtiquetas.SELECCIONE_DOMICILIO }}</label>
+  </div>
+  <div class="col-md-12 mt-5">
+    <div class="alert alert-info">
+      <div class="form-check">
+        <b> Nota:</b> {{ enumEtiquetas.NOTA_DOMICILIO }}
+      </div>
+    </div>
+  </div>
+  <div class="row mt-12">
+    <div class="col-md-12">
+      <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX" [configuracionTabla]="domicillioTabla" [datos]="domicillioDatos"></app-tabla-dinamica>
+    </div>
+  </div>
+  <div class="col-md-12 mt-5 d-flex justify-content-end align-items-end">
+    <div class="btn-group">
+      <button type="button" class="btn btn-default" [disabled]="this.soloLectura" (click)="seleccionarModificar()" data-bs-toggle="modal" data-bs-target="#modalInstalacionesPrincipales"> Modificar </button>
+    </div> @if (nuevaNotificacion) { <section>
+      <lib-notificaciones [notificacionInput]="nuevaNotificacion" (confirmacionModal)="eliminarPedimento($event)"></lib-notificaciones>
+    </section> } <button type="button" class="btn btn-danger 3 ms-3" id="eliminar" [disabled]="this.soloLectura" (click)="eliminarDomiciliosDatos()"> Eliminar </button>
+    <button type="button" id="agregar" class="btn btn-primary ms-3" [disabled]="this.soloLectura" (click)="onAgregarClick()" data-bs-toggle="modal" data-bs-target="#modalDomicillio"> Agregar </button>
+  </div>
+  <div class="modal fade modal-xl" id="modalDomicillio" tabindex="-1" aria-labelledby="modalDomicillioLabel" aria-hidden="true" #modalAgregar>
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Agregar</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-3">
+              <app-catalogo-select [catalogo]="entidadFederativa.catalogos" [label]="'Entidad Federativa'" [required]="false" formControlName="entidadFederativa" (change)="setValoresStore( domicillioForm, 'entidadFederativa', 'setEntidadFederativa' )"></app-catalogo-select>
+            </div>
+          </div>
+          <div class="row mt-12"></div>
+          <div class="row mt-12" *ngIf="!domicillioForm.get('entidadFederativa')?.value">
+            <label class="form-label text-start">Instalaciones</label>
+            <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX" [configuracionTabla]="entidadTabla"></app-tabla-dinamica>
+          </div>
+          <div class="row mt-12" *ngIf="domicillioForm.get('entidadFederativa')?.value">
+            <label class="form-label text-start">Instalaciones</label>
+            <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX" [configuracionTabla]="entidadTabla" [datos]="entidadTablaDatos"></app-tabla-dinamica>
+          </div>
+        </div>
+        <div class="modal-footer custom-footer">
+          <div class="row">
+            <div class="col-md-12 mt-5 d-flex justify-content-end align-items-end">
+              <button type="button" name="agregar" [disabled]="this.soloLectura" class="btn btn-primary ms-2" #closeModal> Aceptar </button>
+              <button type="button" name="cancelar" [disabled]="this.soloLectura" class="btn btn-default ms-2" data-bs-dismiss="modal" #closeModal> Cancelar </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade modal-xl" id="modalInstalacionesPrincipales" tabindex="-1" aria-labelledby="modalInstalacionesPrincipalesLabel" aria-hidden="true" #modalInstalacionesPrincipales>
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="row mt-4">
+          <div class="col-md-12">
+            <ng-titulo titulo="Modificar" />
+          </div>
+          <div class="col-md-4 mt-3">
+            <label class="form-label text-start">Instalaciones principales *:</label>
+            <app-input-radio [radioOptions]="radioOpcions07" [isRequired]="true" [layout]="'horizontal'" [gap]="'445px'" formControlName="tipoRadio12" (change)="setValoresStore( domicillioForm, 'tipoRadio12', 'setTipoRadio12' )"></app-input-radio>
+          </div>
+          <div class="col-md-4 mt-3"></div>
+          <div class="col-md-4 mt-3">
+            <label for="municipio" class="form-label">Municipio o alcaldía:</label>
+            <input type="text" id="municipio" formControlName="municipio" class="form-control" (change)="setValoresStore( domicillioForm, 'municipio', 'setMunicipio' )"/>
+          </div>
+          <div class="col-md-4 mt-3">
+            <app-catalogo-select [catalogo]="tipoDeInstalacion.catalogos" [label]="'Tipo de instalación'" formControlName="tipoDeInstalacion" (change)="setValoresStore( domicillioForm, 'tipoDeInstalacion', 'setTipoDeInstalacion' )"></app-catalogo-select>
+          </div>
+          <div class="col-md-4 mt-3">
+            <label for="entidadFederativa" class="form-label">Entidad federativa :</label>
+            <input type="text" id="entidadFederativa" formControlName="entidadFederativa" class="form-control" (change)="setValoresStore( domicillioForm, 'entidadFederativa', 'setEntidadFederativa' )"/>
+          </div>
+          <div class="col-md-4 mt-3">
+            <label for="registroSESAT" class="form-label">Registro ante SE/SAT :</label>
+            <input type="text" id="registroSESAT" formControlName="registroSESAT" class="form-control" (change)="setValoresStore( domicillioForm, 'registroSESAT', 'setRegistroSESAT' )"/>
+          </div>
+          <div class="col-md-8 mt-3">
+            <label for="descripcion" class="form-label">Colonia, calle y número :</label>
+            <input type="text" id="descripcion" formControlName="descripcion" class="form-control" (change)="setValoresStore( domicillioForm, 'descripcion', 'setDescripcion' )"/>
+          </div>
+          <div class="col-md-4 mt-3">
+            <label for="codigoPostal" class="form-label">Código postal :</label>
+            <input type="text" id="codigoPostal" formControlName="codigoPostal" class="form-control" (change)="setValoresStore( domicillioForm, 'codigoPostal', 'setCodigoPostal' )"/>
+          </div>
+          <div class="col-md-4 mt-3">
+            <label class="form-label text-start">Proceso productivo *:</label>
+            <app-input-radio [radioOptions]="radioOpcions07" [isRequired]="true" [layout]="'horizontal'" [gap]="'445px'" formControlName="tipoRadio27" (change)="setValoresStore( domicillioForm, 'tipoRadio27', 'setTipoRadio27' )"></app-input-radio>
+          </div>
+          <div class="col-md-4 mt-3">
+            <label class="form-label text-start">{{ enumEtiquetas.ACREDITACION_INMUEBLE }}</label>
+            <app-input-radio [radioOptions]="radioOpcions07" [isRequired]="true" [layout]="'horizontal'" [gap]="'445px'" formControlName="tipoRadio28" (change)="setValoresStore( domicillioForm, 'tipoRadio28', 'setTipoRadio28' )"></app-input-radio>
+          </div>
+          <div class="col-md-4 mt-3">
+            <label class="form-label text-start">{{ enumEtiquetas.PERFIL_EMPRESA }}</label>
+            <app-input-radio [radioOptions]="radioOpcions07" [isRequired]="true" [layout]="'horizontal'" [gap]="'445px'" formControlName="tipoRadio29" (change)="setValoresStore( domicillioForm, 'tipoRadio29', 'setTipoRadio29' )"></app-input-radio>
+          </div>
+          <div class="col-md-4 mt-3">
+            <label class="form-label text-start">{{ enumEtiquetas.ACTIVIDAD_COMERCIO_EXTERIOR }}</label>
+            <app-input-radio [radioOptions]="radioOpcions07" [isRequired]="true" [layout]="'horizontal'" [gap]="'445px'" formControlName="tipoRadio30" (change)="setValoresStore( domicillioForm, 'tipoRadio30', 'setTipoRadio30' )"></app-input-radio>
+          </div>
+          <div class="col-md-4 mt-3">
+            <label class="form-label text-start">{{ enumEtiquetas.RECONOCIMIENTO_MUTUO }}</label>
+            <app-input-radio [radioOptions]="radioOpcions07" [isRequired]="true" [layout]="'horizontal'" [gap]="'445px'" formControlName="tipoRadio31" (change)="setValoresStore( domicillioForm, 'tipoRadio31', 'setTipoRadio31' )"></app-input-radio>
+          </div>
+          <div class="col-md-12 mt-3">
+            <div class="d-flex justify-content-end mt-4">
+              <button type="button" id="aceptar" [disabled]="this.soloLectura" class="btn btn-primary" data-bs-dismiss="modal" #closeModal (click)="aceptarInstalacionesPrincipales()"> Aceptar </button>
+              <button type="button" id="cancelar" [disabled]="this.soloLectura" class="btn btn-danger ms-3" data-bs-dismiss="modal" #closeModal> Cancelar </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-12 mt-4">
+    <label class="form-label text-start">
+      <span class="required-asterisk">*</span> {{ enumEtiquetas.ACTUALIZADO_BUZON }}</label>
+    <app-input-radio [radioOptions]="radioOpcions07" [isRequired]="true" [layout]="'horizontal'" [gap]="'445px'" formControlName="tipoRadio32" (change)="setValoresStore( domicillioForm, 'tipoRadio32', 'setTipoRadio32' )"></app-input-radio>
+  </div>
+  <div class="col-md-12 mt-4">
+    <label class="form-label text-start">
+      <span class="required-asterisk">*</span> {{ enumEtiquetas.SUSPENDIDA_PADRON }} </label>
+    <app-input-radio [radioOptions]="radioOpcions07" [isRequired]="true" [layout]="'horizontal'" [gap]="'445px'" formControlName="tipoRadio33" (change)="setValoresStore( domicillioForm, 'tipoRadio33', 'setTipoRadio33' )"></app-input-radio>
+  </div>
+  <div class="col-md-12">
+    <ng-titulo titulo="Clientes y Proveedores en el Extranjero" />
+  </div>
+  <div class="col-md-12">
+    <label class="form-label text-start">{{ enumEtiquetas.CLIENTES_PROVEEDORES_EXTRANJERO }}</label>
+    <div>
+      <b>Para descargar plantilla del archivo de excel de click </b>
+      <a href="/assets/pdf/carga_proveedoresExtranjeros_aviso.xlsx">aquí</a>
+    </div>
+    <div class="row mt-3">
+      <div class="bottom-buffer">
+        <div class="row">
+          <div class="col-md-8">
+            <div class="form-group">
+              <input class="visually-hidden-file" type="file" (change)="alSeleccionarArchivo($event)" id="archivoAdjuntar" size="60" formControlName="file1" (change)="setValoresStore( domicillioForm, 'file1', 'setFile1' )" />
+              <label class="custome-file-label" for="archivoAdjuntar" value="Seleccionar archivo" style="background-color: rgb(41, 110, 194); font-weight: bold">Examinar</label>
+              <p style="display: inline-block"> {{ nombreArchivo }} </p>
+              <br />
+            </div>
+          </div>
+          <div class="col-md-4 mt-5 d-flex justify-content-end">
+            <button type="button" [disabled]="this.soloLectura" class="btn btn-primary ms-3"> Anexar... </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 d-flex align-items-center">
+      <label class="form-label text-start me-3 mb-0" style="white-space: nowrap;"> Registros que existen actualmente. </label>
+      <div class="col-md-4">
+        <input type="text" class="form-control" formControlName="actualmente" name="actualmente" id="actualmente" (change)="setValoresStore( domicillioForm, 'actualmente', 'setActualmente' )"/>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <ng-titulo titulo="Proveedores" />
+  </div>
+  <div class="col-md-12">
+    <label class="form-label text-start">{{ enumEtiquetas.PROVEEDORES_NACIONAL }}</label>
+    <div>
+      <b>{{ enumEtiquetas.DESCARGAR_PLANTILLA_EXTRANJERO }}</b>
+      <a href="/assets/pdf/carga_proveedoresExtranjeros_aviso.xlsx">aquí</a>
+    </div>
+    <div class="row mt-3">
+      <div class="bottom-buffer">
+        <div class="row">
+          <div class="col-md-8">
+            <div class="form-group">
+              <input class="visually-hidden-file" type="file" (change)="alSeleccionarArchivo2($event)" id="archivoAdjuntar" size="60" formControlName="file2" (change)="setValoresStore( domicillioForm, 'file2', 'setFile2' )"/>
+              <label class="custome-file-label" for="archivoAdjuntar" value="Seleccionar archivo" style="background-color: rgb(41, 110, 194); font-weight: bold">Examinar</label>
+              <p style="display: inline-block"> {{ nombreArchivo2 }} </p>
+              <br />
+            </div>
+          </div>
+          <div class="col-md-4 mt-5 d-flex justify-content-end">
+            <button type="button" [disabled]="this.soloLectura" class="btn btn-primary ms-3"> Anexar... </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 d-flex align-items-center">
+      <label class="form-label text-start me-3 mb-0" style="white-space: nowrap;"> Registros que existen actualmente. </label>
+      <div class="col-md-4">
+        <input type="text" class="form-control" formControlName="actualmente2" name="actualmente2" id="actualmente2" (change)="setValoresStore( domicillioForm, 'actualmente2', 'setActualmente2' )"/>
+      </div>
+    </div>
+  </div>
+</form>

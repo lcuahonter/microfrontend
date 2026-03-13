@@ -1,0 +1,32 @@
+<form [formGroup]="pagoDeDerechosForm">
+  <ng-titulo titulo="Pago de derechos" />
+  <div class="row mt-5">
+    <div class="col-md-4 mt-3">
+      <label class="form-label" for="claveDeReferencia">Clave de referencia:</label>
+      <input class="form-control" type="text" formControlName="claveDeReferencia" (change)="setValoresStore(pagoDeDerechosForm,'claveDeReferencia', 'setClaveDeReferencia')" />
+    </div>
+    <div class="col-md-4 mt-3">
+      <label class="form-label">Cadena de la dependencia:</label>
+      <input class="form-control" type="text" formControlName="cadenaDependecia" (change)="setValoresStore(pagoDeDerechosForm,'cadenaDependecia', 'setCadenaDependecia')" />
+    </div>
+    <div class="col-md-4 mt-3">
+      <app-catalogo-select [catalogo]="bancoCatalogo.catalogos" [isDisabled]="soloLectura" [label]="'Banco'" formControlName="banco" (change)="setValoresStore(pagoDeDerechosForm,'banco', 'setBanco')"></app-catalogo-select>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <div class="col-md-4 mt-3">
+      <label class="form-label" for="liaveDePago">Liave de pago:</label>
+      <input class="form-control" type="text" formControlName="liaveDePago" (change)="setValoresStore(pagoDeDerechosForm,'liaveDePago', 'setLiaveDePago')" />
+    </div>
+    <div class="col-md-4 mt-3">
+      <input-fecha formControlName="fechaPago" [setFecha]="pagoDeDerechosForm.get('fechaPago')?.value" [datos]="fechaPagoInput" [isDisabled]="soloLectura" (valorCambiado)="cambioFechaPago($event)"></input-fecha>
+    </div>
+    <div class="col-md-4 mt-3">
+      <label class="form-label" for="importeDePago">Importe de pago:</label>
+      <input class="form-control" type="text" formControlName="importeDePago" (change)="setValoresStore(pagoDeDerechosForm,'importeDePago', 'setImporteDePago')" />
+    </div>
+  </div>
+  <div class="col-md-12 mt-5 d-flex justify-content-end">
+    <button class="btn btn-danger" type="button" [disabled]="soloLectura"> Borrar datos del pago </button>
+  </div>
+</form>

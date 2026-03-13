@@ -1,0 +1,46 @@
+<div class="container">
+  <ng-titulo titulo="Agentes, agencias aduanales y apoderados aduanales registrados" />
+  <div class="row">
+    <form [formGroup]="formAgente">
+      <app-catalogo-select [catalogo]="catFigura" formControlName="figura"
+        [label]="'Selecciona el tipo de figura para promover las operaciones'" [required]="true"
+        name="figura"></app-catalogo-select>
+    </form>
+  </div>
+  <div class="row">
+    <label class="control-label" for="figura">Agentes, agencias y apoderados aduanales</label>
+  </div>
+  <div class="row mt-4">
+    <div class="table-responsive">
+      <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccion.CHECKBOX" [configuracionTabla]="encabezadoDeTablaFigura"
+        [datos]="personasFiguras" (listaDeFilaSeleccionada)="figurasSeleccionados = $event">>
+      </app-tabla-dinamica>
+    </div>
+  </div>
+  <div class="row">
+    <div class="d-flex justify-content-lg-end h1">
+      <div class="btn-group">
+        <button class="btn btn-default" type="button" (click)="eliminarFigura()">Eliminar</button>
+        <button type="button" class="btn btn-primary ms-2" (click)="agregarAgente()">
+          Agregar
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <br />
+    <ng-alert [CONTENIDO]="TEXTOS.TEXTO_AGENTES_ADUANALES"></ng-alert>
+  </div>
+</div>
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+  </lib-notificaciones>
+</section>
+}
+@if (agregarAgentemodal) {
+<section>
+  <app-registro-figura (cerrar)="agregarAgentemodal = false">
+  </app-registro-figura>
+</section>
+}

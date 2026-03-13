@@ -1,0 +1,106 @@
+<form [formGroup]="accesosForm">
+  <ng-titulo titulo="Accesos" />
+  <!-- Accesos tabla -->
+  <div class="table-container mt-5">
+    <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX" [configuracionTabla]="headers"
+      [datos]="accesosTablaDatos" (listaDeFilaSeleccionada)="obtenerRegistroSeleccionado($event)"
+      [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+      [styleCenter]="true"
+      ></app-tabla-dinamica>
+  </div>
+  <nav aria-label="Page navigation example">
+    <ul class="pagination d-flex justify-content-center">
+      <li class="page-item"><a class="page-link">1</a></li>
+    </ul>
+  </nav>
+  <div class="col-md-12 d-flex justify-content-end">
+   <button type="button" class="btn btn-primary ms-3"
+        [disabled]="esFormularioSoloLectura"
+        (click)="abrirAccesos()">
+  Agregar
+</button>
+    <button type="button" class="btn btn-danger ms-3" [disabled]="esFormularioSoloLectura" (click)="eliminarAccesos()">Eliminar</button>
+  </div>
+
+  <!-- Accesos tabla modal popup -->
+  <div class="modal fade modal-xl" id="modalAccesos" tabindex="-1" aria-labelledby="modalAccesosLabel" #modalAccesos
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="row mt-5">
+            <div class="col-md-4">
+              <label>R.F.C.<span
+                class="require"
+                [ngClass]="{
+                  'text-danger':
+                  accesosForm.get('rfc')?.invalid &&
+                  accesosForm.get('rfc')?.touched
+                }"
+                >*</span
+              >:</label>
+              <input type="text" class="form-control" formControlName="rfc" maxlength="15"  [ngStyle]="{
+                borderColor:
+                accesosForm.controls['rfc'].invalid &&
+                accesosForm.controls['rfc'].touched
+                    ? 'red'
+                    : ''
+              }"/>
+              <div *ngIf="accesosForm.get('rfc')?.invalid && (accesosForm.get('rfc')?.dirty || accesosForm.get('rfc')?.touched)">
+                <div *ngIf="accesosForm.get('rfc')?.errors?.['required']">
+                    <small class="mensaje-error">Este campo es obligatorio</small>
+                </div>
+            </div>
+            </div>
+            <div class="col-md-4">
+              <app-catalogo-select [catalogo]="aduanaCatalogo.catalogos" [label]="'Aduana'" formControlName="aduana"
+                [required]="true"
+                [markTouched]="accesosForm.get('aduana')?.touched ?? false"
+                ></app-catalogo-select>
+            </div>
+          </div>
+          <div class="row mt-5">
+            <div class="col-md-4">
+              <app-catalogo-select [catalogo]="sistemaCatalogo.catalogos" [label]="'Sistema'" formControlName="sistema"
+                [required]="true"
+                [markTouched]="accesosForm.get('sistema')?.touched ?? false"
+                ></app-catalogo-select>
+            </div>
+            <div class="col-md-4">
+              <app-catalogo-select [catalogo]="rolCatalogo.catalogos" [label]="'Rol'" formControlName="rol"
+                [required]="true"
+                [markTouched]="accesosForm.get('rol')?.touched ?? false"
+                ></app-catalogo-select>
+            </div>
+            <div class="col-md-4">
+              <app-catalogo-select [catalogo]="movimientoCatalogo.catalogos" [label]="'Tipo Movimiento'"
+                formControlName="tipoMovimiento" [required]="true"
+                [markTouched]="accesosForm.get('tipoMovimiento')?.touched ?? false"
+                ></app-catalogo-select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer custom-footer">
+          <div class="row mt-5">
+            <div class="col-md-12 d-flex justify-content-end align-items-end">
+              <button type="button" class="btn btn-default ms-3" (click)="cerrarModal()"  >Cancelar</button>
+              <button type="button" class="btn btn-primary ms-3"(click)="agregarAccesos()">Agregar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  @if (nuevaNotificacion) { <section>
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion" (confirmacionModal)="eliminarPedimento($event)"></lib-notificaciones>
+  </section> }
+  @if (nuevaNotificacionEliminar) { 
+  <section>
+    <lib-notificaciones 
+    [notificacionInput]="nuevaNotificacionEliminar" 
+    [invertirBotones]="true"
+    (confirmacionModal)="confirmarEliminacion($event)"
+    ></lib-notificaciones>
+  </section> 
+  }
+</form>

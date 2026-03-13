@@ -1,0 +1,460 @@
+<form [formGroup]="mensajeriaGroup">
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <label>Conforme a la regla 7.1.5., fracción VI, acredite lo siguiente.</label>
+        </div> 
+    </div>
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <label><span class="danger">*</span>Señale de quien son propiedad las aeronaves en las que realiza la transportación de documentos y mercancías:</label>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-8 space-between">
+                La Solicitante.&nbsp;<input class="form-check-input" type="checkbox" id="laSolicitante"
+                formControlName="laSolicitante" (change)="setValoresStore(mensajeriaGroup,'laSolicitante', 'setLaSolicitante')"/>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-8 space-between">
+            Sus filiales, subsidiarias o matrices nacionales o extranjeras.&nbsp;<input class="form-check-input" type="checkbox" id="susFiliales"
+                formControlName="susFiliales" (change)="setValoresStore(mensajeriaGroup,'susFiliales', 'setSusFiliales')"/>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-8 space-between">
+            Las empresas que forman parte del grupo a la que pertenece la solicitante de conformidad a la regla 7.1.7. de las RGCE.&nbsp;<input class="form-check-input" type="checkbox" id="lasEmpresas"
+                formControlName="lasEmpresas" (change)="setValoresStore(mensajeriaGroup,'lasEmpresas', 'setLasEmpresas')"/>
+        </div>
+    </div>
+    @if(isLaSolicitante){
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <label><span class="danger">*</span>Señale quien opera el transporte de aeronaves:</label>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-6 space-between">
+                La solicitante &nbsp;<input class="form-check-input" type="checkbox" id="laSolicitanteInterna"
+                    formControlName="laSolicitanteInterna" (change)="setValoresStore(mensajeriaGroup,'laSolicitanteInterna', 'setLaSolicitanteInterna')"/>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-6 space-between">
+                Subsidiaria &nbsp;<input class="form-check-input" type="checkbox" id="subsidiaria"
+                    formControlName="subsidiaria" (change)="setValoresStore(mensajeriaGroup,'subsidiaria', 'setSubsidiaria')"/>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-6 space-between">
+                Filiales &nbsp;<input class="form-check-input" type="checkbox" id="filiales"
+                    formControlName="filiales" (change)="setValoresStore(mensajeriaGroup,'filiales', 'setFiliales')"/>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-6 space-between">
+                Matrices &nbsp;<input class="form-check-input" type="checkbox" id="matrices"
+                    formControlName="matrices" (change)="setValoresStore(mensajeriaGroup,'matrices', 'setMatrices')"/>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <label for="aeronauticaCivil"><span class="danger">*</span>Señale si cuenta con el registro de rutas aéreas o aerovías dentro del espacio aéreo nacional ante la Dirección General de Aeronáutica Civil de la SCT.</label>
+                <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="aeronauticaCivil" (change)="setValoresStore(mensajeriaGroup,'aeronauticaCivil', 'setAeronauticaCivil')" class="gap"></app-input-radio>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <label for="conformidadArticulos"><span class="danger">*</span>Señale si cuenta con la concesión o autorización para prestar los servicios de manejo, almacenaje y custodia de mercancías de comercio exterior de conformidad con los artículos 14 y 14-A de la ley.</label>
+                <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="conformidadArticulos" (change)="setValoresStore(mensajeriaGroup,'conformidadArticulos', 'setConformidadArticulos')" class="gap"></app-input-radio>
+            </div>
+        </div>
+    }
+    @if(isSusFiliales){
+        <ng-titulo titulo="Sus filiales, subsidiarias o matrices nacionales o extranjeras"></ng-titulo>
+        <div class="row">
+            <div class="col-md-12">
+                <label>Dueñas de unidades de transporte</label>
+                <app-tabla-dinamica [configuracionTabla]="mercanciasTabla"
+                [datos]="mercanciasTablaDatos" [tipoSeleccionTabla]="tablaSeleccionCheckbox"></app-tabla-dinamica>
+            </div>
+        </div>
+        <div class="row w-100">
+            <div class="col-12 d-flex justify-content-end mt-3 mb-4">
+                <button class="btn btn-primary me-2" (click)="openTablaModal()">Agregar</button>
+                <button class="btn btn-primary me-2">Modificar</button>
+                <button class="btn btn-default me-2">Eliminar</button>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <label for="documentosMercancias"><span class="danger">*</span>Indique si tiene celebrado un contrato de servicios, con una vigencia mínima de 5 años, la cual no deberá ser menor a un año a la fecha de su solicitud, celebrado de forma directa o a través de sus matrices, filiales o subsidiarias, con un concesionario o permisionario debidamente autorizado por la SCT, mediante el cual pongan a disposición para uso dedicado de las actividades de la empresa de mensajería o paquetería al menos 30 aeronaves y que provea frecuencias regulares a los aeropuertos donde dicha empresa realiza el despacho de los documentos o mercancías.</label>
+                <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="documentosMercancias" (change)="setValoresStore(mensajeriaGroup,'documentosMercancias', 'setDocumentosMercancias')" class="gap"></app-input-radio>
+            </div>
+        </div>   
+    }
+    @if(isLasEmpresas){
+        <ng-titulo titulo="Las empresas que forman parte del grupo a la que pertenece la solicitante"></ng-titulo>
+        <div class="row">
+            <div class="col-md-12">
+                <label>Empresas del Grupo</label>
+                <app-tabla-dinamica [configuracionTabla]="mercanciasTabla"
+                [datos]="mercanciasTablaDatos" [tipoSeleccionTabla]="tablaSeleccionCheckbox"></app-tabla-dinamica>
+            </div>
+        </div>
+        <div class="row w-100">
+            <div class="col-12 d-flex justify-content-end mt-3 mb-4">
+                <button class="btn btn-primary me-2" (click)="openTablaDosModal()">Agregar</button>
+                <button class="btn btn-primary me-2">Modificar</button>
+                <button class="btn btn-default me-2">Eliminar</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label>Empresas del Grupo con Aeronaves</label>
+                <app-tabla-dinamica [configuracionTabla]="mercanciasTabla"
+                [datos]="mercanciasTablaDatos" [tipoSeleccionTabla]="tablaSeleccionCheckbox"></app-tabla-dinamica>
+            </div>
+        </div>
+        <div class="row w-100">
+            <div class="col-12 d-flex justify-content-end mt-3 mb-4">
+                <button class="btn btn-primary me-2" (click)="openTablaDosModal()">Agregar</button>
+                <button class="btn btn-primary me-2">Modificar</button>
+                <button class="btn btn-default me-2">Eliminar</button>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <label for="generalAeronauticaCivil"><span class="danger">*</span>Indique si las empresas que forman parte del grupo, las cuales operen el transporte de las aeronaves, tienen autorizadas o registradas rutas aéreas o aerovías dentro del espacio aéreo nacional ante la Dirección General de Aeronáutica Civil de la SCT.</label>
+                <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="generalAeronauticaCivil" (change)="setValoresStore(mensajeriaGroup,'generalAeronauticaCivil', 'setGeneralAeronauticaCivil')" class="gap"></app-input-radio>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <label for="exteriorConformidad"><span class="danger">*</span>Indique si las empresas que forman parte del grupo, cuentan con la concesión o autorización para prestar los servicios de manejo, almacenaje y custodia de mercancías de comercio exterior de conformidad con los artículos 14 y 14-A de la Ley Aduanera.</label>
+                <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="exteriorConformidad" (change)="setValoresStore(mensajeriaGroup,'exteriorConformidad', 'setExteriorConformidad')" class="gap"></app-input-radio>
+            </div>
+        </div>
+    }
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <label><span class="danger">*</span>Señale el fin de vigencia y el número de oficio con el cual se le otorgó la concesión o autorización para prestar los servicios de manejo, almacenaje y custodia de mercancías de comercio exterior de conformidad con los artículos 14 y 14- A de la Ley Aduanera.</label>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-8">
+            <div class="form-group alignRight">
+                <label for="finDeVigencia">Fecha de fin de vigencia</label>
+                <input type="text" id="finDeVigencia" formControlName="finDeVigencia" class="form-control" (change)="setValoresStore(mensajeriaGroup,'finDeVigencia', 'setFinDeVigencia')">
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-8">
+            <div class="form-group alignRight">
+                <label for="numeroDeOficio">Número de oficio de autorización</label>
+                <input type="text" id="numeroDeOficio" formControlName="numeroDeOficio" class="form-control" (change)="setValoresStore(mensajeriaGroup,'numeroDeOficio', 'setNumeroDeOficio')">
+            </div>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <label for="fechaDePresentacion"><span class="danger">*</span>Señale si a la fecha de presentación de su solicitud cuenta con una inversión mínima de activos fijos por un monto equivalente en moneda nacional a 1,000,000 de dólares.</label>
+            <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="fechaDePresentacion" (change)="setValoresStore(mensajeriaGroup,'fechaDePresentacion', 'setFechaDePresentacion')" class="gap"></app-input-radio>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <label for="mensajeriaPaqueteria"><span class="danger">*</span>Manifieste si cumple con los estándares mínimos en materia de seguridad establecidos en el formato denominado "Perfil de la empresa de Mensajería y Paquetería".</label>
+            <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="mensajeriaPaqueteria" (change)="setValoresStore(mensajeriaGroup,'mensajeriaPaqueteria', 'setMensajeriaPaqueteria')" class="gap"></app-input-radio>
+        </div>
+    </div>
+    <ng-titulo titulo="Reconocimiento Mutuo"></ng-titulo>
+    <div class="row">
+        <div class="col-md-12">
+            <label for="reconocimientoMutuo"><span class="danger">*</span>{{textos.etiqueta}}</label>
+            <app-input-radio [radioOptions]="opcionReconocimiento" [isRequired]="true" [layout]="'horizontal'" formControlName="reconocimientoMutuo" (change)="setValoresStore(mensajeriaGroup,'reconocimientoMutuo', 'setReconocimientoMutuo')" class="gap"></app-input-radio>
+        </div>
+    </div>
+    <ng-titulo titulo="Listado de Socio Comercial Certificado"></ng-titulo>
+    <div class="row">
+        <div class="col-md-12">
+            <label><span class="danger">*</span>Con la finalidad de crear cadenas de suministros más seguras, se establecerá un listado con las empresas que hayan obtenido la certificación como Socio Comercial, misma que se publicará en el Portal del SAT que incluirá los datos generales que la empresa autorice, así como el estatus de su certificación, mismas que podrán ser consultadas por las empresas que hayan obtenido su inscripción en el Registro de certificación de empresas.</label>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <label for="rfcListado">RFC</label>
+            <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="rfcListado" (change)="setValoresStore(mensajeriaGroup,'rfcListado', 'setRfcListado')" class="gap"></app-input-radio>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <label for="nombreRazonSocialListado">Nombre o Razón Social</label>
+            <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="nombreRazonSocialListado" (change)="setValoresStore(mensajeriaGroup,'nombreRazonSocialListado', 'setNombreRazonSocialListado')" class="gap"></app-input-radio>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <label for="direccionFiscalListado">Dirección Fiscal</label>
+            <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="direccionFiscalListado" (change)="setValoresStore(mensajeriaGroup,'direccionFiscalListado', 'setDireccionFiscalListado')" class="gap"></app-input-radio>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <label for="paginaElectronicaListado">Página Electrónica</label>
+            <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="paginaElectronicaListado" (change)="setValoresStore(mensajeriaGroup,'paginaElectronicaListado', 'setPaginaElectronicaListado')" class="gap"></app-input-radio>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <label for="correoElectronicaListado">Correo Electrónico de contacto</label>
+            <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="correoElectronicaListado" (change)="setValoresStore(mensajeriaGroup,'correoElectronicaListado', 'setCorreoElectronicaListado')" class="gap"></app-input-radio>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <label for="telefonoContactoListado">Teléfono de contacto</label>
+            <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="telefonoContactoListado" (change)="setValoresStore(mensajeriaGroup,'telefonoContactoListado', 'setTelefonoContactoListado')" class="gap"></app-input-radio>
+        </div>
+    </div>
+    <ng-titulo titulo="Clasificación de la Información"></ng-titulo>
+    <div class="row">
+        <div class="col-md-12">
+            <label for="informacionProporcionada">La información proporcionada, durante este trámite para el Registro de Certificación de Empresas es clasificada por la empresa como:</label>
+            <app-input-radio [radioOptions]="opcionInformacionProporcionada" [isRequired]="true" [layout]="'horizontal'" formControlName="informacionProporcionada" (change)="setValoresStore(mensajeriaGroup,'informacionProporcionada', 'setInformacionProporcionada')" class="gap"></app-input-radio>
+        </div>
+    </div>
+    <ng-titulo titulo="Pago de derechos"></ng-titulo>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="claveReferencia"><span class="danger">*</span>Clave de referencia</label>
+                <input type="text" id="claveReferencia" formControlName="claveReferencia" class="form-control" (change)="setValoresStore(mensajeriaGroup,'claveReferencia', 'setClaveReferencia')">
+                @if(mensajeriaGroup.controls['claveReferencia'].invalid && mensajeriaGroup.controls['claveReferencia'].touched){
+                    <div class="d-grid">
+                        @if(mensajeriaGroup.controls['claveReferencia'].errors?.['required']) {
+                            <span class="mensaje-error">Este campo es obligatorio</span>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="numeroOperacion"><span class="danger">*</span>Número de operación</label>
+                <input type="text" id="numeroOperacion" formControlName="numeroOperacion" class="form-control" (change)="setValoresStore(mensajeriaGroup,'numeroOperacion', 'setNumeroOperacion')">
+                @if(mensajeriaGroup.controls['numeroOperacion'].invalid && mensajeriaGroup.controls['numeroOperacion'].touched){
+                    <div class="d-grid">
+                        @if(mensajeriaGroup.controls['numeroOperacion'].errors?.['required']) {
+                            <span class="mensaje-error">Este campo es obligatorio</span>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="cadenaDependencia"><span class="danger">*</span>Cadena de la dependencia</label>
+                <input type="text" id="cadenaDependencia" formControlName="cadenaDependencia" class="form-control" (change)="setValoresStore(mensajeriaGroup,'cadenaDependencia', 'setCadenaDependencia')">
+                @if(mensajeriaGroup.controls['cadenaDependencia'].invalid && mensajeriaGroup.controls['cadenaDependencia'].touched){
+                    <div class="d-grid">
+                        @if(mensajeriaGroup.controls['cadenaDependencia'].errors?.['required']) {
+                            <span class="mensaje-error">Este campo es obligatorio</span>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-md-6">
+            <app-catalogo-select
+              [label]="'Banco'"
+              [placeholder]="'Seleccione un valor'"
+              [catalogo]="sectorProductivoAgace"
+              formControlName="banco"
+              (change)="setValoresStore(mensajeriaGroup,'banco', 'setBanco')"
+            >
+            </app-catalogo-select>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="llavePago"><span class="danger">*</span>Llave de pago</label>
+                <input type="text" id="llavePago" formControlName="llavePago" class="form-control" (change)="setValoresStore(mensajeriaGroup,'llavePago', 'setLlavePago')">
+                @if(mensajeriaGroup.controls['llavePago'].invalid && mensajeriaGroup.controls['llavePago'].touched){
+                    <div class="d-grid">
+                        @if(mensajeriaGroup.controls['llavePago'].errors?.['required']) {
+                            <span class="mensaje-error">Este campo es obligatorio</span>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <input-fecha [datos]="fechaFacturaInput" [setFecha]="mensajeriaGroup.get('fechaFactura')?.value"
+                (valorCambiado)="cambioFechaFactura($event,mensajeriaGroup,'fechaFactura', 'setFechaFactura')"></input-fecha>
+                @if(mensajeriaGroup.controls['fechaFactura'].invalid && mensajeriaGroup.controls['fechaFactura'].touched){
+                    <div class="d-grid">
+                        @if(mensajeriaGroup.controls['fechaFactura'].errors?.['required']) {
+                            <span class="mensaje-error">Este campo es obligatorio</span>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="importePago"><span class="danger">*</span>Importe de pago</label>
+                <input type="text" id="importePago" formControlName="importePago" class="form-control" (change)="setValoresStore(mensajeriaGroup,'importePago', 'setImportePago')">
+                @if(mensajeriaGroup.controls['importePago'].invalid && mensajeriaGroup.controls['importePago'].touched){
+                    <div class="d-grid">
+                        @if(mensajeriaGroup.controls['importePago'].errors?.['required']) {
+                            <span class="mensaje-error">Este campo es obligatorio</span>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+        
+    </div>
+
+</form>
+
+<!--inicio html modal-->
+<div
+  class="modal fade"
+  #tablaModal
+  tabindex="-1"
+  aria-labelledby="tablaModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            Agregar Enlace Operativo
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="susFilialesForm">
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="rfc"><span class="danger">*</span>RFC</label>
+                            <input type="text" id="rfc" formControlName="rfc" class="form-control" (change)="setValoresStore(susFilialesForm,'rfc', 'setRfc')">
+                            @if(susFilialesForm.controls['rfc'].invalid && susFilialesForm.controls['rfc'].touched){
+                                <div class="d-grid">
+                                    @if(susFilialesForm.controls['rfc'].errors?.['required']) {
+                                        <span class="mensaje-error">Este campo es obligatorio</span>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-md-4 dis-flex-end">
+                        <div class="form-group">
+                            <button class="btn btn-primary me-2">Buscar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="rfcDos">RFC</label>
+                            <input type="text" id="rfcDos" formControlName="rfcDos" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="denominacionRazonSocial">Denominación o razón social</label>
+                            <input type="text" id="denominacionRazonSocial" formControlName="denominacionRazonSocial" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="domicilio">Domicilio</label>
+                            <input type="text" id="domicilio" formControlName="domicilio" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </form>
+            
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" (click)="closeTablaModal()">Aceptar</button>
+            <button type="button" class="btn btn-primary" (click)="closeTablaModal()">Limpiar</button>
+            <button type="button" class="btn btn-primary" (click)="closeTablaModal()">Cancelar</button>
+        </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  #tablaDosModal
+  tabindex="-1"
+  aria-labelledby="tablaDosModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            Agregar Enlace Operativo
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="lasEmpresasForm">
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="rfc"><span class="danger">*</span>RFC</label>
+                            <input type="text" id="rfcLasEmpresas" formControlName="rfcLasEmpresas" class="form-control" (change)="setValoresStore(lasEmpresasForm,'rfcLasEmpresas', 'setRfcLasEmpresas')">
+                            @if(lasEmpresasForm.controls['rfcLasEmpresas'].invalid && lasEmpresasForm.controls['rfcLasEmpresas'].touched){
+                                <div class="d-grid">
+                                    @if(lasEmpresasForm.controls['rfcLasEmpresas'].errors?.['required']) {
+                                        <span class="mensaje-error">Este campo es obligatorio</span>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-md-4 dis-flex-end">
+                        <div class="form-group">
+                            <button class="btn btn-primary me-2">Buscar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="denominacionRazonSocial">Denominación o razón social</label>
+                            <input type="text" id="denominacionRazonSocial" formControlName="denominacionRazonSocial" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="domicilio">Domicilio</label>
+                            <input type="text" id="domicilio" formControlName="domicilio" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </form>
+            
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" (click)="closeTablaDosModal()">Aceptar</button>
+            <button type="button" class="btn btn-primary" (click)="closeTablaDosModal()">Limpiar</button>
+            <button type="button" class="btn btn-primary" (click)="closeTablaDosModal()">Cancelar</button>
+        </div>
+    </div>
+  </div>
+</div>

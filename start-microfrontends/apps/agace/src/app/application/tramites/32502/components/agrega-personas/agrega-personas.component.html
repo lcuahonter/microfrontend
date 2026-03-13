@@ -1,0 +1,69 @@
+<div class="row">
+  <div class="col-md-4 form-group">
+    <label class="control-label" for="gafete">Gafete:</label>
+    <input class="form-control" id="gafete" [formControl]="gafete" placeholder="" type="text"
+      [ngClass]="gafeteIsValid ? 'required' : ''">
+  </div>
+  <div class="col-md-4 d-flex align-items-center">
+    <div class="btn-group">
+      <button class="btn btn-default" type="button" (click)="buscarGafete()">Buscar</button>
+      <button class="btn btn-primary ms-2" type="button" (click)="agregarPersona()">Agregar</button>
+    </div>
+    <section *ngIf="notificacion">
+      <lib-notificaciones [notificacionInput]="notificacion" (confirmacionModal)="notificacion = undefined"></lib-notificaciones>
+    </section>
+  </div>
+</div>
+
+<form action="" [formGroup]="personaForm">
+  <div class="row">
+    <div class="col-md-4 form-group">
+      <label class="control-label" for="nombre">Nombre(s):</label>
+      <input class="form-control" id="nombre" placeholder="" type="text" formControlName="nombre"
+        [ngClass]="isValid('nombre') ? 'required' : ''">
+    </div>
+    <div class="col-md-4 form-group">
+      <label class="control-label" for="primerApellido">Apellido paterno:</label>
+      <input class="form-control" id="primerApellido" placeholder="" type="text" formControlName="primerApellido"
+        [ngClass]="isValid('primerApellido') ? 'required' : ''">
+    </div>
+    <div class="col-md-4 form-group">
+      <label class="control-label" for="segundoApellido">Apellido materno:</label>
+      <input class="form-control" id="segundoApellido" placeholder="" type="text" formControlName="segundoApellido"
+        [ngClass]="isValid('segundoApellido') ? 'required' : ''">
+    </div>
+  </div>
+</form>
+
+<div class="row">
+  <div class="col-md-12">
+    <table class="table table-responsive">
+      <thead>
+        <tr>
+          <th>Gafete</th>
+          <th>Nombre</th>
+          <th>Apellido paterno</th>
+          <th>Apellido materno</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          @for (persona of personas; let i = $index; track i) {
+            <td>{{persona.gafete}}</td>
+            <td>{{persona.nombre}}</td>
+            <td>{{persona.primerApellido}}</td>
+            <td>{{persona.segundoApellido}}</td>
+            <td>
+              <button type="button" class="btn btn-link" (click)="eliminar(i)">
+                <i class="bi bi-trash3 bi-c"></i>
+              </button>
+            </td>
+          }
+        </tr>
+      </tbody>
+
+    </table>
+  </div>
+</div>

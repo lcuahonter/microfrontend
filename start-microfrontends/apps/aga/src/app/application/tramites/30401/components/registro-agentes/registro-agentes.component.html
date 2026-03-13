@@ -1,0 +1,146 @@
+<div class="col-md-12">
+    <ng-titulo titulo="Registro de Agentes Aduanales" />
+  <app-tabla-dinamica
+    [tipoSeleccionTabla]="tipoSeleccionTabla"
+    [configuracionTabla]="ParqueAgentes"
+    [datos]="agentesInfoList"
+    (listaDeFilaSeleccionada)="manejarFilaSeleccionada($event)"
+    [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+  >
+  </app-tabla-dinamica>
+
+  <div class="d-flex justify-content-end">
+    <div class="d-flex flex-row flex-wrap gap-3">
+        <button class="btn btn-primary" (click)="cargaArchivo()" [disabled]="esFormularioSoloLectura">Carga por archivo</button>
+        <button class="btn btn-primary" [ngClass]="{'btn-secondary': !enableEliminarBoton}"
+        [disabled]="!enableEliminarBoton" (click)="confirmEliminarAgentesItem()">Eliminar</button>
+        <button class="btn btn-primary"  [disabled]="!enableModficarBoton" [ngClass]="{'btn-secondary': !enableEliminarBoton}" (click)="modificarItemAgentes()">Modificar</button>
+        <button class="btn btn-primary" (click)="agregarDialogoDatos()" [disabled]="esFormularioSoloLectura">Agregar</button>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="registroDeAgentes"
+  tabindex="-1"
+  aria-labelledby="registroDeAgentesLabel"
+  aria-hidden="true"
+  data-bs-backdrop="static"
+  #registroDeAgentes
+>
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form [formGroup]="formularioAgentesAduanales">
+              <p class="fw-bold">Registro de Agentes Aduanales</p>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label class="form-label" for="nombreAgente">Nombre(s)*:</label>
+                  <input type="text" class="form-control" id="nombreAgente" formControlName="nombreAgente" maxlength="28" />
+                    <div class="text-danger" *ngIf="formularioAgentesAduanales.get('nombreAgente')?.touched && formularioAgentesAduanales.get('nombreAgente')?.invalid && formularioAgentesAduanales.get('nombreAgente')?.errors?.['pattern']">
+                      <small>Existen datos incorrectos que no cumplen con el formato esperado.</small>
+                    </div>
+                  <div *ngIf="esInvalido('nombreAgente')" class="text-danger">
+                    <small *ngIf="formularioAgentesAduanales.controls['nombreAgente'].hasError('required')">
+                      Este campo es obligatorio.
+                    </small>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" for="primerApellido">Primer Apellido*:</label>
+                  <input type="text" class="form-control" id="primerApellido" formControlName="primerApellido" maxlength="20"  />
+                   <div class="text-danger" *ngIf="formularioAgentesAduanales.get('primerApellido')?.touched && formularioAgentesAduanales.get('primerApellido')?.invalid && formularioAgentesAduanales.get('primerApellido')?.errors?.['pattern']">
+                      <small>Existen datos incorrectos que no cumplen con el formato esperado.</small>
+                    </div>
+                  <div *ngIf="esInvalido('primerApellido')" class="text-danger">
+                    <small *ngIf="formularioAgentesAduanales.controls['primerApellido'].hasError('required')">
+                      Este campo es obligatorio.
+                    </small>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" for="segundoApellido">Segundo Apellido*:</label>
+                  <input type="text" class="form-control" id="segundoApellido" formControlName="segundoApellido" maxlength="20"  />
+                   <div class="text-danger" *ngIf="formularioAgentesAduanales.get('segundoApellido')?.touched && formularioAgentesAduanales.get('segundoApellido')?.invalid && formularioAgentesAduanales.get('segundoApellido')?.errors?.['pattern']">
+                      <small>Existen datos incorrectos que no cumplen con el formato esperado.</small>
+                    </div>
+                  <div *ngIf="esInvalido('segundoApellido')" class="text-danger">
+                    <small *ngIf="formularioAgentesAduanales.controls['segundoApellido'].hasError('required')">
+                      Este campo es obligatorio.
+                    </small>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" for="patente">Número de patente de agente aduanal*:</label>
+                  <input type="text" class="form-control" id="patente" formControlName="patente" maxlength="4" />
+                    <div class="text-danger" *ngIf="formularioAgentesAduanales.get('patente')?.touched && formularioAgentesAduanales.get('patente')?.invalid">
+                       <small *ngIf="formularioAgentesAduanales.controls['patente'].hasError('required')">
+                      Este campo es obligatorio.
+                    </small>
+                      <ng-container *ngIf="formularioAgentesAduanales.get('patente')?.errors as errors">
+                        <small *ngIf="errors['pattern']">Por favor, sólo escribe dígitos.</small>
+                        <small *ngIf="!errors['pattern'] && (errors['minlength'] || errors['maxlength']) && isAllDigits(formularioAgentesAduanales.get('patente')?.value)">Indique el número a 4 dígitos, si es menor, agregue cero al inicio.</small>
+                        </ng-container>
+                    </div>
+                </div>
+              </div>
+        </form>
+        <footer class="footer d-flex py-5 gap-3 justify-content-end">
+            <button type="button" class="btn btn-primary" (click)="modalCancelar()">Cancelar</button>
+            <button type="button" class="btn btn-primary" (click)="limpiarFormulario()">Limpiar</button>
+            <button type="button" class="btn btn-primary" (click)="enviarDialogData()">Agregar</button>
+        </footer>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="modalArchivo" tabindex="-1" #modalArchivo data-bs-backdrop="static" aria-labelledby="modalArchivo" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form [formGroup]="formularioArchivo">
+          <div class="row">
+            <div class="col-md-12">
+
+              <div class="form-group">
+                <label class="form-label text-left">Seleccionar Archivo</label>
+                <input class="form-control" type="file" formControlName="archivo" id="archivoAdjuntar" size="60" />
+                <div *ngIf="esInvalido('archivo')" class="text-danger">
+                  <small *ngIf="formularioAgentesAduanales.controls['archivo'].hasError('required')">
+                    El archivo es requerido.
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer d-flex justify-content-end p-5 gap-3">
+        <button type="button" class="btn btn-default" data-bs-dismiss="modal" #closeModal> Cerrar </button>
+        <button type="submit" class="btn btn-primary" (click)="cerrarModal()"> Enviar </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <lib-notificaciones 
+  *ngIf="esHabilitarElDialogo"
+  [notificacionInput]="nuevaNotificacion" 
+  (confirmacionModal)="cerrarModal()">
+</lib-notificaciones>
+
+  
+  <lib-notificaciones 
+  *ngIf="confirmEliminarPopupAbierto"
+  [notificacionInput]="nuevaNotificacion" 
+  (confirmacionModal)="eliminarAgentesItem($event)">
+</lib-notificaciones>
+
+<lib-notificaciones 
+  *ngIf="multipleSeleccionPopupAbierto"
+  [notificacionInput]="nuevaNotificacion" 
+  (confirmacionModal)="cerrarMultipleSeleccionPopup()">
+</lib-notificaciones>

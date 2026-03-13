@@ -1,0 +1,53 @@
+<div class="container">
+  <div class="row">
+    <ul class="nav nav-tabs">
+      <li [ngClass]="indice === 1 ? 'active' : ''">
+        <a
+          data-toggle="tab"
+          (click)="seleccionaTab(1)"
+          (keydown.enter)="seleccionaTab(1)"
+          tabindex="0"
+          >Solicitante</a
+        >
+      </li>
+
+      <li [ngClass]="indice === 2 ? 'active' : ''">
+        <a
+          data-toggle="tab"
+          (click)="seleccionaTab(2)"
+          (keydown.enter)="seleccionaTab(2)"
+          tabindex="1"
+          >Tipo de aviso</a
+        >
+      </li>
+      @if (datosInputCheck.derechos) {
+      <li [ngClass]="indice === 3 ? 'active' : ''">
+        <a
+          data-toggle="tab"
+          (click)="seleccionaTab(3)"
+          (keydown.enter)="seleccionaTab(3)"
+          tabindex="1"
+          >Page de derechos</a
+        >
+      </li>
+    }
+      
+    </ul>
+
+    <ng-container>
+      @switch (indice) { @case (1) {
+      <solicitante></solicitante>
+      } @case (2) { @if(esDatosRespuesta){
+      <app-tipo-de-aviso
+        (tabEnabledData)="getValoreEnable($event)" [formularioDeshabilitado]="formularioDeshabilitado"
+      ></app-tipo-de-aviso>
+      } } 
+      @case (3){
+        @if(esDatosRespuesta){
+        <app-pago-derechos></app-pago-derechos>
+      }}
+    }
+
+    </ng-container>
+  </div>
+</div>

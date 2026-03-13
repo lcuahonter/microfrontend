@@ -1,0 +1,267 @@
+
+<form [formGroup]="fusionEscisionForm">
+  <div class="row">
+    <div class="col-md-12">
+      <label class="form-label">Cuenta con registro en Despacho de Mercancías</label>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8">
+          <div class="form-check">
+            <app-input-radio [radioOptions]="fusionadaOpciones" [layout]="'horizontal'"
+          formControlName="certificacionModal" (change)="mostrarCertificacion()">
+          </app-input-radio>      
+      </div>
+    </div>
+  </div>
+
+  <div
+    id="conCertificacion"
+    *ngIf="fusionEscisionForm.get('certificacionModal')?.value === '1'"
+  >
+    <div class="row">
+      <div class="col-md-6">
+        <label class="form-label">RFC</label>
+        <span class="require">*</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <input
+          type="text"
+          formControlName="rfcBusquedaModal"
+          id="idRfcBusquedaModal"
+          class="form-control"
+          size="30"
+          (change)="cambioRFC()"
+        />
+        @if (nuevaNotificacion) {
+          <section>
+          <lib-notificaciones [notificacionInput]="nuevaNotificacion" (confirmacionModal)="eliminarPedimento($event)">
+          </lib-notificaciones>
+          </section>
+          }
+        <div
+          *ngIf="
+            fusionEscisionForm.get('rfcBusquedaModal')?.invalid &&
+            (fusionEscisionForm.get('rfcBusquedaModal')?.touched ||
+              fusionEscisionForm.get('rfcBusquedaModal')?.dirty)
+          "
+          class="text-danger"
+        >
+          RFC es requerido.
+        </div>
+      </div>
+      <div class="col-md-6">
+        <button
+          type="button"
+          id="btnAceptarModal"
+          class="btn btn-primary"
+          (click)="cargarDatosPersonaFusionada()"
+        >
+          Aceptar
+        </button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <label class="form-label">Denominación o razón social de la sociedad</label>
+        <span class="require">*</span>
+        <!-- <label for="puntos"></label> -->
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Folio VUCEM</label>
+        <span class="require">*</span>
+        <!-- <label for="puntos"></label> -->
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <input
+          type="text"
+          formControlName="razonSocialFusionante"
+          id="idRazonSocialFusionante"
+          class="form-control"
+          size="30"
+        />
+        <div
+          *ngIf="
+            fusionEscisionForm.get('razonSocialFusionante')?.invalid &&
+            (fusionEscisionForm.get('razonSocialFusionante')?.touched ||
+              fusionEscisionForm.get('razonSocialFusionante')?.dirty)
+          "
+          class="text-danger"
+        >
+          Denominación o razón social es requerido.
+        </div>
+      </div>
+      <div class="col-md-6">
+        <input
+          type="text"
+          formControlName="folioVucemFusionante"
+          id="idFolioVucemFusionante"
+          class="form-control"
+          size="30"
+        />
+        <div
+          *ngIf="
+            fusionEscisionForm.get('folioVucemFusionante')?.invalid &&
+            (fusionEscisionForm.get('folioVucemFusionante')?.touched ||
+              fusionEscisionForm.get('folioVucemFusionante')?.dirty)
+          "
+          class="text-danger"
+        >
+          Folio VUCEM es requerido.
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <label class="form-label">Fecha inicio de vigencia</label>
+        <span class="require">*</span>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Fecha fin de vigencia</label>
+        <span class="require">*</span>
+        <!-- <label for="puntos"></label> -->
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <input
+          type="text"
+          formControlName="fechaInicioVigenciaFusionante"
+          id="idFechaInicioVigenciaFusionante"
+          class="form-control"
+          size="30"
+        />
+        <div
+          *ngIf="
+            fusionEscisionForm.get('fechaInicioVigenciaFusionante')?.invalid &&
+            (fusionEscisionForm.get('fechaInicioVigenciaFusionante')?.touched ||
+              fusionEscisionForm.get('fechaInicioVigenciaFusionante')?.dirty)
+          "
+          class="text-danger"
+        >
+          Fecha de inicio de vigencia es requerida.
+        </div>
+      </div>
+      <div class="col-md-6">
+        <input
+          type="text"
+          formControlName="fechaFinVigenciaFusionante"
+          id="idFechaFinVigenciaFusionante"
+          class="form-control"
+          size="30"
+        />
+        <div
+          *ngIf="
+            fusionEscisionForm.get('fechaFinVigenciaFusionante')?.invalid &&
+            (fusionEscisionForm.get('fechaFinVigenciaFusionante')?.touched ||
+              fusionEscisionForm.get('fechaFinVigenciaFusionante')?.dirty)
+          "
+          class="text-danger"
+        >
+          Fecha de fin de vigencia es requerida.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    id="sinCertificacion"
+    *ngIf="fusionEscisionForm.get('certificacionModal')?.value === '0'"
+  >
+    <div class="row">
+      <div class="col-md-6">
+        <label class="form-label">RFC</label>
+        <span class="require">*</span>
+        <!-- <label for="puntos"></label> -->
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Denominación o razón social de la sociedad</label>
+        <span class="require">*</span>
+        <!-- <label for="puntos"></label> -->
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <input
+          type="text"
+          formControlName="rfcBusquedaModalSC"
+          id="idRfcBusquedaModalSC"
+          class="form-control"
+          size="30"
+          (change)="cambioRfcSC()"
+        />
+        <div
+          *ngIf="
+            fusionEscisionForm.get('rfcBusquedaModalSC')?.invalid &&
+            (fusionEscisionForm.get('rfcBusquedaModalSC')?.touched ||
+              fusionEscisionForm.get('rfcBusquedaModalSC')?.dirty)
+          "
+          class="text-danger"
+        >
+          RFC es requerido.
+        </div>
+      </div>
+      <div class="col-md-6">
+        <input
+          type="text"
+          formControlName="razonSocialFusionanteSC"
+          id="idRazonSocialFusionanteSC"
+          class="form-control"
+          size="30"
+          (change)="cambioRazonSocialSC()"
+        />
+        <div
+          *ngIf="
+            fusionEscisionForm.get('razonSocialFusionanteSC')?.invalid &&
+            (fusionEscisionForm.get('razonSocialFusionanteSC')?.touched ||
+              fusionEscisionForm.get('razonSocialFusionanteSC')?.dirty)
+          "
+          class="text-danger"
+        >
+          Denominación o razón social es requerida.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row cancelar-btn">
+    <div class="col-md-12">
+      <div class="form-group pull-right">
+        <!-- BOTONES  -->
+        <button
+          type="button"
+          name="btnAceptar"
+          id="btnAceptarFusionEscision"
+          class="btn btn-primary pull-right"
+          (click)="agregarFusionEscision()"
+        >
+          Aceptar
+        </button>
+        @if (nuevaNotificacion) {
+          <section>
+          <lib-notificaciones [notificacionInput]="nuevaNotificacion" (confirmacionModal)="eliminarPedimento($event)">
+          </lib-notificaciones>
+          </section>
+          }
+        <button
+          type="button"
+          name="btnCancelar"
+          id="btnCancelarFusionEscision"
+          class="btn btn-danger pull-right cancelar-fusion"
+          (click)="cerrarDialogoFusionEscision()"
+        >
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</form>

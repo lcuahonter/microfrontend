@@ -1,0 +1,205 @@
+<div class="container">
+  <form [formGroup]="avisoFormulario">
+    @if (!soloLectura) {
+      <ng-container formGroupName="adaceFormulario">
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label for="adace" class="form-label">ADACE:</label>
+            <input class="form-control" [ngClass]="isValid(adaceFormulario, 'adace') ? 'required' : ''" type="text" formControlName="adace" name="adace" id="adace" (change)="setValoresStore(avisoFormulario, 'adace', 'setAvisoFormularioAdace')" readonly />
+          </div>
+        </div>
+      </ng-container>
+    }
+    <!-- second section -->
+    <ng-titulo titulo="Datos de la empresa IMMEX que presenta la documentación complementaria del aviso" />
+    <ng-container formGroupName="datosEmpresa">
+      <div class="row mb-3">
+        <div class="col-md-4 text-end">
+          <label for="valorProgramaImmex" class="form-label mb-0"> Número de programa IMMEX <span class="require">*</span>: </label>
+        </div>
+        <div class="col-md-4">
+          <input id="valorProgramaImmex" name="valorProgramaImmex" class="form-control" [ngClass]="isValid(datosEmpresa, 'valorProgramaImmex') ? 'required' : ''" type="text" maxlength="9" formControlName="valorProgramaImmex" (keyup)="avisoComponent.sanitizeAlphanumeric(datosEmpresa,'valorProgramaImmex',$event)" (change)="setValoresStore(datosEmpresa, 'valorProgramaImmex', 'setAvisoFormularioValorProgramaImmex')" />
+          @if (datosEmpresa.get('valorProgramaImmex')?.hasError('required') &&
+          datosEmpresa.get('valorProgramaImmex')?.touched) {
+            <div class="text-danger">
+              <small>Este campo es obligatorio</small>
+            </div>
+          }
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-4 text-end">
+          <label for="valorAnioProgramaImmex" class="form-label mb-0"> Año de programa IMMEX <span class="require">*</span>: </label>
+        </div>
+        <div class="col-md-4">
+          <input id="valorAnioProgramaImmex" name="valorAnioProgramaImmex" class="form-control" type="text" maxlength="4" formControlName="valorAnioProgramaImmex" [ngClass]="isValid(datosEmpresa, 'valorAnioProgramaImmex') ? 'required' : ''" (keyup)="avisoComponent.sanitizeAlphanumeric(datosEmpresa,'valorAnioProgramaImmex',$event)" (change)="setValoresStore(datosEmpresa, 'valorAnioProgramaImmex', 'setAvisoFormularioValorAnioProgramaImmex')" />
+          @if (datosEmpresa.get('valorAnioProgramaImmex')?.hasError('required') &&
+          datosEmpresa.get('valorAnioProgramaImmex')?.touched) {
+            <div class="text-danger">
+              <small>Este campo es obligatorio</small>
+            </div>
+          }
+        </div>
+      </div>
+    </ng-container>
+    <!-- Third section -->
+    <ng-titulo titulo="Datos de la ADACE que asistió a la destrucción" />
+    <ng-container formGroupName="datosAdace">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="col-md-3"> ¿Acudió la ADACE? </div>
+          <div class="col-md-3">
+            <app-input-radio [radioOptions]="radioOpcions"
+                             formControlName="tipoBusqueda"
+                             [isRequired]="true"
+                             [layout]="'horizontal'"
+                             (change)="setValoresStore(datosAdace, 'tipoBusqueda', 'setAvisoFormularioTipoBusqueda')"></app-input-radio>
+            @if (datosAdace.get('tipoBusqueda')?.hasError('required') &&
+            datosAdace.get('tipoBusqueda')?.touched) {
+              <div class="text-danger">
+                <small>Este campo es obligatorio</small>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+      <br>
+      @if (!soloLectura) {
+        <div class="row">
+          <div class="col-md-12">
+            <div class="col-md-4">
+              <app-catalogo-select
+              [catalogo]="optoinAdace"
+              [label]="'ADACE que levanta el acta'"
+              [required]="true"
+              [tooltipQuestionCircle]="true"
+              [tooltipQuestionCircleText]="'ADACE a la que le corresponde levantar el acta'"
+              id="levantaActa"
+              formControlName="levantaActa"
+              [isDisabled]="soloLectura"
+              [placeholder]="'Seleccione una opción'"
+              [markTouched]="datosAdace.get('levantaActa')?.touched || false"
+              (selectionChange)="onLevantaActaChange($event)"
+              ></app-catalogo-select>
+            </div>
+          </div>
+        </div>
+      }
+    </ng-container>
+    <!-- Campo ADACE en modo solo lectura - Fuera de datosAdace para mantener ruta correcta -->
+    @if (soloLectura) {
+      <ng-container formGroupName="adaceFormulario">
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label for="adace" class="form-label">ADACE:</label>
+            <input class="form-control" [ngClass]="isValid(adaceFormulario, 'adace') ? 'required' : ''" type="text" formControlName="adace" name="adace" id="adace-readonly" (change)="setValoresStore(avisoFormulario, 'adace', 'setAvisoFormularioAdace')" readonly />
+          </div>
+        </div>
+      </ng-container>
+    }
+    <ng-titulo titulo="Datos de las mercancías destruídas" />
+    @if (mostrarAlertaMercancias) {
+      <ng-alert class="text-center" [CONTENIDO]="'Datos de las mercancías destruídas no debe ir vacío.'" [CUSTOMECLASS]="'alert-danger'"></ng-alert>
+    }
+    <div class="row">
+      <app-tabla-dinamica 
+      [tipoSeleccionTabla]="tablaSeleccion.CHECKBOX" 
+      [configuracionTabla]="tablaDeDatos.encabezadas" 
+      [datos]="tablaDeDatos.datos" 
+      [disableSeleccionTablaCheckBox]="this.soloLectura" 
+      (listaDeFilaSeleccionada)="filaSeleccionada($event)"
+      ></app-tabla-dinamica>
+      @if (!soloLectura) {
+        <div class="mt-4 d-flex justify-content-end">
+          <button type="button" class="btn btn-primary ms-3" (click)="datosDelAviso()" [disabled]="soloLectura"> Agregar </button>
+          <button type="button" class="btn btn-danger ms-3" (click)="eliminarMercancia()" [disabled]="soloLectura" *ngIf="filaSeleccionadaLista && filaSeleccionadaLista.length > 0"> Eliminar </button>
+        </div>
+      }
+    </div>
+    <ng-container formGroupName="adaceForm" *ngIf="esPopupAbierto">
+      <div class="modal fade" id="datosAviso" tabindex="-1" #datosAviso aria-labelledby="datosAviso" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+          <div class="modal-content">
+            <div class="modal-body">
+              <ng-titulo titulo="Datos de la destrucción en relación con la cual se presenta el Acta de Hechos" />
+              <div class="row">
+                <div class="col-md-12 mb-3">
+                  <ng-alert class="text-center" [CONTENIDO]="avisoMercancias" [CUSTOMECLASS]="'alert-warning'"></ng-alert>
+                </div>
+                <div class="col-md-12 mb-3">
+                  <label>¿Cuenta con el ID de transacción de VUCEM del Aviso de destrucción de desperdicios conforme al Artículo 109 de la Ley Aduanera, para empresas con Programa IMMEX?:</label>
+                  <app-input-radio [radioOptions]="radioOpcions" [layout]="'horizontal'"
+                                   formControlName="siIdTransaccion"
+                                   (change)="setValoresStore(adaceForm, 'siIdTransaccion', 'setSiIdTransaccion')"></app-input-radio>
+                </div>
+              </div>
+              @if (adaceForm.get('siIdTransaccion')?.value === 'Si') {
+                <div class="row">
+                  <div class="col-md-4 mb-3">
+                    <label>ID de transacción de VUCEM del aviso inicial:</label>
+                    <input type="text" class="form-control" id="transaccionId" formControlName="transaccionId" (change)="setValoresStore(adaceForm, 'transaccionId', 'setAvisoFormularioTransaccionId')" />
+                  </div>
+                </div>
+              }
+              <ng-titulo titulo="Datos de las mercancías destruídas" />
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <label>Cantidad*:</label>
+                  <input type="text" maxlength="13" class="form-control" id="cantidad" formControlName="cantidad" libSoloNumeros [ngClass]="isValid(adaceForm,'cantidad') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'cantidad', 'setAvisoFormularioCantidad')" />
+                  @if (adaceForm.get('cantidad')?.hasError('required') &&
+                    adaceForm.get('cantidad')?.touched) {
+                    <div class="text-danger">
+                      <small>Este campo es obligatorio</small>
+                    </div>
+                    }
+
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label>Peso (Kg)*:</label>
+                  <input type="text" maxlength="13" class="form-control" id="peso" formControlName="peso" libSoloNumeros [ngClass]="isValid(adaceForm,'peso') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'peso', 'setAvisoFormularioPeso')" />
+                  @if (adaceForm.get('peso')?.hasError('required') &&
+                    adaceForm.get('peso')?.touched) {
+                    <div class="text-danger">
+                      <small>Este campo es obligatorio</small>
+                    </div>
+                    }
+                </div>
+                <div class="col-md-4 ">
+                  <app-catalogo-select 
+                  class="unidadMedida" 
+                  [label]="'Unidad de medida'" 
+                  [catalogo]="unidadMedida" 
+                  [required]="true" 
+                  id="unidadMedida" 
+                  formControlName="unidadMedida" 
+                  [isDisabled]="soloLectura" 
+                  [markTouched]="adaceForm.get('unidadMedida')?.touched || false"
+                  (change)="setValoresStore(adaceForm, 'unidadMedida', 'setAvisoFormularioUnidadMedida')"
+                  ></app-catalogo-select>
+                </div>
+              
+                  <div class="col-md-8 mb-6">
+                    <div>
+                      <label>Descripción*:</label>
+                      <input type="text" class="form-control" maxlength="25" formControlName="descripcion" id="descripcion" maxlength="250" [ngClass]="isValid(adaceForm,'descripcion') ? 'required' : ''" (change)="setValoresStore(adaceForm,'descripcion', 'setAvisoFormularioDescripcion')">
+                    @if (adaceForm.get('descripcion')?.hasError('required') &&
+                    adaceForm.get('descripcion')?.touched) {
+                    <div class="text-danger">
+                      <small>Este campo es obligatorio</small>
+                    </div>
+                    }
+                    </div>
+                  </div>
+                
+              </div>
+            </div>
+            <div class="modal-footer custom-footer mt-4 justify-content-end">
+              <button type="submit" class="btn btn-primary" (click)="agregarMercancia()" [disabled]="soloLectura"> Agregar </button>
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal" #closeMercancia [disabled]="soloLectura"> Cancelar </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </form>
+</div>

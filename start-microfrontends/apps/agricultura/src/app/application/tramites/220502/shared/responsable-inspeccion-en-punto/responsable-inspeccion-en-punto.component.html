@@ -1,0 +1,118 @@
+<fieldset [formGroupName]="claveDeControl">
+  <ng-titulo titulo="Responsable inspección en punto" />
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-field">
+        <label for="nombreInsp" class="form-label">Nombre(s):</label>
+        <input
+          class="form-control"
+          type="text"
+          formControlName="nombre"
+          id="nombreInsp"
+          maxlength="150"
+          (change)="setNombre($event)"
+        />
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-field">
+        <label for="primerapellido" class="form-label">Primer apellido:</label>
+        <input
+          class="form-control"
+          type="text"
+          formControlName="primerapellido"
+          id="primerapellido"
+          maxlength="80"
+          (change)="setPrimerapellido($event)"
+        />
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-field">
+        <label for="segundoapellido" class="form-label"
+          >Segundo apellido:</label
+        >
+        <input
+          class="form-control"
+          type="text"
+          formControlName="segundoapellido"
+          id="segundoapellido"
+          maxlength="80"
+          (change)="setSegundoapellido($event)"
+        />
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-field">
+        <label for="mercancia" class="form-label"
+          >Cantidad de contenedores en que arriba la mercancía<span
+            class="require"
+            [ngClass]="{
+              'text-danger':
+                (grupoFormularioPadre.get(claveDeControl + '.mercancia')
+                  ?.invalid &&
+                grupoFormularioPadre.get(claveDeControl + '.mercancia')?.touched &&
+                grupoFormularioPadre.get(claveDeControl + '.mercancia')?.dirty) || formValida
+            }"
+            >*</span
+          >: <span
+            tooltip="Número de tolvas, furgones o contenedores en que arriba la mercancía"
+            ><i class="bi bi-question-circle-fill"></i
+          ></span>
+        </label>
+       <input
+  class="form-control"
+  type="text"
+  formControlName="mercancia"
+  id="mercancia"
+  maxlength="3"
+  min="1"
+  [ngClass]="{
+    'border-color': grupoFormularioPadre.get(claveDeControl + '.mercancia')?.invalid &&
+                    grupoFormularioPadre.get(claveDeControl + '.mercancia')?.touched
+  }"
+  (change)="setMercancia($event)"
+/>
+        <span
+          *ngIf="
+            grupoFormularioPadre
+              .get(claveDeControl + '.mercancia')
+              ?.hasError('pattern') &&
+            !(grupoFormularioPadre
+              .get(claveDeControl + '.mercancia')
+              ?.hasError('required')) &&
+            grupoFormularioPadre.get(claveDeControl + '.mercancia')?.touched
+          "
+          class="mensaje-error"
+        >
+          Por favor, sólo escribe dígitos
+        </span>
+        <span
+          *ngIf="
+            (grupoFormularioPadre
+              .get(claveDeControl + '.mercancia')
+              ?.hasError('required') &&
+            grupoFormularioPadre.get(claveDeControl + '.mercancia')?.touched &&
+            grupoFormularioPadre.get(claveDeControl + '.mercancia')?.dirty) || formValida
+          "
+          class="mensaje-error"
+        >
+          Este campo es obligatorio
+        </span>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-field">
+        <app-catalogo-select
+          id="tipoContenedor"
+          [catalogo]="tipoContenedor.catalogos"
+          [label]="tipoContenedor.labelNombre"
+          [required]="tipoContenedor.required"
+          [isDisabled]="formularioDeshabilitado"
+          formControlName="tipocontenedor"
+          (selectionChange)="setTipoContenedor($event)"
+        ></app-catalogo-select>
+      </div>
+    </div>
+  </div>
+</fieldset>

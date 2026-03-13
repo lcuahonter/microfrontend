@@ -1,0 +1,49 @@
+<div class="container">
+  <div class="row">
+    <ul class="nav nav-tabs">
+      <li 
+        *ngFor="let tab of seccionesDeLaSolicitud" 
+        [ngClass]="indice === tab.index ? 'active' : ''"
+        
+      >
+        <a
+          *ngIf="(tab.index === 5 && reconocimientoMutuoValue[0] === '1') || (tab.index === 6 && reconocimientoMutuoValue[1] === '1' || (tab.index !== 5 && tab.index !== 6))"
+          [class.active]="indice === tab.index"
+          (click)="seleccionaTab(tab.index)"
+        >
+          {{ tab.title }}
+        </a>
+      </li>
+    </ul>
+
+  <ng-container>
+    @switch (indice) { @case (1) {
+    <solicitante #solicitanteRef></solicitante>
+    } @case (2) {
+      @if(esDatosRespuesta){
+        <app-datos-comunes (reconocimientoMutuoCTPATChange)="onReconocimientoMutuoChange($event)"></app-datos-comunes>
+      }
+    } @case (3) {
+      @if(esDatosRespuesta){
+        <app-terceros-relacionados #tercerosRelacionadosRef></app-terceros-relacionados>
+      }
+    } @case (4) {
+      @if(esDatosRespuesta){
+        <app-importador-exportador #importadorExportadorRef></app-importador-exportador>
+      }
+    }
+    @case (5) {
+      @if(esDatosRespuesta){
+        <app-c-tpat #ctpatRef></app-c-tpat>
+      }
+    }
+    @case (6) {
+      @if(esDatosRespuesta){
+        <app-perfiles>
+        </app-perfiles>
+      }
+    }
+    
+  }
+  </ng-container>
+</div>

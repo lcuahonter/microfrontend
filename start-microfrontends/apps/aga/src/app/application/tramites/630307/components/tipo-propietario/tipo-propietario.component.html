@@ -1,0 +1,58 @@
+<ng-titulo [titulo]="'Tipo de Propietario'"></ng-titulo>
+<form [formGroup]="tipoPropietarioFormulario">
+  <div class="row">
+    <div class="col-md-4">
+      <app-catalogo-select
+        [label]="'Propietario'"
+        [required]="true"
+        [tooltipQuestionCircle]="true"
+        [catalogo]="propietarioOpciones"
+        formControlName="propietario"
+        [tooltipQuestionCircleText]="'Indicar si la persona es propietario'"
+        (selectionChange)="
+          establecerCambioDeValor({ campo: 'propietario', valor: $event });
+          cambiarPropietario()
+        "
+      ></app-catalogo-select>
+    </div>
+  </div>
+  @if (mostrarTipoPropietario) {
+  <div class="row mt-4">
+    <div class="col-md-4">
+      <app-catalogo-select
+        [label]="'Tipo de propietario'"
+        [required]="true"
+        formControlName="tipoDePropietario"
+        [catalogo]="tipoDePropietarioOpciones"
+        (selectionChange)="
+          establecerCambioDeValor({
+            campo: 'tipoDePropietario',
+            valor: $event
+          });
+          cambiarTipoPropietario()
+        "
+      ></app-catalogo-select>
+    </div>
+  </div>
+  @if(mostrarFormularioPersonaExtranjera){
+  <formas-dinamicas
+    [forma]="tipoPropietarioFormulario"
+    [formularioDatos]="formularioDatosPropietarioNombre"
+    [estado]="estadoSeleccionado"
+    (emitirCambioDeValor)="establecerCambioDeValor($event)"
+  ></formas-dinamicas>
+
+  <formas-dinamicas
+    [forma]="tipoPropietarioFormulario"
+    [formularioDatos]="formularioDatosPropietarioDireccion"
+    [estado]="estadoSeleccionado"
+    (emitirCambioDeValor)="establecerCambioDeValor($event)"
+  ></formas-dinamicas>
+  } }
+</form>
+
+@if(mostrarSolicitante) {
+
+<solicitante></solicitante>
+
+}

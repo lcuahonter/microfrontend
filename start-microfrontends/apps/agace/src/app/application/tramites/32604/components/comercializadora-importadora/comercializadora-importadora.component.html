@@ -1,0 +1,167 @@
+<div class="container">
+    <form [formGroup]="modalidadForm">
+        <div class="row">
+            <div class="col-md-12 mt-2">
+                <label class="form-label text-start">Conforme a la regla 7.1.4 primer párrafo, fracciones I, III y IV. y al apartado A, se deben acreditar lo siguiente<span class="text-danger">*</span>:
+                </label>
+                <label class="form-label text-start">Pago del derecho a que se refiere el artículo 40, inciso m), de la LFD, correspondiente a la fecha de presentación de la solicitud:</label>
+            </div>
+
+            <div class="col-md-12">
+                <div class="col-md-4 mt-5">
+                    <label class="form-label text-start"> Fecha de pago: </label>
+                </div>
+                <div class="col-md-4">
+                    <input-fecha [datos]="fechaDePago" [isDisabled]="esFormularioSoloLectura"
+                        [setFecha]="modalidadForm.get('fechaPago')?.value"
+                        (valorCambiado)="actualizarFechaPago($event)">
+                    </input-fecha>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="col-md-4">
+                    <label class="form-label text-start" for="montoOEA">Monto :</label>
+                </div>
+                <div class="col-md-4">
+                    <input class="form-control" maxlength="10" formControlName="monto" type="text" id="montoOEA" name="montoOEA" 
+                           (keydown)="soloNumeros($event)" (paste)="filtrarPegado($event)" (input)="filtrarEntrada($event)" />
+                </div>
+            </div>
+
+            <div class="col-md-12 mt-1">
+                <div class="col-md-4">
+                    <label class="form-label text-start" for="operacionesBancarias">Número de Operación Bancaria
+                        :</label>
+                </div>
+                <div class="col-md-4">
+                    <input class="form-control" maxlength="25" formControlName="operacionesBancarias" type="text"
+                        id="operacionesBancarias" name="operacionesBancarias" 
+                        (keydown)="soloNumeros($event)" (paste)="filtrarPegado($event)" (input)="filtrarEntrada($event)" />
+                </div>
+            </div>
+
+            <div class="col-md-12 mt-1">
+                <div class="col-md-4">
+                    <label class="form-label text-start" for="llaveOEA">Llave de pago :</label>
+                </div>
+                <div class="col-md-4">
+                    <input class="form-control" maxlength="25" formControlName="llavePago" type="text" id="llaveOEA" name="llaveOEA" 
+                           (keydown)="soloNumeros($event)" (paste)="filtrarPegado($event)" (input)="filtrarEntrada($event)" />
+                </div>
+            </div>
+            @if (tieneErroresCamposPago()) {
+                <div class="col-md-12 mt-2">
+                    <small class="mensaje-error">Es requisito obligatorio efectuar el pago de derechos</small>
+                </div>
+            }
+
+            <div class="col-md-12 mt-5">
+                <label class="form-label text-start">Designe a las empresas transportistas autorizadas para efectuar el traslado de las mercancías de comercio exterior<span class="text-danger">*</span>
+                </label>
+            </div>
+            <div class="col-md-12">
+                <ng-titulo titulo="Transportistas" />
+            </div>
+            <div class="col-md-12">
+                <app-tabla-dinamica [tipoSeleccionTabla]="transportistasTabla"
+                    [configuracionTabla]="transportistasConfiguracionColumnas" [datos]="transportistasLista"
+                    (listaDeFilaSeleccionada)="seleccionarDato($event)">
+                </app-tabla-dinamica>
+            </div>
+
+            <div class="col-md-12 mt-3">
+                <div class="form-group mt-5 pull-right">
+                    <button type="button" [disabled]="esFormularioSoloLectura" id="agregarTransportista"
+                        class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#transportistas"
+                        (click)="agregarTransportistaModal()">
+                        Agregar
+                    </button>
+                    <button type="button" id="modificarTransportista"
+                        class="btn btn-default me-2"
+                        (click)="modificarTransportistaModal()">
+                        Modificar
+                    </button>
+                    <button type="button" [disabled]="esFormularioSoloLectura || seleccionDatos.length === 0" id="eliminarTransportista"
+                        class="btn btn-danger" (click)="confirmarEliminarTransportista()">
+                        Eliminar
+                    </button>
+                    </div>
+            </div>
+
+            <div class="col-md-12 mt-4">
+                <label class="form-label text-start">
+                    Indique si cuenta con un programa IMMEX<span [ngClass]="{'text-danger': modalidadForm.get('programaImmex')?.invalid && (modalidadForm.get('programaImmex')?.touched || modalidadForm.get('programaImmex')?.dirty)}">*</span></label>
+                <app-input-radio
+                    formControlName="programaImmex"
+                    [radioOptions]="sinoOpcion.radioOptions"
+                    [isRequired]="sinoOpcion.isRequired"
+                    [layout]="'horizontal'"
+                    [gap]="'50px'"
+                    (valueChange)="actualizarProgramaImmex($event)"
+                ></app-input-radio>
+                @if (modalidadForm.get('programaImmex')?.hasError('required') && (modalidadForm.get('programaImmex')?.touched || modalidadForm.get('programaImmex')?.dirty)) {
+                    <small class="mensaje-error">Este campo es obligatorio</small>
+                }
+            </div>
+
+            <div class="col-md-12 mt-4">
+                <label class="form-label text-start">Indique si efectuó en el semestre inmediato a la fecha en que ingresa su solicitud, importaciones por un valor en aduana no menor a $300,000,000.00.<span [ngClass]="{'text-danger': modalidadForm.get('importsRadio')?.invalid && (modalidadForm.get('importsRadio')?.touched || modalidadForm.get('importsRadio')?.dirty)}">*</span>
+                </label>
+                <app-input-radio
+                formControlName="importsRadio"
+                [radioOptions]="sinoOpcion.radioOptions"
+                [isRequired]="sinoOpcion.isRequired"
+                [layout]="'horizontal'"
+                [gap]="'50px'"
+                (valueChange)="actualizarImportsRadio($event)"
+                ></app-input-radio>
+                @if (modalidadForm.get('importsRadio')?.hasError('required') && (modalidadForm.get('importsRadio')?.touched || modalidadForm.get('importsRadio')?.dirty)) {
+                    <small class="mensaje-error">Este campo es obligatorio</small>
+                }
+            </div>
+
+        </div>
+    </form>
+    <div class="modal fade" id="transportistas" tabindex="-1" aria-labelledby="modaltransportistas" aria-hidden="true" #transportistas>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content mr-5px pb-5">
+                <app-agregar-transportistas
+                [transportistaAModificar]="transportistaAModificar"
+                [transportistasExistentes]="transportistasLista"
+                (seccionTransportistasLista)="seccionTransportistasLista($event)"
+                (cancelarModal)="cancelarTransportistaModal()"
+                ></app-agregar-transportistas>
+            </div>
+        </div>
+    </div>
+    @if(mostrarNotificacion && alertaNotificacion && alertaNotificacion.mensaje === 'Datos guardados correctamente.') {
+        <lib-notificaciones [notificacionInput]="alertaNotificacion" (confirmacionModal)="cerrarNotificacionExito()"></lib-notificaciones>
+    }
+
+    @if (nuevaNotificacion) {
+    <lib-notificaciones 
+        [notificacionInput]="nuevaNotificacion" 
+        (confirmacionModal)="cerrarModal()">
+    </lib-notificaciones>
+    }
+
+    @if(mostrarNotificacion && alertaNotificacion && alertaNotificacion.mensaje === 'Datos guardados correctamente.') {
+        <lib-notificaciones [notificacionInput]="alertaNotificacion" (confirmacionModal)="cerrarNotificacionExito()"></lib-notificaciones>
+    }
+
+    @if(alertaNotificacion && alertaNotificacion.tipoNotificacion) {
+    <section>
+    <lib-notificaciones [notificacionInput]="alertaNotificacion"></lib-notificaciones>
+    </section>
+    }
+
+    @if(nuevaNotificacion && nuevaNotificacion.tipoNotificacion) {
+    <section>
+    <lib-notificaciones 
+        [notificacionInput]="nuevaNotificacion"
+        (confirmacionModal)="manejarConfirmacionEliminacion($event)">
+    </lib-notificaciones>
+    </section>
+    }
+</div>

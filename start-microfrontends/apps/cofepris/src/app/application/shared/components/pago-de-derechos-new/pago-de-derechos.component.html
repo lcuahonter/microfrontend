@@ -1,0 +1,139 @@
+<div class="container">
+  <ng-titulo titulo="Pago de derechos" />
+  <form [formGroup]="formularioPagoDerechos">
+    <div class="form">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="control-label" for="claveDeReferencia"
+              >Clave de referencia:</label
+            >
+            <input
+              id="claveDeReferencia"
+              type="text"
+              class="form-control"
+              formControlName="claveDeReferencia"
+              maxlength="9"
+              (input)="
+                capitalizarYGuardar(
+                  'claveDeReferencia',
+                  'setClaveDeReferencia',
+                  $event
+                )
+              "
+            />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="control-label" for="cadenaPagoDependencia"
+              >Cadena de la dependencia:</label
+            >
+            <input
+              id="cadenaPagoDependencia"
+              type="text"
+              class="form-control"
+              formControlName="cadenaPagoDependencia"
+              maxlength="14"
+              (input)="
+                capitalizarYGuardar(
+                  'cadenaPagoDependencia',
+                  'setCadenaPagoDependencia',
+                  $event
+                )
+              "
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf="
+                formularioPagoDerechos.get('cadenaPagoDependencia')?.touched &&
+                formularioPagoDerechos.get('cadenaPagoDependencia')?.invalid
+              "
+            >
+              <span
+                *ngIf="
+                  formularioPagoDerechos
+                    .get('cadenaPagoDependencia')
+                    ?.hasError('required')
+                "
+                >Este campo es obligatorio.</span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <app-catalogo-select
+              formControlName="bancoClave"
+              name="bancoClave"
+              [catalogo]="banco"
+              [label]="'Banco'"
+              (change)="setValoresStore(formularioPagoDerechos, 'bancoClave')"
+              [isDisabled]="isDisabled"
+            ></app-catalogo-select>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="control-label" for="llaveDePago"
+              >Llave de pago:</label
+            >
+            <input
+              class="form-control"
+              id="llaveDePago"
+              type="text"
+              formControlName="llaveDePago"
+              maxlength="30"
+              (input)="
+                capitalizarYGuardar('llaveDePago', 'setLlaveDePago', $event)
+              "
+            />
+          </div>
+        </div>
+          <div class="col-md-4">
+          <div class="form-group">
+             <input-fecha
+               [datos]="fechaPago"
+               [setFecha]="formularioPagoDerechos.get('fecPago')?.value"
+               (valorCambiado)="onFechaCambiada($event)"
+             ></input-fecha>
+              @if (formularioPagoDerechos.get('fecPago')?.errors?.['fechaLim'] ) {
+               <div class="mensaje-error">
+                 La fecha de pago debe ser menor o igual a la fecha actual.
+               </div>
+              }
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="control-label" for="impPago">Importe de pago:</label>
+            <input
+              class="form-control"
+              id="impPago"
+              type="text"
+              formControlName="impPago"
+              maxlength="16"
+              (change)="setValoresStore(formularioPagoDerechos, 'impPago')"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-3 justify-content-end">
+        <div class="col-md-4 d-flex justify-content-end">
+            <button 
+            class="btn btn-danger" 
+            (click)="formularioPagoDerechos.reset()"
+            type="button"
+            [disabled]="isDisabled"
+            >
+            Borrar datos del pago
+            </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

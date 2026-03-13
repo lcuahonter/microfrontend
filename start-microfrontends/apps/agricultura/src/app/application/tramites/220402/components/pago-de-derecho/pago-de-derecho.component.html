@@ -1,0 +1,125 @@
+<div class="container form-container">
+  <ng-titulo titulo="Pago de derechos" />
+  <div>
+    <form [formGroup]="FormSolicitud">
+      <ng-container formGroupName="datosImportadorExportador">
+        <div>
+          <label for="exentoDePago">Exento de pago*:</label>
+          <div class="radio-container">
+            <app-input-radio [radioOptions]="radioOpcions" id="opcion" formControlName="exentoDePago"
+              (change)="setValoresStore(datosImportadorExportador,'exentoDePago', 'setExentoDePago');exentoDePagoChange()"
+              [layout]="'horizontal'" class="tipo-certificado"></app-input-radio>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="justificacion">Justificación<span
+                  [ngClass]="isValid(datosImportadorExportador,'justificacion') ? 'red-require ' : ''">*</span>:</label>
+              <input class="form-control" maxlength="100" id="rfcImportExport" formControlName="justificacion" type="text"
+                [ngClass]="isValid(datosImportadorExportador,'justificacion') ? 'required' : ''"
+                (change)="setValoresStore(datosImportadorExportador,'justificacion', 'setJustificacion')" />
+              @if (FormSolicitud.get('datosImportadorExportador.justificacion')?.hasError('required') &&
+              FormSolicitud.get('datosImportadorExportador.justificacion')?.touched) {
+              <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="claveDeReferencia">Clave de referencia*:</label>
+              <input class="form-control" id="claveDeReferencia" formControlName="claveDeReferencia" type="text"
+                [ngClass]="isValid(datosImportadorExportador,'claveDeReferencia') ? 'required' : ''"
+                (change)="setValoresStore(datosImportadorExportador,'claveDeReferencia', 'setClaveDeReferencia')" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="cadenaDependencia">Cadena de la dependencia<span
+                  [ngClass]="isValid(datosImportadorExportador,'cadenaDependencia') ? 'red-require ' : ''">*</span>:</label>
+              <input class="form-control" maxlength="50" id="cadenaDependencia" formControlName="cadenaDependencia" type="text"
+                [ngClass]="isValid(datosImportadorExportador,'cadenaDependencia') ? 'required' : ''"
+                (change)="setValoresStore(datosImportadorExportador,'cadenaDependencia', 'setCadenaDependencia')"
+                libUppercase />
+              @if (FormSolicitud.get('datosImportadorExportador.cadenaDependencia')?.hasError('required') &&
+              FormSolicitud.get('datosImportadorExportador.cadenaDependencia')?.touched) {
+              <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <div class="form-group">
+                <app-catalogo-select  [catalogo]="bancoCatalogo.catalogos" formControlName="banco" [label]="'Banco'"
+                  [required]="this.FormSolicitud.get('datosImportadorExportador.exentoDePago')?.value==='No'" (change)="setValoresStore(datosImportadorExportador,'banco', 'setBanco');"
+                  [isDisabled]="this.FormSolicitud.get('datosImportadorExportador.exentoDePago')?.value!=='No' || soloLectura"></app-catalogo-select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Llave de pago, Fecha de pago, Importe de pago -->
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="llaveDePago">Llave de pago<span
+                  [ngClass]="isValid(datosImportadorExportador,'llaveDePago') ? 'red-require ' : ''">*</span>:</label>
+              <input class="form-control" style="text-transform: uppercase;" maxlength="50" id="llaveDePago" formControlName="llaveDePago" type="text"
+                [ngClass]="isValid(datosImportadorExportador,'llaveDePago') ? 'required' : ''"
+                (change)="setValoresStore(datosImportadorExportador,'llaveDePago', 'setllaveDePago')" libUppercase />
+              @if (FormSolicitud.get('datosImportadorExportador.llaveDePago')?.hasError('required') &&
+              FormSolicitud.get('datosImportadorExportador.llaveDePago')?.touched) {
+              <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="fechaPago">Fecha de pago*:</label>
+              <input class="form-control" id="fechaPago" formControlName="fechaPago" type="date"
+                [ngClass]="isValid(datosImportadorExportador,'fechaPago') ? 'required' : ''"
+                (change)="setValoresStore(datosImportadorExportador,'fechaPago', 'setFechaPago')" />
+
+              @if(datosImportadorExportador.get('fechaPago')?.invalid &&
+              datosImportadorExportador.get('fechaPago')?.touched){
+              @if(datosImportadorExportador.get('fechaPago')?.errors?.['required']){
+              <p class="mensaje-error">
+                Este campo es obligatorio.
+              </p>
+              }
+              @else if (datosImportadorExportador.get('fechaPago')?.errors?.['fechaLim']) {
+              <p class="mensaje-error">
+                La fecha de pago debe ser menor o igual a la fecha actual.
+              </p>
+              }
+              }
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="importePago">Importe de pago*:</label>
+              <input class="form-control" id="importePago" formControlName="importePago" type="text"
+                [ngClass]="isValid(datosImportadorExportador,'importePago') ? 'required' : ''"
+                (change)="setValoresStore(datosImportadorExportador,'importePago', 'setImportePago')" libUppercase />
+            </div>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-12 text-right">
+            <div class="form-group">
+              <button type="button" class="btn btn-primary" [disabled]="soloLectura"
+                (click)="actualizarCamposDeFormularioBasadosEnExentoDePago()">
+                Borrar datos del pago
+              </button>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,185 @@
+
+
+<div class="row">
+<div class="col-md-12">
+  <label class="form-label text-left">"Mencione el nombre, RFC y número de empleados que le proveen las empresas que le prestan el servicio de subcontratación*:</label>
+</div>
+
+<div class="col-md-12 accordion-bar">
+      <div class="panel-group ficha-collapse" id="accordion">
+        <div class="panel panel-default">
+          <div class="panel-heading" (click)="!esFormularioSoloLectura && mostrar_colapsable()">
+            <p class="panel-title espacio-extra">
+              Número de empleados que le proveen en el último bimestre anterior a su solicitud
+            </p>
+            <button type="button" class="collpase-button collapsed"
+            [ngClass]="{ 'expanded': colapsable,'collapsed': !colapsable}" [disabled]="esFormularioSoloLectura" >
+          </button>
+          </div>
+          @if(colapsable){
+          <div class="panel-collapse collapse in" [ngClass]="{ 'in': colapsable, 'collapse': !colapsable}" id="panel-01">
+            <div class="panel-body">
+              <div class="row">
+
+                
+<div class="col-md-12"> 
+    <app-tabla-dinamica
+    [tipoSeleccionTabla]="tipoSeleccionTabla"
+    [configuracionTabla]="ParqueVehicular"
+    [datos]="numeroEmpleadosBimestreList"
+    (listaDeFilaSeleccionada)="manejarFilaSeleccionada($event)"
+    [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+  >
+  </app-tabla-dinamica>
+
+  <div class="d-flex justify-content-end">
+    <div class="d-flex flex-row flex-wrap gap-3">
+        <button class="btn btn-primary" [ngClass]="{'btn-secondary': !enableEliminarBoton}"
+        (click)="confirmEliminarEmpleadoItem()" [disabled]="esFormularioSoloLectura">Eliminar</button>
+        <button class="btn btn-primary" [ngClass]="{'btn-secondary': !enableEliminarBoton}" (click)="modificarItemEmpleado()" [disabled]="esFormularioSoloLectura">Modificar</button>
+        <button class="btn btn-primary" (click)="agregarDialogoDatos()" [disabled]="esFormularioSoloLectura">Agregar</button>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade custom-backdrop"
+  id="registroDeNumeroEmpleados"
+  tabindex="-1"
+  aria-labelledby="registroDeNumeroEmpleadosLabel"
+  aria-hidden="true"
+  data-bs-backdrop="static"
+  #registroDeNumeroEmpleados
+>
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title mt-0">Agregar</h4>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="rfcForm">
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="rfcInput" class="form-label">RFC*:</label>
+              <div class="d-flex">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="rfcInput"
+                  formControlName="rfcInput"
+                  placeholder="Ingrese RFC"
+                  maxlength="13"
+                  soloLetrasNumeros
+                />
+                <button class="btn btn-secondary ms-2" type="button" (click)="onBuscarRfc()">
+                  Buscar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        </form>
+        <form [formGroup]="registroNumeroEmpleadosForm">
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="rfc" class="form-label text-left"
+                >Registro Federal de Contribuyentes*:</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="rfc"
+                formControlName="rfc"
+                readonly="true"
+              />
+          </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="razonSocialInput" class="form-label"
+                >Razón Social*:</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="razonSocialInput"
+                formControlName="denominacionSocial"
+                readonly="true"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="form-label" for="empleados1"
+                >Número de empleados*:</label
+              >
+              <input
+                type="text"
+                class="form-control mb-2"
+                formControlName="numeroDeEmpleados"
+                maxlength="5"
+                soloLetrasNumeros
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <app-catalogo-select
+            [catalogo]="bimestreList"
+            formControlName="bimestre"
+            [label]="'Bimestre'"
+            [required]="true"
+            >
+            </app-catalogo-select>
+          </div>
+        </div>
+        </form>
+        <footer class="footer d-flex py-5 gap-3 justify-content-end">
+            <button type="button" class="btn btn-primary" (click)="modalCancelar()">Cancelar</button>
+            <button type="button" class="btn btn-primary" (click)="enviarDialogData()">Aceptar</button>
+          </footer>
+      </div>
+    </div>
+  </div>
+</div>
+
+              </div>
+              
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <lib-notificaciones 
+  *ngIf="esHabilitarElDialogo"
+  [notificacionInput]="nuevaNotificacion" 
+  (confirmacionModal)="cerrarModal()">
+</lib-notificaciones>
+
+  
+  <lib-notificaciones 
+  *ngIf="confirmEliminarPopupAbierto"
+  [notificacionInput]="nuevaNotificacion" 
+  (confirmacionModal)="eliminarEmpleadoItem($event)">
+</lib-notificaciones>
+
+<lib-notificaciones 
+  *ngIf="multipleSeleccionPopupAbierto"
+  [notificacionInput]="nuevaNotificacion" 
+  (confirmacionModal)="cerrarMultipleSeleccionPopup()">
+</lib-notificaciones>

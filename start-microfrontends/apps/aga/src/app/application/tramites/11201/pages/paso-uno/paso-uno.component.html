@@ -1,0 +1,47 @@
+<div class="container">
+  <div class="row">
+    <ul class="nav nav-tabs">
+      <li [ngClass]="indice === 1 ? 'active' : ''">
+        <a data-toggle="tab" (click)="seleccionaTab(1)" (keydown.enter)="seleccionaTab(1)"
+          (keydown.space)="seleccionaTab(1)" role="button" tabindex="1">Solicitante</a>
+      </li>
+
+      <li [ngClass]="indice === 2 ? 'active' : ''">
+        <a data-toggle="tab" (click)="seleccionaTab(2)" (keydown.enter)="seleccionaTab(2)"
+          (keydown.space)="seleccionaTab(2)" role="button" tabindex="2">Contenedor</a>
+      </li>
+    </ul>
+
+    <ng-container>
+      @switch (indice) { @case (1) {
+      <solicitante #Solicitante></solicitante>
+      } @case (2) {
+      <app-contenedor (cancelEvent)="cancelar()" (continuarEvento)="continuar()"></app-contenedor>
+      } }
+      @if (consultaDatos.update || consultaDatos.create) {
+      <div class="" style="margin-top: 30px;margin-bottom: 30px;">
+        <div class="form-group">
+          <div class="col-md-12">
+            <div class="pull-right row">
+              @if (indice===1) {
+                <div class="col" id="botonGuardar">
+                  <button type="submit" class="btn btn-primary" (click)="seleccionaTab(2)">
+                    Continuar
+                  </button>
+                </div>
+              }
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      }
+    </ng-container>
+  </div>
+  @if (nuevaNotificacion) {
+  <section>
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+      (confirmacionModal)="confirmarCancelacion($event)"></lib-notificaciones>
+  </section>
+  }
+</div>

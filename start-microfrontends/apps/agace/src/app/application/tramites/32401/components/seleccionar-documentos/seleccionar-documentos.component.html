@@ -1,0 +1,56 @@
+<div class="container">
+  <form [formGroup]="seleccionaRequerimientoForm">
+    <ng-titulo titulo="Requisitos opcionales" />
+
+    <ng-alert
+      [CONTENIDO]="TEXTOS.INSTRUCCIONES"
+      [CUSTOMECLASS]="'text-center'"
+    ></ng-alert>
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <app-tabla-dinamica
+          [configuracionTabla]="encabezadoDeTabla"
+          [tipoSeleccionTabla]="tipoSeleccionTabla"
+          [datos]="datosDelContenedor"
+          [inputSelection]="inputSeleccion"
+          [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+          (listaDeFilaSeleccionada)="valorDeAlternancia($event)"
+        ></app-tabla-dinamica>
+      </div>
+      <div class="col-md-6">
+        <app-catalogo-select
+          [catalogo]="tiposDocumentos.catalogos"
+          [label]="tiposDocumentos.labelNombre"
+          [placeholder]="tiposDocumentos.primerOpcion"
+          [required]="false"
+          [isDisabled]="esFormularioSoloLectura"
+          formControlName="tipoDeDocumento"
+          name="tipoDeDocumento"
+          id="tipoDeDocumento"
+          (selectionChange)="setTipoDeDocumento($event)"
+        ></app-catalogo-select>
+      </div>
+      <div class="col-md-6 text-right">
+        <button
+          type="button"
+          class="btn btn-primary mt-3"
+          [disabled]="esFormularioSoloLectura"
+          (click)="eliminarSeleccionados()"
+        >
+          Eliminar
+        </button>
+      </div>
+      <div class="col-md-6 text-right">
+        <button
+          type="button"
+          class="btn btn-default mt-3"
+          [disabled]="esFormularioSoloLectura"
+          (click)="agregarNuevoSeleccionados()"
+        >
+          Agregar nuevo
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,55 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Pipe, PipeTransform, Injectable, CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, Directive, Input, Output } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
+import { Observable, of as observableOf, throwError } from 'rxjs';
+
+import { Component } from '@angular/core';
+import { PasoTresComponent } from './paso-tres.component';
+import { Router } from '@angular/router';
+
+@Injectable()
+class MockRouter {
+  navigate() {};
+}
+
+
+describe('PasoTresComponent', () => {
+  let fixture: ComponentFixture<PasoTresComponent>;
+  let component: { ngOnDestroy: () => void; router: { navigate?: any; }; obtieneFirma: (arg0: {}) => void; };
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [ FormsModule, ReactiveFormsModule ],
+      declarations: [
+        PasoTresComponent,
+      ],
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA ],
+      providers: [
+        { provide: Router, useClass: MockRouter }
+      ]
+    }).overrideComponent(PasoTresComponent, {
+
+    }).compileComponents();
+    fixture = TestBed.createComponent(PasoTresComponent);
+    component = fixture.debugElement.componentInstance;
+  });
+
+  afterEach(() => {
+    component.ngOnDestroy = function() {};
+    fixture.destroy();
+  });
+
+  it('should run #constructor()', async () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should run #obtieneFirma()', async () => {
+    component.router = component.router || {};
+    component.router.navigate = jest.fn();
+    component.obtieneFirma({});
+    // expect(component.router.navigate).toHaveBeenCalled();
+  });
+
+});

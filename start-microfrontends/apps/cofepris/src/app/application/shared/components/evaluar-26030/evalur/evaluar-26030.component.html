@@ -1,0 +1,170 @@
+@if(guardarDatos){
+@if(guardarDatos.parameter.toLowerCase() === "evaluarsolicitud"){
+@if(!tabMover){
+<div class="container mt-2">
+   <div class="row">
+      <div class="col-md-12">
+         <h2 class="titulo mt-5 mb-5">Evaluar</h2>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-md-12 mt-3 mb-3">
+         <lib-encabezado-requerimiento [numFolioTramite]="guardarDatos.folioTramite" [tipoTramite]="guardarDatos.tipoDeTramite"></lib-encabezado-requerimiento>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-md-12 text-end d-flex align-items-center justify-content-end" style="gap: 1rem;">
+         <button type="button" class="btn btn-primary ms-3" style="margin-top: 12px; margin-bottom: 12px;" (click)="continuar()">
+         Continuar
+         </button>
+      </div>
+   </div>
+   <div class="p-4 bg-light border-0 shadow-sm">
+ <div class="row">
+         <h5 class="text-secondary fw-bold mb-3">Evaluar</h5>
+         <div class="form-check d-flex align-items-center">
+            <input class="form-check-input mt-0 me-2" type="radio" name="evaluacion" id="opcionSolicitarOpinion" value="SOLICITAR_OPINION" style="cursor: pointer;" [(ngModel)]="opcionSeleccionada">
+            <label class="form-check-label" for="opcionSolicitarOpinion" style="cursor: pointer;">
+            Solicitar opinión
+            </label>
+         </div>
+      </div>
+      <div class="row">
+         <div *ngIf="showError && !opcionSeleccionada" class="text-danger mt-2 ms-5">
+            <small>Debe seleccionar una opción para continuar.</small>
+         </div>
+      </div>
+   </div>
+</div>
+} @else{
+<div class="container mt-2 mb-2">
+   <div class="row">
+      <div class="col-md-12">
+         <h2 class="titulo mt-5 mb-5">Solicitar opinión</h2>
+      </div>
+   </div>
+   
+   <!-- Error Messages Section -->
+   @if(alerCheck){
+     <div class="col-12">
+        <ng-alert
+          [CONTENIDO]="MENSAJE_DE_ERROR"
+          [CUSTOMECLASS]="infoError"
+        ></ng-alert>
+      </div>
+   }
+   
+   <!-- Duplicate Clave Error -->
+   <div *ngIf="duplicateClaveError" class="alert alert-danger mt-3">
+      Ya existe una opinión con esta área. Solo se permite una opinión por área.
+   </div>
+   
+   <!-- Table Empty Error -->
+   <div *ngIf="tableEmptyError" class="alert alert-danger mt-3">
+      Debe solicitar al menos una opinión.
+   </div>
+
+   
+   <div class="row">
+      <div class="col-md-12 mt-3 mb-3">
+         <lib-encabezado-requerimiento [numFolioTramite]="guardarDatos.folioTramite" [tipoTramite]="guardarDatos.tipoDeTramite"></lib-encabezado-requerimiento>
+      </div>
+   </div>
+   
+   <div class="row">
+      <div class="col-md-12 text-end d-flex align-items-center justify-content-end gap-1">
+         <button type="button" class="btn btn-primary ms-3 my-3" (click)="terminar()">
+         Terminar
+         </button>
+         <button type="button" class="btn btn-primary ms-3 my-3" (click)="cancelar()">
+         Cancelar
+         </button>
+      </div>
+   </div>
+   
+   <div class="row">
+      <div class="col-md-12">
+         <h6 class="text-danger">Datos requeridos*</h6>
+      </div>
+      <form [formGroup]="sanitaryForm">
+         <div class="col-md-8">
+            <app-catalogo-select 
+               [catalogo]="areaCatalog" 
+               [label]="'Área'" 
+               [required]="true" 
+               name="cve_area_solicitante" 
+               formControlName="cve_area_solicitante" 
+               [isDisabled]="false" 
+               [markTouched]="!!(sanitaryForm.get('cve_area_solicitante')?.invalid && (sanitaryForm.get('cve_area_solicitante')?.dirty || sanitaryForm.get('cve_area_solicitante')?.touched))">
+            </app-catalogo-select>
+         </div>
+         <div class="col-md-12">
+            <label for="comentarios" class="form-label fw-bold">
+               Justificación
+               <span [class]="sanitaryForm.get('justificacion')?.invalid && (sanitaryForm.get('justificacion')?.dirty || sanitaryForm.get('justificacion')?.touched) ? 'text-danger' : ''">*</span>
+            </label>
+            <textarea 
+               class="form-control" 
+               [class]="sanitaryForm.get('justificacion')?.invalid && (sanitaryForm.get('justificacion')?.dirty || sanitaryForm.get('justificacion')?.touched) ? 'form-control border-danger' : 'form-control'"
+               id="comentarios" 
+               rows="4" 
+               formControlName="justificacion" 
+               style="resize: none; height: 100px;">
+            </textarea>
+            <div *ngIf="sanitaryForm.get('justificacion')?.invalid && (sanitaryForm.get('justificacion')?.dirty || sanitaryForm.get('justificacion')?.touched)" class="text-danger mt-1">
+               <small>Este campo es obligatorio.</small>
+            </div>
+         </div>
+      </form>
+   </div>
+   
+   <div class="row">
+      <div class="col-md-12 text-end d-flex align-items-center justify-content-end gap-1">
+         <button type="button" class="btn btn-primary ms-3 my-3" (click)="guardar()">
+         Guardar
+         </button>
+         <button type="button" class="btn btn-primary ms-3 my-3" (click)="limpiar()">
+         Limpiar
+         </button>
+      </div>
+   </div>
+   @if(claveConfig.datos.length > 0){
+   <div class="row">
+      <div class="col-md-12">
+         <app-tabla-dinamica
+            [tipoSeleccionTabla]="claveConfig.tipoSeleccionTabla"
+            [configuracionTabla]="claveConfig.configuracionTabla"
+            [datos]="claveConfig.datos"
+            (listaDeFilaSeleccionada)="claveListaFn($event)">
+         </app-tabla-dinamica>
+      </div>
+   </div>
+   
+   <div class="row">
+      <div class="col-md-12 text-end d-flex align-items-center justify-content-end gap-1">
+         <button type="button" class="btn btn-primary ms-3 my-3" (click)="editar()">
+         Editar
+         </button>
+         <button type="button" class="btn btn-primary ms-3 my-3" (click)="eliminar()">
+         Eliminar
+         </button>
+      </div>
+   </div>
+}
+</div>
+}
+}
+@else if(guardarDatos.parameter.toLowerCase() === "registraropinion"){
+<app-registrar [guardarDatos]="guardarDatos" [tramite]="tramite" (refreshTabs)="opinionChange()"></app-registrar>
+}
+}
+
+<!-- Notification Component with confirmation handler -->
+@if(nuevaNotificacion){
+<section>
+  <lib-notificaciones 
+    [notificacionInput]="nuevaNotificacion"
+    (confirmacionModal)="onConfirmacionModal($event)">
+  </lib-notificaciones>
+</section>
+}

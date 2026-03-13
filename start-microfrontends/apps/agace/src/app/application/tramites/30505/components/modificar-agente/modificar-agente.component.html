@@ -1,0 +1,108 @@
+<div class="container">
+  <form [formGroup]="datosTramite">
+    <div class="row">
+      <div class="col-md-12">
+        <h3>
+          Agregar sociedades del Agente Aduanal
+        </h3>
+        <hr class="red" />
+      </div>
+    </div>
+  
+    <div id="dvAgente" class="mt-5">
+      
+      <div class="row">
+        <div class="col-md-4">
+          <div>
+            <label for="nombre" class="form-label">Nombre(s)</label>
+            <span class="require">*:</span>
+            <div>
+              <input type="text" formControlName="nombre" id="nombreAgente" class="form-control" [readonly]="true" />
+              <!-- Since the field is readonly and possibly disabled, validation errors are not shown -->
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div>
+            <label for="apellidoPaterno" class="form-label">Apellido paterno</label>
+            <span class="require">*</span>
+          </div>
+          <div>
+            <input type="text" formControlName="apellidoPaterno" id="apellidoPaternoAgente" class="form-control" [readonly]="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div>
+            <label for="apellidoMaterno" class="form-label">Apellido materno</label>
+            <span class="require">*</span>
+          </div>
+          <div>
+            <input type="text" formControlName="apellidoMaterno" id="apellidoMaternoAgente" class="form-control" [readonly]="true" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-8">
+            <div>
+              <label for="razonSocial" class="form-label"> Denominación o razón Social</label>
+              <div>
+                <input type="text" formControlName="razonSocial" id="razonSocial" class="form-control" [readonly]="true"(change)="setValoresStore(datosTramite,'razonSocial', 'setRazonSocial')"/>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+          <div>
+            <label for="numPatenteModal" class="form-label">Patente o autorización</label>
+          </div>
+          <div>
+            <input type="text" formControlName="numPatenteModal" id="numPatenteModal" class="form-control" [readonly]="true" />
+          </div>
+        </div>
+      </div>
+      </div>   
+      <div class="row">
+        <div class="col-md-4">
+          <app-catalogo-select 
+          id="tipoMovimientoData"
+          formControlName="tipoMovimiento"
+          [catalogo]="tipoMovimientoData.catalogos" 
+          [label]="'*Tipo Movimiento'" 
+          [placeholder]="tipoMovimientoData.primerOpcion"
+          (change)="setValoresStore(datosTramite,'tipoMovimiento', 'setTipoMovimiento')"
+          >
+        </app-catalogo-select>
+        </div>
+      </div>
+    </div> 
+    <br> 
+    <!-- BOTONES  -->
+    <div class="row">
+      <div class="col-md-12">
+        <br />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 text-end">
+        <div class="form-group">
+          <button type="button" id="btnGuardarSociedadScc" class="btn btn-primary agente-btn" (click)="aceptarSociedadesScc()">
+            Aceptar
+          </button>
+          
+   @if (nuevaNotificacion) {
+      <section>
+      <lib-notificaciones [notificacionInput]="nuevaNotificacion" (confirmacionModal)="eliminarPedimento($event)">
+      </lib-notificaciones>
+      </section>
+    }
+          <button type="button" id="btnLimpiarSociedadScc" class="btn btn-primary agente-btn" (click)="limpiarSociedadesScc()">
+            Limpiar
+          </button>
+          <button type="button" id="btnCancelarSociedadScc" class="btn btn-primary" (click)="cerrarDialogoSociedadesScc()">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

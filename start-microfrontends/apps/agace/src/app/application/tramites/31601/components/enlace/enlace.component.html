@@ -1,0 +1,358 @@
+<ng-titulo titulo="Enlace Operativo" />
+<div class="row">
+  <div class="col-md-12">
+    <app-tabla-dinamica
+      [configuracionTabla]="configuracionTablaEnlace"
+      [datos]="datosTablaEnlace"
+      [tipoSeleccionTabla]="tipoSeleccionTabla"
+      (listaDeFilaSeleccionada)="manejarFilaSeleccionada($event)"
+      [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+    ></app-tabla-dinamica>
+    <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+      <li class="page-item"><a class="page-link">1</a></li>
+    </ul>
+  </nav>
+  </div>
+  <div class="row" style="text-align: right">
+    <div>
+      <button
+        type="button"
+        class="btn btn-primary  me-3"
+        data-bs-toggle="modal"
+        data-bs-target="#modalAgregar"
+        (click)="abrirModal()"
+        [disabled]="esFormularioSoloLectura"
+
+      >
+        Agregar
+      </button>
+      <button
+        type="button"
+        class="btn btn-default me-3"
+        [disabled]="!enableModficarBoton"         
+        (click)="modificarItemEnlace()"
+      >
+        Modificar
+      </button>
+      <button
+        type="button"
+        class="btn btn-danger"
+        [disabled]="!enableEliminarBoton"
+        (click)="confirmEliminarEnlaceItem()"
+      >
+        Eliminar
+      </button>
+    </div>
+  </div>
+
+   <div
+      class="modal"
+      tabindex="-1"
+      role="dialog"
+      [ngClass]="{ show: multipleSeleccionPopupAbierto }"
+      [ngStyle]="{ display: multipleSeleccionPopupAbierto ? 'block' : 'none' }"
+    >
+      <div class="modal-dialog" role="document">
+        <div
+          class="modal-content">
+          <div class="modal-div"></div>
+          <div class="modal-body">
+            <p>Selecciona sólo un registro para modificar. </p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="cerrarMultipleSeleccionPopup()"
+            >
+              Aceptar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-backdrop fade show" *ngIf="multipleSeleccionPopupAbierto"></div>
+
+    <div
+      class="modal"
+      tabindex="-1"
+      role="dialog"
+      [ngClass]="{ show: confirmEliminarPopupAbierto }"
+      [ngStyle]="{ display: confirmEliminarPopupAbierto ? 'block' : 'none' }"
+    >
+      <div class="modal-dialog" role="document">
+        <div
+          class="modal-content">
+          <div class="modal-div"></div>
+          <div class="modal-body">
+            <p>¿Estás seguro que deseas eliminar los registros marcados? </p>
+          </div>
+          <div class="modal-footer">
+            <button type="button"
+            class="btn btn-primary"
+            (click)="cerrarEliminarConfirmationPopup()">Cancelar</button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="eliminarEnlaceItem()"
+            >
+              Aceptar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-backdrop fade show" *ngIf="confirmEliminarPopupAbierto"></div>
+    
+</div>
+
+<div class="container mt-4">
+  <div
+    class="modal fade"
+    id="modalAgregar"
+    tabindex="-1"
+    aria-labelledby="modalAgregarLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Instalaciones</h4>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="represtantante">
+            <H6>*Registro Federal de Contribuyentes:</H6>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <input
+                    class="form-control"
+                    id="resigtroReprestantante"
+                    formControlName="resigtroReprestantante"
+                    type="text"
+                    (change)="
+                      setValoresStore(
+                        represtantante,
+                        'resigtroReprestantante',
+                        'setResigtroReprestantante'
+                      )
+                    "
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="rfcReprestantante">RFC:</label>
+                  <input
+                    class="form-control"
+                    id="rfcReprestantante"
+                    formControlName="rfcReprestantante"
+                    type="text"
+                    (change)="
+                      setValoresStore(
+                        represtantante,
+                        'rfcReprestantante',
+                        'setRfcReprestantante'
+                      )
+                    "
+                  />
+                </div>
+              </div>
+
+              <div class="col-md-4 d-flex align-items-center">
+                <div class="btn-group">
+                  <button
+                    class="btn btn-default"
+                    type="button"
+                    [disabled]="esFormularioSoloLectura" (click)="openBuscar()"
+                  >
+                    Buscar
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="nombreReprestante"
+                    >Nombre:</label
+                  >
+                  <input
+                    class="form-control"
+                    id="nombreReprestante"
+                    formControlName="nombreReprestante"
+                    type="text"
+                    (change)="
+                      setValoresStore(
+                        represtantante,
+                        'nombreReprestante',
+                        'setNombreReprestante'
+                      )
+                    "
+                  />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="apellidoPaterno"
+                    >Apellido Paterno:</label
+                  >
+                  <input
+                    class="form-control"
+                    id="apellidoPaterno"
+                    formControlName="apellidoPaterno"
+                    type="text"
+                    (change)="
+                      setValoresStore(
+                        represtantante,
+                        'apellidoPaterno',
+                        'setApellidoPaterno'
+                      )
+                    "
+                  />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="apellidoMaterno"
+                    >Apellido Materno:</label
+                  >
+                  <input
+                    class="form-control"
+                    id="apellidoMaterno"
+                    formControlName="apellidoMaterno"
+                    type="text"
+                    (change)="
+                      setValoresStore(
+                        represtantante,
+                        'apellidoMaterno',
+                        'setApellidoMaterno'
+                      )
+                    "
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-8">
+                <div class="form-group">
+                  <label class="form-label" for="cuidad"
+                    >Ciudad o Estado de Residencia</label
+                  >
+                  <input
+                    class="form-control"
+                    id="cuidad"
+                    formControlName="cuidad"
+                    type="text"
+                    (change)="
+                      setValoresStore(represtantante, 'cuidad', 'setCuidad')
+                    "
+                  />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="cargo">Cargo o Puesto</label>
+                  <input
+                    class="form-control"
+                    id="cargo"
+                    formControlName="cargo"
+                    type="text"
+                    (change)="
+                      setValoresStore(represtantante, 'cargo', 'setCargo')
+                    "
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="telefonoReprestantante"
+                    >Teléfono:</label
+                  >
+                  <input
+                    class="form-control"
+                    id="telefonoReprestantante"
+                    formControlName="telefonoReprestantante"
+                    type="text"
+                    (change)="
+                      setValoresStore(
+                        represtantante,
+                        'telefonoReprestantante',
+                        'setTelefonoReprestantante'
+                      )
+                    "
+                  />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="correoReprestantante"
+                    >Correo Electrónico:</label
+                  >
+                  <input
+                    class="form-control"
+                    id="correoReprestantante"
+                    formControlName="correoReprestantante"
+                    type="text"
+                    (change)="
+                      setValoresStore(
+                        represtantante,
+                        'correoReprestantante',
+                        'setCorreoReprestantante'
+                      )
+                    "
+                  />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="suplente">Suplente</label>
+                  <div class="form-check-input-container">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      value=""
+                      id="suplente"
+                      formControlName="suplente"
+                      (change)="
+                        setValoresStore(
+                          represtantante,
+                          'suplente',
+                          'setSuplente'
+                        )
+                      "
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer custom-footer justify-content-center">
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="saveDatos()"
+            [disabled]="represtantante.get('resigtroReprestantante')?.value === ''"
+          >
+            Aceptar
+          </button>
+            <button
+            type="button"
+            class="btn btn-default"
+            data-bs-dismiss="modal"
+            #closeModal
+            (click)="closeModal.click()"
+            >
+            Cancelar
+            </button>
+        </div>
+      </div> 
+    </div>
+  </div>
+</div>

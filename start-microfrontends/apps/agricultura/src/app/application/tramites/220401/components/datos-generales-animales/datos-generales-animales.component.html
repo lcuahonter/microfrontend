@@ -1,0 +1,350 @@
+<div class="container">
+  <ng-titulo titulo="Datos generales del la Animales"></ng-titulo>
+  <form [formGroup]="frmMercanciaAnimal">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="fraccionArancelaria" class="form-label"
+            >Fracción arancelaria:</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="fraccionArancelaria"
+            formControlName="fraccionArancelaria"
+            (change)="setValoresStore(frmMercanciaAnimal,'fraccionArancelaria','setfraccionArancelaria')"
+          />
+          <div
+            *ngIf="
+              frmMercanciaAnimal.get('fraccionArancelaria')?.invalid &&
+              frmMercanciaAnimal.get('fraccionArancelaria')?.touched
+            "
+          >
+            <small
+              class="text-danger"
+              *ngIf="frmMercanciaAnimal.get('fraccionArancelaria')?.errors?.['required']"
+              >Este campo es obligatorio.</small
+            >
+            <small
+              class="text-danger"
+              *ngIf="frmMercanciaAnimal.get('fraccionArancelaria')?.errors?.['minlength']"
+              >Mínimo 8 caracteres.</small
+            >
+            <small
+              class="text-danger"
+              *ngIf="frmMercanciaAnimal.get('fraccionArancelaria')?.errors?.['maxlength']"
+              >Máximo 8 caracteres.</small
+            >
+            <small
+              class="text-danger"
+              *ngIf="frmMercanciaAnimal.get('fraccionArancelaria')?.errors?.['pattern']"
+              >Debe contener solo dígitos.</small
+            >
+          </div>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="form-group">
+          <label for="tratamiento" class="form-label"
+            >Descripción de la fracción arancelaria: <span class="bi bi-question-circle-fill" title="Ingresa una fracción"
+                data-bs-toggle="tooltip"></span></label
+          >
+          <input
+            type="text"
+            class="form-control disabledColor1"
+            id="tratamiento"
+            formControlName="tratamiento"
+            maxlength="2000"
+            readonly
+            [disabled]="true"
+            (change)="setValoresStore(frmMercanciaAnimal,'tratamiento','setTratamiento')"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="presentacion" class="form-label">Cantidad UMT:</label>
+          <span class="require">*</span>
+          <input
+            type="text"
+            class="form-control disabledColor1"
+            id="presentacion"
+            formControlName="presentacion"
+            readonly
+            [disabled]="true"
+            (change)="setValoresStore(frmMercanciaAnimal,'presentacion','setPresentacion')"
+          />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="marcaEmbarque" class="form-label">UMT: <span class="bi bi-question-circle-fill" title="Unidad de medida de la tarifa" data-bs-toggle="tooltip"></span></label>
+          <input
+            type="text"
+            class="form-control disabledColor1"
+            id="marcaEmbarque"
+            formControlName="marcaEmbarque"
+            maxlength="30"
+            readonly
+            [disabled]="true"
+            (change)="setValoresStore(frmMercanciaAnimal,'marcaEmbarque','setMarcaEmbarque')"
+
+          />
+          <div
+            *ngIf="
+              frmMercanciaAnimal.get('marcaEmbarque')?.invalid &&
+              frmMercanciaAnimal.get('marcaEmbarque')?.touched
+            "
+          >
+            <small
+              class="text-danger"
+              *ngIf="frmMercanciaAnimal.get('marcaEmbarque')?.errors?.['maxlength']"
+              >Máximo 30 caracteres.</small
+            >
+            <small
+              class="text-danger"
+              *ngIf="frmMercanciaAnimal.get('marcaEmbarque')?.errors?.['descripcion']"
+              >Descripción inválida.</small
+            >
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group datepicker-group" style="margin-bottom: 0px">
+          <label for="fechaCaducidad" class="form-label"
+            >Cantidad UMC <span class="require">*</span>:</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="fechaCaducidad"
+            formControlName="fechaCaducidad"
+            (change)="setValoresStore(frmMercanciaAnimal,'fechaCaducidad','setfechaCaducidad')"
+          />
+          <div
+            *ngIf="
+              frmMercanciaAnimal.get('fechaCaducidad')?.invalid &&
+              frmMercanciaAnimal.get('fechaCaducidad')?.touched
+            "
+          >
+            <small
+              class="text-danger"
+              *ngIf="frmMercanciaAnimal.get('fechaCaducidad')?.errors?.['required']"
+              >Este campo es obligatorio.</small
+            >
+            <small
+              class="text-danger"
+              *ngIf="frmMercanciaAnimal.get('fechaCaducidad')?.errors?.['maxlength']"
+              >Máximo 15 caracteres.</small
+            >
+            <small
+              class="text-danger"
+              *ngIf="frmMercanciaAnimal.get('fechaCaducidad')?.errors?.['pattern']"
+              >Debe ser un número.</small
+            >
+            <small
+              class="text-danger"
+              *ngIf="frmMercanciaAnimal.get('fechaCaducidad')?.errors?.['valueRange']"
+              >Debe estar entre 0.01 y 999999999999.99.</small
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4 form-group">
+        <app-catalogo-select
+          [catalogo]="aduanas"
+          [tooltipQuestionCircle]="true"
+          [label]="'UMC*'"
+          [placeholder]="'Seleccione una aduana'"
+          formControlName="aduana"
+          [isDisabled]="esFormularioSoloLectura"
+          (change)="setValoresStore(frmMercanciaAnimal,'aduana', 'setaduana')"
+        ></app-catalogo-select>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="descTratamiento" class="form-label">Tratamiento:</label>
+          <input
+            type="text"
+            class="form-control disabledColor1"
+            id="descTratamiento"
+            formControlName="tratamiento"
+            readonly
+            [disabled]="true"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <label for="nombreIdentificacion" class="form-label"
+            >Nombre y/o No. de identificación:</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="nombreIdentificacion"
+            formControlName="nombreIdentificacion"
+            maxlength="1000"
+            readonly
+            (change)="setValoresStore(frmMercanciaAnimal,'nombreIdentificacion','setnombreIdentificacion')"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="raza" class="form-label">Raza:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="raza"
+            formControlName="raza"
+            maxlength="50"
+            (change)="setValoresStore(frmMercanciaAnimal,'raza','setraza')"
+          />
+          <div
+            *ngIf="
+              frmMercanciaAnimal.get('raza')?.invalid &&
+              frmMercanciaAnimal.get('raza')?.touched
+            "
+          >
+            <small
+              class="text-danger"
+              *ngIf="frmMercanciaAnimal.get('raza')?.errors?.['maxlength']"
+              >Máximo 50 caracteres.</small
+            >
+            <small
+              class="text-danger"
+              *ngIf="frmMercanciaAnimal.get('raza')?.errors?.['descripcionEspeciales']"
+              >Ingresa datos validos.</small
+            >
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <app-catalogo-select
+            [catalogo]="aduanas"
+            [tooltipQuestionCircle]="false"
+            [label]="'Sexo'"
+            [placeholder]="'Seleccione una aduana'"
+            formControlName="sexo"
+            [isDisabled]="esFormularioSoloLectura"
+            (change)="setValoresStore(frmMercanciaAnimal,'sexo', 'setsexo')"
+          ></app-catalogo-select>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="edadAnimal" class="form-label">Edad del animal:</label>
+
+          <input
+            type="text"
+            class="form-control"
+            id="edadAnimal"
+            formControlName="edadAnimal"
+            maxlength="50"
+            (change)="setValoresStore(frmMercanciaAnimal,'edadAnimal','setedadAnimal')"
+          />
+          <div
+            *ngIf="
+              frmMercanciaAnimal.get('edadAnimal')?.invalid &&
+              frmMercanciaAnimal.get('edadAnimal')?.touched
+            "
+          >
+            <small
+              class="text-danger"
+              *ngIf="frmMercanciaAnimal.get('edadAnimal')?.errors?.['required']"
+              >Este campo es obligatorio.</small
+            >
+            <small
+              class="text-danger"
+              *ngIf="frmMercanciaAnimal.get('edadAnimal')?.errors?.['maxlength']"
+              >Máximo 50 caracteres.</small
+            >
+            <small
+              class="text-danger"
+              *ngIf="frmMercanciaAnimal.get('edadAnimal')?.errors?.['descripcionEspeciales']"
+              >Ingresa datos validos.</small
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mb-5">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="color" class="form-label">Color:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="color"
+            formControlName="color"
+            maxlength="15"
+            (change)="setValoresStore(frmMercanciaAnimal,'color','setcolor')"
+          />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="numeroAutorizacionCITES" class="form-label"
+            >Número de autorización CITES:</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="numeroAutorizacionCITES"
+            formControlName="numeroAutorizacionCITES"
+            maxlength="15"
+            (change)="setValoresStore(frmMercanciaAnimal,'numeroAutorizacionCITES','setnumeroAutorizacionCITES')"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-3 text-muted text-vertical-align-button">
+        <span>*Campos obligatorios</span>
+      </div>
+      <div class="col-md-9">
+        <div class="pull-right">
+          <button
+            type="button"
+            class="btn btn-default btn-space"
+            (click)="limpiarDatosCapturaMercancia()"
+            [disabled]="esFormularioSoloLectura? true : false"
+          >
+            Limpiar
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger btn-space"
+            (click)="onCancelar()"
+            [disabled]="esFormularioSoloLectura? true : false"
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary btn-space"
+            (click)="onCancelar()"
+           [disabled]="esFormularioSoloLectura? true : false"
+          >
+            Agregar
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

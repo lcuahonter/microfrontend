@@ -1,0 +1,191 @@
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import {
+  Solicitud31616PerfilesState,
+  Tramite31616PerfilesStore,
+} from '../../../../estados/tramites/tramite31616_perfiles.store';
+import { Subject, map, takeUntil } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { InputRadioComponent } from '@libs/shared/data-access-user/src';
+import { OPCIONES_DE_BOTON_DE_RADIO } from '@libs/shared/data-access-user/src/tramites/constantes/31616/datos-comunes.enum';
+import { TEXTOS_ESTATICOS_SEGURIDAD_COMERCIALES } from '../../constantes/texto-estatico-tres.enum';
+import { Tramite31616PerfilesQuery } from '../../../../estados/queries/tramite31616_perfiles.query';
+/**
+ * @component SociosComercialesComponent
+ * @description
+ * Componente encargado de gestionar el formulario relacionado con los socios comerciales.
+ * Permite la captura y validación de datos relacionados con procedimientos, medidas de seguridad,
+ * formatos, periodicidad, y otros aspectos relacionados con los socios comerciales.
+ */
+@Component({
+  selector: 'app-socios-comerciales',
+  standalone: true,
+  imports: [InputRadioComponent, CommonModule, ReactiveFormsModule],
+  templateUrl: './socios-comerciales.component.html',
+  styleUrl: './socios-comerciales.component.scss',
+})
+export class SociosComercialesComponent implements OnInit, OnDestroy {
+  /**
+ * Contiene los textos estáticos utilizados en la vista, definidos en el archivo de constantes.
+ */
+  public textos = TEXTOS_ESTATICOS_SEGURIDAD_COMERCIALES
+  /**
+   * @property {string[]} opcionDeBotonDeRadio
+   * @description
+   * Opciones disponibles para los botones de radio en el formulario.
+   */
+  opcionDeBotonDeRadio = OPCIONES_DE_BOTON_DE_RADIO;
+
+  /**
+   * @property {FormGroup} sociosComercialesForm
+   * @description
+   * Formulario reactivo que contiene los campos relacionados con los socios comerciales.
+   */
+  sociosComercialesForm!: FormGroup;
+
+  /**
+   * @property {Solicitud31616PerfilesState} solicitudState
+   * @description
+   * Estado actual de la solicitud, obtenido desde el store.
+   * Contiene los valores iniciales para los campos del formulario.
+   */
+  private solicitudState!: Solicitud31616PerfilesState;
+
+  /**
+   * @property {Subject<void>} destroyNotifier$
+   * @description
+   * Notificador utilizado para gestionar la destrucción de suscripciones y evitar fugas de memoria.
+   */
+  private destroyNotifier$: Subject<void> = new Subject();
+
+  /**
+   * @constructor
+   * @description
+   * Constructor que inicializa los servicios necesarios para el componente.
+   * @param {FormBuilder} fb - Servicio para construir formularios reactivos.
+   * @param {Tramite31616PerfilesStore} tramite31616Store - Store para gestionar el estado de la solicitud.
+   * @param {Tramite31616PerfilesQuery} tramite31616Query - Query para obtener datos del estado de la solicitud.
+   */
+  constructor(
+    private fb: FormBuilder,
+    private tramite31616Store: Tramite31616PerfilesStore,
+    private tramite31616Query: Tramite31616PerfilesQuery
+  ) {
+    //Añade lógica aquí
+  }
+
+  /**
+   * @method ngOnInit
+   * @description
+   * Método del ciclo de vida de Angular que se ejecuta al inicializar el componente.
+   * Configura el formulario y suscribe al estado de la solicitud.
+   */
+  ngOnInit(): void {
+    this.tramite31616Query.selectSolicitud$
+      .pipe(
+        takeUntil(this.destroyNotifier$),
+        map((seccionState) => {
+          this.solicitudState = seccionState;
+        })
+      )
+      .subscribe();
+
+    this.crearFormularioSociosComerciales();
+  }
+
+  /**
+   * @method crearFormularioSociosComerciales
+   * @description
+   * Crea y configura el formulario reactivo con los campos necesarios para los socios comerciales.
+   * Los valores iniciales se obtienen del estado de la solicitud.
+   */
+  crearFormularioSociosComerciales(): void {
+    this.sociosComercialesForm = this.fb.group({
+      indiqueLleva: [
+        this.solicitudState?.indiqueLleva,
+        Validators.required,
+      ],
+      describaProcedimiento: [
+        this.solicitudState?.describaProcedimiento,
+        Validators.required,
+      ],
+      indiqueSocios: [
+        this.solicitudState?.indiqueSocios,
+        Validators.required,
+      ],
+      indiqueForma: [
+        this.solicitudState?.indiqueForma,
+        Validators.required,
+      ],
+      indiqueExisten: [
+        this.solicitudState?.indiqueExisten,
+        Validators.required,
+      ],
+      indiqueCuenta: [
+        this.solicitudState?.indiqueCuenta,
+        Validators.required,
+      ],
+      procedimientoRealizar: [
+        this.solicitudState?.procedimientoRealizar,
+        Validators.required,
+      ],
+      indiquePeriodicidad: [
+        this.solicitudState?.indiquePeriodicidad,
+        Validators.required,
+      ],
+      describaComo: [
+        this.solicitudState?.describaComo,
+        Validators.required,
+      ],
+      comoAseguran: [
+        this.solicitudState?.comoAseguran,
+        Validators.required,
+      ],
+      indiqueFormatos: [
+        this.solicitudState?.indiqueFormatos,
+        Validators.required,
+      ],
+      senalarMedidas: [
+        this.solicitudState?.senalarMedidas,
+        Validators.required,
+      ],
+      casoSocios: [
+        this.solicitudState?.casoSocios,
+        Validators.required,
+      ],
+    });
+  }
+
+  /**
+   * @method setValoresStore
+   * @description
+   * Actualiza el estado del store con el valor de un campo específico del formulario.
+   * @param {FormGroup} form - Formulario reactivo que contiene los valores.
+   * @param {string} campo - Nombre del campo del formulario.
+   * @param {keyof Tramite31616PerfilesStore} metodoNombre - Método del store que se debe invocar.
+   */
+  public setValoresStore(
+    form: FormGroup,
+    campo: string,
+    metodoNombre: keyof Tramite31616PerfilesStore
+  ): void {
+    const VALOR = form.get(campo)?.value;
+    (this.tramite31616Store[metodoNombre] as (value: string) => void)(VALOR);
+  }
+
+  /**
+   * @method ngOnDestroy
+   * @description
+   * Método del ciclo de vida de Angular que se ejecuta al destruir el componente.
+   * Libera las suscripciones para evitar fugas de memoria.
+   */
+  ngOnDestroy(): void {
+    this.destroyNotifier$.next();
+    this.destroyNotifier$.complete();
+  }
+}

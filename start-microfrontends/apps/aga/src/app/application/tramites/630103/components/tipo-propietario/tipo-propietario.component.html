@@ -1,0 +1,41 @@
+<div class="container-fluid field-height ps-2">
+    <ng-titulo [titulo]="'Tipo de Propietario'"></ng-titulo>
+    <form [formGroup]="tipoPropietarioFormulario" >
+        <div class="row">
+            <div class="col-md-4">
+                <app-catalogo-select [label]="'Propietario'" [isDisabled]="esFormularioSoloLectura" [required]="true" [tooltipQuestionCircle]="true"
+                [tooltipQuestionCircleText]="'Indicar si la persona es propietario'"
+                    [catalogo]="propietarioOpciones" formControlName="propietario"
+                    (selectionChange)="establecerCambioDeValor({campo:'propietario',valor:$event});cambiarPropietario()"
+                    [markTouched]="tipoPropietarioFormulario.get('propietario')?.touched ?? false"></app-catalogo-select>
+            </div>
+        </div>
+        @if (mostrarTipoPropietario) {
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <app-catalogo-select [label]="'Tipo de propietario'" [isDisabled]="esFormularioSoloLectura" [required]="true"
+                    formControlName="tipoDePropietario" [catalogo]="tipoDePropietarioOpciones"
+                    (selectionChange)="establecerCambioDeValor({campo:'tipoDePropietario',valor:$event});cambiarTipoPropietario()"></app-catalogo-select>
+            </div>
+        </div>
+     @if(mostrarFormularioPersonaExtranjera){
+    <div class="container-fluid ps-2">
+         <div class="row mt-4">
+            <formas-dinamicas [forma]="tipoPropietarioFormulario" [formularioDatos]="formularioDatosPropietarioNombre"
+                [estado]="estadoSeleccionado" [soloLectura]="esFormularioSoloLectura" (emitirCambioDeValor)="establecerCambioDeValor($event)"></formas-dinamicas>
+        </div>
+      <div class="row mt-4">
+            <formas-dinamicas [forma]="tipoPropietarioFormulario" [formularioDatos]="formularioDatosPropietarioDireccion"
+                [estado]="estadoSeleccionado" [soloLectura]="esFormularioSoloLectura" (emitirCambioDeValor)="establecerCambioDeValor($event)"></formas-dinamicas>
+       </div>
+    </div>
+        }
+    }
+  
+</form>
+
+   @if(mostrarSolicitante)
+   {
+    <solicitante></solicitante>
+  } 
+  </div>

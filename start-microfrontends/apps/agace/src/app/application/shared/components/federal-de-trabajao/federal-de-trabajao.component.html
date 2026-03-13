@@ -1,0 +1,125 @@
+<div class="row mt-3">
+    <div class="col-md-12">
+        <p><span class="text-danger">*</span>Mencione el nombre, RFC y número de empleados que le proveen las
+            empresas que le prestan el servicio de subcontratación
+        </p>
+        <h5 class="fw-bold">
+            Número de empleados que le proveen en el último bimestre anterior a su
+            solicitud
+        </h5>
+        <app-tabla-dinamica
+        [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+            [tipoSeleccionTabla]="tablaSeleccionCheckbox" 
+            [configuracionTabla]="configuracionTabla"
+            [datos]="mencioneTablaDatos"
+            (filaSeleccionada)="onFilaSeleccionada($event)">
+        </app-tabla-dinamica>
+        <div class="d-flex justify-content-end mb-4">
+            <button type="button" class="btn btn-primary me-2" [disabled]="esFormularioSoloLectura" (click)="abrirModal(template)">
+                Agregar
+            </button>
+            <button class="btn btn-danger me-2" type="button" [disabled]="esFormularioSoloLectura" (click)="modificar(template)">
+                Modificar
+            </button>
+            <button class="btn btn-default" type="button" [disabled]="esFormularioSoloLectura">Eliminar</button>
+        </div>
+    </div>
+</div>
+
+<!-- modal -->
+<ng-template #template>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Agregar</h4>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="numeroDeEmpleadosForm">
+        <div class="row mb-3">
+          <div class="col-md-4">
+              <div class="form-group">
+                  <label for="rfcInput" class="form-label">RFC*:</label>
+                  <input
+                      type="text"
+                      class="form-control"
+                      id="rfcInput"
+                      formControlName="rfc"/>
+              </div>
+              @if(numeroDeEmpleadosForm.controls['rfc'].invalid && numeroDeEmpleadosForm.controls['rfc'].touched) {
+                <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+          </div>
+          <div class="col-md-8">
+              <div class="btn-group mt-5">
+                <button class="btn btn-default" type="button" (click)="buscar()">Buscar</button>
+              </div>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+              <label for="resigtro" class="form-label">Registro Federal de Contribuyentes*:</label>
+          <div class="form-group">
+              <input
+                class="form-control"
+                id="registro"
+                type="text"
+                formControlName="registro"
+              />
+            </div>
+            @if(numeroDeEmpleadosForm.controls['resigtro'].invalid && numeroDeEmpleadosForm.controls['resigtro'].touched) {
+                <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-8">
+              <label for="razonSocial" class="form-label">Razón Social*:</label>
+              <input
+                  type="text"
+                  class="form-control"
+                  id="razonSocial"
+                  formControlName="razonSocial"/>
+                  @if(numeroDeEmpleadosForm.controls['razonSocial'].invalid && numeroDeEmpleadosForm.controls['razonSocial'].touched) {
+                    <div class="mensaje-error">Este campo es obligatorio.</div>
+                  }
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+              <label for="numeroEmpleados" class="form-label">Numero de empleados*:</label>
+              <div class="form-group">
+                  <input
+                      type="text"
+                      class="form-control"
+                      id="numeroEmpleados"
+                      formControlName="numeroEmpleados"
+                      placeholder="Ingrese numero de empleados"
+                      maxlength="5"
+                      />
+              </div>
+                @if(numeroDeEmpleadosForm.controls['numeroEmpleados'].invalid && numeroDeEmpleadosForm.controls['numeroEmpleados'].touched) {
+                  @if(numeroDeEmpleadosForm.controls['numeroEmpleados'].errors?.['required']) {
+                    <div class="mensaje-error">Este campo es obligatorio.</div>
+                  }
+                  @if(numeroDeEmpleadosForm.controls['numeroEmpleados'].errors?.['notInteger']) {
+                    <div class="mensaje-error">Por favor, escriba un número entero válido.</div>
+                  }
+                }
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+              <app-catalogo-select
+                  [catalogo]="bimestreTresCatalogo"
+                  formControlName="comboBimestresTres"
+                  [label]="'Bimestre'"
+                  [required]="true">
+              </app-catalogo-select>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer d-flex justify-content-end">
+      <button type="button" class="btn btn-primary" (click)="onAceptar()">Aceptar</button>
+      <button type="button" class="btn btn-default" (click)="onCancelar()">Cancelar</button>
+
+    </div>
+  </ng-template>

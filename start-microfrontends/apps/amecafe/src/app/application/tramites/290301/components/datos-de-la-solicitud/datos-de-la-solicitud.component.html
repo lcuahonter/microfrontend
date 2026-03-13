@@ -1,0 +1,644 @@
+<div class="container">
+    <form [formGroup]="datosSolicitudForma">
+        <div class="row">
+           <div class="col-md-12">
+            <div class="form-group">
+              <label class="form-label" for="justificacion">Justificación*:</label>
+              <textarea class="form-control" id="justificacion" rows="2" height="50"
+              placeholder="" style="height: 100px" formControlName="justificacion"
+              (change)="setValoresStore(datosSolicitudForma,'justificacion', 'setJustificacion')"
+               [ngClass]="{
+      'is-invalid': datosSolicitudForma.get('justificacion')?.touched && datosSolicitudForma.get('justificacion')?.invalid,
+    }"
+              [disabled]="esFormularioSoloLectura"
+              ></textarea>
+              <div *ngIf="datosSolicitudForma.get('justificacion')?.touched">
+                <small
+                  *ngIf="datosSolicitudForma.get('justificacion')?.hasError('required')"
+                  class="text-danger"
+                >
+                  Este campo es obligatorio.
+                </small>
+                <small
+                  *ngIf="datosSolicitudForma.get('justificacion')?.hasError('maxlength')"
+                  class="text-danger"
+                >
+                  Solo se permiten 4000 caracteres.
+                </small>
+              </div>
+            </div>
+          </div>
+       </div>
+       <ng-titulo titulo="Productor"></ng-titulo>
+             <div class="row">
+                    <div class="col-md-12">
+                        <label for="certficacion_a">Productor de cafe*</label>
+                    </div>
+                    <div class="col-md-4">
+                        <app-input-radio 
+                        [radioOptions]="radioOpcion" 
+                        formControlName="productorDeCafe"
+                        [layout]="'horizontal'"
+                        (change)="handleProductorDeCafeChange()"
+                        [disabled]="esFormularioSoloLectura ? true : false">
+                        </app-input-radio>
+                    </div>
+            </div>
+            
+        <ng-titulo titulo="Productores de café"></ng-titulo>
+        <div class="row">    
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label" for="claveControlUnico">Clave del padrón*:</label>
+                        <input formControlName="claveDelPadron" class="form-control" id="claveDelPadron" placeholder=""
+                            type="text"
+                            (change)="setValoresStore(datosSolicitudForma,'claveDelPadron', 'setClaveDelPadron')"
+                            [disabled]="esFormularioSoloLectura" />
+                    </div>
+                </div>
+        </div>
+        <ng-titulo titulo="Regiones de compra"></ng-titulo>
+        <div class="row">
+            <div class="col-md-12 mt-5">
+                <div class="table-container">
+                    <app-tabla-dinamica
+                        [tipoSeleccionTabla]="tipoSeleccion" 
+                        [configuracionTabla]="regionesTabla"
+                        [datos]="regionesTableDatos"
+                        [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+                        (listaDeFilaSeleccionada)="onfilasSeleccionadasChange($event)"
+                        ></app-tabla-dinamica>
+                </div>
+            </div>
+            <div class="col-md-12 mt-5">
+                <div class="d-flex justify-content-end">
+                  <div class="btn-group">
+                    <button  class="btn btn-danger me-2" type="button"  (click)="onDeletedRegionData()" [disabled]="esFormularioSoloLectura ? true : false">
+                        Borrar
+                      </button>
+                    <button  class="btn btn-primary me-2" type="submit" data-bs-toggle="modal"
+                     data-bs-target="#regionFormModal" [disabled]="esFormularioSoloLectura ? true : false">
+                      Agregar
+                    </button>
+                  </div>
+                </div>
+              </div>
+        </div>
+        
+        <ng-titulo titulo="Beneficios"></ng-titulo>
+        <div class="row">
+            <div class="col-md-12 mt-5">
+                <div class="table-container">
+                    <app-tabla-dinamica 
+                        [tipoSeleccionTabla]="tipoSeleccion" [configuracionTabla]="beneficiosTabla"
+                        [datos]="beneficiosTableDatos"
+                        [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+                        (listaDeFilaSeleccionada)="onfilasSeleccionadasChange($event)"
+                   ></app-tabla-dinamica>
+                </div>
+            </div>
+            <div class="col-md-12 mt-5">
+                <div class="d-flex justify-content-end">
+                  <div class="btn-group">
+                    <button  class="btn btn-danger me-2" type="button" (click)="onDeletedbeneficiosData()" [disabled]="esFormularioSoloLectura ? true : false" >
+                        Borrar
+                      </button>
+                    <button  class="btn btn-primary me-2" type="submit" 
+                    data-bs-toggle="modal" data-bs-target="#beneficiosFormModal"
+                     [disabled]="esFormularioSoloLectura ? true : false" >
+                      Agregar
+                    </button>
+                  </div>
+                </div>
+              </div>
+        </div>
+            
+        <ng-titulo titulo="Bodegas"></ng-titulo>
+        <div class="row">
+            <div class="col-md-12 mt-5">
+                <div class="table-container">
+                    <app-tabla-dinamica 
+                        [tipoSeleccionTabla]="tipoSeleccion" [configuracionTabla]="bodegasTabla"
+                        [datos]="bodegasTableDatos"
+                        [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+                       (listaDeFilaSeleccionada)="onfilasSeleccionadasChange($event)"
+                      ></app-tabla-dinamica>
+                </div>
+            </div>
+            <div class="col-md-12 mt-5">
+                <div class="d-flex justify-content-end">
+                  <div class="btn-group">
+                    <button class="btn btn-danger me-2" type="button" (click)="onDeletedBodegasData()" [disabled]="esFormularioSoloLectura ? true : false">
+                        Borrar
+                      </button>
+                    <button  class="btn btn-primary me-2" type="submit" 
+                    data-bs-toggle="modal" data-bs-target="#bodegaFormModal"[disabled]="esFormularioSoloLectura ? true : false">
+                      Agregar
+                    </button>
+                  </div>
+                </div>
+              </div>
+        </div>
+        <ng-titulo titulo="Café de exportación"></ng-titulo>
+        <div class="row">
+            <div class="col-md-12 mt-5">
+                <div class="table-container">
+                    <app-tabla-dinamica
+                        [tipoSeleccionTabla]="tipoSeleccion" [configuracionTabla]="cafeExportadoresTabla"
+                        [datos]="cafeExportadoresTableDatos"
+                        [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+                       (listaDeFilaSeleccionada)="onfilasSeleccionadasChange($event)"
+                     ></app-tabla-dinamica>
+                </div>
+            </div>
+            <div class="col-md-12 mt-5">
+                <div class="d-flex justify-content-end">
+                  <div class="btn-group">
+                    <button class="btn btn-danger me-2" type="button" (click)="onDeletedCafeExportadoresData()" [disabled]="esFormularioSoloLectura ? true : false" >
+                        Borrar
+                      </button>
+                    <button  class="btn btn-primary me-2" type="submit"  
+                      data-bs-toggle="modal" data-bs-target="#cafeExportFormModal" [disabled]="esFormularioSoloLectura ? true : false" >
+                      Agregar
+                    </button>
+                  </div>
+                </div>
+              </div>
+        </div>
+          <!-- Nota Informativa -->
+       <div class="row" style="margin-top: 30px;">
+       <div class="col-md-12">
+      <div class="alert alert-info">
+        <label style="font-weight: normal; text-align: justify;">
+          Nota: Para este trámite es indispensable enviar a la AMECAFE el catálogo de productos de exportación. Para mayor referencia consulta la guía disponible en: <a href="http://www.amecafe.org.mx" target="_blank">www.amecafe.org.mx</a>
+        </label>			
+      </div>
+    </div>
+   </div>
+
+   <!-- Observaciones -->
+   <div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+          <label class="form-label" for="observaciones">Observaciones*:</label>
+          <textarea class="form-control" id="observaciones" rows="2" height="50"
+          placeholder="" style="height: 100px" formControlName="observaciones"
+          (change)="setValoresStore(datosSolicitudForma,'observaciones', 'setObservaciones')"
+          [disabled]="esFormularioSoloLectura"
+          [ngClass]="{
+          'is-invalid': datosSolicitudForma.get('observaciones')?.touched && datosSolicitudForma.get('observaciones')?.invalid,
+          'is-valid': datosSolicitudForma.get('observaciones')?.touched && datosSolicitudForma.get('observaciones')?.valid
+        }"
+          ></textarea>
+          <div *ngIf="datosSolicitudForma.get('observaciones')?.touched">
+        <small
+          *ngIf="datosSolicitudForma.get('observaciones')?.hasError('required')"
+          class="text-danger"
+        >
+          Este campo es obligatorio.
+        </small>
+        <small
+          *ngIf="datosSolicitudForma.get('observaciones')?.hasError('maxlength')"
+          class="text-danger"
+        >
+          Solo se permiten 4000 caracteres.
+        </small>
+      </div>
+        </div>
+      </div>
+   </div>
+
+   <!-- Requiere Inspección Inmediata -->
+   <div class="row">
+    <div class="col-md-12">
+      <div class="form-group">
+          <div class="form-check mt-3">
+          <lib-input-check [id]="'requiereInspeccionInmediata'" [label]="'Autorizo que mi información pueda ser utilizada para promoción en publicaciones de carácter público'" [required]="false" formControlName="requiereInspeccionInmediata" 
+          (change)="setValoresStore(datosSolicitudForma,'requiereInspeccionInmediata', 'setRequiereInspeccionInmediata')"
+          [isDisabled]="esFormularioSoloLectura ? true : false"
+          ></lib-input-check>
+        </div>
+      </div>
+    </div>
+   </div>
+
+   <!-- Declaraciones bajo protesta de decir verdad -->
+   <div class="row">
+    <div class="col-md-12">
+      <h3>Declaraciones bajo protesta de decir verdad</h3>
+      <hr class="red" />
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-12">
+      <div class="alert alert-info">
+        <div class="form-check text-left">
+            <lib-input-check [id]="'informacionConfidencial'" [label]="'Protesto decir verdad'" [required]="false" 
+            formControlName="informacionConfidencial" 
+            (change)="setValoresStore(datosSolicitudForma,'informacionConfidencial', 'setInformacionConfidencial')"
+            [isDisabled]="esFormularioSoloLectura ? true : false"
+            ></lib-input-check>
+          </div>
+      </div>
+    </div>
+   </div>
+ </form>
+</div>
+<!-- Modal for Region Form -->
+ 
+<div class="modal fade" id="regionFormModal" tabindex="-1"  data-bs-backdrop="static" aria-labelledby="regionFormModalLabel">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="regionFormModalLabel">Regiones donde Compra</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="regionForm">
+          <div class="row">
+            <div class="col-md-8">
+              <div class="form-group">
+                <app-catalogo-select
+                  id="estado"
+                  [catalogo]="estado.catalogos"
+                  [label]="estado.labelNombre"
+                  [placeholder]="estado.primerOpcion"
+                  formControlName="estado"
+                  [required]="true"
+                ></app-catalogo-select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <app-catalogo-select
+                  [catalogo]="productoCafe.catalogos"
+                  [label]="productoCafe.labelNombre"
+                  [placeholder]="productoCafe.primerOpcion"
+                  formControlName="productoCafe"
+                  [required]="true"
+                ></app-catalogo-select>
+              </div>
+            </div>
+            <div class="col-md-12 form-group">
+              <label class="form-label" for="descRegionCompra">Región / Municipio*:</label>
+              <input
+                type="text"
+                id="descRegionCompra"
+                class="form-control"
+                formControlName="descRegionCompra"
+                [required]="true"
+              />
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <app-catalogo-select
+                  [catalogo]="descripTipoCafe.catalogos"
+                  [label]="descripTipoCafe.labelNombre"
+                  [placeholder]="descripTipoCafe.primerOpcion"
+                  formControlName="descripTipoCafe"
+                  [required]="true"
+                ></app-catalogo-select>
+              </div>
+            </div>
+            <div class="col-md-4 form-group">
+              <label class="form-label" for="volumen">Volumen por ciclo cafetalero en Kg*:</label>
+              <input
+                type="number"
+                id="volumen"
+                class="form-control"
+                formControlName="volumen"
+                [required]="true"
+              />
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer d-flex justify-content-end">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary" (click)="onSubmitRegionForm()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal para el formulario de Beneficios -->
+<div class="modal fade" id="beneficiosFormModal"  data-bs-backdrop="static" tabindex="-1" aria-labelledby="beneficiosFormModalLabel">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="beneficiosFormModalLabel">Beneficios</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="beneficiosForm">
+          <div class="row">
+            <div class="col-md-8 form-group">
+              <label class="form-label" for="razonSocial">Nombre del Beneficio*:</label>
+              <input
+                type="text"
+                id="razonSocial"
+                class="form-control"
+                formControlName="razonSocial"
+                [required]="true"
+                [disabled]="esFormularioSoloLectura"
+              />
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <app-catalogo-select
+                  [catalogo]="propAlquil.catalogos"
+                  [label]="propAlquil.labelNombre"
+                  [placeholder]="propAlquil.primerOpcion"
+                  formControlName="propAlquil"
+                  [required]="true"
+                  [isDisabled]="esFormularioSoloLectura"
+                ></app-catalogo-select>
+              </div>
+            </div>
+            <div class="col-md-4 form-group">
+              <label class="form-label" for="calle">Calle*:</label>
+              <input
+                type="text"
+                id="calle"
+                class="form-control"
+                formControlName="calle"
+                [required]="true"
+                [disabled]="esFormularioSoloLectura"
+              />
+            </div>
+            <div class="col-md-4 form-group">
+              <label class="form-label" for="numeroExterior">Número Exterior*:</label>
+              <input
+                type="text"
+                id="numeroExterior"
+                class="form-control"
+                formControlName="numeroExterior"
+                [required]="true"
+                [disabled]="esFormularioSoloLectura"
+              />
+            </div>
+            <div class="col-md-4 form-group">
+              <label class="form-label" for="numeroInterior">Número Interior:</label>
+              <input
+                type="text"
+                id="numeroInterior"
+                class="form-control"
+                formControlName="numeroInterior"
+                [disabled]="esFormularioSoloLectura"
+              />
+            </div>
+            <div class="col-md-4 form-group">
+              <label class="form-label" for="colonia">Colonia*:</label>
+              <input
+                type="text"
+                id="colonia"
+                class="form-control"
+                formControlName="colonia"
+                [required]="true"
+                [disabled]="esFormularioSoloLectura"
+              />
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <app-catalogo-select
+                  [catalogo]="estado.catalogos"
+                  [label]="estado.labelNombre"
+                  [placeholder]="estado.primerOpcion"
+                  formControlName="estado"
+                  [required]="true"
+                  [isDisabled]="esFormularioSoloLectura"
+                ></app-catalogo-select>
+              </div>
+            </div>
+            <div class="col-md-4 form-group">
+              <label class="form-label" for="codigoPostal">Código Postal*:</label>
+              <input
+                type="text"
+                id="codigoPostal"
+                class="form-control"
+                formControlName="codigoPostal"
+                [required]="true"
+                [disabled]="esFormularioSoloLectura"
+              />
+            </div>
+            <div class="col-md-4 form-group">
+              <label class="form-label" for="capacidadAlmacenaje">Capacidad por ciclo cafetalero en Kg*:</label>
+              <input
+                type="text"
+                id="capacidadAlmacenaje"
+                class="form-control"
+                formControlName="capacidadAlmacenaje"
+                [required]="true"
+                [disabled]="esFormularioSoloLectura"
+              />
+            </div>
+            <div class="col-md-4 form-group">
+              <label class="form-label" for="volumenAlmacenaje">Volumen por ciclo cafetalero en Kg*:</label>
+              <input
+                type="text"
+                id="volumenAlmacenaje"
+                class="form-control"
+                formControlName="volumenAlmacenaje"
+                [required]="true"
+                [disabled]="esFormularioSoloLectura"
+              />
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer d-flex justify-content-end">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary" (click)="onSubmitBeneficiosForm()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal para el formulario de Bodega -->
+<div class="modal fade" id="bodegaFormModal"  data-bs-backdrop="static" tabindex="-1" aria-labelledby="bodegaFormModalLabel">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="bodegaFormModalLabel">Bodegas</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="bodegaForm">
+          <div class="row">
+            <div class="col-md-8 form-group">
+              <label class="form-label" for="razonSocial">Nombre de la bodega*:</label>
+              <input
+                type="text"
+                id="razonSocial"
+                class="form-control"
+                formControlName="razonSocial"
+                [required]="true"
+                [disabled]="esFormularioSoloLectura"
+              />
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <app-catalogo-select
+                  [catalogo]="propAlquil.catalogos"
+                  [label]="propAlquil.labelNombre"
+                  [placeholder]="propAlquil.primerOpcion"
+                  formControlName="propAlquil"
+                  [required]="true"
+                  [isDisabled]="esFormularioSoloLectura"
+                ></app-catalogo-select>
+              </div>
+            </div>
+            <div class="col-md-4 form-group">
+              <label class="form-label" for="calle">Calle*:</label>
+              <input
+                type="text"
+                id="calle"
+                class="form-control"
+                formControlName="calle"
+                [required]="true"
+                [disabled]="esFormularioSoloLectura"
+              />
+            </div>
+            <div class="col-md-4 form-group">
+              <label class="form-label" for="numeroExterior">Número Exterior*:</label>
+              <input
+                type="text"
+                id="numeroExterior"
+                class="form-control"
+                formControlName="numeroExterior"
+                [required]="true"
+                [disabled]="esFormularioSoloLectura"
+              />
+            </div>
+            <div class="col-md-4 form-group">
+              <label class="form-label" for="numeroInterior">Número Interior:</label>
+              <input
+                type="text"
+                id="numeroInterior"
+                class="form-control"
+                formControlName="numeroInterior"
+                [disabled]="esFormularioSoloLectura"
+              />
+            </div>
+            <div class="col-md-4 form-group">
+              <label class="form-label" for="colonia">Colonia*:</label>
+              <input
+                type="text"
+                id="colonia"
+                class="form-control"
+                formControlName="colonia"
+                [required]="true"
+                [disabled]="esFormularioSoloLectura"
+              />
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <app-catalogo-select
+                  [catalogo]="estado.catalogos"
+                  [label]="estado.labelNombre"
+                  [placeholder]="estado.primerOpcion"
+                  formControlName="estado"
+                  [required]="true"
+                  [isDisabled]="esFormularioSoloLectura"
+                ></app-catalogo-select>
+              </div>
+            </div>
+            <div class="col-md-4 form-group">
+              <label class="form-label" for="codigoPostal">Código Postal*:</label>
+              <input
+                type="text"
+                id="codigoPostal"
+                class="form-control"
+                formControlName="codigoPostal"
+                [required]="true"
+                [disabled]="esFormularioSoloLectura"
+              />
+            </div>
+            <div class="col-md-4 form-group">
+              <label class="form-label" for="capacidadAlmacenaje">Capacidad por ciclo cafetalero en Kg*:</label>
+              <input
+                type="text"
+                id="capacidadAlmacenaje"
+                class="form-control"
+                formControlName="capacidadAlmacenaje"
+                [required]="true"
+                [disabled]="esFormularioSoloLectura"
+              />
+            </div>
+            <div class="col-md-4 form-group">
+              <label class="form-label" for="volumenAlmacenaje">Volumen por ciclo cafetalero en Kg*:</label>
+              <input
+                type="text"
+                id="volumenAlmacenaje"
+                class="form-control"
+                formControlName="volumenAlmacenaje"
+                [required]="true"
+                [disabled]="esFormularioSoloLectura"
+              />
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer d-flex justify-content-end">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary" (click)="onSubmitBodegaForm()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal for Café de Exportación Form -->
+<div class="modal fade" id="cafeExportFormModal"  data-bs-backdrop="static" tabindex="-1" aria-labelledby="cafeExportFormModalLabel">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cafeExportFormModalLabel">Café de Exportación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="cafeExportForm">
+          <div class="row mt-5">
+            <ng-titulo titulo="Café de exportación"></ng-titulo>
+            <div class="col-md-8 form-group">
+              <label class="form-label" for="descripcionMercancia">Marca Comercial*:</label>
+              <input
+                type="text"
+                id="descripcionMercancia"
+                class="form-control"
+                formControlName="descripcionMercancia"
+                [required]="true"
+                [disabled]="esFormularioSoloLectura"
+              />
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <app-catalogo-select
+                  [catalogo]="propAlquil.catalogos"
+                  [label]="propAlquil.labelNombre"
+                  [placeholder]="propAlquil.primerOpcion"
+                  formControlName="propAlquil"
+                  [required]="true"
+                  [isDisabled]="esFormularioSoloLectura"
+                ></app-catalogo-select>
+              </div>
+            </div>
+            <div class="col-md-4 form-group">
+              <label class="form-label" for="porcentajeConcentracion">Volúmen por ciclo cafetalero en Kg*:</label>
+              <input
+                type="text"
+                id="porcentajeConcentracion"
+                class="form-control"
+                formControlName="porcentajeConcentracion"
+                [required]="true"
+                [disabled]="esFormularioSoloLectura"
+              />
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer d-flex justify-content-end">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary" (click)="onSubmitCafeExportForm()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>

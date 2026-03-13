@@ -1,0 +1,321 @@
+<div class="container">
+  <form [formGroup]="avisoForm">
+    <ng-titulo [titulo]="'Aviso'"></ng-titulo>
+    <div class="row">
+      <div class="col-md-4">
+        <label class="form-label" for="numero-de-registro">Número de registro<span [ngClass]="avisoForm.get('numeroderegistro')?.invalid && 
+              avisoForm.get('numeroderegistro')?.touched ? 'text-danger' : ''">*</span>:</label>
+        <input type="text" class="form-control" id="numero-de-registro" formControlName="numeroderegistro" maxlength="25"
+        [ngClass]="isValid(avisoForm,'numeroderegistro') ? 'required' : ''"
+        />
+        @if (avisoForm.get('numeroderegistro')?.invalid && avisoForm.get('numeroderegistro')?.touched) {
+            <div class="text-danger">
+              @if (avisoForm.get('numeroderegistro')?.errors?.['required']) {
+              <small>Este campo es obligatorio</small>
+              }
+            </div>
+          }
+      </div>
+    </div>
+  
+    <ng-titulo [titulo]="'Datos del Donante Extranjero'"></ng-titulo>
+    <div class="row">
+      <div class="col-md-6">
+        <label class="form-label" for="nombre-denominacion">Nombre/Denominación o Razón Social:</label>
+        <input type="text" class="form-control" id="nombre-denominacion" maxlength="50"
+          formControlName="NobmreDenominationRazonSocial" />
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="rfc-tax-id">RFC/TAX ID:</label>
+        <input type="text" class="form-control" id="rfc-tax-id" formControlName="rfctaxid" maxlength="15" />
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="telefono">Teléfono:</label>
+        <input type="text" class="form-control" id="telefono" formControlName="Telefono" maxlength="10" />
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="correo-electronico">Correo electrónico:</label>
+        <input type="text" class="form-control" id="correo-electronico" formControlName="correoelectronico" maxlength="25"  />
+      </div>
+    </div>
+
+    <ng-titulo [titulo]="'Domicilio Fiscal del Donante Extranjero'"></ng-titulo>
+    <div class="row">
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="entidadadfederativa" formControlName="entidadadfederativa"
+          [label]="'Entidad Federativa'" [placeholder]="'Seleccione una opción'" [required]="true"
+          [markTouched]="avisoForm.get('entidadadfederativa')?.touched??false" (change)="entidadadFederativaSeleccion()"
+          [isDisabled]="esFormularioSoloLectura"></app-catalogo-select>
+      </div>
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="alcadilamunicipio" formControlName="alcadilamunicipio"
+          [label]="'Alcaldía o municipio'" [placeholder]="'Seleccione una opción'" [required]="true"
+          [markTouched]="avisoForm.get('alcadilamunicipio')?.touched??false" (change)="alcadilamunicipioSeleccion()"
+          [isDisabled]="esFormularioSoloLectura"></app-catalogo-select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="colonia" formControlName="colonia" [label]="'Colonia'"
+          [placeholder]="'Seleccione una opción'" [required]="true"
+          [markTouched]="avisoForm.get('colonia')?.touched??false" (change)="coloniaSeleccion()"
+          [isDisabled]="esFormularioSoloLectura"></app-catalogo-select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="codigopostal">Código Postal<span [ngClass]="avisoForm.get('codigopostal')?.invalid && 
+              avisoForm.get('codigopostal')?.touched ? 'text-danger' : ''">*</span>:</label>
+        <input type="text" class="form-control" id="codigopostal" formControlName="codigopostal" maxlength="5"
+        [ngClass]="isValid(avisoForm,'codigopostal') ? 'required' : ''"
+        />
+        @if (avisoForm.get('codigopostal')?.invalid && avisoForm.get('codigopostal')?.touched) {
+            <div class="text-danger">
+              @if (avisoForm.get('codigopostal')?.errors?.['required']) {
+              <small>Este campo es obligatorio</small>
+              }
+            </div>
+          }
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <label class="form-label" for="calle">Calle<span [ngClass]="avisoForm.get('calle')?.invalid && 
+              avisoForm.get('calle')?.touched ? 'text-danger' : ''">*</span>:</label>
+        <input type="text" class="form-control" id="calle" formControlName="calle" maxlength="25"
+         [ngClass]="isValid(avisoForm,'calle') ? 'required' : ''"
+        />
+        @if (avisoForm.get('calle')?.invalid && avisoForm.get('calle')?.touched) {
+            <div class="text-danger">
+              @if (avisoForm.get('calle')?.errors?.['required']) {
+              <small>Este campo es obligatorio</small>
+              }
+            </div>
+          }
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="numero-exterior">Número y/o letra exterior<span [ngClass]="avisoForm.get('numeroletraexterior')?.invalid && 
+              avisoForm.get('numeroletraexterior')?.touched ? 'text-danger' : ''">*</span>:</label>
+        <input type="text" class="form-control" id="numero-exterior" formControlName="numeroletraexterior" maxlength="5"
+        [ngClass]="isValid(avisoForm,'numeroletraexterior') ? 'required' : ''"
+        />
+        @if (avisoForm.get('numeroletraexterior')?.invalid && avisoForm.get('numeroletraexterior')?.touched) {
+            <div class="text-danger">
+              @if (avisoForm.get('numeroletraexterior')?.errors?.['required']) {
+              <small>Este campo es obligatorio</small>
+              }
+            </div>
+          }
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="numero-interior">Número y/o letra interior:</label>
+        <input type="text" class="form-control" id="numero-interior" formControlName="numeroletrainterior" maxlength="5"/>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <label class="form-label" for="entre-calle">Entre calle<span [ngClass]="avisoForm.get('entrecalle')?.invalid && 
+              avisoForm.get('entrecalle')?.touched ? 'text-danger' : ''">*</span>:</label>
+        <input type="text" class="form-control" id="entre-calle" formControlName="entrecalle" maxlength="25"
+        [ngClass]="isValid(avisoForm,'entrecalle') ? 'required' : ''"
+        />
+        @if (avisoForm.get('entrecalle')?.invalid && avisoForm.get('entrecalle')?.touched) {
+            <div class="text-danger">
+              @if (avisoForm.get('entrecalle')?.errors?.['required']) {
+              <small>Este campo es obligatorio</small>
+              }
+            </div>
+          }
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="y-calle">Y calle:</label>
+        <input type="text" class="form-control" id="y-calle" formControlName="ycalle" maxlength="25" />
+      </div>
+    </div>
+
+    <div class="row mt-5 mb-3">
+        <app-input-radio [radioOptions]="radioOpcions" [isBold]="true" formControlName="radioDomicilio"
+          [layout]="'horizontal'" (change)="setValoresStore(avisoForm, 'radioDomicilio', 'setRadioDomicilio')"
+          [disabled]="esFormularioSoloLectura"></app-input-radio>
+    </div>
+  </form>
+
+  <!-- Descripción de la mercancía section -->
+    <div *ngIf="isManualSelected" class="mt-5">
+      <ng-titulo titulo="Descripción de la mercancía" />
+      <form [formGroup]="mercanciaForm">
+        <div class="row">
+          <div class="col-md-4">
+            <app-catalogo-select [catalogo]="estado" formControlName="estado" [label]="'Estado'"
+              [placeholder]="'Seleccione una opción'" [required]="true"
+              [markTouched]="mercanciaForm.get('estado')?.touched??false" (change)="estadoSeleccion()"
+              [isDisabled]="esFormularioSoloLectura"></app-catalogo-select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="cantidad">Cantidad<span [ngClass]="mercanciaForm.get('cantidad')?.invalid && 
+              mercanciaForm.get('cantidad')?.touched ? 'text-danger' : ''">*</span>:</label>
+            <input type="text" class="form-control" id="cantidad" formControlName="cantidad" maxlength="10"
+              [ngClass]="{'is-invalid': isInvalid('cantidad')}"/>
+            <div *ngIf="isInvalid('cantidad')" class="mensaje-error">
+                Este campo es obligatorio.
+              </div>
+          </div>
+          
+          <div class="col-md-4">
+            <app-catalogo-select [catalogo]="formaParteDePatrimonio" formControlName="formaParteDePatrimonio" [label]="'Forma parte de su patrimonio'"
+                [required]="true" [placeholder]="'Seleccione una opción'" 
+                [markTouched]="mercanciaForm.get('formaParteDePatrimonio')?.touched??false" (change)="formaParteDePatrimonioSeleccion()"
+                [isDisabled]="esFormularioSoloLectura"></app-catalogo-select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="descripcion" >Descripción<span [ngClass]="mercanciaForm.get('descripcion')?.invalid && 
+              mercanciaForm.get('descripcion')?.touched ? 'text-danger' : ''">*</span>:</label>
+            <textarea class="form-control textarea-container" rows="3" id="descripcion" formControlName="descripcion"
+            [ngClass]="{'is-invalid': isInvalid('descripcion')}"></textarea>
+            <div *ngIf="isInvalid('descripcion')" class="mensaje-error">
+                Este campo es obligatorio.
+              </div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="valor">Valor<span [ngClass]="mercanciaForm.get('valor')?.invalid && 
+              mercanciaForm.get('valor')?.touched ? 'text-danger' : ''">*</span>:</label>
+            <input type="text" class="form-control" id="valor" formControlName="valor"
+            [ngClass]="{'is-invalid': isInvalid('valor')}"/>
+            <div *ngIf="isInvalid('valor')" class="mensaje-error">
+                Este campo es obligatorio.
+              </div>
+          </div>
+          <div class="col-md-4">
+            <app-catalogo-select [catalogo]="unidadmedida" formControlName="unidadmedida" [label]="'Unidad de medida'"
+              [placeholder]="'Seleccione una opción'" [required]="true"
+              [markTouched]="mercanciaForm.get('unidadmedida')?.touched??false" (change)="unidadmedidaSeleccion()"
+              [isDisabled]="esFormularioSoloLectura"></app-catalogo-select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="fraccionarancelaria">Fracción arancelaria<span [ngClass]="mercanciaForm.get('fraccionarancelaria')?.invalid && 
+              mercanciaForm.get('fraccionarancelaria')?.touched ? 'text-danger' : ''">*</span>:</label>
+            <input type="text" class="form-control" id="fraccionarancelaria" formControlName="fraccionarancelaria" maxlength="8"
+            [ngClass]="{'is-invalid': isInvalid('fraccionarancelaria')}"/>
+            <div *ngIf="isInvalid('fraccionarancelaria')" class="mensaje-error">
+                Este campo es obligatorio.
+              </div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="nico">Nico<span [ngClass]="mercanciaForm.get('nico')?.invalid && 
+              mercanciaForm.get('nico')?.touched ? 'text-danger' : ''">*</span>:</label>
+            <input type="text" class="form-control" id="nico" formControlName="nico" maxlength="2"
+            [ngClass]="{'is-invalid': isInvalid('nico')}"/>
+            <div *ngIf="isInvalid('nico')" class="mensaje-error">
+                Este campo es obligatorio.
+              </div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="marca">Marca<span [ngClass]="mercanciaForm.get('marca')?.invalid && 
+              mercanciaForm.get('marca')?.touched ? 'text-danger' : ''">*</span>:</label>
+            <input type="text" class="form-control" id="marca" formControlName="marca" maxlength="25"
+            [ngClass]="{'is-invalid': isInvalid('marca')}"/>
+            <div *ngIf="isInvalid('marca')" class="mensaje-error">
+                Este campo es obligatorio.
+              </div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="modelo">Modelo<span [ngClass]="mercanciaForm.get('modelo')?.invalid && 
+              mercanciaForm.get('modelo')?.touched ? 'text-danger' : ''">*</span>:</label>
+            <input type="text" class="form-control" id="modelo" formControlName="modelo" maxlength="25"
+            [ngClass]="{'is-invalid': isInvalid('modelo')}"/>
+            <div *ngIf="isInvalid('modelo')" class="mensaje-error">
+                Este campo es obligatorio.
+              </div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="numerodeserie">Número de serie<span [ngClass]="mercanciaForm.get('numerodeserie')?.invalid && 
+              mercanciaForm.get('numerodeserie')?.touched ? 'text-danger' : ''">*</span>:</label>
+            <input type="text" class="form-control" id="numerodeserie" formControlName="numerodeserie" maxlength="25"
+            [ngClass]="{'is-invalid': isInvalid('numerodeserie')}"/>
+            <div *ngIf="isInvalid('numerodeserie')" class="mensaje-error">
+                Este campo es obligatorio.
+              </div>
+          </div>
+          <div class="col-md-4">
+            <app-catalogo-select [catalogo]="moneda" formControlName="moneda" [label]="'Moneda'"
+              [placeholder]="'Seleccione una opción'" [required]="true"
+              [markTouched]="mercanciaForm.get('moneda')?.touched??false" (change)="monedaSeleccion()"
+              [isDisabled]="esFormularioSoloLectura"></app-catalogo-select>
+          </div>
+        </div>
+
+        <ng-titulo titulo="Fines a que se destinará la mercancía" />
+        <div class="row">
+          <div class="col-md-4">
+            <app-catalogo-select [catalogo]="fin" formControlName="fin" [label]="'Fin'"
+              [placeholder]="'Seleccione una opción'" [required]="true"
+              [markTouched]="mercanciaForm.get('fin')?.touched??false" (change)="finSeleccion()"
+              [isDisabled]="esFormularioSoloLectura"></app-catalogo-select>
+          </div>
+          <div class="col-md-8">
+            <label class="form-label" for="especifique">Especifique<span [ngClass]="mercanciaForm.get('especifique')?.invalid && 
+              mercanciaForm.get('especifique')?.touched ? 'text-danger' : ''">*</span>:</label>
+            <textarea class="form-control textarea-container" rows="3" id="especifique" formControlName="especifique"
+            [ngClass]="isValid(mercanciaForm,'especifique') ? 'required' : ''">
+          </textarea>
+            @if (mercanciaForm.get('especifique')?.invalid && mercanciaForm.get('especifique')?.touched) {
+              <div class="text-danger">
+                @if (mercanciaForm.get('especifique')?.errors?.['required']) {
+                <small>Este campo es obligatorio</small>
+                }
+              </div>
+              }
+          </div>
+        </div>
+        <div class="row mt-5 mb-5">
+          <div class="col-md-12">
+            <div class="d-flex justify-content-end">
+              <button type="button" name="Limpiar" (click)="limpiar()" class="btn btn-default"> Limpiar </button>
+              <button type="button" name="Agregar" (click)="agregar()" class="btn btn-primary ms-2"> Agregar </button>
+              <button type="button" name="Eliminar" (click)="eliminarUltimaMercancia()" class="btn btn-danger ms-2"> Eliminar </button>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <div class="row mt-5">
+          <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccion.CHECKBOX"
+            [configuracionTabla]="configuracionParaPFEEncabezadoDeTabla"
+            [datos]="discripccionDeLaMercanciaForm"
+            [styleCenter]="true"
+            (listaDeFilaSeleccionada)="obtenerRegistroSeleccionado($event)"
+            ></app-tabla-dinamica>
+      </div>
+    </div>
+    
+    @if(isCargamasivaSelected) {
+    <div class="row">
+        <div class="col-md-12">
+          <label>Para descargar plantilla del archivo de excel de click<a href="" class="btn aqui-link">aquí</a> </label>
+        </div>
+        <div class="col-md-4 mt-5">
+        <label class="form-label">Cargar archivo:</label>
+          <input 
+            type="file" 
+            name="cargaMasiva" 
+            id="cargaMasiva" 
+            class="form-control" 
+            (change)="enArchivoSeleccionado($event)"
+          />
+        </div>
+        <div class="row">
+          <div class="col-md-8 d-flex justify-content-end">
+            <button type="button" class="btn btn-primary" (click)="enCargar()">
+              Cargar
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+  
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones
+    [notificacionInput]="nuevaNotificacion"
+  ></lib-notificaciones>
+</section>
+}

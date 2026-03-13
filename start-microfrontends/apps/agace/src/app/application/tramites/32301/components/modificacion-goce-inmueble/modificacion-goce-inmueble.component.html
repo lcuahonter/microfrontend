@@ -1,0 +1,251 @@
+<div class="container">
+  <form [formGroup]="modificacionGoceForm" class="form-group">
+    <div class="row">
+      <div class="col-md-12 mb-4">
+        <ng-titulo [titulo]="
+            'Aviso cuando varíe o cambie la situación respecto del documento con el que se haya acreditado el legal uso y goce del inmueble o inmuebles en donde se lleven a cabo los procesos productivos o la prestación de servicios según se trate, referente a la vigencia, las partes y domicilio '
+          "></ng-titulo>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="form-group">
+          <label for="TipoDomicilio" class="form-label">Tipo domicilio*:</label>
+          <app-input-radio [radioOptions]="radioOptions" [isRequired]="true" [layout]="'horizontal'" [gap]="'50px'"
+            formControlName="ideGenerica2" (valueChange)="verificaRadioTipoSem($event)"></app-input-radio>
+        </div>
+      </div>
+    </div>
+    <div class="row" *ngIf="mostrarGridModificado">
+      <div class="col-12">
+        <ng-alert [CONTENIDO]="messageNac" [CUSTOMECLASS]="'alert-danger'"></ng-alert>
+        <div class="table-responsive">
+          <app-tabla-dinamica [configuracionTabla]="configuracionTablas" [datos]="mostrarGridNuevoHeaderData"
+          [tipoSeleccionTabla]="seleccionTabla" (filaSeleccionada)="seleccionDeFilas($event)"
+          [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"></app-tabla-dinamica>
+        </div>
+        @if (mostrarGridNuevoHeaderData.length > 0) {
+        <div class="d-flex justify-content-center">
+          <app-table-pagination [showCurrentPage]="true">
+          </app-table-pagination>
+        </div>
+      }
+        <div class="col-12 text-end">
+          <button type="button" class="btn btn-default" (click)="modificarDomicilioSeleccionado(seleccionadasFila!)"
+            [disabled]="esFormularioSoloLectura">
+            Modificar
+          </button>
+        </div>
+      </div>
+    </div>
+    @if(mostrarGridNuevo){
+    <div>
+      <div class="table-responsive">
+        <app-tabla-dinamica [configuracionTabla]="configuracionTablas" [datos]="mostrarGridNuevoHeaderData"
+          [tipoSeleccionTabla]="seleccionTabla" (filaSeleccionada)="seleccionDeFilas($event)"
+          [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"></app-tabla-dinamica>
+      </div>
+      <div class="row mt-3">
+        <div class="col-md-12">
+          <div class="d-flex justify-content-end">
+            <button type="button" name="btnModificarNvo" id="btnModificarDomiciliosNvo" class="btn btn-primary me-2"
+              [disabled]="esFormularioSoloLectura" (click)="modificarDomicilioSeleccionado(seleccionadasFila!)">
+              Modificar
+            </button>
+            <button type="button" name="btnEliminarNvo" id="btnEliminarDomicilioNvo" class="btn btn-danger me-2"
+              [disabled]="esFormularioSoloLectura" (click)="eliminaDomicilioSeleccionado(seleccionadasFila?.id_solicitud!)">
+              Eliminar
+            </button>
+            <button type="button" name="btnAgregarNvo" id="btnAgregarDomiciliosNvo" class="btn btn-primary me-2"
+              [disabled]="esFormularioSoloLectura" (click)="abrirModalDomiciliosNvo()">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+  </form>
+</div>
+ <div class="text-right mt-5">
+    <div class="pull-left text-muted text-vertical-align-button" id="lblCamposObligatorios">
+        {{ mensajeCamposObligatorios }}
+      </div>
+  <button type="button" class="btn btn-danger me-3">
+      Cancelar
+  </button>
+    <button type="submit"  (click)="continuar()" class="btn btn-primary">
+    Continuar
+  </button>
+</div>
+
+@if (modificarNotificacion) {
+<section>
+  <lib-notificaciones (confirmacionModal)="aceptarInfo($event)" [notificacionInput]="modificarNotificacion">
+  </lib-notificaciones>
+</section>
+}
+
+@if (modificarRecordNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="modificarRecordNotificacion">
+  </lib-notificaciones>
+</section>
+}
+
+<div class="modal fade" tabindex="-1" #modalDomiciliosInmuebleNuevo>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">&nbsp;</h5>
+      </div>
+      <div class="modal-body p-4">
+        <form [formGroup]="direccionGrid">
+          <div class="row">
+            <div class="col-md-8">
+              <div class="form-group">
+                <label for="domicilio" class="form-label">Colonia, calle y número*:</label>
+                <input type="text" id="domicilio" formControlName="domicilio" class="form-control" />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="codigoPostal" class="form-label">Código postal*:</label>
+                <input type="text" id="codigoPostal" formControlName="codigoPostal" class="form-control" />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <app-catalogo-select [label]="'Entidad Federativa'" [placeholder]="'Seleccione un valor'"
+                  (change)="getFraccionArancelaria()" [required]="true" name="cveEntidad"
+                  [catalogo]="entidadFederativa" formControlName="cveEntidad" [isDisabled]="esFormularioSoloLectura">
+                </app-catalogo-select>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <app-catalogo-select [catalogo]="fraccionArancelaria" formControlName="cveMunicipio"
+                [label]="'Alcaldía o Municipio'" [required]="true" name="cveFraccionArancelaria"
+                [isDisabled]="esFormularioSoloLectura">
+              </app-catalogo-select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8">
+              <app-catalogo-select [catalogo]="cveTipoDoc" formControlName="cveTipoDoc"
+                [label]="'Tipo de documento con el que se acredita el uso y goce'" [required]="true" name="cveTipoDoc"
+                [isDisabled]="esFormularioSoloLectura">
+              </app-catalogo-select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="fechaInicioDeVigencia">Fecha inicial anterior:</label>
+                <input class="form-control" type="date" name="fechaInicioDeVigencia" id="fechaInicioDeVigencia"
+                  formControlName="fechaInicioDeVigencia" />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="fechaFinVigencia">Fecha final anterior:</label>
+                <input type="date" class="form-control" name="fechaFinVigencia" id="fechaFinVigencia"
+                  formControlName="fechaFinVigencia" />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="rfcPartesC" class="form-label">Registro Federal de Contribuyentes</label>
+                <input type="text" id="rfcPartesC" formControlName="rfcPartesC" class="form-control" />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label d-block">&nbsp;</label>
+                <button type="button" class="btn btn-default" [disabled]="esFormularioSoloLectura"
+                  (click)="cargarDatosRfcPartesC()">
+                  Buscar
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="rfcPartesCons" class="form-label">RFC</label>
+                <input type="text" id="rfcPartesCons" formControlName="rfcPartesCons" class="form-control" />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="nombrePartesCons" class="form-label">Nombre</label>
+                <input type="text" id="nombrePartesCons" formControlName="nombrePartesCons" class="form-control" />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="caracterDeCons" class="form-label">En su carácter de</label>
+                <input type="text" id="caracterDeCons" formControlName="caracterDeCons" class="form-control" />
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-12 text-right">
+              <button type="button" class="btn btn-default" [disabled]="esFormularioSoloLectura"
+                (click)="limpiaCamposParteC()">Limpiar</button>
+              <button type="button" class="btn btn-primary ms-2" [disabled]="esFormularioSoloLectura"
+                (click)="agregarParteC()">Aceptar</button>
+            </div>
+          </div>
+
+          <div class="row mt-5">
+            <div class="col-md-12 table-responsive" id="gridListaModificacionPartes">
+              <div class="innercontainer text-center">
+                <ng-table [commonTableHeader]="modificacionPartesHeader" [commonTableBody]="modificacionPartesData"
+                  [disableSeleccionTablaCheckBox]="esFormularioSoloLectura" (rowSelected)="onSelected($event)">
+                </ng-table>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12 text-right">
+              <button type="button" class="btn btn-danger" (click)="eliminarParteC()"
+                [disabled]="esFormularioSoloLectura">
+                Eliminar
+              </button>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label for="observaciones" class="form-label">Observaciones</label>
+                <textarea class="form-control" rows="3" id="observaciones" formControlName="observaciones"
+                  style="height: 80px"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="button-group d-flex justify-content-center mt-4">
+            <button type="button" class="btn btn-primary me-3" [disabled]="esFormularioSoloLectura"
+              (click)="guardarDomInmuebleNvo(direccionGrid)">
+              Aceptar
+            </button>
+            <button type="button" [disabled]="esFormularioSoloLectura" class="btn btn-default"
+              (click)="cerrarDialogoDomInmuebleNvo()">
+              Cancelar
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>

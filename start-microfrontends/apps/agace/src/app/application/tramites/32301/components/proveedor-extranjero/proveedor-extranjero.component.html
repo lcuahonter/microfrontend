@@ -1,0 +1,92 @@
+<div class="container">
+  <form [formGroup]="proveedorXtranjForm" [ngStyle]="{ 'pointer-events': esFormularioSoloLectura ? 'none' : 'auto' }">
+    <div class="row">
+      <div class="col-md-12 mb-4">
+        <ng-titulo [titulo]="ProveedoresTitulo"></ng-titulo>
+        <ng-alert
+          [CONTENIDO]="
+            'Adjunte el archivo electrónico en formato Excel que contenga clientes y proveedores extranjeros con los que realizaron operaciones de comercio exterior.'
+          "
+        ></ng-alert>
+        <div class="row">
+          <div class="col-md-12">
+            <label for="eic.modificacion.plantilla.descargar">
+              Para descargar la plantilla del archivo excel de click
+              <a href="#" (click)="getPlantillaProveedoresExtranjeros($event)"
+                >Aquí</a
+              >
+            </label>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top: 20px">
+          <div class="col-md-8">
+            <div class="d-flex align-items-center custom-input-file">
+                <button class="mb-2" type="button" for="archivoExtranjero" class="file-upload"
+                  (click)="activarSeleccionArchivo()">
+                  Seleccionar archivo
+                </button>
+                <div class="ml-2">{{ etiquetaDeArchivo }}</div>
+                <input type="file" id="archivoExtranjero" (change)="onCambioDeArchivo($event)"
+                  formControlName="archivoExtranjero" class="file-upload" style="display: none;" accept=".xlsx">
+              </div>
+
+          </div>
+          <div class="col-md-4 d-flex justify-content-end">
+            <button
+              name="cargarExtranjero"
+              id="cargarExtranjero"
+              class="btn btn-primary"
+              [disabled]="esFormularioSoloLectura"
+              (click)="cargarArchivoAjax()"
+            >
+              Cargar archivo
+            </button>
+          </div>
+        </div>
+
+         <div class="row">
+          <div class="col-md-6">
+            <label
+              for="agace.seccionProveedores.existentes"
+              id="labelProveedor"
+            >
+              {{ seccionProveedoresExistentes }}
+            </label>
+          </div>
+          </div>
+          <div class="row">
+          <div class="col-md-6">
+            <input
+              type="text"
+              class="form-control"
+              name="registrosProveedoresExtranjeros"
+              id="registrosProveedoresExtranjeros"
+              formControlName="registrosProveedoresExtranjeros"
+            />
+          </div>
+          <div class="col-md-2">&nbsp;</div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+@if (cargaExtranjeroNotificacion) {
+  <section>
+    <lib-notificaciones [notificacionInput]="cargaExtranjeroNotificacion">
+    </lib-notificaciones>
+  </section>
+  }
+
+  <div class="text-right">
+         <div class="pull-left text-muted text-vertical-align-button" id="lblCamposObligatorios">
+              {{ mensajeCamposObligatorios }}
+            </div>
+        <button type="button" class="btn btn-danger me-3">
+            Cancelar
+        </button>
+         <button type="submit" class="btn btn-primary" [disabled]="!archivoMedicamentos"  (click)="onContinue.emit()">
+          Continuar
+        </button>
+    </div>

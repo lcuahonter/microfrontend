@@ -1,0 +1,747 @@
+<div class="container">
+    <form [formGroup]="avisoForm" >
+        <div class="col-md-12">
+            <ng-titulo titulo="Tipo de aviso" />
+        </div>
+        <div class="row mt-5">
+          <div class="col-md-12">
+            <app-input-radio
+            [radioOptions]="avisoOpciones"
+            [isRequired]="true"
+            [layout]="'vertical'"
+            formControlName="tipoDeAviso"
+            [selectedValue]="avisoValor"
+            (valueChange)="avisoValorRadio('tipoDeAviso', $event.toString())"
+            (change)="
+                setValoresStore(
+                avisoForm,
+                'tipoDeAviso',
+                'setTipoDeAviso'
+                )"
+                [disabled]="esFormularioSoloLectura ? true : false"
+            ></app-input-radio>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <ng-titulo titulo="Datos del almacén general del depósito" />
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-label" for="nombre">Nombre, denominación o razón social*:</label>
+                    <input type="text" 
+                    value=""
+                    class="form-control" 
+                    id="nombre"
+                    maxlength="250"
+                    formControlName="nombre"
+                    (change)="
+                    setValoresStore(
+                    avisoForm,
+                    'nombre',
+                    'setNombre'
+                    )"
+                    [ngClass]="{
+            'is-invalid': avisoForm.get('nombre')?.invalid && avisoForm.get('nombre')?.touched,
+            'is-valid': avisoForm.get('nombre')?.valid && avisoForm.get('nombre')?.touched
+        }"
+                    >
+                      <div *ngIf="avisoForm.get('nombre')?.hasError('required') && avisoForm.get('nombre')?.touched">
+        <small class="text-danger">Este campo es obligatorio.</small>
+    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label" for="rfc">R F C*:</label>
+                    <input type="text" 
+                    value=""
+                    class="form-control" 
+                    id="rfc"
+                     maxlength="13"
+                    formControlName="rfc" 
+                    (change)="
+                    setValoresStore(
+                    avisoForm,
+                    'rfc',
+                    'setRfc'
+                    )"
+                    [ngClass]="{
+            'is-invalid': avisoForm.get('rfc')?.invalid && avisoForm.get('rfc')?.touched,
+            'is-valid': avisoForm.get('rfc')?.valid && avisoForm.get('rfc')?.touched
+        }"
+                    [disabled]="esFormularioSoloLectura"
+                    >
+                    <div *ngIf="avisoForm.get('rfc')?.hasError('required') && avisoForm.get('rfc')?.touched">
+        <small class="text-danger">Este campo es obligatorio.</small>
+    </div>
+    <div *ngIf="avisoForm.get('rfc')?.hasError('pattern') && avisoForm.get('rfc')?.touched">
+        <small class="text-danger">El RFC debe tener entre 12 y 13 caracteres alfanuméricos sin espacios.</small>
+    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <ng-titulo titulo="Domicilio del almacén general del depósito" />
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-4">
+             <div class="form-group">
+                <app-catalogo-select
+                   id="entidadFederativaData"
+                   formControlName="entidadFederativa"
+                   [catalogo]="entidadFederativaData.catalogos"
+                   [label]="'Entidad federativa'"
+                   [placeholder]="entidadFederativaData.primerOpcion"
+                   [required]="true"
+                   (change)="setValoresStore(avisoForm,'entidadFederativa','setEntidadFederativa')"
+                   [isDisabled]="esFormularioSoloLectura" 
+              ></app-catalogo-select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <app-catalogo-select
+                    id="alcaldiaMunicipoData"
+                    formControlName="alcaldiaMunicipo"
+                    [catalogo]="alcaldiaMunicipoData.catalogos"
+                    [label]="'Alcaldía o Municipio'"
+                    [placeholder]="alcaldiaMunicipoData.primerOpcion"
+                    [required]="true"
+                    (change)="setValoresStore(avisoForm,'alcaldiaMunicipo','setAlcaldiaMunicipo')"
+                    [isDisabled]="esFormularioSoloLectura" 
+               ></app-catalogo-select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <app-catalogo-select
+                    id="coloniaData"
+                    formControlName="colonia"
+                    [catalogo]="coloniaData.catalogos"
+                    [label]="'Colonia'"
+                    [placeholder]="coloniaData.primerOpcion"
+                    [required]="true"
+                    (change)="setValoresStore(avisoForm,'colonia','setColonia')"
+                    [isDisabled]="esFormularioSoloLectura" 
+               ></app-catalogo-select>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-label" for="calle">Calle*:</label>
+                    <input type="text" 
+                    value=""
+                    class="form-control" 
+                    id="calle"
+                    formControlName="calle" 
+                        maxlength="250"
+
+                    (change)="
+                    setValoresStore(
+                    avisoForm,
+                    'calle',
+                    'setCalle'
+                    )"
+                    [disabled]="esFormularioSoloLectura"
+                    >
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label" for="numeroExterior">Número exterior*:</label>
+                    <input type="text" 
+                    value=""
+                    class="form-control" 
+                    id="numeroExterior"
+                    formControlName="numeroExterior" 
+                        maxlength="15"
+
+                    (change)="
+                    setValoresStore(
+                    avisoForm,
+                    'numeroExterior',
+                    'setNumeroExterior'
+                    )"
+                    [disabled]="esFormularioSoloLectura"
+                    >
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label" for="numeroInterior">Número interior:</label>
+                    <input type="text" 
+                    value=""
+                    class="form-control" 
+                    id="numeroInterior"
+                    formControlName="numeroInterior" 
+                    (change)="
+                    setValoresStore(
+                    avisoForm,
+                    'numeroInterior',
+                    'setNumeroInterior'
+                    )"
+                    [disabled]="esFormularioSoloLectura"
+                    >
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label" for="codigoPostal">Código postal*:</label>
+                    <input type="text" 
+                    value=""
+                    class="form-control" 
+                    id="codigoPostal"
+                    formControlName="codigoPostal" 
+                     maxlength="5"
+                    pattern="[0-9]*"
+                    (change)="
+                    setValoresStore(
+                    avisoForm,
+                    'codigoPostal',
+                    'setCodigoPostal'
+                    )"
+                    [disabled]="esFormularioSoloLectura"
+                    >
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-label" for="cartaCupo">Folio de la carta cupo*:</label>
+                    <input type="text" 
+                    value=""
+                    class="form-control" 
+                    id="cartaCupo"
+                    maxlength="250"
+                    formControlName="cartaCupo" 
+                    (change)="
+                    setValoresStore(
+                    avisoForm,
+                    'cartaCupo',
+                    'setCartaCupo'
+                    )"
+                    [disabled]="esFormularioSoloLectura"
+                    >
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <label style="margin-left: 7px" class="form-label" for="numeraDeAcuse">Número de acuse electrónico emitido por el Sistema Automatizado Aduanero Integral*:</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <input type="text" 
+                    value=""
+                    class="form-control" 
+                    id="numeraDeAcuse"
+                    formControlName="numeraDeAcuse" 
+                    maxlength="8"
+                    (change)="
+                    setValoresStore(
+                    avisoForm,
+                    'numeraDeAcuse',
+                    'setNumeraDeAcuse'
+                    )"
+                    [disabled]="esFormularioSoloLectura"
+                    >
+                </div>
+            </div>
+        </div>
+        
+        @if(avisoValor === 'deposito_fiscal' || avisoValor !== 'fisco_federal'){
+
+        <div class="col-md-12">
+            <ng-titulo titulo="Causas que motivan la destrucción" />
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <label style="margin-left: 7px" class="form-label" for="destruccionMercancia">Describa las causas que motivan la destrucción de la mercancía*:</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <input type="text" 
+                    value=""
+                    class="form-control" 
+                    id="destruccionMercancia"
+                        maxlength="500"
+
+                    formControlName="destruccionMercancia" 
+                      maxlength="500"
+                    (change)="
+                    setValoresStore(
+                    avisoForm,
+                    'destruccionMercancia',
+                    'setDestruccionMercancia'
+                    )"
+                    [disabled]="esFormularioSoloLectura"
+                    >
+                </div>
+            </div>
+        
+         </div>
+    
+     @if(avisoValor === 'deposito_fiscal' || avisoValor === 'fisco_federal'){
+        <div class="col-md-12">
+            <ng-titulo titulo="Lugar donde se encuentra la mercancía y cantidad de mercancía" />
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <app-catalogo-select
+                    id="merccanciaEntidadFederativaData"
+                    formControlName="merccanciaEntidadFederativa"
+                    [catalogo]="merccanciaEntidadFederativaData.catalogos"
+                    [label]="'Entidad federativa'"
+                    [placeholder]="merccanciaEntidadFederativaData.primerOpcion"
+                    [required]="true"
+                    (change)="setValoresStore(avisoForm,'merccanciaEntidadFederativa','setMerccanciaEntidadFederativa')"
+                    [isDisabled]="esFormularioSoloLectura" 
+               ></app-catalogo-select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <app-catalogo-select
+                    id="merccanciaAlcaldiaMunicipoData"
+                    formControlName="merccanciaAlcaldiaMunicipo"
+                    [catalogo]="merccanciaAlcaldiaMunicipoData.catalogos"
+                    [label]="'Alcaldía o Municipio'"
+                    [placeholder]="merccanciaAlcaldiaMunicipoData.primerOpcion"
+                    [required]="true"
+                    (change)="setValoresStore(avisoForm,'merccanciaAlcaldiaMunicipo','setMerccanciaAlcaldiaMunicipo')"
+                    [isDisabled]="esFormularioSoloLectura" 
+               ></app-catalogo-select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <app-catalogo-select
+                    id="merccanciaColoniaData"
+                    formControlName="merccanciaColonia"
+                    [catalogo]="merccanciaColoniaData.catalogos"
+                    [label]="'Colonia'"
+                    [placeholder]="merccanciaColoniaData.primerOpcion"
+                    [required]="true"
+                    (change)="setValoresStore(avisoForm,'merccanciaColonia','setMerccanciaColonia')"
+                    [isDisabled]="esFormularioSoloLectura" 
+               ></app-catalogo-select>
+                </div>
+            </div>
+         </div>
+         <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-label" for="merccanciaCalle">Calle*:</label>
+                    <input type="text" 
+                    value=""
+                    class="form-control" 
+                    id="merccanciaCalle"
+                    formControlName="merccanciaCalle" 
+                        maxlength="250"
+                    (change)="
+                    setValoresStore(
+                    avisoForm,
+                    'merccanciaCalle',
+                    'setMerccanciaCalle'
+                    )"
+                    [disabled]="esFormularioSoloLectura"
+                    >
+                </div>
+            </div>
+          </div>
+          <div class="row mt-5">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label" for="merccanciaNumeroExterior">Número exterior*:</label>
+                    <input type="text" 
+                    value=""
+                    class="form-control" 
+                    id="merccanciaNumeroExterior"
+                    formControlName="merccanciaNumeroExterior"
+                        maxlength="15"
+
+                    (change)="
+                    setValoresStore(
+                    avisoForm,
+                    'merccanciaNumeroExterior',
+                    'setMerccanciaNumeroExterior'
+                    )"
+                    [disabled]="esFormularioSoloLectura"
+                    >
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label" for="merccanciaNumeroInterior">Número interior:</label>
+                    <input type="text" 
+                    value=""
+                    class="form-control" 
+                    id="merccanciaNumeroInterior"
+                    formControlName="merccanciaNumeroInterior" 
+                    (change)="
+                    setValoresStore(
+                    avisoForm,
+                    'merccanciaNumeroInterior',
+                    'setMerccanciaNumeroInterior'
+                    )"
+                    [disabled]="esFormularioSoloLectura"
+                    >
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label" for="merccanciaCodigoPostal">Código postal*:</label>
+                    <input type="text" 
+                    value=""
+                    class="form-control" 
+                    id="merccanciaCodigoPostal"
+                    formControlName="merccanciaCodigoPostal" 
+                     maxlength="5"
+                   pattern="[0-9]*"
+                    (change)="
+                    setValoresStore(
+                    avisoForm,
+                    'merccanciaCodigoPostal',
+                    'setMerccanciaCodigoPostal'
+                    )"
+                    [disabled]="esFormularioSoloLectura"
+                    >
+                </div>
+            </div>
+         </div>
+         <div class="row mt-5">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label" for="destruir">Cantidad de mercancías donadas*:</label>
+                    <input type="text" 
+                    value=""
+                    class="form-control" 
+                    id="destruir"
+                     maxlength="5"
+                     pattern="[0-9]*"
+                    formControlName="destruir" 
+                    (change)="
+                    setValoresStore(
+                    avisoForm,
+                    'destruir',
+                    'setDestruir'
+                    )"
+                    [disabled]="esFormularioSoloLectura"
+                    >
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <app-catalogo-select
+                    id="tarifaData"
+                    formControlName="tarifa"
+                    [catalogo]="tarifaData.catalogos"
+                    [label]="'Unidad de medida (Tarifa)'"
+                    [placeholder]="tarifaData.primerOpcion"
+                    [required]="true"
+                    (change)="setValoresStore(avisoForm,'tarifa','setTarifa')"
+                    [isDisabled]="esFormularioSoloLectura" 
+               ></app-catalogo-select>
+                </div>
+            </div>    
+        </div>
+    
+      }
+        @if(avisoValor === 'deposito_fiscal'){
+
+        <div class="col-md-12">
+            <ng-titulo titulo="Lugar donde se llevará a cabo la destrucción de la mercancía" />
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <app-catalogo-select
+                    id="merccanciaEntidadFederativaData"
+                    formControlName="destruccionEntidadFederativa"
+                    [catalogo]="merccanciaEntidadFederativaData.catalogos"
+                    [label]="'Entidad federativa'"
+                    [placeholder]="merccanciaEntidadFederativaData.primerOpcion"
+                    [required]="true"
+                    (change)="setValoresStore(avisoForm,'destruccionEntidadFederativa','setDestruccionEntidadFederativa')"
+                    [isDisabled]="esFormularioSoloLectura" 
+               ></app-catalogo-select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <app-catalogo-select
+                    id="merccanciaAlcaldiaMunicipoData"
+                    formControlName="destruccionAlcaldiaMunicipo"
+                    [catalogo]="merccanciaAlcaldiaMunicipoData.catalogos"
+                    [label]="'Alcaldía o Municipio'"
+                    [placeholder]="merccanciaAlcaldiaMunicipoData.primerOpcion"
+                    [required]="true"
+                    (change)="setValoresStore(avisoForm,'destruccionAlcaldiaMunicipo','setDestruccionAlcaldiaMunicipo')"
+                    [isDisabled]="esFormularioSoloLectura" 
+               ></app-catalogo-select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <app-catalogo-select
+                    id="merccanciaColoniaData"
+                    formControlName="destruccionColonia"
+                    [catalogo]="merccanciaColoniaData.catalogos"
+                    [label]="'Colonia'"
+                    [placeholder]="merccanciaColoniaData.primerOpcion"
+                    [required]="true"
+                    (change)="setValoresStore(avisoForm,'destruccionColonia','setDestruccionColonia')"
+                    [isDisabled]="esFormularioSoloLectura" 
+               ></app-catalogo-select>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-label" for="destruccionCalle">Calle*:</label>
+                    <input type="text" 
+                    value=""
+                    class="form-control" 
+                    id="destruccionCalle"
+                    formControlName="destruccionCalle" 
+                        maxlength="250"
+                    [disabled]="esFormularioSoloLectura"
+                    >
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label" for="destruccionNumeroExterior">Número exterior*:</label>
+                    <input type="text" 
+                    value=""
+                    class="form-control" 
+                    id="destruccionNumeroExterior"
+                    formControlName="destruccionNumeroExterior" 
+                        maxlength="15"
+                    (change)="
+                    setValoresStore(
+                    avisoForm,
+                    'destruccionNumeroExterior',
+                    'setDestruccionNumeroExterior'
+                    )"
+                    [disabled]="esFormularioSoloLectura"
+                    >
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label" for="destruccionNumeroInterior">Número interior:</label>
+                    <input type="text" 
+                    value=""
+                    class="form-control" 
+                    id="destruccionNumeroInterior"
+                    formControlName="destruccionNumeroInterior"
+                    (change)="
+                    setValoresStore(
+                    avisoForm,
+                    'destruccionNumeroInterior',
+                    'setDestruccionNumeroInterior'
+                    )"
+                    [disabled]="esFormularioSoloLectura"
+                    >
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label" for="destruccionCodigoPostal">Código postal*:</label>
+                    <input type="text" 
+                    value=""
+                    class="form-control" 
+                    id="destruccionCodigoPostal"
+                    formControlName="destruccionCodigoPostal"
+                     maxlength="5"
+                      pattern="[0-9]*"
+                     (change)="
+                    setValoresStore(
+                    avisoForm,
+                    'destruccionCodigoPostal',
+                    'setDestruccionCodigoPostal'
+                    )"
+                    [disabled]="esFormularioSoloLectura"
+                    >
+                </div>
+            </div>
+        </div>
+     }
+        @if(avisoValor === 'deposito_fiscal'){
+
+            <div class="row mt-5 justify-content-center text-center">
+                <ng-alert [CONTENIDO]="MENSAJE"></ng-alert>
+            </div>
+            <div class="row mt-5">
+                <div class="col-md-6">
+                    <input-fecha [datos]="desrtuccionFecha" (valorCambiado)="cambioFecha($event)"
+                    [setFecha]="DestruccionFecha" name= "caboDestruccionFecha" 
+                ></input-fecha>
+                </div>
+                 <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label" for="destruccionHora">Hora en la que se llevará a cabo la destrucción*:</label>
+                    <input type="text" 
+                    value=""
+                    class="form-control" 
+                    id="destruccionHora"
+                    formControlName="destruccionHora" 
+                     pattern="^([01]\d|2[0-3]):([0-5]\d)$"
+                      [ngClass]="{
+            'is-invalid': avisoForm.get('destruccionHora')?.invalid && avisoForm.get('destruccionHora')?.touched,
+            'is-valid': avisoForm.get('destruccionHora')?.valid && avisoForm.get('destruccionHora')?.touched
+        }"
+                    (change)="
+                    setValoresStore(
+                    avisoForm,
+                    'destruccionHora',
+                    'setDestruccionHora'
+                    )"
+                    [disabled]="esFormularioSoloLectura"
+                    >
+                      <div *ngIf="avisoForm.get('destruccionHora')?.hasError('pattern') && avisoForm.get('destruccionHora')?.touched">
+                <small class="text-danger">La hora no cumple con el formato esperado(HH:mm) formato 24 horas.</small>
+            </div>
+                </div>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="form-label" for="desturccionProceso">¿Cómo se llevó a cabo el proceso destructivo?*:</label>
+                        <input type="text" 
+                        value=""
+                        class="form-control" 
+                        id="desturccionProceso"
+                        formControlName="desturccionProceso"
+                        (change)="
+                        setValoresStore(
+                        avisoForm,
+                        'desturccionProceso',
+                        'setDesturccionProceso'
+                        )"
+                        [disabled]="esFormularioSoloLectura"
+                        >
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col-md-12">
+                    <label style="margin-left: 7px" class="form-label" for="destruccionMercancia">¿La destrucción de las mercancías fue a raíz de un accidente o caso fortuito?</label>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col-md-12">
+                  <app-input-radio
+                  [radioOptions]="casoFortuitoOpcion"
+                  [isRequired]="true"
+                  [layout]="'horizontal'"
+                  formControlName="casofortuito"
+                  (change)="
+                    setValoresStore(
+                    avisoForm,
+                    'casofortuito',
+                    'setCasofortuito'
+                    )"
+                    [disabled]="esFormularioSoloLectura ? true : false"
+                  ></app-input-radio>
+                </div>
+            </div>
+     }
+            @if(avisoValor === 'deposito_fiscal'){
+            <div class="col-md-12">
+                <ng-titulo titulo="Datos de las mercancías" />
+            </div>
+            <div class="row mt-5">
+                <p>Descargar plantilla: Aquí</p>
+                <p>Adjuntar archivo:</p>
+                 <div class="col-md-8 d-flex align-items-center">
+                    <button type="button" for="archivoMedicamentos" class="file-upload"
+                        (click)="activarSeleccionArchivo()"
+                        [disabled]="esFormularioSoloLectura">
+                        Seleccionar archivo
+                    </button>
+                    <span class="ml-2">{{ etiquetaDeArchivo }}</span>
+                    <input type="file" id="archivoMedicamentos" (change)="onCambioDeArchivo($event)"
+                        class="file-upload" style="display: none;"
+                        [disabled]="esFormularioSoloLectura">
+                </div>
+
+                <div class="col-md-4 d-flex align-items-center">
+                    <button class="btn btn-primary mr-5px" disabled="esFormularioSoloLectura"
+                    [disabled]="esFormularioSoloLectura">Cargar
+                        archivo</button>
+                </div>
+            </div>
+        }
+      }
+
+   
+        @if(avisoValor === 'fisco_federal'){
+
+            <div class="row mt-5">
+                <ng-alert [CONTENIDO]="TEXTO"></ng-alert>
+            </div>
+            <div class="row mt-5">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="form-label" for="donoMercancia">¿Cómo se desarrolló el proceso para la mercancía que se donó al Fisco Federal?*:</label>
+                        <input type="text" 
+                        value=""
+                        class="form-control" 
+                        id="donoMercancia"
+                        formControlName="donoMercancia" 
+                            maxlength="500"
+                        (change)="
+                            setValoresStore(
+                            avisoForm,
+                            'donoMercancia',
+                            'setDonoMercancia'
+                            )"
+                            [disabled]="esFormularioSoloLectura"
+                        >
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="form-label" for="condicionesMateriales">Describa las condiciones materiales en las cuales se encuentra la mercancía que se pretende donar*:</label>
+                        <input type="text" 
+                        value=""
+                        class="form-control" 
+                        id="condicionesMateriales"
+                        formControlName="condicionesMateriales" 
+                            maxlength="500"
+                        (change)="
+                            setValoresStore(
+                            avisoForm,
+                            'condicionesMateriales',
+                            'setCondicionesMateriales'
+                            )"
+                            [disabled]="esFormularioSoloLectura"
+                        >
+                    </div>
+                </div>
+            </div>
+        }
+   </form>
+
+</div>

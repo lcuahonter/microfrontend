@@ -1,0 +1,313 @@
+<div class="container">
+  @if (consultaDatos.parameter !== 'FLUJO_FUNCIONARIO_ATENDER_REQUERIMIENTO'){
+  <div class="row mt-3">
+    <div class="col-md-12">
+      <div class="panel-group ficha-collapse" id="accordion">
+        <div class="panel panel-default">
+          <div
+            class="panel-heading"
+            (click)="mostrar_colapsable()"
+            tabindex="0"
+          >
+            <h4 class="panel-title">
+              <a aria-label="Repeat"
+                ><i class="bi bi-repeat" aria-hidden="true"></i>.</a
+              >
+            </h4>
+            <button
+              type="button"
+              class="collpase-button"
+              [class.collapsed]="!colapsable"
+            ></button>
+          </div>
+          @if(colapsable){
+          <div
+            class="panel-collapse"
+            [ngClass]="{ collapse: !colapsable, in: colapsable }"
+            id="panel-01"
+          >
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-md-12">
+                  <ng-alert [CONTENIDO]="alertMessage"></ng-alert>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label" for="table">Solicitud</label>
+                </div>
+                <div class="col-md-12">
+                  <app-tabla-dinamica
+                    [tipoSeleccionTabla]="tipoSeleccionsoli"
+                    [configuracionTabla]="configuracionColumnasoli"
+                    [datos]="solicitudDatos"
+                    (click)="filaSeleccionada()"
+                  >
+                  </app-tabla-dinamica>
+                </div>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+  <form [formGroup]="formulario">
+    @for(fieldGroup of configuracion; let groupIndex = $index; track groupIndex)
+    {
+    <div class="form" [formGroupName]="fieldGroup.formGroupName">
+      <ng-titulo [titulo]="fieldGroup.title" />
+
+      <div class="row align-items-center">
+        @for (item of fieldGroup.menu; let menuIndex = $index; track menuIndex)
+        {
+        <div [ngClass]="item.class" [ngStyle]="{ visibility: item.visibility }">
+          <div class="form-group">
+            @switch (item.inputType) { @case(inputTypes.SELECT) {
+            <app-catalogo-select
+              [catalogo]="item.props.catalogos"
+              [label]="item.props.labelNombre"
+              [formControlName]="item.props.campo"
+              [isDisabled]="esFormularioSoloLectura"
+              [required]="true"
+              name="tipoSolicitud"
+              (change)="seleccionCatalogo(item.props.labelNombre, $event)"
+            ></app-catalogo-select>
+            } @case(inputTypes.TEXT) { @if((!item.props.availableRadioOptions)
+            || (item.props.availableRadioOptions &&
+            configuracion[groupIndex].menu[0].props &&
+            configuracion[groupIndex].menu[0].props.radioSelectedValue &&
+            item.props.availableRadioOptions.includes(configuracion[groupIndex].menu[0].props.radioSelectedValue)))
+            {
+            <label class="form-label" [for]="item.props.campo">{{
+              item.props.labelNombre
+            }}</label>
+            <input
+              class="form-control"
+              [type]="item.props.tipo_input"
+              [id]="item.props.campo"
+              [placeholder]="item.props.placeholder"
+              [formControlName]="item.props.campo"
+              appUppercase
+            />
+            } } @case(inputTypes.BREAK_CONTENT) {
+            <div class="w-100"></div>
+            } @case (inputTypes.DATE) {
+            <input-fecha
+              [datos]="item.props"
+              (valorCambiado)="fechaCambiado($event)"
+            ></input-fecha>
+            } @case (inputTypes.RADIO) {
+            <label class="form-label" [for]="item.props.campo">{{
+              item.props.labelNombre
+            }}</label
+            >@if(item.props.required){<span class="fw-bold" for="asterisk"
+              >*</span
+            >}
+            <span class="fw-bold" for="puntos">:</span>
+            <app-input-radio
+              [radioOptions]="item.props.radioOptions"
+              [isRequired]="item.props.required"
+              (valueChange)="
+                cambioValorRadio('radio', groupIndex, menuIndex, $event)
+              "
+              [layout]="'vertical'"
+              [formControlName]="item.props.campo"
+            ></app-input-radio>
+            } @case (inputTypes.BUTTON){
+            <button
+              type="button"
+              class="btn btn-primary"
+              style="margin-top: 3rem"
+              data-bs-toggle="modal"
+              data-bs-target="#modalConsultarEmpresaProductora"
+              [disabled]="esFormularioSoloLectura"
+              (click)="abrirDialogoConsultar()"
+              [disabled]="esFormularioSoloLectura"
+            >
+              {{ item.props.labelNombre }}
+            </button>
+            }}
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+    }
+    <div class="row mt-5">
+      <app-tabla-dinamica
+        [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX"
+        [configuracionTabla]="tableData.headers"
+        [datos]="tableData.data"
+      ></app-tabla-dinamica>
+    </div>
+  </form>
+  <div class="row mt-5">
+    <div class="col-md-12 d-flex justify-content-end">
+      <div>
+        <button
+          class="btn btn-primary me-2"
+          type="button"
+          [disabled]="esFormularioSoloLectura"
+        >
+          Modificar
+        </button>
+      </div>
+      <div>
+        <button
+          class="btn btn-default me-2"
+          type="button"
+          [disabled]="esFormularioSoloLectura"
+        >
+          Eliminar
+        </button>
+      </div>
+      <div>
+        <button
+          class="btn btn-default me-2"
+          type="button"
+          [disabled]="esFormularioSoloLectura"
+        >
+          Agregar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Consultar Empresa Productora-->
+<div
+  class="modal fade"
+  id="modalConsultarEmpresaProductora"
+  tabindex="-1"
+  aria-labelledby="modalConsultarEmpresaProductoraLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <ng-titulo titulo="Consultar Empresa Productora"></ng-titulo>
+        <form [formGroup]="consultarEmpresaProductoraForm">
+          <div class="row">
+            <div class="col-md-4">
+              <label class="form-label" for="tipoPersona"
+                >Denominación/razón social:</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                name="razonSocial"
+                formControlName="razonSocial"
+                id="razonSocial"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <label class="form-label" for="codigoPostal"
+                >Código postal o equivalente*:</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                name="codigoPostal"
+                formControlName="codigoPostal"
+                id="codigoPostal"
+              />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="pais">País*:</label>
+              <input
+                type="text"
+                class="form-control"
+                name="pais"
+                formControlName="pais"
+                id="pais"
+              />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="estado">Estado/localidad:</label>
+              <input
+                type="text"
+                class="form-control"
+                name="estado"
+                formControlName="estado"
+                id="estado"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <label class="form-label" for="calle">Calle*:</label>
+              <input
+                type="text"
+                class="form-control"
+                name="calle"
+                formControlName="calle"
+                id="calle"
+              />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="numeroExterior"
+                >Número exterior*:</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                name="numeroExterior"
+                formControlName="numeroExterior"
+                id="numeroExterior"
+              />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="numeroInterior"
+                >Número interior:</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                name="numeroInterior"
+                formControlName="numeroInterior"
+                id="numeroInterior"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <label class="form-label" for="telefono">Teléfono:</label>
+              <input
+                type="text"
+                class="form-control"
+                name="telefono"
+                formControlName="telefono"
+                id="telefono"
+              />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="correoElectronico"
+                >Correo electrónico: ></label
+              >
+              <input
+                type="text"
+                class="form-control"
+                name="correoElectronico"
+                formControlName="correoElectronico"
+                id="correoElectronico"
+              />
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer mt-5 custom-footer">
+        <button
+          type="button"
+          id="btnCancelarFrmDatosTercero"
+          class="btn btn-danger"
+          data-bs-dismiss="modal"
+          #closeModal
+        >
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,215 @@
+<ng-titulo titulo="Enlace Operativo" />
+<div class="row">
+  <div class="col-md-12">
+    <ng-table
+      [commonTableHeader]="enlaceHeaderData"
+      [commonTableBody]="enlanceBodyData"
+    ></ng-table>
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center">
+        <li class="page-item"><a class="page-link" href="#">Anterior</a></li>
+        <li class="page-item"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">Siguiente</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="row text-right">
+    <div>
+      <button
+        type="button"
+        class="btn btn-primary me-2"
+        data-bs-toggle="modal"
+        data-bs-target="#modalAgregar"
+        (click)="abrirModal()"
+        [disabled]="esFormularioSoloLectura ? true : false"
+      >
+        Agregar
+      </button>
+      <button type="button" class="btn btn-default me-3" [disabled]="esFormularioSoloLectura ? true : false" (click)="abrirModal()" data-bs-toggle="modal" data-bs-target="#modalAgregar">Modificar</button>
+      <button type="button" class="btn btn-danger" [disabled]="esFormularioSoloLectura ? true : false" (click)="eliminar()">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<div class="container mt-4">
+  <div
+    class="modal fade"
+    id="modalAgregar"
+    tabindex="-1"
+    aria-labelledby="modalAgregarLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Instalaciones</h4>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="enlace">
+            <h6>*Registro Federal de Contribuyentes:</h6>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <input
+                    class="form-control"
+                    id="resigtro"
+                    formControlName="resigtroFedral"
+                    type="text"
+                    (change)="setValoresStore(enlace,'resigtroFedral', 'setResigtroFedral')"
+                  />
+                  @if(enlace.controls['resigtroFedral'].invalid && enlace.controls['resigtroFedral'].touched){
+                    <div class="d-grid">
+                        @if(enlace.controls['resigtroFedral'].errors?.['required']) {
+                            <span class="mensaje-error">Este campo es obligatorio</span>
+                        }
+                    </div>
+                }
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="rfc">RFC:</label>
+                  <input
+                    class="form-control"
+                    id="rfc"
+                    formControlName="rfc"
+                    type="text"
+                  />
+                </div>
+              </div>
+
+              <div class="col-md-4 d-flex align-items-center">
+                <div class="btn-group">
+                  <button class="btn btn-default" type="button" [disabled]="esFormularioSoloLectura ? true : false">Buscar</button>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="nombre">Nombre:</label>
+                  <input
+                    class="form-control"
+                    id="nombre"
+                    formControlName="nombre"
+                    type="text"
+                  />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="apellidoPaterno"
+                    >Apellido Paterno:</label
+                  >
+                  <input
+                    class="form-control"
+                    id="apellidoPaterno"
+                    formControlName="apellidoPaterno"
+                    type="text"
+                  />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="apellidoMaterno"
+                    >Apellido Materno:</label
+                  >
+                  <input
+                    class="form-control"
+                    id="apellidoMaterno"
+                    formControlName="apellidoMaterno"
+                    type="text"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-8">
+                <div class="form-group">
+                  <label class="form-label" for="cuidad"
+                    >Cuidad o Estado de Residencia</label
+                  >
+                  <input
+                    class="form-control"
+                    id="cuidad"
+                    formControlName="cuidad"
+                    type="text"
+                  />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="cargo">Cargo o Puesto</label>
+                  <input
+                    class="form-control"
+                    id="cargo"
+                    formControlName="cargo"
+                    type="text"
+                    (change)="setValoresStore(enlace,'cargo', 'setCargo')"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="telefonoEnlace">Teléfono:</label>
+                  <input
+                    class="form-control"
+                    id="telefonoEnlace"
+                    formControlName="telefonoEnlace"
+                    type="text"
+                    (change)="setValoresStore(enlace,'telefonoEnlace', 'setTelefonoEnlace')"
+                  />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="correoEnlace"
+                    >Correo Electrónico:</label
+                  >
+                  <input
+                    class="form-control"
+                    id="correoEnlace"
+                    formControlName="correoEnlace"
+                    type="text"
+                    (change)="setValoresStore(enlace,'correoEnlace', 'setCorreoEnlace')"
+                  />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="suplente">Suplente</label>
+                  <div class="form-check-input-container">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      value=""
+                      id="suplente"
+                      formControlName="suplente"
+                      (change)="setValoresStore(enlace,'suplente', 'setSuplente')"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer custom-footer justify-content-center">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" #closeModal [disabled]="esFormularioSoloLectura ? true : false">Aceptar</button>
+          <button
+            type="button"
+            class="btn btn-default"
+            data-bs-dismiss="modal"
+            #closeModal
+            [disabled]="esFormularioSoloLectura ? true : false"
+          >
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

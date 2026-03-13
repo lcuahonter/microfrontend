@@ -1,0 +1,107 @@
+<div class="container">
+    <ng-titulo titulo="Representante legal"></ng-titulo>
+    <form [formGroup]="representanteLegalForm">
+        <!-- RFC de búsqueda -->
+        <div class="row mb-3 align-items-end">
+            <div class="col-md-4">
+                <label for="rfcBusqueda" class="form-label">Registro Federal de Contribuyentes*:</label>
+                <input type="text" id="rfcBusqueda" class="form-control" formControlName="rfcBusqueda"
+                    [ngClass]="{'is-invalid': campoInvalido('rfcBusqueda')}" libUppercase>
+                <div *ngIf="campoInvalido('rfcBusqueda')" class="invalid-feedback">
+                    RFC inválido o requerido.
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary ms-2" type="button" (click)="buscarRepresentanteLegal()">
+                    Buscar
+                </button>
+            </div>
+        </div>
+
+        <!-- RFC -->
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label for="rfc" class="form-label">RFC:</label>
+                <input id="rfc" type="text" class="form-control" formControlName="rfc"
+                    [ngClass]="{'is-invalid': campoInvalido('rfc')}" libUppercase>
+                <div *ngIf="campoInvalido('rfc')" class="invalid-feedback">
+                    RFC inválido o requerido.
+                </div>
+            </div>
+        </div>
+
+        <!-- Nombre y Apellidos -->
+        <div class="row">
+            <div class="col-md-4">
+                <label for="nombre" class="form-label">Nombre:</label>
+                <input id="nombre" type="text" class="form-control" formControlName="nombre"
+                    [ngClass]="{'is-invalid': campoInvalido('nombre')}" libUppercase>
+                <div *ngIf="campoInvalido('nombre')" class="invalid-feedback">
+                    Nombre requerido.
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <label for="primerApellido" class="form-label">Apellido Paterno:</label>
+                <input id="primerApellido" type="text" class="form-control" formControlName="primerApellido"
+                    [ngClass]="{'is-invalid': campoInvalido('primerApellido')}" libUppercase>
+                <div *ngIf="campoInvalido('primerApellido')" class="invalid-feedback">
+                    Apellido paterno requerido.
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <label for="segundoApellido" class="form-label">Apellido Materno:</label>
+                <input id="segundoApellido" type="text" class="form-control" formControlName="segundoApellido"
+                    libUppercase>
+            </div>
+        </div>
+
+        <!-- Teléfono y Correo -->
+        <div class="row">
+            <div class="col-md-4">
+                <label for="telefono" class="form-label">Teléfono:</label>
+                <input id="telefono" type="text" class="form-control" formControlName="telefono" libUppercase>
+            </div>
+            <div class="col-md-4">
+                <label for="correo" class="form-label">Correo Electrónico:</label>
+                <input id="correo" type="email" class="form-control" formControlName="correo" libUppercase>
+            </div>
+        </div>
+    </form>
+    <ng-titulo titulo="Enlace operativo"></ng-titulo>
+    <div class="row mt-4">
+        <div class="table-responsive">
+            <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccion.CHECKBOX"
+                [configuracionTabla]="encabezadoDeTablaEnlace" [datos]="enlacesOperativos"
+                (listaDeFilaSeleccionada)="enlacesOperativosSeleccionados = $event">>
+            </app-tabla-dinamica>
+        </div>
+    </div>
+    <div class="d-flex justify-content-lg-end h1">
+        <div class="btn-group">
+            <button class="btn btn-default ms-2" type="button" (click)="modificarEnlace()">Modificar</button>
+            <button class="btn btn-default ms-2" type="button" (click)="eliminarEnlace()">Eliminar</button>
+            <button type="button" class="btn btn-primary ms-2" (click)="agregarEnlace()">
+                Agregar
+            </button>
+        </div>
+    </div>
+    <ng-titulo titulo="Personas para oír y recibir notificaciones"></ng-titulo>
+    <div class="row mt-4">
+        <div class="table-responsive">
+            <app-tabla-dinamica [configuracionTabla]="encabezadoNotificadores" [datos]="notificadores">
+            </app-tabla-dinamica>
+        </div>
+    </div>
+</div>
+@if (nuevaNotificacion) {
+<section>
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+    </lib-notificaciones>
+</section>
+}
+@if(agregarEnlaceModal){
+<app-enlace-operativo (cerrar)="agregarEnlaceModal = false">
+</app-enlace-operativo>
+}

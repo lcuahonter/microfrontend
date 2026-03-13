@@ -1,0 +1,23 @@
+<form [formGroup]="form">
+    @for (field of fields; track $index) {
+        <div class="row justify-content-center align-items-center mb-3">
+            <div [ngClass]="[field.labelColClase || 'col-md-3', 'text-end']">
+                <label class="form-label custom-label mb-0" [for]="field.formControlName">
+                {{ field.label }}
+                </label>
+            </div>
+            <div [ngClass]="[field.inputColClase || 'col-md-3']">
+                <input
+                    class="form-control"
+                    type="{{field.tipoInput ? field.tipoInput : 'text'}}"
+                    [name]="field.formControlName"
+                    [id]="field.id"
+                    [formControlName]="field.formControlName"
+                    [required]="field.required || false"
+                    [disabled]="field.disabled || false"
+                    (change)="enCambioDeCampo($event, field.formControlName)"
+                />
+            </div>
+        </div>
+    }
+</form>

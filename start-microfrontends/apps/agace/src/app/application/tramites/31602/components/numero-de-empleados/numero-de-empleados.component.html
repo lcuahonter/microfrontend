@@ -1,0 +1,159 @@
+<div class="row mt-3">
+    <div class="col-md-12">
+      <p class="fw-bold">
+        Número de empleados que le proveen en los últimos tres bimestres
+        anteriores a su solicitud
+      </p>
+      <app-tabla-dinamica
+      [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+            [configuracionTabla]="configuracionTabla"
+            [datos]="numeroDeEmpleadosDatos">
+        </app-tabla-dinamica>
+      <div class="d-flex justify-content-end">
+        <button type="button" class="btn btn-primary me-2" [disabled]="esFormularioSoloLectura" (click)="abrirModal(template)">
+            Agregar
+        </button>
+      <button class="btn btn-default me-2" type="button" [disabled]="esFormularioSoloLectura">
+        Modificar
+      </button>
+      <button class="btn btn-default" type="button" [disabled]="esFormularioSoloLectura">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #template>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Agregar</h4>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="agregarForm">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="rfcInput" class="form-label"><span class="text-danger">* </span>RFC</label>
+              <div class="d-flex">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="rfcInput"
+                  formControlName="rfc"
+                  placeholder="Ingrese RFC"
+                />
+                <button class="btn btn-secondary ms-2" type="button">
+                  Buscar
+                </button>
+              </div>
+            </div>
+            @if(agregarForm.get('rfc')?.invalid && agregarForm.get('rfc')?.touched) {
+            <div class="mensaje-error">Este campo es obligatorio.</div>
+            }
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="registroInput" class="form-label text-left"
+                ><span class="text-danger">* </span>Registro Federal de Contribuyentes</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="registroInput"
+                formControlName="registroInput"
+                readonly="true"
+                placeholder="Ingrese Registro"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="razonSocialInput" class="form-label"
+                ><span class="text-danger">* </span>Razón Social</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="razonSocialInput"
+                formControlName="razonSocialInput"
+                placeholder="Ingrese Razón Social"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-label" for="empleados1"
+                ><span class="text-danger">* </span>Número de empleados</label
+              >
+              <input
+                type="number"
+                class="form-control mb-2"
+                formControlName="numeroUno"
+                placeholder="1er Bimestre"
+              />
+              @if(agregarForm.get('numeroUno')?.invalid && agregarForm.get('numeroUno')?.touched) {
+              <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+              <label class="form-label" for="empleados1"
+                ><span class="text-danger">* </span>Número de empleados</label
+              >
+              <input
+                type="number"
+                class="form-control mb-2"
+                formControlName="numeroDos"
+                placeholder="2do Bimestre"
+              />
+              @if(agregarForm.get('numeroDos')?.invalid && agregarForm.get('numeroDos')?.touched) {
+              <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+              <label class="form-label" for="empleados1"
+                ><span class="text-danger">* </span>Número de empleados</label
+              >
+              <input
+                type="number"
+                class="form-control"
+                formControlName="numeroTres"
+                placeholder="3er Bimestre"
+              />
+              @if(agregarForm.get('numeroTres')?.invalid && agregarForm.get('numeroTres')?.touched) {
+              <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+            </div>
+          </div>
+          <div class="col-md-6">
+            <app-catalogo-select
+            [catalogo]="bimestreUnoCatalogo"
+            formControlName="agregarCatalogoUno"
+            [label]="'1er Bimestre'"
+            [required]="true"
+          >
+          </app-catalogo-select>
+          <app-catalogo-select
+            [catalogo]="bimestreDosCatalogo"
+            formControlName="agregarCatalogoDos"
+            [label]="'2do Bimestre'"
+            [required]="true"
+          >
+          </app-catalogo-select>
+          <app-catalogo-select
+            [catalogo]="bimestreTresCatalogo"
+            formControlName="agregarCatalogoTres"
+            [label]="'3er Bimestre'"
+            [required]="true"
+          >
+          </app-catalogo-select>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" (click)="modalRef?.hide()">Aceptar</button>
+      <button type="button" class="btn btn-default" (click)="modalRef?.hide()">Cancelar</button>
+    </div>
+  </ng-template>

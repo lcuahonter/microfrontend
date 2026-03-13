@@ -1,0 +1,350 @@
+<app-datos-del-establecimiento-seccion #DatosDelEstablecimientoSeccionComponent></app-datos-del-establecimiento-seccion>
+
+<app-domicillio-del-establecimiento-seccion #DomicillioDelEstablecimientoSeccionComponent [tramites]="tramites"></app-domicillio-del-establecimiento-seccion>
+
+<label class="mt-5"> Datos del producto*: </label>
+<app-tabla-dinamica
+  [configuracionTabla]="configuracionTablaDatosProducto"
+  [datos]="establecimientoData"
+  [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX"
+  [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+  (listaDeFilaSeleccionada)="onProductosSeleccionados($event)"
+></app-tabla-dinamica>
+
+<div class="row">
+  <div class="col-md-12 d-flex justify-content-end mt-5">
+    <div class="btn-group">
+      @if(establecimientoData.length >= 1) {
+        <button 
+          class="btn btn-default me-2" 
+          type="button" 
+          [disabled]="esFormularioSoloLectura"
+          (click)="modificarProducto()"
+        >
+          Modificar
+        </button>
+      }
+      @if(establecimientoData.length >= 1) {
+        <button 
+          class="btn btn-danger me-2" 
+          type="button" 
+          [disabled]="esFormularioSoloLectura"
+          (click)="eliminarProductos()"
+        >
+          Eliminar
+        </button>
+      }
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="openDatosMercanciaModal()"
+        [disabled]="esFormularioSoloLectura"
+      >
+        Agregar
+      </button>
+    </div>
+  </div>
+</div>
+<app-manifiestos-representante-seccion #ManifiestosRepresentanteSeccionComponent [tramites]="tramites"></app-manifiestos-representante-seccion>
+
+<div
+  class="modal fade"
+  #datosMercanciaModal
+  tabindex="-1"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <form [formGroup]="datosMercanciaForm">
+        <div class="modal-body">
+          <ng-titulo titulo="Datos mercancía"></ng-titulo>
+          <div class="row">
+            <div class="col-md-10">
+              <label>Nombre Específico<span [ngClass]="{'text-danger': datosMercanciaForm.get('nombreEspecifico')?.invalid && (datosMercanciaForm.get('nombreEspecifico')?.touched || datosMercanciaForm.get('nombreEspecifico')?.dirty)}">*</span>:</label>
+              <textarea
+                id="message"
+                class="form-control mb-5"
+                placeholder=""
+                rows="15"
+                formControlName="nombreEspecifico"
+                [attr.maxlength]="nombreEspecificoMaxLength"
+              ></textarea>
+              @if (datosMercanciaForm.get('nombreEspecifico')?.invalid && datosMercanciaForm.get('nombreEspecifico')?.touched) {
+                <div class="text-danger">
+                  @if (datosMercanciaForm.get('nombreEspecifico')?.errors?.['required']) {
+                    <small>Este campo es obligatorio</small>
+                  }
+                </div>
+              }
+            </div>
+            <div class="col-md-2"></div>
+          </div>
+          <div class="row">
+            <div class="col-md-10">
+              <app-catalogo-select
+                [catalogo]="catalogoTipoProducto"
+                formControlName="tipoDeProducto"
+                [label]="'Tipo de producto'"
+                [required]="true"
+                name="tipoDeProducto"
+              >
+              </app-catalogo-select>
+            </div>
+          </div>
+          <div class="row">
+            <div id="fraccionArancelaria" class="col-md-10 mb-3">
+              <label for="fraccionArancelaria">Fracción arancelaria<span [ngClass]="{'text-danger': datosMercanciaForm.get('fraccionArancelaria')?.invalid && (datosMercanciaForm.get('fraccionArancelaria')?.touched || datosMercanciaForm.get('fraccionArancelaria')?.dirty)}">*</span>:</label>
+              <div>
+                <input
+                  type="text"
+                  id="fraccionArancelariaId"
+                  formControlName="fraccionArancelaria"
+                  class="form-control"
+                  (blur)="onRepresentanteRfcBlur()"
+                />
+                @if (datosMercanciaForm.get('fraccionArancelaria')?.invalid && datosMercanciaForm.get('fraccionArancelaria')?.touched) {
+                  <div class="text-danger">
+                    @if (datosMercanciaForm.get('fraccionArancelaria')?.errors?.['required']) {
+                      <small>Este campo es obligatorio</small>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-10">
+              <label for="descripcionFraccionArancelaria">Descripción de la fracción arancelaria<span [ngClass]="{'text-danger': datosMercanciaForm.get('descripcionFraccionArancelaria')?.invalid && (datosMercanciaForm.get('descripcionFraccionArancelaria')?.touched || datosMercanciaForm.get('descripcionFraccionArancelaria')?.dirty)}">*</span>:</label>
+              <input
+                type="text"
+                id="descripcionFraccionArancelariaId"
+                class="form-control"
+                formControlName="descripcionFraccionArancelaria"
+                [readOnly]="true"
+              />
+              @if (datosMercanciaForm.get('descripcionFraccionArancelaria')?.invalid && datosMercanciaForm.get('descripcionFraccionArancelaria')?.touched) {
+                <div class="text-danger">
+                  @if (datosMercanciaForm.get('descripcionFraccionArancelaria')?.errors?.['required']) {
+                    <small>Este campo es obligatorio</small>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-5">
+              <label for="cantidadUMT">Cantidad UMT<span [ngClass]="{'text-danger': datosMercanciaForm.get('cantidadUMT')?.invalid && (datosMercanciaForm.get('cantidadUMT')?.touched || datosMercanciaForm.get('cantidadUMT')?.dirty)}">*</span> :</label>
+              <input
+                type="text"
+                id="cantidadUMT"
+                class="form-control"
+                formControlName="cantidadUMT"
+              />
+              @if (datosMercanciaForm.get('cantidadUMT')?.invalid && datosMercanciaForm.get('cantidadUMT')?.touched) {
+                <div class="text-danger">
+                  @if (datosMercanciaForm.get('cantidadUMT')?.errors?.['required']) {
+                    <small>Este campo es obligatorio</small>
+                  }
+                </div>
+              }
+            </div>
+            <div class="col-md-5">
+              <label for="descripcionFraccionArancelaria">UMT:</label>
+              <input
+                type="text"
+                id="umt"
+                class="form-control"
+                formControlName="umt"
+                [readOnly]="true"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-5">
+              <label for="cantidadOVolumen">Cantidad o Volúmen<span [ngClass]="{'text-danger': datosMercanciaForm.get('cantidadOVolumen')?.invalid && (datosMercanciaForm.get('cantidadOVolumen')?.touched || datosMercanciaForm.get('cantidadOVolumen')?.dirty)}">*</span> :</label>
+              <input
+                type="text"
+                id="cantidadOVolumenId"
+                class="form-control"
+                formControlName="cantidadOVolumen"
+              />
+                            @if (datosMercanciaForm.get('cantidadOVolumen')?.invalid && datosMercanciaForm.get('cantidadOVolumen')?.touched) {
+                <div class="text-danger">
+                  @if (datosMercanciaForm.get('cantidadOVolumen')?.errors?.['required']) {
+                    <small>Este campo es obligatorio</small>
+                  }
+                </div>
+              }
+            </div>
+            <div class="col-md-5">
+              <app-catalogo-select
+                [catalogo]="unidadDeMedida"
+                [label]="'Unidad de medida'"
+                [required]="true"
+                formControlName="unidadDeMedida"
+              ></app-catalogo-select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-10">
+              <label>Presentación farmacéutica o tipo de envase<span [ngClass]="{'text-danger': datosMercanciaForm.get('presentacionaFrmaceutica')?.invalid && (datosMercanciaForm.get('presentacionaFrmaceutica')?.touched || datosMercanciaForm.get('presentacionaFrmaceutica')?.dirty)}">*</span>:</label>
+              <textarea
+                id="presentacionaFrmaceuticaId"
+                class="form-control mb-5"
+                placeholder=""
+                rows="15"
+                formControlName="presentacionaFrmaceutica"
+              ></textarea>
+              @if (datosMercanciaForm.get('presentacionaFrmaceutica')?.invalid && datosMercanciaForm.get('presentacionaFrmaceutica')?.touched) {
+                <div class="text-danger">
+                  @if (datosMercanciaForm.get('presentacionaFrmaceutica')?.errors?.['required']) {
+                    <small>Este campo es obligatorio</small>
+                  }
+                </div>
+              }
+            </div>
+            <div class="col-md-2"></div>
+          </div>
+
+          <ng-titulo titulo="Condiciones de almacenamiento"></ng-titulo>
+          <div class="row">
+            <div class="col-md-10">
+              <label for="almacenamientoEnvasePrimario">Envase primario:</label>
+              <input
+                type="text"
+                id="almacenamientoEnvasePrimarioId"
+                class="form-control"
+                formControlName="almacenamientoEnvasePrimario"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-10">
+              <label for="almacenamientoEnvaseSecundario"
+                >Envase secundario:</label
+              >
+              <input
+                type="text"
+                id="almacenamientoEnvaseSecundarioId"
+                class="form-control"
+                formControlName="almacenamientoEnvaseSecundario"
+              />
+            </div>
+          </div>
+
+          <ng-titulo titulo="Condiciones de transporte"></ng-titulo>
+          <div class="row">
+            <div class="col-md-10">
+              <label for="transporteEnvasePrimario">Envase primario:</label>
+              <input
+                type="text"
+                id="transporteEnvasePrimarioId"
+                class="form-control"
+                formControlName="transporteEnvasePrimario"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-10">
+              <label for="transporteEnvaseSecundario">Envase secundario:</label>
+              <input
+                type="text"
+                id="transporteEnvaseSecundarioId"
+                class="form-control"
+                formControlName="transporteEnvaseSecundario"
+              />
+            </div>
+          </div>
+
+          <div class="row mt-5">
+            <div class="col-md-10">
+              <div
+                class="panel-group ficha-collapse"
+                id="accordionPaisDeOrigen"
+              >
+                <div class="panel panel-default">
+                  <div
+                    class="panel-heading"
+                    (click)="mostrar_colapsable_pais()"
+                  >
+                    <h4 class="panel-title">
+                      <a> País de Destino </a>
+                    </h4>
+                    <button
+                      type="button"
+                      title="Mostrar"
+                      class="collpase-button collapsed"
+                    ></button>
+                  </div>
+                  @if(colapsable){
+                  <div class="panel-collapse collapse in" id="panel-01">
+                    <div class="panel-body">
+                      <crosslist
+                        [fechas]="seleccionarOrigenDelPais"
+                        [label]="paisDeOriginLabel"
+                        [fechasSeleccionadas]="seleccionadasPaisDeOriginDatos"
+                        [botones]="paisDeOriginBotons"
+                        (fechasSeleccionadasChange)="
+                          paisDeOriginSeleccionadasChange($event)
+                        "
+                      ></crosslist>
+                    </div>
+                  </div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-10">
+              <app-catalogo-select
+                [catalogo]="usoEspecifico"
+                [label]="'Uso específico'"
+                [required]="true"
+                formControlName="usoEspecifico"
+              ></app-catalogo-select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer mt-5">
+          <button
+            type="button"
+            class="btn btn-default"
+            (click)="limpiarFormulario()"
+          >
+            Limpiar
+          </button>
+          <button type="button" class="btn btn-default" data-bs-dismiss="modal">
+            Cancelar
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="guardarDatosMercancia()"
+          >
+            {{ productosSeleccionados.length === 1 ? 'Modificar' : 'Agregar' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Alert Modals -->
+@if(mostrarAlertaSeleccion) {
+  <section>
+    <lib-notificaciones
+      [notificacionInput]="notificacionSeleccion"
+      (confirmacionModal)="cerrarAlerta()"
+    ></lib-notificaciones>
+  </section>
+}
+
+@if(mostrarConfirmacionEliminacion) {
+  <section>
+    <lib-notificaciones
+      [notificacionInput]="notificacionEliminacion"
+      (confirmacionModal)="confirmarEliminacion($event)"
+    ></lib-notificaciones>
+  </section>
+}

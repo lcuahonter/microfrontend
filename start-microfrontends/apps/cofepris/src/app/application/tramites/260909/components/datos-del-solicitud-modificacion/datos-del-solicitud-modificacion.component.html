@@ -1,0 +1,741 @@
+<div class="container">
+  <form [formGroup]="domicilioEstablecimiento">
+    <div>
+      <div>
+        <label class="mt-5 mb-3">
+          Seleccione el tipo de operación que desea realizar*:
+        </label>
+
+        <app-input-radio
+          [radioOptions]="genericOptions"
+          [isRequired]="true"
+          [layout]="'horizontal'"
+          formControlName="ideGenerica1"
+          (change)="enCambioDeControl('ideGenerica1')"
+        ></app-input-radio>
+      </div>
+
+      <div class="row mt-5">
+        <div class="col-md-12">
+          <div>
+            <label for="observaciones"> Justificacion</label>
+            <span class="require">*</span>
+          </div>
+          <div>
+            <textarea
+              cols="70"
+              rows="5"
+              id="observacionesId"
+              class="form-control"
+              formControlName="observaciones" 
+              placeholder="Justificación"
+              maxlength="2000"
+              (change)="enCambioDeControl('observaciones')"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+      <ng-titulo titulo="Datos del establecimiento"></ng-titulo>
+      <div class="row">
+        <div class="col-md-8"></div>
+        <div class="col-md-4 d-flex justify-content-end">
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="abrirModal()"
+          >
+            Seleccionar establecimiento
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="establecimientoRFCResponsableSanitario"
+              >RFC del responsable sanitario:</label
+            >
+            <input
+              class="form-control"
+              id="establecimientoRFCResponsableSanitarioId"
+              placeholder=""
+              type="text"
+              maxlength="13"
+              formControlName="establecimientoRFCResponsableSanitario"
+              (change)="enCambioDeControl('establecimientoRFCResponsableSanitario')"
+            />
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="form-group">
+            <label class="form-label" for="establecimientoRazonSocial"
+              >Denominación o razón social*:</label
+            >
+            <input
+              class="form-control"
+              id="establecimientoRazonSocialId"
+              placeholder=""
+              type="text"
+              maxlength="100"
+              formControlName="establecimientoRazonSocial"
+              (change)="enCambioDeControl('establecimientoRazonSocial')"
+            />
+          </div>
+          @if(domicilioEstablecimiento.controls['establecimientoRazonSocial'].invalid && domicilioEstablecimiento.controls['establecimientoRazonSocial'].touched) {
+            <div class="d-grid">
+              @if(domicilioEstablecimiento.controls['establecimientoRazonSocial'].errors?.['required']) {
+                <span class="mensaje-error">Este campo es obligatorio</span>
+              }
+            </div>
+          }
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="establecimientoCorreoElectronico">Correo electrónico*: 
+                <span class="bi bi-question-circle-fill" tooltip="ejemplo@correo.com" placement="top"></span>
+            </label>
+            <input
+              class="form-control"
+              id="establecimientoCorreoElectronicoId"
+              placeholder=""
+              type="text"
+              formControlName="establecimientoCorreoElectronico"
+              (change)="enCambioDeControl('establecimientoCorreoElectronico')"
+              
+            />
+          </div>
+        </div>
+      </div>
+      <ng-titulo titulo="Domicilio del establecimiento"></ng-titulo>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="establecimientoDomicilioCodigoPostal">Código postal*:</label>
+            <input
+              class="form-control"
+              type="text"
+              id="establecimientoDomicilioCodigoPostalId"
+              appUppercase
+           formControlName="establecimientoDomicilioCodigoPostal"
+           maxlength="12"
+           (change)="enCambioDeControl('establecimientoDomicilioCodigoPostal')"
+            />
+          </div>
+          @if(domicilioEstablecimiento.controls['establecimientoDomicilioCodigoPostal'].invalid && domicilioEstablecimiento.controls['establecimientoDomicilioCodigoPostal'].touched) {
+            <div class="d-grid">
+              @if(domicilioEstablecimiento.controls['establecimientoDomicilioCodigoPostal'].errors?.['required']) {
+                <span class="mensaje-error">Este campo es obligatorio</span>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <app-catalogo-select
+              [catalogo]="estado"
+              [label]="'Estado'"
+              name="estado"
+              [required]="true"
+              formControlName="establecimientoEstados"
+              (change)="enCambioDeControl('establecimientoEstados')"
+                 [isDisabled]="esFormularioSoloLectura"
+            >
+            </app-catalogo-select>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="descripcionMunicipio"
+              >Municipio o alcaldía*:</label
+            >
+            <input
+              class="form-control"
+              type="text"
+              id="descripcionMunicipioId"
+              appUppercase
+              formControlName="descripcionMunicipio"
+              maxlength="120"
+              (change)="enCambioDeControl('descripcionMunicipio')"
+            />
+          </div>
+          @if(domicilioEstablecimiento.controls['descripcionMunicipio'].invalid && domicilioEstablecimiento.controls['descripcionMunicipio'].touched) {
+            <div class="d-grid">
+              @if(domicilioEstablecimiento.controls['descripcionMunicipio'].errors?.['required']) {
+                <span class="mensaje-error">Este campo es obligatorio</span>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="localidad">Localidad:</label>
+            <input
+              class="form-control"
+              type="text"
+              id="localidad"
+              formControlName="localidad"
+              maxlength="120"
+              (change)="enCambioDeControl('localidad')"
+            />
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="establishomentoColonias">Colonia:</label>
+            <input
+              class="form-control"
+              type="text"
+              id="establishomentoColoniasId"
+              maxlength="120"
+              formControlName="establishomentoColonias"
+              (change)="enCambioDeControl('establishomentoColonias')"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label class="form-label" for="calle"
+              >Calle*:
+              <span class="bi bi-question-circle-fill" tooltip="Domicilio, calle, número interior, número exterior, lote" placement="top"></span>
+            </label>
+            <input
+              class="form-control"
+              type="text"
+              id="calle"
+              appUppercase
+              formControlName="calle"
+              maxlength="100"
+               (change)="enCambioDeControl('calle')"
+            />
+          </div>
+          @if(domicilioEstablecimiento.controls['calle'].invalid && domicilioEstablecimiento.controls['calle'].touched) {
+            <div class="d-grid">
+              @if(domicilioEstablecimiento.controls['calle'].errors?.['required']) {
+                <span class="mensaje-error">Este campo es obligatorio</span>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-1">
+          <div class="form-group">
+            <label class="form-label" for="lada">Lada:</label>
+            <input
+              class="form-control"
+              type="text"
+              id="lada"
+              appUppercase
+              formControlName ="lada"
+              maxlength="5"
+              (change)="enCambioDeControl('lada')"
+            />
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label class="form-label" for="telefono">Teléfono*:</label>
+            <input
+              class="form-control"
+              type="text"
+              id="telefono"
+              appUppercase
+              formControlName = "telefono"
+              maxlength="30"
+              (change)="enCambioDeControl('telefono')"
+            />
+          </div>
+          @if(domicilioEstablecimiento.controls['telefono'].invalid && domicilioEstablecimiento.controls['telefono'].touched) {
+            <div class="d-grid">
+              @if(domicilioEstablecimiento.controls['telefono'].errors?.['required']) {
+                <span class="mensaje-error">Este campo es obligatorio</span>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+ 
+    <div class="row" class="mt-5">
+      <div class="form-group">
+        <label class="form-label" for="scian">S.C.I.A.N.*:</label>
+        <app-tabla-dinamica
+          [configuracionTabla]="configuracionTabla"
+          [datos]="personaparas"
+          [tipoSeleccionTabla]="tipoSeleccionTabla.CHECKBOX"
+          formcontrolname="scian"
+          [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+          (listaDeFilaSeleccionada)="onScianSeleccionados($event)"
+        >
+        </app-tabla-dinamica>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end">
+      @if(scianSelecciona.length > 0) {
+        <button type="button" class="btn btn-danger btn-space me-2">Eliminar</button>
+      }
+      <button
+        type="button"
+        class="btn btn-primary btn-space"
+        data-bs-toggle="modal"
+        data-bs-target="#modalClave"
+        (click)="mostrarModeloClave()"
+      >
+        Agregar
+      </button>
+    </div>
+  </form>
+
+  <form [formGroup]="solicitudEstablecimientoForm">
+    <div class="row align-item-center">
+      <div class="col-md-4 mt-5">
+        <lib-input-check
+        [label]="'Aviso de funcionamiento:'"
+        [id]="'avisoCheckbox'"
+        [required]="true"
+        formControlName="avisoCheckbox"
+        [isDisabled]="esFormularioSoloLectura || tieneNoLicenciaSanitaria"
+        (change)="toggleNoLicenciaSanitaria($event); enControlCambioFormulario('avisoCheckbox')"
+      ></lib-input-check>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="licenciaSanitaria"
+            >No. de licencia sanitaria:
+            <span class="bi bi-question-circle-fill" tooltip="Número de la autorización indicado en el documento emitido por la autoridad sanitaria competente" placement="top"></span>
+          </label>
+          <input
+            class="form-control"
+            id="licenciaSanitaria"
+            placeholder=""
+            type="text"
+            formControlName="noLicenciaSanitaria"
+            (change)="enControlCambioFormulario('noLicenciaSanitaria')"
+            maxlength="20"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <app-catalogo-select
+          [catalogo]="estado"
+          [label]="'Régimen'"
+          [required]="true"
+          name="regimen"
+          [tooltipQuestionCircle]="true"
+          [tooltipQuestionCircleText]="'Régimen al que se destinará la mercancía'"
+          formControlName="regimen"
+          (change)="enControlCambioFormulario('regimen')"
+             [isDisabled]="esFormularioSoloLectura"
+        ></app-catalogo-select>
+      </div>
+      <div class="col-md-8">
+        <app-catalogo-select
+          [catalogo]="estado"
+          [label]="'Aduanas de entradas'"
+          [required]="true"
+          name="aduanasEntradas"
+          formControlName="aduanasEntradas"
+          (change)="enControlCambioFormulario('aduanasEntradas')"
+             [isDisabled]="esFormularioSoloLectura"
+        ></app-catalogo-select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 mt-5">
+        <h4>Mercancías*:</h4>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <app-tabla-dinamica
+        [tipoSeleccionTabla]="tablaSeleccionCheckbox"
+        [configuracionTabla]="mercanciasTabla"
+        [datos]="mercanciasTablaDatos"
+        [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+        (listaDeFilaSeleccionada)="onMercanciasSeleccionados($event)"
+      ></app-tabla-dinamica>
+      <div class="container text-end mt-5">
+        @if(seleccionaMercancias.length > 0) {
+          <button class="btn btn-default me-2">Eliminar</button>
+          <button class="btn btn-default me-2">Modificar</button>
+        }
+        <button
+          class="btn btn-primary me-2"
+          data-bs-toggle="modal"
+          (click)="abrirModalMercancia()"
+        >
+          Agregar
+        </button>
+      </div>
+    </div>
+<app-manifiestos-representante-seccion  
+   ></app-manifiestos-representante-seccion>
+
+  </form>
+</div>
+@if (nuevaNotificacion) {
+  <section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion" (confirmacionModal)="eliminarPedimento($event)">
+  </lib-notificaciones>
+  </section>
+  }
+
+
+<div 
+class="modal fade" 
+data-bs-keyboard="false" data-bs-backdrop="static"
+#establecimientoModal
+tabindex="-1"
+aria-labelledby="establecimientoModalLabel"
+aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form [formGroup]="scianForm">
+        <div class="modal-body">
+          <ng-titulo titulo="Clave S.C.I.A.N."></ng-titulo>
+          <div class="row">
+            <div class="col-md-8">
+              <app-catalogo-select
+                [catalogo]="scianJson"
+                [label]="'Clave S.C.I.A.N.*'"
+                [placeholder]="'Seleccione una opción'"
+                formControlName="scian"
+                (change)="onContriloChange('scian')"
+                   [isDisabled]="esFormularioSoloLectura"
+              ></app-catalogo-select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8">
+              <app-catalogo-select
+                [catalogo]="scianJson"
+                [label]="'Descripción del S.C.I.A.N.'"
+                [placeholder]="'Seleccione una opción'"
+                formControlName="descripcionScian"
+                (change)="onContriloChange('descripcionScian')"
+                   [isDisabled]="true"
+              ></app-catalogo-select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer mt-5 justify-content-end">
+          <button
+            type="button"
+            class="btn btn-default"
+            (click)="limpiarScianForm()"
+          >
+            Limpiar
+          </button>
+          <button type="button" class="btn btn-default" (click)="cerrarModal()" >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+          >
+            Agregar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+ <div
+  class="modal fade"
+ #modalAddAgentMercancias
+  tabindex="-1"
+  data-bs-keyboard="false" data-bs-backdrop="static"
+  aria-labelledby="modalAddAgentMercanciasLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Datos mercancías</h4>
+      </div>
+      <div class="modal-body modal-height">
+        <form [formGroup]="formMercancias">
+          <div class="form-group">
+            <app-catalogo-select
+              [catalogo]="estado"
+              formControlName="clasificacion"
+              [label]="'Clasificación del producto'"
+              [required]="true"
+              name="clasificacion"
+                 [isDisabled]="esFormularioSoloLectura"
+            ></app-catalogo-select>
+          </div>
+          <div class="form-group">
+            <app-catalogo-select
+              [catalogo]="estado"
+              formControlName="especificarClasificacionProducto"
+              [label]="'Especificar clasificación del producto'"
+              [required]="true"
+              name="especificarClasificacionProducto"
+            ></app-catalogo-select>
+          </div>
+          <div class="form-group">
+            <label for="denominacionEspecifica"
+              >Denominación específica del producto*:</label
+            >
+            <input
+              type="text"
+              id="denominacionEspecifica"
+              formControlName="denominacionEspecifica"
+              class="form-control"
+              maxlength="1000"
+            />
+          </div>
+          <div class="form-group">
+            <label for="denominacionDistintiva"
+              >Denominación distintiva*:</label
+            >
+            <input
+              type="text"
+              id="denominacionDistintiva"
+              formControlName="denominacionDistintiva"
+              class="form-control"
+              maxlength="1000"
+            />
+          </div>
+          <div class="form-group">
+            <label for="denominacionComun"
+              >Denominación común, nombre común o nombre científico*:</label
+            >
+            <input
+              type="text"
+              id="denominacionComun"
+              formControlName="denominacionComun"
+              class="form-control"
+              maxlength="120"
+            />
+          </div>
+          <div class="form-group">
+            <app-catalogo-select
+              [catalogo]="estado"
+              formControlName="tipoDeProducto"
+              [label]="'Tipo de producto'"
+              [required]="true"
+              name="tipoDeProducto"
+            ></app-catalogo-select>
+          </div>
+          <div class="form-group">
+            <app-catalogo-select
+              [catalogo]="estado"
+              formControlName="estadoFisico"
+              [label]="'Estado físico'"
+              [required]="true"
+              name="estadoFisico"
+            ></app-catalogo-select>
+          </div>
+          <div class="form-group">
+            <label for="fraccionArancelaria">Fracción arancelaria*:</label>
+            <input
+              type="text"
+              id="fraccionArancelaria"
+              formControlName="fraccionArancelaria"
+              class="form-control"
+              maxlength="8"
+              (change)="setFormaControl()"
+            />
+          </div>
+          <div class="form-group">
+            <label for="descripcionFraccion"
+              >Descripción de la fracción*:</label
+            >
+            <input
+              type="text"
+              id="descripcionFraccion"
+              formControlName="descripcionFraccion"
+              class="form-control"
+            />
+          </div>
+          <div class="form-group">
+            <label for="cantidadUMT">Cantidad UMT*:</label>
+            <input
+              type="text"
+              id="cantidadUMT"
+              formControlName="cantidadUMT"
+              class="form-control"
+              maxlength="20"
+            />
+          </div>
+          <div class="form-group">
+            <label for="UMT">UMT*:</label>
+            <input
+              type="text"
+              id="UMT"
+              formControlName="UMT"
+              class="form-control"
+            />
+          </div>
+          <div class="form-group">
+            <label for="cantidadUMC">Cantidad UMC*:</label>
+            <input
+              type="text"
+              id="cantidadUMC"
+              formControlName="cantidadUMC"
+              class="form-control"
+              maxlength="20"
+            />
+          </div>
+          <div class="form-group">
+            <app-catalogo-select
+              [catalogo]="estado"
+              formControlName="UMC"
+              [label]="'UMC'"
+              [required]="true"
+              name="UMC"
+            ></app-catalogo-select>
+          </div>
+          <div class="form-group">
+            <label for="presentacion"
+              >Presentación farmacéutica o tipo de envase*:</label
+            >
+            <input
+              type="text"
+              id="presentacion"
+              formControlName="presentacion"
+              class="form-control"
+              maxlength="250"
+            />
+          </div>
+          <div class="form-group">
+            <label for="numeroRegistro">Número de registro sanitario*:</label>
+            <input
+              type="text"
+              id="numeroRegistro"
+              formControlName="numeroRegistro"
+              class="form-control"
+              maxlength="15"
+            />
+          </div>
+          <div class="form-group">
+            <input-fecha
+              [datos]="fechaCaducidadInput"
+              formControlName="fechaCaducidad"
+              [setFecha]="formMercancias.get('fechaCaducidad')?.value"
+              (valorCambiado)="cambioFechaFinal($event)"
+            ></input-fecha>
+          </div>
+          <div class="form-group mt-5">
+            <div class="panel-group ficha-collapse" id="accordion">
+              <div class="panel panel-default">
+                <div
+                  class="panel-heading"
+                  (click)="mostrar_colapsable()"
+                  tabindex="0"
+                >
+                  <p class="panel-title">País de orígen</p>
+                  <button
+                    type="button"
+                    class="collpase-button" 
+                    [class.collapsed]="!colapsable"
+                  ></button>
+                </div>
+                @if(colapsable){
+                <div class="panel-collapse collapse in" id="panel-01">
+                  <div class="panel-body">
+                    <crosslist
+                      [fechas]="seleccionarOrigenDelPais"
+                      [label]="paisDeOrigenLabel"
+                      [botones]="paisDeProcedenciaBotons"
+                    ></crosslist>
+                  </div>
+                </div>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group mt-5">
+            <div class="panel-group ficha-collapse" id="accordion">
+              <div class="panel panel-default">
+                <div
+                  class="panel-heading"
+                  (click)="mostrar_colapsableDos()"
+                  tabindex="0"
+                >
+                  <p class="panel-title">País de procedencia</p>
+                  <button
+                    type="button"
+                    class="collpase-button" 
+                    [class.collapsed]="!colapsableDos"
+                  ></button>
+                </div>
+                @if(colapsableDos){
+                <div class="panel-collapse collapse in" id="panel-01">
+                  <div class="panel-body">
+                    <crosslist
+                      [fechas]="seleccionarOrigenDelPaisDos"
+                      [label]="paisDeProcedenciaLabel"
+                      [botones]="paisDeProcedenciaBotonsDos"
+                    ></crosslist>
+                  </div>
+                </div>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group mt-5">
+            <div class="panel-group ficha-collapse" id="accordion">
+              <div class="panel panel-default">
+                <div
+                  class="panel-heading"
+                  (click)="mostrar_colapsableTres()"
+                  tabindex="0"
+                >
+                  <p class="panel-title">Uso específico</p>
+                  <button
+                    type="button"
+                    class="collpase-button" 
+                    [class.collapsed]="!colapsableTres"
+                  ></button>
+                </div>
+                @if(colapsableTres){
+                <div class="panel-collapse collapse in" id="panel-01">
+                  <div class="panel-body">
+                    <crosslist
+                      [fechas]="seleccionarOrigenDelPaisTres"
+                      [label]="usoEspecificoLabel"
+                      [botones]="paisDeProcedenciaBotonsTres"
+                    ></crosslist>
+                  </div>
+                </div>
+                }
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer custom-footer">
+        <button type="button" class="btn btn-default" (click)="limpiarFormulario()">
+          Limpiar
+        </button>
+        <button type="button" class="btn btn-default" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"  (click)="agregarMercancia()">
+          Agregar
+        </button>
+      </div>
+    </div>
+  </div>
+</div> 

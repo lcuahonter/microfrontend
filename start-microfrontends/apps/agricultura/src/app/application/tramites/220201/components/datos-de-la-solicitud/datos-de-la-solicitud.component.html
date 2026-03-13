@@ -1,0 +1,206 @@
+<div class="container">
+  <form [formGroup]="forma">
+    <div class="row mt-5">
+      <div class="col-md-12">
+        <div class="panel-group ficha-collapse" id="accordion">
+          <div class="panel panel-default">
+            <div class="panel-heading" (click)="esFormularioSoloLectura ? null :  mostrar_colapsable()" tabindex="0">
+              <h4 class="panel-title">
+                <a aria-label="Repeat">
+                  <i class="bi bi-repeat" aria-hidden="true"></i></a>
+              </h4>
+              <button type="button" class="collpase-button collapsed" *ngIf="!colapsable"></button>
+              <button type="button" class="collpase-button" *ngIf="colapsable"></button>
+            </div>
+            @if(colapsable && !esFormularioSoloLectura){
+            <div class="panel-collapse collapse in" id="panel-01">
+              <div class="panel-body">
+                <ng-alert [CONTENIDO]="seleccionado"></ng-alert>
+                <div class="row mt-5">
+                  <div class="col-md-12">
+                    <label for="Solicitud">Solicitud</label>
+                  </div>
+                  <div class="col-md-12" style="cursor: pointer">
+                    <app-tabla-dinamica [tipoSeleccionTabla]="tipoSeleccionsoli"
+                      [configuracionTabla]="configuracionColumnasSolicitud" [datos]="cuerpoTablaSolicitud"
+                      [tableId]="'tabla-solicitud'" [showPagination]="true" [mode]="'client'"
+                      [totalItems]="cuerpoTablaSolicitud.length" [itemsPerPage]="5"
+                      [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+                      [esDobleClick]="true"
+                      (filaClic)="onFilaClic($event)"></app-tabla-dinamica>
+                  </div>
+                </div>
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" formGroupName="datosDelaSolicitud">
+      <ng-titulo titulo="Datos del trámite a realizar" />
+
+      <div class="col-md-12">
+        <app-catalogo-select [catalogo]="aduanaDeIngreso" formControlName="aduanaIngreso" [label]="'Aduana de ingreso'"
+          [required]="true" name="aduanaIngreso" [isDisabled]="esFormularioSoloLectura"
+          (change)="aduanaIngresoSeleccionado()"></app-catalogo-select>
+        <div
+          *ngIf="datosDelaSolicitud.get('aduanaIngreso')?.invalid && datosDelaSolicitud.get('aduanaIngreso')?.touched">
+          <small class="mensaje-error">Este campo es obligatorio.</small>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <app-catalogo-select [catalogo]="sanidadAgropecuaria" formControlName="oficinaInspeccion"
+          [label]="'Oficina de inspección de sanidad Agropecuaria'" [required]="true" name="oficinaInspeccion"
+          [isDisabled]="esFormularioSoloLectura" (change)="setValoresStore(); obtenerPuntoDeInspeccion(forma)"></app-catalogo-select>
+        <div
+          *ngIf="datosDelaSolicitud.get('oficinaInspeccion')?.invalid && datosDelaSolicitud.get('oficinaInspeccion')?.touched">
+          <small class="mensaje-error">Este campo es obligatorio.</small>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <app-catalogo-select [catalogo]="puntoInspeccion" formControlName="puntoInspeccion"
+          [label]="'Punto de inspección'" [required]="true" name="puntoInspeccion"
+          [isDisabled]="esFormularioSoloLectura" (change)="setValoresStore()"></app-catalogo-select>
+        <div
+          *ngIf="datosDelaSolicitud.get('puntoInspeccion')?.invalid && datosDelaSolicitud.get('puntoInspeccion')?.touched">
+          <small class="mensaje-error">Este campo es obligatorio.</small>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label" for="claveUCON">Clave UCON: <span tooltip="Sólo para usuarios que cuenten con la contraseña UCON e importen productos cárnicos">
+              <i class="bi bi-question-circle-fill"></i>
+            </span>
+          </label>
+          <input formControlName="claveUCON" class="form-control" id="claveUCON" placeholder="" type="text" libUppercase (blur)="mensajeValidacion()"
+            [maxlength]="15" (change)="setValoresStore()" [class.is-invalid]="datosDelaSolicitud.get('claveUCON')?.invalid && datosDelaSolicitud.get('claveUCON')?.touched"
+            aria-required="true"
+            aria-describedby="claveUCONError"/>
+            <div id="claveUCONError" *ngIf="datosDelaSolicitud.get('claveUCON')?.touched" class="invalid-feedback d-block" > <!-- Mensaje si está vacío --> 
+              <span *ngIf="datosDelaSolicitud.get('claveUCON')?.hasError('required')"> Este campo es obligatorio </span> 
+              <!-- Mensaje si no cumple con el patrón --> 
+               <span *ngIf="datosDelaSolicitud.get('claveUCON')?.hasError('pattern')"> Solo se permiten letras, números y espacios </span> </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <app-catalogo-select [catalogo]="establecimientoTIF" formControlName="establecimientoTIF"
+          [label]="'Establecimiento TIF'" [required]="false" name="establecimientoTIF"
+          [isDisabled]="esFormularioSoloLectura" (change)="setValoresStore(); obtenerVeterinarioList(forma.get('establecimientoTIF')?.value)"></app-catalogo-select>
+      </div>
+      <div class="col-md-12">
+        <app-catalogo-select [catalogo]="veterinario" formControlName="nombreVeterinario"
+          [label]="'Nombre del médico veterinario'" [required]="false" name="nombreVeterinario"
+          [isDisabled]="esFormularioSoloLectura" (change)="setValoresStore()"></app-catalogo-select>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label" for="numeroGuia">Número de guía:</label>
+          <input class="form-control" id="numeroGuia" formControlName="numeroGuia" placeholder="" type="text"
+            libUppercase [maxlength]="50" (change)="setValoresStore()"  [class.required]="
+    datosDelaSolicitud.get('numeroGuia')?.invalid &&
+    datosDelaSolicitud.get('numeroGuia')?.touched
+  "/>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <app-catalogo-select [catalogo]="regimen" formControlName="regimen" [label]="'Régimen'" [required]="true"
+          name="regimen" [isDisabled]="esFormularioSoloLectura" (change)="setValoresStore()"
+          [tooltipQuestionCircle]="true"
+          [tooltipQuestionCircleText]="'Régimen al que se destinará la mercancía'"></app-catalogo-select>
+        <div *ngIf="datosDelaSolicitud.get('regimen')?.invalid && datosDelaSolicitud.get('regimen')?.touched">
+          <small class="mensaje-error">Este campo es obligatorio.</small>
+        </div>
+      </div>
+
+
+      <div class="row">
+        <ng-titulo titulo="Tipo de Mercancía" />
+        <div class="col-md-12">
+          <label for="certficacion_a">Captura de datos de mercancía<span
+              [ngClass]="{'mensaje-error':datosDelaSolicitud.get('tipoMercancia')?.invalid && datosDelaSolicitud.get('tipoMercancia')?.touched}">*</span>:</label>
+        </div>
+        <div class="col-md-12">
+          <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [layout]="'vertical'" name="tipoMercancia"
+            formControlName="tipoMercancia" (change)="radioBotonSeleccionado()"
+            [bloquearOpciones]="true"></app-input-radio>
+          <div
+            *ngIf="datosDelaSolicitud.get('tipoMercancia')?.invalid && datosDelaSolicitud.get('tipoMercancia')?.touched">
+            <small class="mensaje-error">Este campo es obligatorio.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      @if(forma.value.datosDelaSolicitud.tipoMercancia === 'yes'){
+      <ng-alert [CONTENIDO]="TEXTOS"></ng-alert>
+      }
+      <div class="row mt-5" *ngIf="forma.value.datosDelaSolicitud.tipoMercancia !== ''">
+        <div class="col-md-12">
+          <label for="mercancia">Mercancías</label>
+        </div>
+        <div class="col-md-12">
+          <app-tabla-dinamica [tipoSeleccionTabla]="tipoSeleccionsoliMercancias" [nestedContent]="tablauno"
+            [configuracionTabla]="configuracionColumnasoli" [datos]="cuerpoTabla" [expandible]="true"
+            [tableId]="'tabla-mercancias'" (listaDeFilaSeleccionada)="seleccionTabla($event)" #tablaMercancias
+            (rowExpanded)="onRowExpanded($event)" (listaDeFilaSeleccionada)="onfilasSeleccionadasChange($event)"
+            [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"></app-tabla-dinamica>
+          <div *ngIf="mensajeErrorTabla && cuerpoTabla.length === 0 ">
+            <small class="mensaje-error">Este campo es obligatorio.</small>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <ng-template #tablauno let-row>
+            <app-tabla-expandida 
+              [columns]="forma.value.datosDelaSolicitud.tipoMercancia === 'yes'? nestedColumns  : nestedColumnsDetalleProductos"
+              [data]="forma.value.datosDelaSolicitud.tipoMercancia === 'yes'? row.sensibles : row.detalleProductos"
+              [expandible]="false" [showPagination]="true" [mode]="'client'" #referenciaTabla
+              [totalItems]="forma.value.datosDelaSolicitud.tipoMercancia === 'yes'? row.sensibles.length : row.detalleProductos.length"
+              [itemsPerPage]="5">
+            </app-tabla-expandida>
+          </ng-template>
+        </div>
+      </div>
+      @if(!esFormularioSoloLectura && forma.value.datosDelaSolicitud.tipoMercancia !== ''){
+      <div class="row">
+        <div class="col-md-12 d-flex justify-content-end">
+          <button type="button" class="btn btn-default"
+            (click)="modificarMercancia()">Modificar</button>
+          <button type="button" class="btn btn-danger ms-3"
+            (click)="eliminarMercancia()">Eliminar</button>
+          <button type="button" class="btn btn-primary ms-3"
+            [disabled]="!datosDelaSolicitud.get('tipoMercancia')?.value" (click)="agregarMercancia()">Agregar</button>
+        </div>
+      </div>
+      }
+    </div>
+  </form>
+  <div>
+    @if(moduloEmergente){
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+      (confirmacionModal)="eliminarPedimento($event)"></lib-notificaciones>
+    }
+    @if(eliminarDatosTabla){
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+      (confirmacionModal)="eliminarPedimentoDatos($event)"></lib-notificaciones>
+    }
+    @if(eliminarMerDatosTabla){
+      <lib-notificaciones
+        [notificacionInput]="nuevaNotificacion"
+        (confirmacionModal)="confirmarEliminarMercancia($event)">
+      </lib-notificaciones>
+    }
+  </div>
+</div>
+@if(nuevaNotificacion) {
+<section>
+    <lib-notificaciones
+        [notificacionInput]="nuevaNotificacion"
+        [forma]="datosServicio"
+        (confirmacionModal)="confirmacionModal($event)"
+    >
+    </lib-notificaciones>
+</section>
+}
+<app-modal #modalRef></app-modal>

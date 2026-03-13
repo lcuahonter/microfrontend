@@ -1,0 +1,239 @@
+<div class="container">
+    <form [formGroup]="tercerosRelacionadosForm">
+      <div class="row">
+        <div class="col-md-12">
+          <ng-titulo titulo="Representante Legal" />
+        </div>
+        <div class="col-md-4">
+          <label class="form-label text-start" for="rfcTercero"
+            >Registro Federal de Contribuyentes<span [ngClass]="{'text-danger': tercerosRelacionadosForm.get('rfcTercero')?.invalid && (tercerosRelacionadosForm.get('rfcTercero')?.touched || tercerosRelacionadosForm.get('rfcTercero')?.dirty)}">*</span>:</label
+          >
+          <input
+            class="form-control"
+            type="text"
+            size="25"
+            id="rfcTercero"
+            name="rfcTercero"
+            formControlName="rfcTercero"
+            (change)="actualizarRfcTercero($event)"
+            [disabled]="esFormularioSoloLectura"
+          />
+            @if (tercerosRelacionadosForm.get('rfcTercero')?.invalid && (tercerosRelacionadosForm.get('rfcTercero')?.touched || tercerosRelacionadosForm.get('rfcTercero')?.dirty)) {
+              @if (tercerosRelacionadosForm.get('rfcTercero')?.hasError('required')) {
+                <small class="mensaje-error">Este campo es obligatorio</small>
+              }  @else if (!tercerosRelacionadosForm.get('rfcTercero')?.hasError('required') && tercerosRelacionadosForm.get('rfcTercero')?.hasError('pattern')) {
+                <small class="mensaje-error">Formato de RFC inválido</small>
+              } @else if (!tercerosRelacionadosForm.get('rfcTercero')?.hasError('required') && !tercerosRelacionadosForm.get('rfcTercero')?.hasError('pattern') && tercerosRelacionadosForm.get('rfcTercero')?.hasError('maxlength')) {
+                <small class="mensaje-error">Por favor, no escriba más de 15 caracteres.</small>
+              }
+            }
+        </div>
+        <div class="col-md-8">
+          <div class="form-group mt-5 pull-left">
+            <button
+              type="button"
+              name="Buscar"
+              id="Buscar"
+              class="btn btn-primary me-5"
+              (click)="buscarTerceroNacionalIDC()"
+              [disabled]="esFormularioSoloLectura">            
+              Buscar
+            </button>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label text-start" for="rfc">RFC:</label>
+          <input
+            class="form-control"
+            type="text"
+            size="25"
+            id="rfc"
+            name="rfc"
+            formControlName="rfc"
+            [disabled]="esFormularioSoloLectura"
+          />
+        </div>
+        <div class="col-md-8"></div>
+        <div class="col-md-4">
+          <label class="form-label text-start" for="nombre">Nombre:</label>
+          <input
+            class="form-control"
+            type="text"
+            size="25"
+            id="nombre"
+            name="nombre"
+            formControlName="nombre"
+            [disabled]="esFormularioSoloLectura"
+          />
+        </div>
+        <div class="col-md-4">
+          <label class="form-label text-start" for="apellidoPaterno"
+            >Apellido Paterno:</label
+          >
+          <input
+            class="form-control"
+            type="text"
+            size="25"
+            id="apellidoPaterno"
+            name="apellidoPaterno"
+            formControlName="apellidoPaterno"
+            [disabled]="esFormularioSoloLectura"
+          />
+        </div>
+        <div class="col-md-4">
+          <label class="form-label text-start" for="apellidoMaterno"
+            >Apellido Materno:</label
+          >
+          <input
+            class="form-control"
+            type="text"
+            size="25"
+            id="apellidoMaterno"
+            name="apellidoMaterno"
+            formControlName="apellidoMaterno"
+            [disabled]="esFormularioSoloLectura"
+          />
+        </div>
+        <div class="col-md-4">
+          <label class="form-label text-start" for="telefono">Teléfono:</label>
+          <input
+            class="form-control"
+            type="text"
+            size="15"
+            id="telefono"
+            name="telefono"
+            formControlName="telefono"
+            [class.is-invalid]="telefono?.invalid && (telefono?.dirty || telefono?.touched)"
+            (change)="actualizarTelefono($event)"
+            [disabled]="esFormularioSoloLectura"
+          />
+            @if(telefono?.invalid && (telefono?.dirty || telefono?.touched)) {
+              <div class="text-danger">
+                @if (!tercerosRelacionadosForm.get('telefono')?.hasError('required') && !tercerosRelacionadosForm.get('telefono')?.hasError('pattern') && tercerosRelacionadosForm.get('telefono')?.hasError('maxlength')) {
+                  <small class="mensaje-error">Por favor, no escriba más de 30 caracteres.</small>
+                }
+              </div>
+            }
+        </div>
+        <div class="col-md-4">
+          <label class="form-label text-start" for="correoElectronico">Correo Electrónico:</label>
+          <input
+            class="form-control"
+            type="email"
+            size="30"
+            id="correoElectronico"
+            name="correoElectronico"
+            formControlName="correoElectronico"
+            [class.is-invalid]="correoElectronico?.invalid && (correoElectronico?.dirty || correoElectronico?.touched)"
+            (change)="actualizarCorreoElectronico($event)"
+            [disabled]="esFormularioSoloLectura"
+          />
+            @if(correoElectronico?.invalid && (correoElectronico?.dirty || correoElectronico?.touched)) {
+              <div class="text-danger">
+                @if (!tercerosRelacionadosForm.get('correoElectronico')?.hasError('required') && tercerosRelacionadosForm.get('correoElectronico')?.hasError('email')) {
+                  <small class="mensaje-error">Por favor, escriba una dirección de correo válida.</small>
+                } 
+                @else if (!tercerosRelacionadosForm.get('correoElectronico')?.hasError('required') && !tercerosRelacionadosForm.get('correoElectronico')?.hasError('pattern') && tercerosRelacionadosForm.get('correoElectronico')?.hasError('maxlength')) {
+                  <small class="mensaje-error">Por favor, no escriba más de 320 caracteres.</small>
+                }
+              </div>
+            }
+        </div>
+        <div class="col-md-12">
+          <ng-titulo titulo="Enlace Operativo" />
+        </div>
+        <div class="col-md-12">
+          <label>Enlace Operativo</label>
+        </div>
+        <div class="col-md-12">
+            <app-tabla-dinamica
+              [tipoSeleccionTabla]="enlaceOperativoTabla"
+              [configuracionTabla]="enlaceOperativoConfiguracionColumnas"
+              [datos]="enlaceOperativosLista || []"
+              (listaDeFilaSeleccionada)="seleccionEnlaceOperativo($event)"
+              [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+            >
+            </app-tabla-dinamica>
+        </div>
+        <div class="col-12 mt-4 form-group text-end pull-right">
+          <button
+            type="button"
+            name="btnAceptarEnlace"
+            id="btnAceptarEnlace"
+            class="btn btn-primary me-2"
+            data-bs-toggle="modal"
+            data-bs-target="#agregarEnlaceOperativo"
+            (click)="guardarDatosEnlaceOperativo()"
+            [disabled]="esFormularioSoloLectura">            
+            Agregar
+          </button>
+          <button
+            type="button"
+            name="btnModificarEnlace"
+            id="btnModificar"
+            class="btn btn-default me-2"
+            (click)="guardarModificacionEnlaceOperativo()"
+            >
+            Modificar
+          </button>
+          <button
+            type="button"
+            name="btnEliminarEnlace"
+            id="btnEliminar"
+            class="btn btn-danger"
+            (click)="confirmarEliminarEnlaceOperativo()"
+            [disabled]="esFormularioSoloLectura || seleccionEnlaceOperativoDatos.length === 0">            
+            Eliminar
+          </button>
+        </div>
+        <div class="col-md-12">
+          <ng-titulo titulo="Personas para oír y recibir notificaciones" />
+        </div>
+        <div class="col-md-12">
+          <label>Personas para oír y recibir notificaciones</label>
+        </div>
+        <div class="col-md-12">
+          <app-tabla-dinamica
+            [tipoSeleccionTabla]="tipoSeleccionTabla"
+            [configuracionTabla]="configuracionColumnas"
+            [datos]="orecibirNotificacionesLista"
+          >
+          </app-tabla-dinamica>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div
+    class="modal fade"
+    id="agregarEnlaceOperativo"
+    tabindex="-1"
+    aria-labelledby="modalAgregarEnlaceOperativo"
+    aria-hidden="true"
+    #modalAgregarEnlaceOperativo
+  >
+    <div class="modal-dialog modal-dialog-centered modal-lg"  style="max-width: 100%; width: 100%;">
+      <div class="modal-content">
+        <app-agregar-enlace-operativo
+          #agregarEnlaceOperativoCmp
+          (agregarEnlaceOperativo)="agregarEnlaceOperativo($event)"
+        ></app-agregar-enlace-operativo>
+      </div>
+    </div>
+  </div>
+
+  @if(alertaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="alertaNotificacion"></lib-notificaciones>
+</section>
+}
+
+@if(nuevaNotificacion && nuevaNotificacion.tipoNotificacion) {
+<section>
+  <lib-notificaciones 
+    [notificacionInput]="nuevaNotificacion"
+    (confirmacionModal)="manejarConfirmacionEliminacion($event)">
+  </lib-notificaciones>
+</section>
+}
+  

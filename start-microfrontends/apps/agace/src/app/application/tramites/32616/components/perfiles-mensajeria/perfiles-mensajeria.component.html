@@ -1,0 +1,298 @@
+<form [formGroup]="profileForm" class="form-container">
+  <h4>Información General</h4>
+  <div class="row">
+    <label for="domicilio">* Domicilio de la Instalación:</label>
+    <textarea class="custom-textarea" rows="6" cols="100" id="domicilio" formControlName="domicilio"
+      (change)="setValoresStore(profileForm,'domicilio','setDomicilio')"></textarea>
+  </div>
+  @if(profileForm.controls['domicilio'].invalid &&
+  profileForm.controls['domicilio'].touched){
+  <div class="d-grid">
+    @if(profileForm.controls['domicilio'].errors?.['required']) {
+    <span class="mensaje-error">Este campo es obligatorio</span>
+    }
+  </div>
+  }
+
+  <p>
+    {{textos.paraca1}}
+  </p>
+  <p>
+    {{textos.paraca2}}
+  </p>
+  <p>
+    {{textos.paraca3}}
+  </p>
+  <p> *Conforme a la regla 7.1.5. fracción VI, inciso e)"Perfil de Mansajeria y Paqueteria"establecido en el Anexo 1 de
+    las RGCE declare los siguiente</p>
+
+  <h6>Indique la siguiente información de la instalación:</h6>
+  <div class="form-row">
+    <label class="custom-label" for="antiguedad">Antigüedad de la instalación (años de operación):</label>
+    <input class="custom-input" id="antiguedad" formControlName="antiguedad" type="number" (input)="actualizarAntiguedad()"/>
+  </div>
+  <div class="form-row">
+    <label class="custom-label" for="productos">Productos preponderantes que manejan en la instalación de la empresa de
+      mensajería y paquetería:</label>
+    <input class="custom-input" id="productos" formControlName="productos" type="number" (input)="actualizarProductos()"/>
+  </div>
+  <div class="form-row">
+    <label class="custom-label" for="embarquesExp">No. de embarques promedio mensual (EXP):</label>
+    <input class="custom-input" id="embarquesExp" formControlName="embarquesExp" type="number" (input)="actualizarEmbarquesExp()"/>
+  </div>
+  <div class="form-row">
+    <label class="custom-label" for="embarquesImp">No. de embarques promedio mensual (IMP):</label>
+    <input class="custom-input" id="embarquesImp" formControlName="embarquesImp" type="number" (input)="actualizarEmbarquesImp()"/>
+  </div>
+  <div class="form-row">
+    <label class="custom-label" for="empleados">Número de empleados total de esta instalación:</label>
+    <input class="custom-input" id="empleados" formControlName="empleados" type="number" (input)="actualizarEmpleados()"/>
+  </div>
+  <div class="form-row">
+    <label class="custom-label" for="superficie">Superficie de la instalación (m²):</label>
+    <input class="custom-input" id="superficie" formControlName="superficie" type="number" (input)="actualizarSuperficie()"/>
+  </div>
+  <p class="fw-bold">Indique si cuenta con certificaciones que consideren que impactan en el proceso de su cadena de
+    suministros, por ejemplo: ISO 9000; Procesos Logísticos Confiables, entre otros.</p>
+  <div class="form-row">
+    <p class="fw-bold">Otras Certificaciones:</p>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <label class="form-label" for="nombre">Nombre</label>
+      <input type="text" class="form-control" id="nombre" formControlName="nombre"
+        (change)="setValoresStore(profileForm,'nombre','setNombre')">
+    </div>
+
+    <div class="col-md-12">
+      <label class="form-label" for="categoria">Categoría</label>
+      <input type="text" class="form-control" id="categoria" formControlName="categoria"
+        (change)="setValoresStore(profileForm,'categoria','setCategoria')">
+    </div>
+
+    <div class="col-md-4">
+      <input-fecha [datos]="fechaInicioInput" [isDisabled]="esFormularioSoloLectura" [setFecha]="profileForm.get('vigencia')?.value" (valorCambiado)="seleccionarVigenciaUno($event)"></input-fecha>
+    </div>
+
+    <div class="col-md-12">
+      <label class="form-label" for="nombre2">Nombre</label>
+      <input type="text" class="form-control" id="nombre2" formControlName="nombre2"
+        (change)="setValoresStore(profileForm,'nombre2','setNombre2')">
+    </div>
+
+    <div class="col-md-12">
+      <label class="form-label" for="categoria2">Categoría</label>
+      <input type="text" class="form-control" id="categoria2" formControlName="categoria2"
+        (change)="setValoresStore(profileForm,'categoria2','setCategoria2')">
+    </div>
+
+    <div class="col-md-4">
+      <input-fecha [isDisabled]="esFormularioSoloLectura"[datos]="fechaInicioInput" [setFecha]="profileForm.get('vigencia2')?.value" (valorCambiado)="seleccionarVigenciaDos($event)"></input-fecha>
+    </div>
+
+    <div class="col-md-12">
+      <label class="form-label" for="nombre3">Nombre</label>
+      <input type="text" class="form-control" id="nombre3" formControlName="nombre3"
+        (change)="setValoresStore(profileForm,'nombre3','setNombre3')">
+    </div>
+
+    <div class="col-md-12">
+      <label class="form-label" for="categoria3">Categoría</label>
+      <input type="text" class="form-control" id="categoria3" formControlName="categoria3"
+        (change)="setValoresStore(profileForm,'categoria3','setCategoria3')">
+    </div>
+
+    <div class="col-md-4">
+      <input-fecha [datos]="fechaInicioInput" [isDisabled]="esFormularioSoloLectura" [setFecha]="profileForm.get('vigencia3')?.value" (valorCambiado)="seleccionarVigenciaTres($event)"></input-fecha>
+    </div>
+  </div>
+
+  <!-- 1.Planeación-seguridad-->
+  <div class="table-container">
+    <div class="table-header pb-2">
+      <h3>1. Planeación de la seguridad en la cadena de suministros</h3>
+      <button  (click)="alternarContenido()" class="toggle-btn">
+        <i class="bi fs-5 m-1" [ngClass]="{
+                      'bi-chevron-down': !mostrarContenido,
+                      'bi-chevron-up': mostrarContenido
+                    }">
+        </i>
+      </button>
+    </div>
+    <div class="accordion-body body-panel {{ mostrarContenido ? 'open' : 'close'}}">
+      <app-planeacion-de-la-seguridad></app-planeacion-de-la-seguridad>
+    </div>
+  </div>
+
+
+  <!-- 2.Seguridad-fisica-->
+  <div class="table-container">
+    <div class="table-header pb-2">
+      <h3>2. Seguridad física</h3>
+      <button  (click)="alternarSeguridad()" class="toggle-btn">
+        <i class="bi fs-5 m-1" [ngClass]="{
+          'bi-chevron-down': !mostrarSeguridad,
+          'bi-chevron-up': mostrarSeguridad
+        }">
+        </i>
+      </button>
+    </div>
+    <div class="accordion-body body-panel {{ mostrarSeguridad ? 'open' : 'close'}}">
+      <app-seguridad-fisica></app-seguridad-fisica>
+    </div>
+  </div>
+
+  <!-- 3.Controles-de-acceso-fisico -->
+  <div class="table-container">
+    <div class="table-header pb-2">
+      <h3>3. Controles de acceso físico</h3>
+      <button  (click)="alternarAccesoFisico()" class="toggle-btn">
+        <i class="bi fs-5 m-1" [ngClass]="{
+          'bi-chevron-down': !mostrarAccesoFisico,
+          'bi-chevron-up': mostrarAccesoFisico
+        }">
+        </i>
+      </button>
+    </div>
+    <div class="accordion-body body-panel {{ mostrarAccesoFisico ? 'open' : 'close'}}">
+      <app-controles-fisico></app-controles-fisico>
+    </div>
+  </div>
+
+  <!-- 4.Socios-comerciales -->
+  <div class="table-container">
+    <div class="table-header pb-2">
+      <h3>4. Socios comerciales</h3>
+      <button  (click)="alternarSociosComerciales()" class="toggle-btn">
+        <i class="bi fs-5 m-1" [ngClass]="{
+          'bi-chevron-down': !mostrarSociosComeciales,
+          'bi-chevron-up': mostrarSociosComeciales
+        }">
+        </i>
+      </button>
+    </div>
+    <div class="accordion-body body-panel {{ mostrarSociosComeciales ? 'open' : 'close'}}">
+      <app-socios-comerciales></app-socios-comerciales>
+    </div>
+  </div>
+
+  <!-- 5.Seguridad-Procesos -->
+  <div class="table-container">
+    <div class="table-header pb-2">
+      <h3>5. Seguridad de procesos</h3>
+      <button  (click)="alternarSeguridadProcesos()" class="toggle-btn">
+        <i class="bi fs-5 m-1" [ngClass]="{
+          'bi-chevron-down': !mostrarSeguridadProcesos,
+          'bi-chevron-up': mostrarSeguridadProcesos
+        }">
+        </i>
+      </button>
+    </div>
+    <div class="accordion-body body-panel {{ mostrarSeguridadProcesos ? 'open' : 'close'}}">
+      <app-seguridad-procesos></app-seguridad-procesos>
+    </div>
+  </div>
+
+  <!-- 6.Gestion-aduanera -->
+  <div class="table-container">
+    <div class="table-header pb-2">
+      <h3>6. Gestión aduanera</h3>
+      <button  (click)="alternarGestionAduanera()" class="toggle-btn">
+        <i class="bi fs-5 m-1" [ngClass]="{
+          'bi-chevron-down': !mostrarGestionAduanera,
+          'bi-chevron-up': mostrarGestionAduanera
+        }">
+        </i>
+      </button>
+    </div>
+    <div class="accordion-body body-panel {{ mostrarGestionAduanera ? 'open' : 'close'}}">
+      <app-gestion-aduanera></app-gestion-aduanera>
+    </div>
+  </div>
+
+  <!-- 7.Seguridad-los-vehiculos -->
+  <div class="table-container">
+    <div class="table-header pb-2">
+      <h3>7. Seguridad de los vehículos de carga, contenedores, carros de tren, remolques y/o semirremolques</h3>
+      <button  (click)="alternarSeguridadVehiculos()" class="toggle-btn">
+        <i class="bi fs-5 m-1" [ngClass]="{
+          'bi-chevron-down': !mostrarSeguridadVehiculos,
+          'bi-chevron-up': mostrarSeguridadVehiculos
+        }">
+        </i>
+      </button>
+    </div>
+    <div class="accordion-body body-panel {{ mostrarSeguridadVehiculos ? 'open' : 'close'}}">
+      <app-seguridad-los-vehiculos></app-seguridad-los-vehiculos>
+    </div>
+  </div>
+
+  <!-- 8.Seguridad-del-personal -->
+  <div class="table-container">
+    <div class="table-header pb-2">
+      <h3>8. Seguridad del personal</h3>
+      <button  (click)="alternarSeguridadPersonal()" class="toggle-btn">
+        <i class="bi fs-5 m-1" [ngClass]="{
+          'bi-chevron-down': !mostrarSeguridadPersonal,
+          'bi-chevron-up': mostrarSeguridadPersonal
+        }">
+        </i>
+      </button>
+    </div>
+    <div class="accordion-body body-panel {{ mostrarSeguridadPersonal ? 'open' : 'close'}}">
+      <app-seguridad-personal></app-seguridad-personal>
+    </div>
+  </div>
+
+  <!-- 9.Seguridad-informacion-documentacion -->
+  <div class="table-container">
+    <div class="table-header pb-2">
+      <h3>9. Seguridad de la información y documentación</h3>
+      <button  (click)="alternarSeguridadInformacion()" class="toggle-btn">
+        <i class="bi fs-5 m-1" [ngClass]="{
+          'bi-chevron-down': !mostrarSeguridadInformacion,
+          'bi-chevron-up': mostrarSeguridadInformacion
+        }">
+        </i>
+      </button>
+    </div>
+    <div class="accordion-body body-panel {{ mostrarSeguridadInformacion ? 'open' : 'close'}}">
+      <app-seguridad-informacion-documentacion></app-seguridad-informacion-documentacion>
+    </div>
+  </div>
+
+  <!-- 10.Capacitacion-seguridad-concientizacion -->
+  <div class="table-container">
+    <div class="table-header pb-2">
+      <h3>10. Capacitación en seguridad y concientización</h3>
+      <button  (click)="alternarCapacitacionSeguridad()" class="toggle-btn">
+        <i class="bi fs-5 m-1" [ngClass]="{
+          'bi-chevron-down': !mostrarCapacitacionSeguridad,
+          'bi-chevron-up': mostrarCapacitacionSeguridad
+        }">
+        </i>
+      </button>
+    </div>
+    <div class="accordion-body body-panel {{ mostrarCapacitacionSeguridad ? 'open' : 'close'}}">
+      <app-capacitacion-seguridad></app-capacitacion-seguridad>
+    </div>
+  </div>
+
+  <!-- 11.Manejo-investigacion-incidentes -->
+  <div class="table-container">
+    <div class="table-header pb-2">
+      <h3>11. Manejo e investigación de incidentes</h3>
+      <button  (click)="alternarManejoInvestigacion()" class="toggle-btn">
+        <i class="bi fs-5 m-1" [ngClass]="{
+          'bi-chevron-down': !mostrarManejoInvestigacion,
+          'bi-chevron-up': mostrarManejoInvestigacion
+        }">
+        </i>
+      </button>
+    </div>
+    <div class="accordion-body body-panel {{ mostrarManejoInvestigacion ? 'open' : 'close'}}">
+      <app-manejo-investigacion></app-manejo-investigacion>
+    </div>
+  </div>
+</form>

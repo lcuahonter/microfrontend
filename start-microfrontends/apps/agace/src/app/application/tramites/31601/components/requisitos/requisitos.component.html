@@ -1,0 +1,76 @@
+<ng-titulo titulo="Requisitos Obligatorios" />
+
+<div class="container">
+  <div class="header">
+    <span>Personas para oir y recibir notificaciones</span>
+    <span
+      class="plus-icon"
+      tabindex="0"
+      (click)="toggleContent()"
+      (keyup.enter)="toggleContent()"
+      (keyup.space)="toggleContent()"
+      >+</span
+    >
+  </div>
+  <div *ngIf="showContent" class="content">
+    <app-tabla-dinamica 
+    [configuracionTabla]="configuracionTabla" 
+    [datos]="tipos">
+  </app-tabla-dinamica>
+  
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center">
+        <li class="page-item"><a class="page-link" href="#">Anterior</a></li>
+        <li class="page-item"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">Siguiente</a></li>
+      </ul>
+    </nav>
+  </div>
+</div>
+<ng-titulo titulo="Requisitos Opcionales" />
+<div class="container">
+  <form [formGroup]="requisitos">
+    <div class="row custom-row">
+      <div class="col-md-6">
+        <h6>
+          De acuerdo al caso particular, algunos documentos podrían ser
+          obligatorios.
+        </h6>
+  
+        <ng-table
+          [commonTableHeader]="tipoHeaderData"
+          [commonTableBody]="tipoBodyData"
+        ></ng-table>
+        <div class="row" style="text-align: right">
+          <div>
+            <button class="btn btn-danger" type="button">Eliminar</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <h6 style="padding-top: 20px">
+          Si usted necesita anexar más de un documento del mismo tipo selecciónelo
+          de la lista y presione "Agregar nuevo"
+        </h6>
+  
+        <app-catalogo-select
+          [catalogo]="tipocatlog"
+          [label]="'Tipo de Documento'"
+          [required]="true"
+          formControlName="tipoDocumento"
+          [isDisabled]="esFormularioSoloLectura"
+          (change)="setValoresStore(requisitos, 'tipoDocumento', 'setTipoDocumento')"
+        >
+        </app-catalogo-select>
+  
+        <div class="row" style="padding-top: 20px; text-align: right">
+          <div>
+            <button type="button" class="btn btn-primary btn-space" [disabled]="esFormularioSoloLectura">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,146 @@
+name: Deploy Dashboard App to Dev
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.get-version.outputs.VERSION }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get version from package.json
+        id: get-version
+        run: |
+          VERSION=$(jq -r .version package.json)
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_PAT }}
+
+      - name: Update Docker Compose image tag
+        run: |
+          sed -i "s|image: ghcr.io/vucem30/dockerized-modulefederation-dashboard:.*|image: ghcr.io/vucem30/dockerized-modulefederation-dashboard:${{ steps.get-version.outputs.VERSION }}|g" docker/dev/modulefederation-dashboard.yml
+
+      - name: Build Docker image for dashboard app
+        run: |
+          docker compose -f docker/dev/modulefederation-dashboard.yml build --no-cache
+
+      - name: Push Docker image
+        run: |
+          docker push ghcr.io/vucem30/dockerized-modulefederation-dashboard:${{ steps.get-version.outputs.VERSION }}
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get version from package.json
+        id: get-version
+        run: |
+          VERSION=$(jq -r .version package.json)
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: "Debug - List yaml files before copy"
+        run: |
+          echo "Showing YAML files in k8s/dev/dashboard/"
+          ls -l k8s/dev/dashboard/ || echo "Directory does not exist"
+          echo "Full find output:"
+          find k8s/dev/dashboard/ || echo "Directory does not exist"
+
+      - name: Update deployment YAML image tag
+        run: |
+          sed -i "s|image: ghcr.io/vucem30/dockerized-modulefederation-dashboard:.*|image: ghcr.io/vucem30/dockerized-modulefederation-dashboard:${{ steps.get-version.outputs.VERSION }}|g" k8s/dev/dashboard/*deployment*.yaml
+
+      - name: Copy deployment files to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.REMOTE_SRV_IP }}
+          username: ${{ secrets.REMOTE_SRV_USER }}
+          key: ${{ secrets.REMOTE_SRV_PRIV_KEY }}
+          source: k8s/dev/dashboard/*.yaml
+          target: ~/deployments/dashboard/
+          strip_components: 3
+
+      - name: List files on remote after copy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.REMOTE_SRV_IP }}
+          username: ${{ secrets.REMOTE_SRV_USER }}
+          key: ${{ secrets.REMOTE_SRV_PRIV_KEY }}
+          script: |
+            ls -l ~/deployments/dashboard/
+
+      - name: SSH Deploy and Restart (with scale-to-zero workaround)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.REMOTE_SRV_IP }}
+          username: ${{ secrets.REMOTE_SRV_USER }}
+          key: ${{ secrets.REMOTE_SRV_PRIV_KEY }}
+          script: |
+            set -ex
+            APP_NAME="dashboard"
+            IMAGE_TAG="${{ steps.get-version.outputs.VERSION }}"
+            DEPLOY_DIR=~/deployments/$APP_NAME
+            DEPLOYMENT_FILE="${APP_NAME}-deployment-dev.yaml"
+            SERVICE_FILE="${APP_NAME}-service-dev.yaml"
+            INGRESS_FILE="${APP_NAME}-ingress-dev.yaml"
+            NAMESPACE=default
+            DEPLOYMENT="modulefederation-dashboard-deployment-dev"
+            # Adjust this label if your deployment uses a different label key or value!
+            LABEL_KEY="app"
+            LABEL_VALUE="$DEPLOYMENT"
+
+            cd "$DEPLOY_DIR"
+
+            for FILE in "$DEPLOYMENT_FILE" "$SERVICE_FILE" "$INGRESS_FILE"; do
+              if [ ! -f "$FILE" ]; then
+                echo "ERROR: $FILE not found in $(pwd)"
+                ls -l
+                exit 1
+              fi
+            done
+
+            # Apply manifests
+            microk8s kubectl apply -f "$DEPLOYMENT_FILE"
+            microk8s kubectl apply -f "$SERVICE_FILE"
+            microk8s kubectl apply -f "$INGRESS_FILE"
+
+            echo "Scaling deployment down to 0 to delete all pods for this deployment..."
+            microk8s kubectl scale deployment $DEPLOYMENT --replicas=0 -n $NAMESPACE
+
+            echo "Waiting for pods to terminate..."
+            for i in $(seq 1 20); do
+              PODCOUNT=$(microk8s kubectl get pods -n $NAMESPACE -l ${LABEL_KEY}=${LABEL_VALUE} --no-headers 2>/dev/null | wc -l)
+              if [ "$PODCOUNT" = "0" ]; then
+                echo "All dashboard pods terminated."
+                break
+              fi
+              echo "Still $PODCOUNT pods exist, waiting..."
+              sleep 4
+            done
+
+            echo "Scaling deployment up to 1"
+            microk8s kubectl scale deployment $DEPLOYMENT --replicas=1 -n $NAMESPACE
+
+            echo "Waiting for rollout to finish..."
+            microk8s kubectl rollout status deployment $DEPLOYMENT -n $NAMESPACE
+
+            echo "Current pods:"
+            microk8s kubectl get pods -n $NAMESPACE -l ${LABEL_KEY}=${LABEL_VALUE}
+
+            echo "🚀 Deployment completed for $APP_NAME with tag $IMAGE_TAG"

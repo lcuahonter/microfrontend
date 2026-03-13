@@ -1,0 +1,265 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <ng-titulo titulo="Agregar exportador" />
+    </div>
+    <form [formGroup]="destinatarioForm">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="col-md-12">
+            <label for="certficacion_a">Tipo persona*:</label>
+          </div>
+          <div>
+            <app-input-radio
+              [radioOptions]="opcionDeBotonDeRadio"
+              [layout]="'vertical'"
+              name="tipoMercancia"
+              formControlName="tipoMercancia"
+              (valueChange)="enCambioValorRadio()"
+            ></app-input-radio>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <ng-titulo titulo="Datos personales" />
+        </div>
+        <div class="row" *ngIf="destinatarioForm.value.tipoMercancia === 'yes'">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="nombre">Nombre(s)*:</label>
+              <input
+                class="form-control"
+                id="nombre"
+                placeholder=""
+                type="text"
+                libUppercase
+                formControlName="nombre"
+                maxlength="200"
+                [ngClass]="isValid(destinatarioForm,'nombre') ? 'required' : ''"
+              />
+              @if( destinatarioForm.get('nombre')?.hasError('required') &&
+              destinatarioForm.get('nombre')?.touched){
+              <div class="text-danger">
+                <small>Este campo es obligatorio.</small>
+              </div>
+              }@else if (destinatarioForm.get('nombre')?.hasError('maxLength')
+              && destinatarioForm.get('nombre')?.touched) {
+              <div class="text-danger">
+                <small>No escribas más de 200 caracteres.</small>
+              </div>
+              }
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="primerApellido"
+                >Primer apellido*:</label
+              >
+              <input
+                class="form-control"
+                id="primerApellido"
+                placeholder=""
+                type="text"
+                libUppercase
+                formControlName="primerApellido"
+                maxlength="200"
+                [ngClass]="isValid(destinatarioForm,'primerApellido') ? 'required' : ''"
+              />
+              @if (destinatarioForm.get('primerApellido')?.hasError('required')
+              && destinatarioForm.get('primerApellido')?.touched) {
+              <div class="text-danger">
+                <small>Este campo es obligatorio.</small>
+              </div>
+              } @if
+              (destinatarioForm.get('primerApellido')?.hasError('maxLength') &&
+              destinatarioForm.get('primerApellido')?.touched) {
+              <div class="text-danger">
+                <small>No escribas más de 200 caracteres.</small>
+              </div>
+              }
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="segundoApellido"
+                >Segundo apellido:</label
+              >
+              <input
+                class="form-control"
+                id="segundoApellido"
+                placeholder=""
+                type="text"
+                libUppercase
+                formControlName="segundoApellido"
+                maxlength="200"
+              />
+              @if
+              (destinatarioForm.get('segundoApellido')?.hasError('maxLength') &&
+              destinatarioForm.get('segundoApellido')?.touched) {
+              <div class="text-danger">
+                <small>No escribas más de 200 caracteres.</small>
+              </div>
+              }
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="destinatarioForm.value.tipoMercancia === 'no'">
+          <div class="col-md-8">
+            <div class="form-group">
+              <label class="form-label" for="razonSocial"
+                >Denominación/razón social*:
+              </label>
+              <input
+                class="form-control"
+                id="razonSocial"
+                placeholder=""
+                type="text"
+                libUppercase
+                formControlName="razonSocial"
+                maxlength="250"
+                [ngClass]="isValid(destinatarioForm,'razonSocial') ? 'required' : ''"
+              />
+              @if (destinatarioForm.get('razonSocial')?.hasError('required') &&
+              destinatarioForm.get('razonSocial')?.touched) {
+              <div class="text-danger">
+                <small>Este campo es obligatorio.</small>
+              </div>
+              } @if (destinatarioForm.get('razonSocial')?.hasError('maxLength')
+              && destinatarioForm.get('razonSocial')?.touched) {
+              <div class="text-danger">
+                <small>No escribas más de 250 caracteres.</small>
+              </div>
+              }
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <app-catalogo-select
+              [catalogo]="pairsCatalog"
+              [label]="'País'"
+              [required]="true"
+              name="pais"
+              [isDisabled]="false"
+              formControlName="pais"
+              [markTouched]="destinatarioForm.get('pais')?.touched ?? false"
+            ></app-catalogo-select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-8">
+            <div class="form-group">
+              <label class="form-label" for="domicilio">Domicilio*:</label>
+              <textarea
+                class="form-control form-check-input"
+                placeholder="Calle, No Ext, No Int, Ciudad, C.P"
+                id="domicilio"
+                formControlName="domicilio"
+                maxlength="4000"
+                rows="6"
+                style="height: 150px"
+                [ngClass]="isValid(destinatarioForm,'domicilio') ? 'required' : ''"
+                ></textarea>
+              @if (destinatarioForm.get('domicilio')?.hasError('required') &&
+              destinatarioForm.get('domicilio')?.touched) {
+              <div class="text-danger">
+                <small>Este campo es obligatorio.</small>
+              </div>
+              }
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-1">
+            <div class="form-group">
+              <label class="form-label" for="lada">Lada: </label>
+              <input
+                class="form-control"
+                id="lada"
+                placeholder=""
+                type="text"
+                libUppercase
+                formControlName="lada"
+                maxlength="5"
+              />
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label class="form-label" for="telefono">Teléfono: </label>
+              <input
+                class="form-control"
+                id="telefono"
+                placeholder=""
+                type="text"
+                libUppercase
+                formControlName="telefono"
+                maxlength="30"
+              />
+              @if (destinatarioForm.get('telefono')?.hasError('maxLength') &&
+              destinatarioForm.get('telefono')?.touched) {
+              <div class="text-danger">
+                <small>No escribas más de 30 caracteres.</small>
+              </div>
+              }
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="correo"
+                >Correo electrónico:
+                <span class="bi bi-question-circle-fill" tooltip="ejemplo@dominio.com" placement="top"></span>
+              </label>
+              <input
+                class="form-control"
+                id="correo"
+                placeholder=""
+                type="text"
+                libUppercase
+                formControlName="correo"
+                maxlength="320"
+              />
+              @if (destinatarioForm.get('correo')?.hasError('pattern') &&
+              destinatarioForm.get('correo')?.touched) {
+              <div class="text-danger">
+                Por favor, escribe una dirección de correo válida
+              </div>
+              } @if (destinatarioForm.get('correo')?.hasError('maxlength') &&
+              destinatarioForm.get('correo')?.touched) {
+              <div class="text-danger">No escribas más de 320 caracteres</div>
+              }
+            </div>
+          </div>
+        </div>
+        <div class="row mt-5 mb-5">
+          <div class="col-md-12 justify-content-end d-flex">
+            <button
+              type="button"
+              class="btn btn-primary"
+              [disabled]="esFormularioSoloLectura"
+              (click)="onLimpiarDestinatario()"
+            >
+              Limpiar
+            </button>
+            <button
+              type="button"
+              class="btn btn-default mx-2"
+              [disabled]="esFormularioSoloLectura"
+              (click)="onCancelarDestinatario()"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              (click)="onGuardarDestinatario()"
+            >
+              Guardar
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

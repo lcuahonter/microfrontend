@@ -1,0 +1,624 @@
+<div class="container">
+    <form [formGroup]="datosComunesForma">
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <label class="form-label fw-bold mb-3" for="">
+                    Señale el sector productivo o servicio al que pertenece
+                </label>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-6">
+              <app-catalogo-select
+                [label]="'Sector Productivo'"
+                [placeholder]="'Seleccione un valor'"
+                [catalogo]="sectorProductivoAgace"
+                formControlName="sectorProductivo"
+                (change)="setValoresStore(datosComunesForma,'sectorProductivo', 'setSectorProductivo')"
+              >
+              </app-catalogo-select>
+            </div>
+            <div class="col-md-6">
+              <app-catalogo-select
+                [label]="'Servicio'"
+                [placeholder]="'Seleccione un valor'"
+                [catalogo]="serviciosAgace"
+                formControlName="servicio"
+                (change)="setValoresStore(datosComunesForma,'servicio', 'setServicio')"
+              >
+              </app-catalogo-select>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <ng-alert [CONTENIDO]="alerta.inst"></ng-alert>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label for="solicituddeInspección"><span class="danger">*</span>Señale si al momento de ingresar su solicitud si se encuentra al corriente en el cumplimiento de sus obligaciones fiscales y aduaneras</label>
+                <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="solicitudDeInspeccion" (change)="setValoresStore(datosComunesForma,'solicitudDeInspeccion', 'setSolicitudDeInspeccion',true,0)" (valueChange)="enCambioDeValor()" class="gap"></app-input-radio>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <label for="indiqueAutorizo"><span class="danger">*</span>Indique si autorizó al S A T hacer pública su opinión positiva sobre el cumplimiento de obligaciones fiscales</label>
+                <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="indiqueAutorizo" (change)="setValoresStore(datosComunesForma,'indiqueAutorizo', 'setIndiqueAutorizo',true,0)" (valueChange)="enCambioDeValor()" class="gap"></app-input-radio>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <label for="senaleCuentaEmpleados"><span class="danger">*</span>Señale si cuenta con empleados propios para realizar el proceso productivo o la prestación de servicios, registrado ante el IMSS</label>
+                <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="senaleCuentaEmpleados" (change)="setValoresStore(datosComunesForma,'senaleCuentaEmpleados', 'setSenaleCuentaEmpleados',false,1)" (valueChange)="enCambioDeValor()" class="gap"></app-input-radio>
+            </div>
+        </div>
+        @if(showSenaleCuentaEmpleados){
+            <div class="row mt-5">
+                <div class="col-md-12">
+                    <label>Cual es el número de empleados propios con los que contó en el último bimestre anterior a su solicitud</label>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col-md-2">
+                </div>
+                <div class="col-md-4">
+                    <label for="numeroDeEmpleados">Número de empleados</label>
+                    <input type="text" id="numeroDeEmpleados" formControlName="numeroDeEmpleados" class="form-control" (change)="setValoresStore(datosComunesForma,'numeroDeEmpleados', 'setNumeroDeEmpleados')">
+                </div>
+                <div class="col-md-4">
+                    <app-catalogo-select
+                        [label]="'Bimestre'"
+                        [placeholder]="'Seleccione un valor'"
+                        [catalogo]="sectorProductivoAgace"
+                        formControlName="bimestre"
+                        (change)="setValoresStore(datosComunesForma,'bimestre', 'setBimestre')"
+                    >
+                    </app-catalogo-select>
+                </div>
+                <div class="col-md-2">
+                </div>
+            </div>
+        }
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <label for="cumpleConLaObligacion"><span class="danger">*</span>Cumple con la obligación de retener y enterar el I S R de los trabajadores</label>
+                <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="cumpleConLaObligacion" (change)="setValoresStore(datosComunesForma,'cumpleConLaObligacion', 'setCumpleConLaObligacion',true,0)" (valueChange)="enCambioDeValor()" class="gap"></app-input-radio>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <label for="acreditaRealizar"><span class="danger">*</span>Acredita realizar el pago de cuotas obrero patronales</label>
+                <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="acreditaRealizar" (change)="setValoresStore(datosComunesForma,'acreditaRealizar', 'setAcreditaRealizar',true,0)" (valueChange)="enCambioDeValor()" class="gap"></app-input-radio>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <label for="senaleSiAlMomento"><span class="danger">*</span>Señale si al momento de ingresar su solicitud la empresa solicitante cuenta con subcontratación de servicios especializados o de ejecución de obras especializadas</label>
+                <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="senaleSiAlMomento" (change)="setValoresStore(datosComunesForma,'senaleSiAlMomento', 'setSenaleSiAlMomento',false,1)" (valueChange)="enCambioDeValor()" class="gap"></app-input-radio>
+            </div>
+        </div>
+        @if(showSenaleSiAlMomento){
+            <div class="row mt-5">
+                <div class="col-md-12">
+                    <label>Mencione el nombre, RFC y número de empleados que le proveen las empresas que le prestan el servicio de subcontratación</label>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col-md-12">
+                    <label>Número de empleados que le proveen en el último bimestre anterior a su solicitud</label>
+                    <app-tabla-dinamica [configuracionTabla]="mercanciasTabla"
+                    [datos]="mercanciasTablaDatos" [tipoSeleccionTabla]="tablaSeleccionCheckbox"></app-tabla-dinamica>
+                </div>
+            </div>
+            <div class="row w-100">
+                <div class="col-12 d-flex justify-content-end mt-3 mb-4">
+                    <button class="btn btn-primary me-2" (click)="openTablaModal()">Agregar</button>
+                    <button class="btn btn-primary me-2" (click)="openTablaModal()">Modificar</button>
+                    <button class="btn btn-default me-2">Eliminar</button>
+                </div>
+            </div>
+        }
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <label for="acreditaCumplir"><span class="danger">*</span>En su caso, acredita cumplir con el registro y estar en el padrón a que se refiere el artículo 15 de la LFT.</label>
+                <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="acreditaCumplir" (change)="setValoresStore(datosComunesForma,'acreditaCumplir', 'setAcreditaCumplir')" (valueChange)="enCambioDeValor()" class="gap"></app-input-radio>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <label for="fraccionVI"><span class="danger">*</span>Señale si al momento de ingresar su solicitud se encuentra en el listado de empresas publicadas por el SAT en términos del artículo 69, con excepción de lo dispuesto en la fracción VI.</label>
+                <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="fraccionVI" (change)="setValoresStore(datosComunesForma,'fraccionVI', 'setFraccionVI',true,1)" (valueChange)="enCambioDeValor()" class="gap"></app-input-radio>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <label for="novenoParrafoDelCff"><span class="danger">*</span>Señale si se encuentra en el listado de empresas publicadas por el SAT en términos del artículo 69-B Bis noveno párrafo del CFF.</label>
+                <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="novenoParrafoDelCff" (change)="setValoresStore(datosComunesForma,'novenoParrafoDelCff', 'setNovenoParrafoDelCff',true,1)" (valueChange)="enCambioDeValor()" class="gap"></app-input-radio>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <label for="digitalesEstanVigentes"><span class="danger">*</span>Señale si sus certificados de sellos digitales están vigentes.</label>
+                <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="digitalesEstanVigentes" (change)="setValoresStore(datosComunesForma,'digitalesEstanVigentes', 'setDigitalesEstanVigentes')" (valueChange)="enCambioDeValor()" class="gap"></app-input-radio>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <label for="ultimosDoceMeses"><span class="danger">*</span>En caso afirmativo señale si se infringió alguno de los supuestos previstos en el artículo 17-H Bis del CFF, durante los últimos doce meses.</label>
+                <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="ultimosDoceMeses" (change)="setValoresStore(datosComunesForma,'ultimosDoceMeses', 'setUltimosDoceMeses',true,1)" (valueChange)="enCambioDeValor()" class="gap"></app-input-radio>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <app-catalogo-select
+                  [label]="''"
+                  [placeholder]="'Seleccione un valor'"
+                  [catalogo]="sectorProductivoAgace"
+                  formControlName="prestacionDeServicios"
+                  (change)="setValoresStore(datosComunesForma,'prestacionDeServicios', 'setPrestacionDeServicios')"
+                >
+                </app-catalogo-select>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <label>Indique todos los domicilios registrados ante el RFC del solicitante e indique aquellos en que se desarrollen actividades relacionadas con su proceso productivo y/o la prestación de servicios.</label>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <ng-alert [CONTENIDO]="alerta.nota"></ng-alert>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <app-tabla-dinamica [configuracionTabla]="instalacionesPrincipalesTabla"
+                [datos]="instalacionesPrincipalesTablaDatos" [tipoSeleccionTabla]="tablaSeleccionCheckbox"></app-tabla-dinamica>
+            </div>
+        </div>
+        <div class="row w-100">
+            <div class="col-12 d-flex justify-content-end mt-3 mb-4">
+                <button class="btn btn-primary me-2" (click)="openTablaDosModal()">Agregar</button>
+                <button class="btn btn-primary me-2" (click)="openTablaDosModal()">Modificar</button>
+                <button class="btn btn-default me-2">Eliminar</button>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <label for="articuloDelCff"><span class="danger">*</span>Señale si tiene actualizado sus medios de contacto para efectos del buzón tributario en términos del penúltimo párrafo del artículo 17-K del CFF.</label>
+                <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="articuloDelCff" (change)="setValoresStore(datosComunesForma,'articuloDelCff', 'setArticuloDelCff')" (valueChange)="enCambioDeValor()" class="gap"></app-input-radio>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <label for="exportadoresSectorial"><span class="danger">*</span>Señale si se encuentra suspendida en el Padrón de Importadores o en el Padrón de Importadores de Sectores Específicos o Padrón de Exportadores Sectorial.</label>
+                <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="exportadoresSectorial" (change)="setValoresStore(datosComunesForma,'exportadoresSectorial', 'setExportadoresSectorial',true,1)" (valueChange)="enCambioDeValor()" class="gap"></app-input-radio>
+            </div>
+        </div>
+        <ng-titulo titulo="Clientes y Proveedores en el Extranjero"></ng-titulo>
+        <div class="row">
+            <p>Anexe un archivo que contenga el nombre y dirección de sus clientes y proveedores en el extranjero directa o indirectamente vinculados con el régimen aduanero con el que se solicita el registro, con los que realizó operaciones de comercio exterior durante los últimos doce meses<br/>Para descargar plantilla del archivo de excel de click <strong>aquí</strong></p>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-10">
+                <input
+                    type="file"
+                    id="archivoNacionales"
+                    class="form-control w-auto"
+                    formControlName="archivoNacionales"
+                    (change)="setValoresStore(datosComunesForma,'archivoNacionales', 'setArchivoNacionales')"
+                />
+            </div>
+            <div class="col-md-2 d-flex justify-content-end">
+                <button class="btn btn-primary me-2">Anexar...</button>
+            </div>
+        </div>
+        <ng-titulo titulo="Proveedores"></ng-titulo>
+        <div class="row">
+            <p>Anexe un archivo que contenga el nombre y clave en el R F C de sus proveedores de insumos adquiridos en territorio nacional, vinculados al proceso bajo el régimen que solicita, de los últimos 6 meses<br/>Para descargar la plantilla del archivo de excel de clic <strong>aquí</strong></p>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-10">
+                <input
+                    type="file"
+                    id="proveedores"
+                    class="form-control w-auto"
+                    formControlName="proveedores"
+                    (change)="setValoresStore(datosComunesForma,'proveedores', 'setProveedores')"
+                />
+            </div>
+            <div class="col-md-2 d-flex justify-content-end">
+                <button class="btn btn-primary me-2">Anexar...</button>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <p>Nota: Los proveedores nacionales que se declaren deberán contar con la opinión positiva del cumplimiento de las obligaciones fiscales prevista en el artículo 32-D del código en la RFM.</p>
+        </div>
+        <ng-titulo titulo="Querella"></ng-titulo>
+        <div class="row">
+            <div class="col-md-12">
+                <label for="solicitudDeCertificacion"><span class="danger">*</span>Señale si el SAT ha interpuesto querella o denuncia penal en contra de los socios, accionistas, según corresponda, representante legal, e integrantes de la administración de la empresa solicitante o declaratoria de perjuicio, según corresponda, durante los últimos tres años anteriores a la presentación de la solicitud de certificación.</label>
+                <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="solicitudDeCertificacion" (change)="setValoresStore(datosComunesForma,'solicitudDeCertificacion', 'setSolicitudDeCertificacion')" (valueChange)="enCambioDeValor()" class="gap"></app-input-radio>
+            </div>
+        </div>
+        <ng-titulo titulo="Control Inventarios"></ng-titulo>
+        <div class="row">
+            <div class="col-md-12">
+                <label for="controlInventarios"><span class="danger">*</span>Indique si cuenta con un sistema de control de inventarios, para el registro de sus operaciones de comercio exterior de conformidad con el artículo 59, fracción I de la Ley.</label>
+                <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="controlInventarios" (change)="setValoresStore(datosComunesForma,'controlInventarios', 'setControlInventarios')" (valueChange)="enCambioDeValor()" class="gap"></app-input-radio>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-6">
+                <label for="nombreDelSistema"><span class="danger">*</span>Nombre del sistema o datos para su identificación</label>
+                <input type="text" id="nombreDelSistema" formControlName="nombreDelSistema" class="form-control" (change)="setValoresStore(datosComunesForma,'nombreDelSistema', 'setNombreDelSistema')">
+                @if(datosComunesForma.controls['nombreDelSistema'].invalid && datosComunesForma.controls['nombreDelSistema'].touched){
+                    <div class="d-grid">
+                        @if(datosComunesForma.controls['nombreDelSistema'].errors?.['required']) {
+                            <span class="mensaje-error">Este campo es obligatorio</span>
+                        }
+                    </div>
+                }
+            </div>
+            <div class="col-md-6">
+                <label for="lugarDeRadicacion"><span class="danger">*</span>Lugar de radicación</label>
+                <input type="text" id="lugarDeRadicacion" formControlName="lugarDeRadicacion" class="form-control" (change)="setValoresStore(datosComunesForma,'lugarDeRadicacion', 'setLugarDeRadicacion')">
+                @if(datosComunesForma.controls['lugarDeRadicacion'].invalid && datosComunesForma.controls['lugarDeRadicacion'].touched){
+                    <div class="d-grid">
+                        @if(datosComunesForma.controls['lugarDeRadicacion'].errors?.['required']) {
+                            <span class="mensaje-error">Este campo es obligatorio</span>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                Indique, si cuenta con un sistema de control de inventarios de conformidad con las disposiciones previstas por el Anexo 24.<input class="form-check-input ml-15" type="checkbox" id="previstas"
+                    formControlName="previstas" (change)="setValoresStore(datosComunesForma,'previstas', 'setPrevistas')"/>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12 d-flex justify-content-end">
+                <button class="btn btn-primary me-2">Agregar</button>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <app-tabla-dinamica [configuracionTabla]="instalacionesPrincipalesTabla"
+                [datos]="instalacionesPrincipalesTablaDatos" [tipoSeleccionTabla]="tablaSeleccionCheckbox"></app-tabla-dinamica>
+            </div>
+        </div>
+        <div class="row w-100">
+            <div class="col-12 d-flex justify-content-end mt-3 mb-4">
+                <button class="btn btn-primary me-2" >Modificar</button>
+                <button class="btn btn-default me-2">Eliminar</button>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <ng-alert [CONTENIDO]="alerta.nota2"></ng-alert>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label for="delCffLasReglas"><span class="danger">*</span>Señale si ingresa mensualmente su información contable a través del portal del SAT, de conformidad con el artículo 28, fracción IV, del CFF y las reglas 2.8.1.5. y la 2.8.1.6. de la RMF.</label>
+                <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="delCffLasReglas" (change)="setValoresStore(datosComunesForma,'delCffLasReglas', 'setDelCffLasReglas')" (valueChange)="enCambioDeValor()" class="gap"></app-input-radio>
+            </div>
+        </div>
+        <ng-titulo titulo="Agregar miembro de la empresa"></ng-titulo>
+        <div class="row mt-5">
+            <p><span class="danger">*</span>Señale si los socios, accionistas, según corresponda, representante legal con facultad para actos de dominio e integrantes de la administración de conformidad con la constitución de la empresa solicitante, se encuentran al corriente en el cumplimiento de sus obligaciones fiscales.</p>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <app-tabla-dinamica [configuracionTabla]="instalacionesPrincipalesTabla"
+                [datos]="instalacionesPrincipalesTablaDatos" [tipoSeleccionTabla]="tablaSeleccionCheckbox"></app-tabla-dinamica>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 d-flex justify-content-end mt-3 mb-4">
+                <button class="btn btn-primary me-2" (click)="openMiembroDeLaEmpresaModal()">Agregar</button>
+                <button class="btn btn-primary me-2" (click)="openMiembroDeLaEmpresaModal()">Modificar</button>
+                <button class="btn btn-default me-2">Eliminar</button>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <label for="conformidad"><span class="danger">*</span>Manifieste si sus socios o accionistas, según corresponda, representantes legales con facultad para actos de dominio e integrantes de la administración, no se encuentren vinculados con alguna empresa a la que se le hubiere cancelado su Registro en el Esquema de Certificación de Empresas, de conformidad con la regla 7.2.4., apartado A, fracciones V, VI y VII y apartado B, fracciones II, y III y V y/o de la regla 7.2.5., fracciones VI, VII y XI.</label>
+                <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="conformidad" (change)="setValoresStore(datosComunesForma,'conformidad', 'setConformidad')" (valueChange)="enCambioDeValor()" class="gap"></app-input-radio>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <input class="form-check-input mr-15" type="checkbox" id="esquemaIntegralCertificacion"
+                    formControlName="esquemaIntegralCertificacion" (change)="setValoresStore(datosComunesForma,'esquemaIntegralCertificacion', 'setEsquemaIntegralCertificacion')"/> <span class="danger">*</span>Una vez manifestado lo anterior, se solicita al SAT, a través de AGACE, que realice las inspecciones a que hace referencia la fracción IX de la regla 7.1.1, a las instalaciones señaladas en las que se realizan las operaciones de comercio exterior con el propósito de verificar la información plasmada en la presente solicitud del Registro en el Esquema Integral de Certificación.
+
+                    @if(datosComunesForma.controls['esquemaIntegralCertificacion'].invalid && datosComunesForma.controls['esquemaIntegralCertificacion'].touched){
+                        <div class="d-grid">
+                            @if(datosComunesForma.controls['esquemaIntegralCertificacion'].errors?.['required']) {
+                                <span class="mensaje-error">Este campo es obligatorio</span>
+                            }
+                        </div>
+                    }
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <input class="form-check-input mr-15" type="checkbox" id="modificadasRevocadas"
+                    formControlName="esquemaIntegralCertificacion" (change)="setValoresStore(datosComunesForma,'modificadasRevocadas', 'setModificadasRevocadas')"/> &nbsp; <span class="danger">*</span>Bajo protesta de decir verdad, manifiesto que los datos asentados en el presente documento son ciertos y que las facultades que me fueron otorgadas para representar al solicitante no me han sido modificadas y/o revocadas.
+
+                    @if(datosComunesForma.controls['modificadasRevocadas'].invalid && datosComunesForma.controls['modificadasRevocadas'].touched){
+                        <div class="d-grid">
+                            @if(datosComunesForma.controls['modificadasRevocadas'].errors?.['required']) {
+                                <span class="mensaje-error">Este campo es obligatorio</span>
+                            }
+                        </div>
+                    }
+            </div>
+        </div>
+    </form>
+</div>
+
+<!--inicio html modal-->
+<div
+  class="modal fade"
+  #confirmModal
+  tabindex="-1"
+  aria-labelledby="confirmModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group">
+              <p>Es un requisito obligatorio para acceder al Registro en el Esquema de Certificación de Empresas, de conformidad con la regla 7.1.1. de las RGCE.</p>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="closeConfirmModal()">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  #tablaModal
+  tabindex="-1"
+  aria-labelledby="tablaModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            Agregar
+        </div>
+      <div class="modal-body">
+        <form [formGroup]="tablaModalForma">
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="rfc"><span class="danger">*</span>RFC</label>
+                        <input type="text" id="rfc" formControlName="rfc" class="form-control" (change)="setValoresStore(tablaModalForma,'rfc', 'setRfc')">
+                        @if(tablaModalForma.controls['rfc'].invalid && tablaModalForma.controls['rfc'].touched){
+                            <div class="d-grid">
+                                @if(tablaModalForma.controls['rfc'].errors?.['required']) {
+                                    <span class="mensaje-error">Este campo es obligatorio</span>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="col-md-4 dis-flex-end">
+                    <div class="form-group">
+                        <button class="btn btn-primary me-2">Buscar</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="registroFederalDeContribuyentes"><span class="danger">*</span>Registro Federal de Contribuyentes</label>
+                        <input type="text" id="registroFederalDeContribuyentes" formControlName="registroFederalDeContribuyentes" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="razonSocial"><span class="danger">*</span>Razon Social</label>
+                        <input type="text" id="razonSocial" formControlName="razonSocial" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="numeroDeEmpleadosForma"><span class="danger">*</span>Número de empleados</label>
+                        <input type="text" id="numeroDeEmpleadosForma" formControlName="numeroDeEmpleadosForma" class="form-control" (change)="setValoresStore(tablaModalForma,'numeroDeEmpleadosForma', 'setNumeroDeEmpleadosForma')">
+                        @if(tablaModalForma.controls['numeroDeEmpleadosForma'].invalid && tablaModalForma.controls['numeroDeEmpleadosForma'].touched){
+                            <div class="d-grid">
+                                @if(tablaModalForma.controls['numeroDeEmpleadosForma'].errors?.['required']) {
+                                    <span class="mensaje-error">Este campo es obligatorio</span>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <app-catalogo-select
+                        [label]="'Bimestre'"
+                        [placeholder]="'Seleccione un valor'"
+                        [catalogo]="sectorProductivoAgace"
+                        formControlName="bimestreForma"
+                        [required]="true"
+                        (change)="setValoresStore(tablaModalForma,'bimestreForma', 'setBimestreForma')"
+                    >
+                    </app-catalogo-select>
+                    </div>
+                </div>
+            </div>
+        </form>
+        
+      </div>
+      <div class="modal-footer justify-content-end">
+        <button type="button" class="btn btn-primary" (click)="crearTablaDatos()">Aceptar</button>
+        <button type="button" class="btn btn-default" (click)="closeTablaModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  #instalacionesPrincipalesTablaModal
+  tabindex="-1"
+  aria-labelledby="instalacionesPrincipalesTablaModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            Agregar
+        </div>
+      <div class="modal-body">
+        <form [formGroup]="tablaDosModalForma">
+
+            <div class="row">
+                <div class="col-md-8">
+                    <label for="instalacionesPrincipales"><span class="danger">*</span>Instalaciones principales</label>
+                    <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="instalacionesPrincipales" (change)="setValoresStore(tablaDosModalForma,'instalacionesPrincipales', 'setInstalacionesPrincipales')" (valueChange)="enCambioDeValor()"></app-input-radio>
+                </div>
+                <div class="col-md-4">
+                    <label for="municipioAlcaldia">Municipio o alcaldía</label>
+                    <input type="text" id="registroFederalDeContribuyentes" formControlName="municipioAlcaldia" class="form-control" (change)="setValoresStore(tablaDosModalForma,'municipioAlcaldia', 'setMunicipioAlcaldia')">
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-4">
+                    <app-catalogo-select
+                        [label]="'Tipo de instalación'"
+                        [placeholder]="'Seleccione un valor'"
+                        [catalogo]="sectorProductivoAgace"
+                        formControlName="tipoDeInstalcion"
+                        [required]="true"
+                        (change)="setValoresStore(tablaDosModalForma,'tipoDeInstalcion', 'setTipoDeInstalcion')"
+                    >
+                    </app-catalogo-select>
+                </div>
+                <div class="col-md-4">
+                    <label for="entidadFederative">Entidad federativa</label>
+                    <input type="text" id="entidadFederative" formControlName="entidadFederative" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label for="registroAnte">Registro ante SE/SAT</label>
+                    <input type="text" id="registroAnte" formControlName="registroAnte" class="form-control">
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-8">
+                    <label for="colonia">Colonia, calle y número</label>
+                    <input type="text" id="colonia" formControlName="colonia" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label for="codigoPostal">Código postal</label>
+                    <input type="text" id="codigoPostal" formControlName="codigoPostal" class="form-control">
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-4">
+                    <label for="procesoProductivo"><span class="danger">*</span>Proceso productivo</label>
+                    <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="procesoProductivo" (change)="setValoresStore(tablaDosModalForma,'procesoProductivo', 'setProcesoProductivo')" (valueChange)="enCambioDeValor()"></app-input-radio>
+                </div>
+                <div class="col-md-8">
+                    <label for="acreditacionDelUso"><span class="danger">*</span>Acreditación del uso y goce del inmueble</label>
+                    <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="acreditacionDelUso" (change)="setValoresStore(tablaDosModalForma,'acreditacionDelUso', 'setAcreditacionDelUso')" (valueChange)="enCambioDeValor()"></app-input-radio>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <label for="prefilMensajeria">Perfil de Mensajería y Paquetería</label>
+                    <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="prefilMensajeria" (change)="setValoresStore(tablaDosModalForma,'prefilMensajeria', 'setPrefilMensajeria')" (valueChange)="enCambioDeValor()"></app-input-radio>
+                </div>
+            </div>
+            
+        </form>
+        
+      </div>
+      <div class="modal-footer justify-content-end">
+        <button type="button" class="btn btn-primary" (click)="crearTablaDosDatos()">Aceptar</button>
+        <button type="button" class="btn btn-default" (click)="closeTablaDosModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  #miembroDeLaEmpresaModal
+  tabindex="-1"
+  aria-labelledby="miembroDeLaEmpresaModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            Agregar miembro de la empresa
+        </div>
+      <div class="modal-body">
+        <form [formGroup]="miembroDeLaEmpresa">
+            <div class="row">
+                <div class="col-md-4">
+                    <app-catalogo-select
+                        [label]="'En su carácter de'"
+                        [placeholder]="'Seleccione un valor'"
+                        [catalogo]="sectorProductivoAgace"
+                        formControlName="enSeCaracter"
+                        [required]="true"
+                        (change)="setValoresStore(miembroDeLaEmpresa,'enSeCaracter', 'setEnSeCaracter')"
+                    >
+                    </app-catalogo-select>
+                </div>
+            </div>
+
+            <div class="row mt-5">
+                <div class="col-md-8">
+                    <label for="obligadoTributar"><span class="danger">*</span>Obligado a tributar en México</label>
+                    <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'" formControlName="obligadoTributar" (change)="setValoresStore(miembroDeLaEmpresa,'obligadoTributar', 'setObligadoTributar')" (valueChange)="enCambioDeValor()"></app-input-radio>
+                </div>
+
+            </div>
+            <div class="row mt-5">
+                <div class="col-md-4">
+                    <app-catalogo-select
+                        [label]="'Nacionalidad'"
+                        [placeholder]="'Seleccione un valor'"
+                        [catalogo]="sectorProductivoAgace"
+                        formControlName="nacionalidad"
+                        [required]="true"
+                        (change)="setValoresStore(miembroDeLaEmpresa,'nacionalidad', 'setNacionalidad')"
+                    >
+                    </app-catalogo-select>
+                </div>
+            </div>
+                        
+        </form>
+        
+      </div>
+      <div class="modal-footer justify-content-end">
+        <button type="button" class="btn btn-primary" (click)="closeMiembroDeLaEmpresaModal()">Aceptar</button>
+        <button type="button" class="btn btn-default" (click)="closeMiembroDeLaEmpresaModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>

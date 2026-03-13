@@ -1,0 +1,92 @@
+<div class="container">
+    <ng-titulo titulo="Pago de derechos" />   
+    <form [formGroup]="derechosForm" >
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">                
+                <label class="form-label" for="referencia">Clave de referencia:</label>
+                <input class="form-control" id="referencia" formControlName="referencia"
+                  placeholder="" type="text"
+                  (change)="setValoresStore(derechosForm,'referencia', 'setreferencia')">
+              </div>
+            </div>
+            <div class="col-md-4">
+
+              <div class="form-group">
+                <label class="form-label" for="cadenaDependencia">Chandena de la dependencia:</label>
+                <input class="form-control" id="cadenaDependencia" formControlName="cadenaDependencia"
+                  placeholder="" type="text"
+                  (change)="setValoresStore(derechosForm,'cadenaDependencia', 'setcadenaDependencia')">
+              </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                  <app-catalogo-select
+                    [catalogo]="derechosList"
+                    [isDisabled]="esFormularioSoloLectura ? true : false"
+                    [label]="'Banco'"
+                    [placeholder]="'Seleccione una opción'"
+                    formControlName="banco"
+                    (change)="setValoresStore(derechosForm,'banco', 'setbanco')"></app-catalogo-select>
+                </div>
+              </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="Llave">Llave de pago</label>
+                <input class="form-control" id="Llave" placeholder="" type="text"
+                  formControlName="Llave" 
+                  (change)="setValoresStore(derechosForm,'Llave', 'setLlave')">
+              </div>
+               
+      @if(derechosForm.get('Llave')?.invalid && derechosForm.get('Llave')?.touched) {
+        <div class="mensaje-error">
+          @if(derechosForm.get('Llave')?.errors?.['pattern']) {
+            <span>Existen datos incorrectos que no cumplen con el formato esperado</span>
+          }
+        </div>
+      }
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                   <input-fecha [datos]="fechaInicioInput"
+         name="deFetch"
+        (valorCambiado)="onFechaCambiada($event)"
+        [setFecha]="derechosForm.get('deFetch')?.value"
+         (change)="setValoresStore(derechosForm,'deFetch', 'settipoFetch')" 
+             [isDisabled]="esFormularioSoloLectura ? true : false"
+        ></input-fecha>
+  
+                  </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="importe">Importe de pago</label>
+                  <input class="form-control" id="importe" placeholder="" type="text"
+                    formControlName="importe" (change)="setValoresStore(derechosForm,'importe', 'setimporte')">
+                </div>
+                   
+      @if(derechosForm.get('importe')?.invalid && derechosForm.get('importe')?.touched) {
+        <div class="mensaje-error">
+            @if(derechosForm.get('importe')?.errors?.['pattern']) {
+            <span>Por favor escribe un número entero válido</span>
+          }
+        </div>
+      }
+              </div>
+          </div>
+          
+          <div class="row mt-5">
+      <div class="col-md-12">
+        <div class="pull-right">
+          <button type="button" name="agregarMercancias" class="btn btn-primary ms-2"
+            [disabled]="esFormularioSoloLectura ? true : false">
+            Borrar datos del pago
+          </button>
+        </div>
+      </div>
+    </div>
+      </form>
+  </div>
+  

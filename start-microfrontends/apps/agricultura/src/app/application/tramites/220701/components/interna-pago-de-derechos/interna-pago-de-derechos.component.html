@@ -1,0 +1,179 @@
+<div class="container">
+    <div class="row">
+      <ng-titulo [titulo]="'Pago de derechos'"></ng-titulo>
+    </div>
+    <div class="row">
+      <form [formGroup]="formularioPago">
+        <div class="row">
+          <div class="col-md-8 form-group">
+            <label class="form-label" for="coordenadas">Exento de pago:</label>
+            <app-input-radio
+              [radioOptions]="exentoPagoRadio"
+              [isRequired]="false"
+              [layout]="'vertical'"
+              formControlName="exentoPago"
+              [required]="true"
+              [disabled]="esFormularioSoloLectura"
+              (valueChange)="cambioValorRadio('exentoPago', $event.toString())"
+            ></app-input-radio>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <ng-container *ngIf="exentoPagoValor === 'Si'; else noTrack">
+              <app-catalogo-select
+                [catalogo]="justificacionCatalogo"
+                formControlName="justificacion"
+                [label]="'Justificación'"
+                [required]="false"
+                [isDisabled]="true"
+                (change)="
+                setValoresStore(
+                  formularioPago,
+                  'justificacion'
+                )
+              " 
+              ></app-catalogo-select>
+            </ng-container>
+            <ng-template #noTrack>
+              <app-catalogo-select
+                [catalogo]="justificacionCatalogo"
+                formControlName="justificacion"
+                [label]="'Justificación'"
+                [required]="false"
+                [isDisabled]="true"
+                name="justificacion"
+                (change)="
+                setValoresStore(
+                  formularioPago,
+                  'justificacion'
+                )
+              " 
+              ></app-catalogo-select>
+            </ng-template>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 form-group">
+            <label class="form-label" for="claveUCON">Clave de referencia:</label>
+            <input
+              formControlName="claveReferencia"
+              class="form-control"
+              id="claveReferencia"
+              name="claveReferencia"
+              placeholder=""
+              type="text"
+              appUppercase
+              (change)="
+              setValoresStore(
+                formularioPago,
+                'claveReferencia'
+              )
+            " 
+            />
+          </div>
+          <div class="col-md-4 form-group">
+            <label class="form-label" for="claveUCON"
+              >Cadena de la dependencia:</label
+            >
+            <input
+              formControlName="cadenaDependencia"
+              class="form-control"
+              id="cadenaDependencia"
+              name="cadenaDependencia"
+              placeholder=""
+              type="text"
+              appUppercase
+              (change)="
+              setValoresStore(
+                formularioPago,
+                'cadenaDependencia'
+              )
+            " 
+            />
+          </div>
+          <div class="col-md-4">
+            <ng-container *ngIf="exentoPagoValor === 'Si'; else noBanco">
+              <app-catalogo-select
+                [catalogo]="bancoCatalogo"
+                formControlName="banco"
+                [label]="'Banco'" 
+                [required]="false"
+                [isDisabled]="true"
+                name="banco"
+                (change)="
+              setValoresStore(
+                formularioPago,
+                'banco'
+              )
+            " 
+              ></app-catalogo-select>
+            </ng-container>
+            <ng-template #noBanco>
+              <app-catalogo-select
+                [catalogo]="bancoCatalogo"
+                formControlName="banco"
+                [label]="'Banco'"
+                [required]="false"
+                [isDisabled]="true"
+                name="banco"
+                (change)="
+                setValoresStore(
+                  formularioPago,
+                  'banco'
+                )
+              " 
+              ></app-catalogo-select>
+            </ng-template>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 form-group">
+            <label class="form-label" for="claveUCON">Llave de pago:</label>
+            <input
+              formControlName="llavePago"
+              class="form-control"
+              id="llavePago"
+              name="llavePago"
+              placeholder=""
+              type="text"
+              appUppercase
+              (change)="
+              setValoresStore(
+                formularioPago,
+                'llavePago'
+              )
+            " 
+            />
+          </div>
+          <div class="col-md-4 form-group">
+            <input-fecha [datos]="fechaFinalInput" 
+            formControlName="fechaFactura" 
+            [setFecha]="formularioPago.get('fechaFactura')?.value" 
+            [isDisabled]="esFormularioSoloLectura" 
+            (valorCambiado)="cambioFechaFinal($event)"></input-fecha>
+          </div>
+      
+          <div class="col-md-4 form-group">
+            <label class="form-label" for="claveUCON">Importe de pago:</label>
+            <input
+              formControlName="importePago"
+              class="form-control"
+              id="importePago"
+              name="importePago"
+              placeholder=""
+              type="text"
+              appUppercase
+              (change)="
+              setValoresStore(
+                formularioPago,
+                'importePago'
+              )
+            " 
+            />
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  

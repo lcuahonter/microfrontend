@@ -1,0 +1,70 @@
+<div class="container">
+  <div class="row">
+    <ul class="nav nav-tabs">
+      <li [ngClass]="indice === 1 ? 'active' : ''">
+        <a
+          data-toggle="tab"
+          (click)="seleccionaTab(1)"
+          (keydown.enter)="seleccionaTab(1)"
+          (keydown.space)="seleccionaTab(1)"
+          role="button"
+          tabindex="0"
+          >Solicitante</a
+        >
+      </li>
+      <li [ngClass]="indice === 2 ? 'active' : ''">
+        <a
+          data-toggle="tab"
+          (click)="seleccionaTab(2)"
+          (keydown.enter)="seleccionaTab(2)"
+          (keydown.space)="seleccionaTab(2)"
+          role="button"
+          tabindex="2"
+          >{{consultaState?.parameter === '' ? 'Datos de la solicitud' : 'Datos generales'}}</a
+        >
+      </li>
+      <li [ngClass]="indice === 3 ? 'active' : ''">
+        <a
+          data-toggle="tab"
+          (click)="seleccionaTab(3)"
+          (keydown.enter)="seleccionaTab(3)"
+          (keydown.space)="seleccionaTab(3)"
+          role="button"
+          tabindex="3"
+          >Terceros relacionados</a
+        >
+      </li>
+      <li [ngClass]="indice === 4 ? 'active' : ''">
+        <a
+          data-toggle="tab"
+          (click)="seleccionaTab(4)"
+          (keydown.enter)="seleccionaTab(4)"
+          (keydown.space)="seleccionaTab(4)"
+          role="button"
+          tabindex="4"
+          >Pago de derechos</a
+        >
+      </li>
+    </ul>
+
+    <ng-container>
+      @switch (indice) { @case (1) {
+      <solicitante #Solicitante></solicitante>
+      }  @case (2) {
+        <app-datos-de-la #DatosDeLaComponent [isAduanasEntradaVisible]="true" [idProcedimiento]="idProcedimiento"
+        (establecimientoFormValidity)="datosEstabelicimientoFormValidityChange($event)"
+        (domicilioFormValidity)="domicilioFormValidityChange($event)"
+        (manifiestosFormValidity)="manifiestosFormValidityChange($event)"
+        (representanteLegalFormValidity)="representanteLegalFormValidityChange($event)"
+        [isContinuarTriggered]="isContinuarTriggered"></app-datos-de-la>
+        }
+      @case (3) {
+        <app-terceros-fabricante #TercerosRelacionadosComponent [idProcedimiento]="idProcedimiento" (tableValidEvent)="onTableValidEvent($event)"
+        [isContinuarTriggered]="isContinuarTriggered"></app-terceros-fabricante>
+        }
+      @case (4) {
+      <app-pago-de-derechos-banco #PagoDeDerechosBancoComponent [isContinuarTriggered]="isContinuarTriggered" [removeClaveDeReferenciaValidator]="true" [idProcedimiento]="idProcedimiento"></app-pago-de-derechos-banco>
+      } }
+    </ng-container>
+  </div>
+</div>

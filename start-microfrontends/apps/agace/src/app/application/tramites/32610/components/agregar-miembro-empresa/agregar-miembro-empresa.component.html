@@ -1,0 +1,267 @@
+<div class="row">
+  <form [formGroup]="registroAgregarMiembroEmpresaForm">
+    <div class="col-md-12">
+      <ng-titulo [titulo]="'Agregar miembro de la empresa'"></ng-titulo>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+          <label class="form-label text-left"><span class="text-danger">*</span> Señale si los socios, accionistas, según corresponda, representante legal con facultad para actos de dominio e integrantes de la administración de conformidad con la constitución de la empresa solicitante, se encuentran al corriente en el cumplimiento de sus obligaciones fiscales.</label>
+      </div>
+      <div class="col-md-12 accordion-bar">
+          <div class="panel-group ficha-collapse" id="accordion">
+            <div class="panel panel-default">
+                <div class="panel-heading" (click)="!esFormularioSoloLectura && mostrar_colapsable()">
+                  <p class="panel-title espacio-extra">
+                      Miembro de la empresa
+                  </p>
+                  <button type="button" class="collpase-button collapsed"
+                  [ngClass]="{ 'expanded': colapsable,'collapsed': !colapsable}" [disabled]="esFormularioSoloLectura" >
+                  </button>
+                </div>
+                @if(colapsable){
+                <div class="panel-collapse collapse in" [ngClass]="{ 'in': colapsable, 'collapse': !colapsable}" id="panel-01">
+                  <div class="panel-body">
+                  <div
+                    *ngIf="agregarMiembroEmpresaList.length === 0 && registroAgregarMiembroEmpresaForm.get('miembroDeLaEmpresaTabla')?.touched"
+                    class="row mt-3">
+                    <div class="col-md-12 text-danger mb-3">
+                      <b>Se debe agregar por lo menos un miembro de la empresa</b>
+                    </div>
+                  </div>
+                      <div class="row">
+                        <div class="col-md-12">
+                            <app-tabla-dinamica
+                            [tipoSeleccionTabla]="tipoSeleccionTabla"
+                            [configuracionTabla]="ParqueVehicular"
+                            [datos]="agregarMiembroEmpresaList"
+                            (listaDeFilaSeleccionada)="manejarFilaSeleccionada($event)"
+                            [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+                            >
+                            </app-tabla-dinamica>
+                        </div>
+                        <div
+                            class="modal fade custom-backdrop"
+                            id="registroDeAgregarMiembroEmpresa"
+                            tabindex="-1"
+                            aria-labelledby="registroDeAgregarMiembroEmpresaLabel"
+                            aria-hidden="true"
+                            data-bs-focus="false"
+                            data-backdrop="false" 
+                            #registroDeAgregarMiembroEmpresa
+                            >
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                              <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h4 class="modal-title mt-0">Agregar miembro de la empresa</h4>
+                                  </div>
+                                  <div class="modal-body">
+                                        <div class="row mb-3">
+                                          <div class="col-md-6">
+                                              <div class="row mb-3">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                      <app-catalogo-select
+                                                      [catalogo]="enSuCaracterDeList"
+                                                      formControlName="caracter"
+                                                      [label]="'En su carácter de'"
+                                                      [required]="true"
+                                                      [placeholder]="'Seleccione un valor'"
+                                                      >
+                                                      </app-catalogo-select>
+                                                    </div>
+                                                </div>
+                                              </div>
+                                              <div class="row">
+                                                <div class="col-md-12 pt-5">
+                                                    <label class="form-label text-left"><span class="text-danger">*</span> Obligado a Tributar en México</label>
+                                                    <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'"
+                                                    formControlName="obligadoTributarMexico" (valueChange)="enCambioDeValor($event)"
+                                                    ></app-input-radio>
+                                                </div>
+                                              </div>
+                                              <div class="row mb-3">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                      <app-catalogo-select
+                                                      [catalogo]="nacionalidadList"
+                                                      formControlName="nacionalidad"
+                                                      [label]="'Nacionalidad'"
+                                                      [required]="true"
+                                                      [placeholder]="'Seleccione nacionalidad'"
+                                                      >
+                                                      </app-catalogo-select>
+                                                    </div>
+                                                </div>
+                                              </div>
+                                          </div>
+                                          <div class="col-md-6">
+                                              <ng-container *ngIf="radioSeleccionado === 'rfcSeccion'">
+                                                <div class="row mb-3">
+                                                    <div class="col-md-12">
+                                                      <div class="form-group">
+                                                          <label for="rfcInput" class="form-label"><span class="text-danger">*</span> RFC</label>
+                                                          <div class="d-flex">
+                                                            <input
+                                                                type="text"
+                                                                class="form-control"
+                                                                id="rfcInput"
+                                                                formControlName="rfcInput"
+                                                                placeholder="Ingrese RFC"
+                                                                />
+                                                            <button class="btn btn-secondary ms-2" type="button" (click)="onBuscarRfc()">
+                                                            Buscar
+                                                            </button>
+                                                          </div>
+                                                      </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3">
+                                                    <div class="col-md-12">
+                                                      <div class="form-group">
+                                                          <label for="rfc" class="form-label text-left"
+                                                            ><span class="text-danger">*</span> Registro Federal de Contribuyentes</label
+                                                            >
+                                                          <input
+                                                            type="text"
+                                                            class="form-control"
+                                                            id="rfc"
+                                                            formControlName="rfc"
+                                                            readonly="true"
+                                                            />
+                                                      </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3">
+                                                    <div class="col-md-12">
+                                                      <div class="form-group">
+                                                          <label for="nombreCompleto" class="form-label"><span class="text-danger">*</span> Nombre completo</label>
+                                                          <input
+                                                            type="text"
+                                                            class="form-control"
+                                                            id="nombreCompleto"
+                                                            formControlName="nombreCompleto"
+                                                            readonly="true"
+                                                            />
+                                                      </div>
+                                                    </div>
+                                                </div>
+                                              </ng-container>
+                                              <ng-container *ngIf="radioSeleccionado === 'tipdeSeccion'">
+                                                <div class="row mb-3">
+                                                    <div class="col-md-12">
+                                                      <div class="form-group">
+                                                          <app-catalogo-select
+                                                          [catalogo]="tipoDePersonaList"
+                                                          formControlName="tipoPersona"
+                                                          [label]="'Tipo de Persona'"
+                                                          [required]="true"
+                                                          (change)="alSeleccionarElemento($event)"
+                                                          [placeholder]="'Seleccione tipo de persona'"
+                                                          [isDisabled]="this.radioSeleccionado !== 'tipdeSeccion'"
+                                                          >
+                                                          </app-catalogo-select>
+                                                      </div>
+                                                    </div>
+                                                </div>
+                                                <ng-container *ngIf="elementoSeleccionado === '1'">
+                                                    <div class="row mb-3">
+                                                      <div class="col-md-12">
+                                                          <div class="form-group">
+                                                            <label for="nombre" class="form-label"><span class="text-danger">*</span> Nombre</label>
+                                                            <input
+                                                                type="text"
+                                                                class="form-control"
+                                                                id="nombre"
+                                                                formControlName="nombre"
+                                                                />
+                                                          </div>
+                                                      </div>
+                                                    </div>
+                                                    <div class="row mb-3">
+                                                      <div class="col-md-12">
+                                                          <div class="form-group">
+                                                            <label for="apellidoPaterno" class="form-label"><span class="text-danger">*</span> Apellido Paterno</label>
+                                                            <input
+                                                                type="text"
+                                                                class="form-control"
+                                                                id="apellidoPaterno"
+                                                                formControlName="apellidoPaterno"
+                                                                />
+                                                          </div>
+                                                      </div>
+                                                    </div>
+                                                    <div class="row mb-3">
+                                                      <div class="col-md-12">
+                                                          <div class="form-group">
+                                                            <label for="apellidoMaterno" class="form-label">Apellido Materno:</label>
+                                                            <input
+                                                                type="text"
+                                                                class="form-control"
+                                                                id="apellidoMaterno"
+                                                                formControlName="apellidoMaterno"
+                                                                />
+                                                          </div>
+                                                      </div>
+                                                    </div>
+                                                </ng-container>
+                                                <ng-container *ngIf="elementoSeleccionado === '2'">
+                                                    <div class="row mb-3">
+                                                      <div class="col-md-12">
+                                                          <div class="form-group">
+                                                            <label for="nombreEmpresa" class="form-label"><span class="text-danger">*</span> Nombre de la Empresa</label>
+                                                            <input
+                                                                type="text"
+                                                                class="form-control"
+                                                                id="nombreEmpresa"
+                                                                formControlName="nombreEmpresa"
+                                                                />
+                                                          </div>
+                                                      </div>
+                                                    </div>
+                                                </ng-container>
+                                              </ng-container>
+                                          </div>
+                                        </div>
+                                    <footer class="footer d-flex py-5 gap-3 justify-content-end">
+                                        <button type="button" class="btn btn-primary" (click)="modalCancelar()">Cancelar</button>
+                                        <button type="button" class="btn btn-primary" (click)="enviarDialogData()">Agregar</button>
+                                    </footer>
+                                  </div>
+                              </div>
+                            </div>
+                        </div>
+                      </div>
+                  </div>
+                </div>
+                }
+            </div>
+          </div>
+      </div>
+          <div class="d-flex justify-content-end">
+            <div class="d-flex flex-row flex-wrap gap-3">
+              <button class="btn btn-primary" [ngClass]="{'btn-secondary': !enableEliminarBoton}"
+                (click)="confirmEliminarEmpleadoItem()" [disabled]="esFormularioSoloLectura">Eliminar</button>
+              <button class="btn btn-primary" [ngClass]="{'btn-secondary': !enableEliminarBoton}"
+                (click)="modificarItemEmpleado()" [disabled]="esFormularioSoloLectura">Modificar</button>
+              <button class="btn btn-primary" (click)="agregarDialogoDatos()"
+                [disabled]="esFormularioSoloLectura">Agregar</button>
+            </div>
+          </div>
+    </div>
+  </form>
+</div>
+<lib-notificaciones 
+*ngIf="esHabilitarElDialogo"
+[notificacionInput]="nuevaNotificacion" 
+(confirmacionModal)="cerrarModal()">
+</lib-notificaciones>
+<lib-notificaciones 
+*ngIf="confirmEliminarPopupAbierto"
+[notificacionInput]="nuevaNotificacion" 
+(confirmacionModal)="eliminarEmpleadoItem($event)">
+</lib-notificaciones>
+<lib-notificaciones 
+*ngIf="multipleSeleccionPopupAbierto"
+[notificacionInput]="nuevaNotificacion" 
+(confirmacionModal)="cerrarMultipleSeleccionPopup()">
+</lib-notificaciones>

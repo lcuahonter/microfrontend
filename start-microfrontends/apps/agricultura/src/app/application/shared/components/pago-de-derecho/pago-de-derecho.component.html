@@ -1,0 +1,100 @@
+<div class="container">
+   <form [formGroup]="pagoForm">
+      <div class="row">
+         <ng-titulo titulo="Pago de derechos" />
+         <div class="row mt-2">
+            <div class="col-md-12">
+               <label for="certficacion_a">Exento de pago*:</label>
+            </div>
+            <div class="col-md-4">
+               <app-input-radio [radioOptions]="radioOptions" [isRequired]="true" [layout]="'horizontal'"
+                  formControlName="exentoPago" (change)="radioChange()"
+                  [disabled]="esFormularioSoloLectura"></app-input-radio>
+            </div>
+         </div>
+         <div class="col-md-4">
+            <app-catalogo-select placeholder=" Selecciona un valor" [catalogo]="pagoSelect.justificacionSelector"
+               formControlName="justificacion" [label]="'Justificación'" [required]="true"
+               [isDisabled]="pagoForm.get('exentoPago')?.value === 'no' || esFormularioSoloLectura" name="justificacion"
+               (change)="actualizarPago()"
+               [markTouched]='markTouched'
+            ></app-catalogo-select>
+         </div>
+         <div class="col-md-8"></div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <label class="form-label" for="nombreImportExport">Clave de referencia*:</label>
+               <input class="form-control" id="nombreImportExport" placeholder="" type="text" name="claveReferencia"
+                  formControlName="claveReferencia" (change)="actualizarPago()" />
+               <div *ngIf="pagoForm.get('nombreImportExport')?.invalid && pagoForm.get('nombreImportExport')?.touched">
+                  <small class="mensaje-error">Este campo es obligatorio.</small>
+               </div>
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <label class="form-label" for="nombreImportExport">Cadena de la dependencia*:</label>
+               <input class="form-control" id="nombreImportExport" placeholder="" type="text" libUppercase
+                  name="cadenaDependencia" formControlName="cadenaDependencia" (change)="actualizarPago()" />
+            </div>
+         </div>
+         <div class="col-md-4">
+            <app-catalogo-select placeholder=" Selecciona un valor" [catalogo]="pagoSelect.bancoSelector"
+               formControlName="banco" [label]="'Banco'" [required]="true"
+               [isDisabled]="pagoForm.get('exentoPago')?.value === 'si' || esFormularioSoloLectura" name="banco"
+               (change)="actualizarPago()"
+               [markTouched]='markTouched'
+               ></app-catalogo-select>            
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <label class="form-label" for="nombreImportExport">Llave de pago*:</label>
+               <input class="form-control" id="nombreImportExport" placeholder="" type="text" libUppercase
+                  name="llavePago" formControlName="llavePago" [ngClass]="esInvalido('llavePago') ? 'required' : ''"
+                  (change)="actualizarPago()" [maxlength]="50" style="text-transform: uppercase;" />
+               <div *ngIf="esInvalido('llavePago')" class="text-danger">
+                  <small *ngIf="pagoForm.controls['llavePago'].errors?.['required']">
+                     Este campo es obligatorio
+                  </small>
+                  <small *ngIf="pagoForm.controls['llavePago'].errors?.['pattern']">
+                     Existen datos incorrectos que no cumplen con el formato esperado
+                  </small>
+               </div>
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               @if(setFecha){
+               <input-fecha [setFecha]="pagoForm.get('fechaPago')?.value" [datos]="fechaInicioInput" name="fechaPago"
+                  (change)="actualizarPago()" (valorCambiado)="onFechaCambiada($event)"
+                  [isDisabled]="esFormularioSoloLectura || pagoForm.get('exentoPago')?.value === 'si'"
+                  [deshabilitarFuturas]="true"></input-fecha>
+               <div class="mensaje-error" *ngIf="
+                  pagoForm.get('fechaPago')?.touched &&
+                  pagoForm.get('fechaPago')?.errors?.['futureDateNotAllowed']                  
+               ">
+                  La fecha de pago debe ser menor o igual a la fecha actual.
+               </div>
+               }
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <label class="form-label" for="nombreImportExport">Importe de pago*:</label>
+               <input class="form-control" id="nombreImportExport" placeholder="" type="text" name="importePago"
+                  formControlName="importePago" (change)="actualizarPago()" />
+               <div *ngIf="pagoForm.get('importePago')?.invalid && pagoForm.get('importePago')?.touched">
+                  <small class="mensaje-error">Este campo es obligatorio.</small>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="row mt-3">
+         <div class="col-md-12 text-right">
+            <div class="form-group">
+               <button type="button" class="btn btn-danger" [disabled]="esFormularioSoloLectura" (click)="onBorrar()">Borrar datos del pago</button>
+            </div>
+         </div>
+      </div>
+   </form>
+</div>

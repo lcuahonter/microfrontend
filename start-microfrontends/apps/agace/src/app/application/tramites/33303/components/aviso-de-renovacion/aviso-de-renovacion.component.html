@@ -1,0 +1,58 @@
+<form [formGroup]="avisoForm">
+    <div class="container mt-5">
+        <ng-titulo titulo="Pago de derechos" />
+        <div class="row mt-5">
+            <div class="col-md-6">
+                <label for="claveReferencia">Clave de referencia:</label>
+                <input id="claveReferencia" type="text" class="form-control" formControlName="claveReferencia"
+                    (change)="setValoresStore(avisoForm,'claveReferencia', 'setclaveReferencia')" />
+            </div>
+            <div class="col-md-6">
+                <label for="numeroOperacion">Número de operación:</label>
+                <input id="numeroOperacion" type="text" class="form-control" formControlName="numeroOperacion"
+                    (change)="setValoresStore(avisoForm,'numeroOperacion', 'setnumeroOperacion')" />
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-6">
+                <label for="cadenaDependencia">Cadena de la dependencia:</label>
+                <input id="cadenaDependencia" type="text" class="form-control" formControlName="cadenaDependencia"
+                    (change)="setValoresStore(avisoForm,'cadenaDependencia', 'setcadenaDependencia')" />
+            </div>
+            <div class="col-md-6  custom-banco">
+                <app-catalogo-select [catalogo]="localidadList" formControlName="banco" [label]="'Banco'"
+                    [required]="false" (change)="setValoresStore(avisoForm,'banco', 'setbanco')"
+                    [isDisabled]="esFormularioSoloLectura"></app-catalogo-select>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-4">
+                <label for="llavePago">Llave de pago:</label>
+                <input id="llavePago" type="text" class="form-control" formControlName="llavePago"
+                    (change)="setValoresStore(avisoForm,'llavePago', 'setllavePago')" />
+            </div>
+            <div class="col-md-4 custom-fetchapago">
+                <input-fecha [datos]="fechaInicioInput" [setFecha]="
+                  avisoForm.get('fechaPago')
+                    ?.value
+                " (valorCambiado)="cambioFechaPago($event)"
+                    [isDisabled]="esFormularioSoloLectura ? true : false"></input-fecha>
+
+            </div>
+            <div class="col-md-4">
+                <label for="importePago">Importe de pago:</label>
+                <input id="importePago" type="text" class="form-control" formControlName="importePago"
+                    (change)="setValoresStore(avisoForm,'importePago', 'setimportePago')" />
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12 ">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-primary" (click)="resetPagoDatos()"
+                        [disabled]="esFormularioSoloLectura">Borrar datos del
+                        pago</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

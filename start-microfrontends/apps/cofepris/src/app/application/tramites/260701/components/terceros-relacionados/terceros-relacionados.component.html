@@ -1,0 +1,53 @@
+<div class="container">
+    <ng-titulo titulo="Terceros relacionados" />
+    <ng-alert [CONTENIDO]="TEXTOS.alerta"></ng-alert>
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h5 class="mb-5 mt-5">Destinatario (destino final)*:</h5>
+            <app-tabla-dinamica
+            [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+                [configuracionTabla]="configuracionTabla"
+                [datos]="destinatarioDatos"
+                [tipoSeleccionTabla]="checkbox"
+                (listaDeFilaSeleccionada)="setTablaSeleccionDestinatario($event)">
+            </app-tabla-dinamica>
+            <div class="d-flex justify-content-end mt-4">
+                @if(tieneFilaSeleccionada) {
+                    <button type="button" class="btn btn-danger me-2" (click)="abrirModal(1)" [disabled]="esFormularioSoloLectura">Eliminar</button>
+                    <button type="button" class="btn btn-default me-2" [disabled]="esFormularioSoloLectura">Modificar</button>
+                }
+                <button type="button" class="btn btn-primary" (click)="abrirFabricanteModal('Destinatario (destino final)')" [disabled]="esFormularioSoloLectura">Agregar</button>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h5>Fabricante*:</h5>
+        <div class="col-md-12">
+            <app-tabla-dinamica
+            [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+                [configuracionTabla]="configuracionTablaFabricante"
+                [datos]="fabricanteTablaDatos"
+                [tipoSeleccionTabla]="checkbox"
+                (listaDeFilaSeleccionada)="setTablaSeleccionFabricante($event)">
+            </app-tabla-dinamica>
+            <div class="d-flex justify-content-end mt-4">
+                @if(tieneFilaSeleccionadaFabricante) {
+                    <button type="button" class="btn btn-danger me-2" (click)="abrirModal(1)" [disabled]="esFormularioSoloLectura">Eliminar</button>
+                    <button type="button" class="btn btn-default me-2" [disabled]="esFormularioSoloLectura">Modificar</button>
+                }
+                <button type="button" class="btn btn-primary" (click)="abrirFabricanteModal('Fabricante')" [disabled]="esFormularioSoloLectura">Agregar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmar Modal -->
+@if (nuevaNotificacion) {
+    <section>
+        <lib-notificaciones 
+            [notificacionInput]="nuevaNotificacion" 
+            (confirmacionModal)="eliminarPedimento($event)">
+        </lib-notificaciones>
+    </section>
+}

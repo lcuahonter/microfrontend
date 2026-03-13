@@ -1,0 +1,127 @@
+<div class="container">
+    <div class="row">
+        <ng-titulo titulo="Terceros relacionados" />
+    </div>
+    <div class="row" *ngIf="!mostrarVista">
+        <div class="col-md-12">
+            <ng-alert [CONTENIDO]="seleccionado" [CUSTOMECLASS]="infoAlert"></ng-alert>
+        </div>
+    </div>
+    <div class="row" *ngIf="mostrarVista" #nextField>
+        <div class="col-md-12">
+            <p style="color: red;">Debes seleccionar un tipo de persona para realizar una búsqueda</p>
+        </div>
+    </div>
+    <div class="row" *ngIf="mostrarVista">
+        <form [formGroup]="buscarForm" class="col-md-12">
+            <div class="row">
+                <div class="col-md-12">
+                    <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [layout]="'horizontal'" name="tipoPersona"
+                        formControlName="tipoPersona"></app-input-radio>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <label>Razon social:</label>
+                    <input type="text" class="form-control" formControlName="razonSocial" />
+                </div>
+                <div class="col-md-4 form-group">
+                    <label>Correo electronico:</label>
+                    <input type="text" class="form-control" formControlName="correoElectronico" />
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-4 form-group">
+                    <app-catalogo-select [catalogo]="catalogosDatos.paises" formControlName="pais" [label]="'País'"
+                        name="pais" [isDisabled]="esFormularioSoloLectura"></app-catalogo-select>
+                </div>
+                <div class="col-md-4 form-group">
+                    <app-catalogo-select [catalogo]="catalogosDatos.estados" formControlName="entidadFederativa"
+                        [label]="'Entidad federativa'" name="entidadFederativa"
+                        [isDisabled]="esFormularioSoloLectura"></app-catalogo-select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 d-flex justify-content-end">
+                    <button class="btn btn-primary me-3" [disabled]="esFormularioSoloLectura"
+                        (click)="buscarDestinatario()">Cerrar</button>
+                    <button class="btn btn-danger me-3" [disabled]="esFormularioSoloLectura"
+                        (click)="limpiarFormulario()">Limpiar</button>
+                    <button class="btn btn-default" [disabled]="esFormularioSoloLectura">Buscar</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <h5>Exportador<span *ngIf="exportadorRequired"
+                    [ngClass]="{'mensaje-error':tableErrorMeassageDispalyExportador && cuerpoTablaExportador.length === 0}">*</span>:
+            </h5>
+        </div>
+        <div class="col-md-12">
+            <app-tabla-dinamica [tipoSeleccionTabla]="tipoSeleccionsoli"
+                [configuracionTabla]="configuracionColumnasExportador" [datos]="cuerpoTablaExportador"
+                [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+                (listaDeFilaSeleccionada)="onSeleccionDestinatarioFinal($event)"></app-tabla-dinamica>
+            <div *ngIf="tableErrorMeassageDispalyExportador && cuerpoTablaExportador.length === 0">
+                <small class="mensaje-error">Este campo es obligatorio.</small>
+            </div>
+            <div class="col-md-12 d-flex justify-content-end" *ngIf="cuerpoTablaExportador.length === 0">
+                <button class="btn btn-primary me-3" [disabled]="esFormularioSoloLectura"
+                    (click)="goToAgregarExportador()">Agregar</button>
+                <button class="btn btn-default" [disabled]="esFormularioSoloLectura"
+                    (click)="buscarDestinatario()">Buscar</button>
+            </div>
+            <div *ngIf="filaSeleccionadaExportador" class="col-md-12 d-flex justify-content-end">
+                <div class="col-md-12 d-flex justify-content-end" *ngIf="cuerpoTablaExportador.length === 1">
+                    <button class="btn btn-primary me-3" [disabled]="esFormularioSoloLectura"
+                        (click)="modificarDestinatarioFinal()">Modificar</button>
+                    <button class="btn btn-default" [disabled]="esFormularioSoloLectura"
+                        (click)="emitEliminarFinal()">Eliminar</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h5>Destinatario (destino final)<span *ngIf="destinatarioRequired"
+                            [ngClass]="{'mensaje-error':tableErrorMeassageDispalyDestinatario && cuerpoTablaDestino.length === 0}">*</span>:
+                    </h5>
+                </div>
+                <div class="col-md-12">
+                    <app-tabla-dinamica [tipoSeleccionTabla]="tipoSeleccionsoli"
+                        [configuracionTabla]="configuracionColumnasDestino" [datos]="cuerpoTablaDestino"
+                        [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+                        (listaDeFilaSeleccionada)="onSeleccionDestinatario($event)"></app-tabla-dinamica>
+                    <div *ngIf="tableErrorMeassageDispalyDestinatario && cuerpoTablaDestino.length === 0">
+                        <small class="mensaje-error">Este campo es obligatorio.</small>
+                    </div>
+                </div>
+                <div class="col-md-12 d-flex justify-content-end" *ngIf="cuerpoTablaDestino.length === 0">
+                    <button class="btn btn-primary me-3" [disabled]="esFormularioSoloLectura"
+                        (click)="goToAgregarDestinatario()">Agregar</button>
+                    <button class="btn btn-default" [disabled]="esFormularioSoloLectura"
+                        (click)="buscarDestinatario()">Buscar</button>
+                </div>
+                <div *ngIf="filaSeleccionadaDestinatario" class="col-md-12 d-flex justify-content-end">
+                    <div class="col-md-12 d-flex justify-content-end" *ngIf="cuerpoTablaDestino.length === 1">
+                        <button class="btn btn-primary me-3" [disabled]="esFormularioSoloLectura"
+                            (click)="modificarDestinatario()">Modificar</button>
+                        <button class="btn btn-default" [disabled]="esFormularioSoloLectura "
+                            (click)="emitEliminar()">Eliminar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @if(eliminarDatosTabla){
+        <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+            (confirmacionModal)="eliminarPedimentoDatos($event)"></lib-notificaciones>
+        }
+        @if(eliminarDatoExportador){
+        <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+            (confirmacionModal)="eliminarExportador($event)"></lib-notificaciones>
+        }
+        @if(mostrarMensajeError){
+        <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+            (confirmacionModal)="eliminarErrorMessage()"></lib-notificaciones>
+        }

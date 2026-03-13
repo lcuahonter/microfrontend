@@ -1,0 +1,696 @@
+<div class="container">
+  <form [formGroup]="formAviso">
+    <!-- ADACE -->
+    <div class="row">
+      <div class="col-md-4 mt-5">
+        <label for="adace">ADACE:</label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="adace"
+          id="adace"
+          [readonly]="true"
+          size="15"
+        />
+      </div>
+      <div class="col-md-8"></div>
+    </div>
+
+    <!-- Tipo de aviso -->
+    <div class="row">
+      <div class="col-md-12">
+        <ng-titulo titulo="Tipo de aviso" />
+      </div>
+      <div class="col-md-2">
+        <label for="adace">Tipo de Aviso<span
+          class="require"
+          [ngClass]="{
+            'text-danger':
+              formAviso.get('ideGenerica1')?.invalid &&
+              formAviso.get('ideGenerica1')?.touched
+          }"
+          >*</span
+        >:</label>
+      </div>
+      <div class="col-md-10">
+        <app-input-radio
+          [radioOptions]="avisoOpcionesDeRadio.opcionesDeRadio"
+          [isRequired]="avisoOpcionesDeRadio.required"
+          [selectedValue]="formAviso.get('ideGenerica1')?.value"
+          [layout]="'horizontal'"
+          [labelName]="'first'"
+          (valueChange)="setTipoDeAviso($event)"
+          formControlName="ideGenerica1"
+        ></app-input-radio>
+        
+      </div>
+      <div *ngIf="formAviso.get('ideGenerica1')?.invalid && formAviso.get('ideGenerica1')?.touched" class="mensaje-error">
+        <span *ngIf="formAviso.get('ideGenerica1')?.errors?.['required']">
+          Este campo es obligatorio
+        </span>
+      </div>
+    </div>
+
+    @if (formAviso.get('ideGenerica1')?.value !== 'TAV.IMP' ) {
+    <!-- Datos del aviso de importación previa relacionado -->
+    <div class="row">
+      <div class="col-md-12 mt-5">
+        <ng-titulo titulo="Datos del aviso de importación previa relacionado" />
+      </div>
+      <div class="col-md-12">
+        <label>¿Cuenta con el ID de transacción de VUCEM del Aviso inicial de Importación?:</label>
+        <app-input-radio [radioOptions]="opcionDeBotonDeRadio" id="serviciosTerceros"  [isBold]="true"
+          formControlName="serviciosTerceros" [layout]="'horizontal'" 
+          (valueChange)="setTransactionId($event)"
+        >
+        </app-input-radio>
+      </div>
+     
+      <div class="col-md-12 mt-5" *ngIf="formAviso.get('serviciosTerceros')?.value === '1'">
+        <label for="idTransaccionVU">
+          ID de transacción de VUCEM:
+        </label>
+        <input
+          id="idTransaccionVU"
+          formControlName="idTransaccionVU"
+          (change)="actualizarNumeroValor('idTransaccionVU', $event)"
+          class="form-control"
+          type="text"
+        />
+        <div *ngIf="noEsValido('idTransaccionVU')" class="mensaje-error">
+          <span *ngIf="formAviso.get('idTransaccionVU')?.errors?.['required']">
+            Este campo es obligatorio
+          </span>
+          <span *ngIf="formAviso.get('idTransaccionVU')?.errors?.['minlength']">
+            Por favor, no escribas menos de 25 caracteres
+          </span>
+          <span *ngIf="formAviso.get('idTransaccionVU')?.errors?.['maxlength']">
+            Por favor, no escribas más de 25 caracteres
+          </span>
+          <span *ngIf="formAviso.get('idTransaccionVU')?.errors?.['pattern']">
+            El campo debe ser de 25 dígitos
+          </span>
+        </div>
+        @if(idVucemInvalido) {
+           <span class="mensaje-error">
+            El identificador/folio de transacción VUCEM correspondiente al aviso de importación previa no es válido.
+          </span>
+        }@if(idVucemOcupado) {
+           <span class="mensaje-error">
+            El identificador/folio de transacción VUCEM correspondiente al aviso de importación previa ya fue utilizado..
+          </span>
+        }
+      </div>
+    </div>
+    }
+ 
+    @if (formAviso.get('ideGenerica1')?.value !== 'TAV.IMP' ){
+    <div class="row">
+      <div class="col-md-12">
+        <ng-titulo titulo="Fecha de inicio de uso de la mercancía importada" />
+      </div>
+      <div class="col-md-8">
+        <div class="form-group">
+          <input-fecha
+            [setFecha]="formAviso.get('fechaIniExposicion')?.value"
+            [datos]="fechaInicioInput"
+            (valorCambiado)="cambiarInputFecha($event)"
+            [isDisabled]="esSoloLectura"
+            [deshabilitarPasadas]="true"
+          ></input-fecha>
+        </div>
+      </div>
+    </div>
+    }
+    
+  @if (formAviso.get('ideGenerica1')?.value !== 'TAV.MON' ){
+    <div class="row">
+      <div class="col-md-12 mt-5">
+        <ng-titulo
+          titulo="Datos de la
+					mercanc&iacute;a completa que se importar&aacute; desmontada"
+        />
+      </div>
+      <div class="col-md-4 mt-3">
+        <app-catalogo-select
+          formControlName="cveFraccionArancelaria"
+          [catalogo]="opcionFraccionArancelaria.catalogos"
+          [label]="opcionFraccionArancelaria.labelNombre"
+          [required]="opcionFraccionArancelaria.required"
+          name="cveFraccionArancelaria"
+          (selectionChange)="establecerValoresEnEstado(formAviso, 'cveFraccionArancelaria')"
+          [isDisabled]="esSoloLectura"
+        ></app-catalogo-select>
+        <div *ngIf="noEsValido('cveFraccionArancelaria')" class="mensaje-error">
+          Este campo es obligatorio
+        </div>
+      </div>
+      <div class="col-md-4 mt-3">
+        <label for="nico">NICO<span
+            class="require"
+            [ngClass]="{
+              'text-danger':
+                formAviso.get('nico')?.invalid &&
+                formAviso.get('nico')?.touched
+            }"
+            >*</span
+          >:</label>
+        <input
+          id="nico"
+          formControlName="nico"
+          
+          class="form-control"
+          type="text"
+          (input)="soloNumeros($event)"
+          [ngClass]="esValido('nico') ? 'required' : ''"
+        />
+        <div *ngIf="noEsValido('nico')" class="mensaje-error">
+          <span *ngIf="formAviso.get('nico')?.errors?.['required']">
+            Este campo es obligatorio
+          </span>
+          <span *ngIf="formAviso.get('nico')?.errors?.['minlength']">
+            Por favor, no escribas menos de 2 caracteres
+          </span>
+          <span *ngIf="formAviso.get('nico')?.errors?.['maxlength']">
+            Por favor, no escribas más de 2 caracteres
+          </span>
+        </div>
+      </div>
+      <div class="col-md-4 mt-3">
+        <label for="peso">Peso (Kg)<span
+            class="require"
+            [ngClass]="{
+              'text-danger':
+                formAviso.get('peso')?.invalid &&
+                formAviso.get('peso')?.touched
+            }"
+            >*</span
+          >:</label>
+        <input
+          id="peso"
+          formControlName="peso"
+          (change)="actualizarNumeroValor('peso', $event)"
+          class="form-control"
+          type="text"
+          [ngClass]="esValido('peso') ? 'required' : ''"
+        />
+        <div *ngIf="noEsValido('peso')" class="mensaje-error">
+          <span *ngIf="formAviso.get('peso')?.errors?.['required']">
+            Este campo es obligatorio
+          </span>
+          <span *ngIf="formAviso.get('peso')?.errors?.['pattern'] && !formAviso.get('peso')?.errors?.['required']">
+            Por favor, escribe un número entero válido
+          </span>
+          <span *ngIf="formAviso.get('peso')?.errors?.['min'] && !formAviso.get('peso')?.errors?.['required'] && !formAviso.get('peso')?.errors?.['pattern']">
+            Por favor, escribe un valor mayor o igual a 0.01
+          </span>
+          <span *ngIf="formAviso.get('peso')?.errors?.['max'] && !formAviso.get('peso')?.errors?.['required'] && !formAviso.get('peso')?.errors?.['pattern'] && !formAviso.get('peso')?.errors?.['min']">
+            Por favor, escribe un valor menor o igual a 9999999999999.99
+          </span>
+        </div>
+      </div>
+      <div class="col-md-4 mt-3">
+        <label for="valorUSD"
+          >Valor USD<span
+            class="require"
+            [ngClass]="{
+              'text-danger':
+                formAviso.get('valorUSD')?.invalid &&
+                formAviso.get('valorUSD')?.touched
+            }"
+            >*</span
+          >:
+        </label>
+        <input
+          id="valorUSD"
+          formControlName="valorUSD"
+          (change)="actualizarNumeroValor('valorUSD', $event)"  
+          class="form-control"
+          type="text"
+          (input)="soloNumerosDecimal($event)"
+          [ngClass]="esValido('valorUSD') ? 'required' : ''"
+        />
+        <div *ngIf="noEsValido('valorUSD')" class="mensaje-error">
+          <span *ngIf="formAviso.get('valorUSD')?.errors?.['required']">
+            Este campo es obligatorio
+          </span>
+          <span *ngIf="formAviso.get('valorUSD')?.errors?.['pattern'] && !formAviso.get('valorUSD')?.errors?.['required']">
+            Por favor, escribe un número entero válido
+          </span>
+          <span *ngIf="formAviso.get('valorUSD')?.errors?.['maxlength'] && !formAviso.get('valorUSD')?.errors?.['required'] && !formAviso.get('valorUSD')?.errors?.['pattern']">
+            Por favor, no escribas más de 15 caracteres
+          </span>
+          <span *ngIf="formAviso.get('valorUSD')?.errors?.['max'] && !formAviso.get('valorUSD')?.errors?.['required'] && !formAviso.get('valorUSD')?.errors?.['pattern'] && !formAviso.get('valorUSD')?.errors?.['maxlength']">
+            Por favor, escribe un valor menor o igual a 999999999999.99
+          </span>
+          <span *ngIf="formAviso.get('valorUSD')?.errors?.['min'] && !formAviso.get('valorUSD')?.errors?.['required'] && !formAviso.get('valorUSD')?.errors?.['pattern'] && !formAviso.get('valorUSD')?.errors?.['maxlength'] && !formAviso.get('valorUSD')?.errors?.['max']">
+            Por favor, escribe un valor mayor o igual a 0.01
+          </span>
+        </div>
+      </div>
+      <div class="col-md-8 mt-3">
+        <label for="descripcionMercancia">
+          Descripción de la mercancía<span
+            class="require"
+            [ngClass]="{
+              'text-danger':
+                formAviso.get('descripcionMercancia')?.invalid &&
+                formAviso.get('descripcionMercancia')?.touched
+            }"
+            >*</span
+          >:
+        </label>
+        <textarea
+          id="descripcionMercancia"
+          formControlName="descripcionMercancia"
+          rows="5"
+          (change)="establecerValoresEnEstado(formAviso, 'descripcionMercancia')"
+          class="form-control no-resize textarea-height"
+          [ngClass]="esValido('descripcionMercancia') ? 'required  no-resize textarea-height' : ' no-resize textarea-height'"
+        ></textarea>
+        <div *ngIf="noEsValido('descripcionMercancia')" class="mensaje-error">
+          <span
+            *ngIf="formAviso.get('descripcionMercancia')?.errors?.['required']"
+          >
+            Este campo es obligatorio
+          </span>
+          <span
+            *ngIf="formAviso.get('descripcionMercancia')?.errors?.['maxlength']"
+          >
+          Por favor, no escribas más de 250 caracteres
+          </span>
+        </div>
+      </div>
+    </div>
+  }
+  
+  
+    <div class="row">
+      <div class="col-md-12 mt-5">
+        <ng-titulo titulo="Datos del domicilio donde se montará la mercancía" />
+      </div>
+      <div class="col-md-8 mt-3">
+        <label for="nombreComercial"> Nombre comercial: </label>
+        <input
+          id="nombreComercial"
+          formControlName="nombreComercial"
+          class="form-control"
+          type="text"
+          (change)="establecerValoresEnEstado(formAviso, 'nombreComercial')"
+        />
+        <div *ngIf="noEsValido('nombreComercial')" class="mensaje-error">
+          <span *ngIf="formAviso.get('nombreComercial')?.errors?.['maxlength']">
+            Por favor, no escribas más de 250 caracteres
+          </span>
+        </div>
+      </div>
+      <div class="col-md-4 mt-3"></div>
+      <div class="col-md-4 mt-3">
+        <app-catalogo-select
+          formControlName="entidadFederativa"
+          [catalogo]="opcionEntidadFederativa.catalogos"
+          [label]="opcionEntidadFederativa.labelNombre"
+          [required]="opcionEntidadFederativa.required"
+          name="entidadFederativa"
+          (selectionChange)="establecerValoresEnEstado(formAviso, 'entidadFederativa')"
+          [isDisabled]="esSoloLectura"
+        ></app-catalogo-select>
+        <div *ngIf="noEsValido('entidadFederativa')" class="mensaje-error">
+          Este campo es obligatorio
+        </div>
+      </div>
+      <div class="col-md-4 mt-3">
+        <app-catalogo-select
+          formControlName="delegacionMunicipio"
+          [catalogo]="opcionDelegacionMunicipio.catalogos"
+          [label]="opcionDelegacionMunicipio.labelNombre"
+          [required]="opcionDelegacionMunicipio.required"
+          name="delegacionMunicipio"
+          [isDisabled]="!formAviso.get('entidadFederativa')?.value"
+          (selectionChange)="establecerValoresEnEstado(formAviso, 'delegacionMunicipio')"
+          [isDisabled]="esSoloLectura"
+        ></app-catalogo-select>
+        <div *ngIf="noEsValido('delegacionMunicipio')" class="mensaje-error">
+          Este campo es obligatorio
+        </div>
+      </div>
+      <div class="col-md-4 mt-3">
+        <app-catalogo-select
+          formControlName="colonia"
+          [catalogo]="opcionColonia.catalogos"
+          [label]="opcionColonia.labelNombre"
+          [required]="opcionColonia.required"
+          [isDisabled]="!formAviso.get('delegacionMunicipio')?.value"
+          name="colonia"
+          (selectionChange)="establecerValoresEnEstado(formAviso, 'colonia')"
+          [isDisabled]="esSoloLectura"
+        ></app-catalogo-select>
+        <div *ngIf="noEsValido('colonia')" class="mensaje-error">
+          Este campo es obligatorio
+        </div>
+      </div>
+      <div class="col-md-4 mt-3">
+        <label for="calle"
+        >Calle<span
+        class="require"
+        [ngClass]="{
+          'text-danger':
+            formAviso.get('calle')?.invalid &&
+            formAviso.get('calle')?.touched
+        }"
+        >*</span
+      >:</label>
+        <input
+          id="calle"
+          formControlName="calle"
+          class="form-control"
+          type="text"
+          (change)="establecerValoresEnEstado(formAviso, 'calle')"
+          [ngClass]="esValido('calle') ? 'required' : ''"
+        />
+        <div *ngIf="noEsValido('calle')" class="mensaje-error">
+          <div *ngIf="formAviso.get('calle')?.errors?.['required']"class="mensaje-error" >
+            Este campo es obligatorio
+          </div>
+         
+          <span *ngIf="formAviso.get('calle')?.errors?.['maxlength']">
+            Por favor, no escribas más de 250 caracteres
+          </span>
+        </div>
+      </div>
+      <div class="col-md-4 mt-3">
+        <label for="numeroExterior">No. Exterior<span
+          class="require"
+          [ngClass]="{
+            'text-danger':
+              formAviso.get('numeroExterior')?.invalid &&
+              formAviso.get('numeroExterior')?.touched
+          }"
+          >*</span
+        >:</label>
+        <input
+          id="numeroExterior"
+          formControlName="numeroExterior"
+          class="form-control"
+          type="text"
+          [ngClass]="esValido('numeroExterior') ? 'required' : ''"
+          (change)="establecerValoresEnEstado(formAviso, 'numeroExterior')"
+        />
+        <div *ngIf="noEsValido('numeroExterior')" class="mensaje-error">
+          <div *ngIf="formAviso.get('numeroExterior')?.errors?.['required']" class="mensaje-error" >
+            Este campo es obligatorio
+          </div>
+          <span *ngIf="formAviso.get('numeroExterior')?.errors?.['maxlength']">
+            Por favor, no escribas más de 15 caracteres
+          </span>
+        </div>
+      </div>
+      <div class="col-md-4 mt-3">
+        <label for="numeroInterior">No. Interior:</label>
+        <input
+          id="numeroInterior"
+          formControlName="numeroInterior"
+          class="form-control"
+          type="text"
+          (change)="establecerValoresEnEstado(formAviso, 'numeroInterior')"
+        />
+        <div *ngIf="noEsValido('numeroInterior')" class="mensaje-error">
+          <div *ngIf="formAviso.get('numeroInterior')?.errors?.['required']" class="mensaje-error">
+            Este campo es obligatorio
+          </div>
+          <span *ngIf="formAviso.get('numeroInterior')?.errors?.['maxlength']">
+            Por favor, no escribas más de 15 caracteres
+          </span>
+        </div>
+      </div>
+      <div class="col-md-4 mt-3">
+        <label for="codigoPostal">Código postal<span
+          class="require"
+          [ngClass]="{
+            'text-danger':
+              formAviso.get('codigoPostal')?.invalid &&
+              formAviso.get('codigoPostal')?.touched
+          }"
+          >*</span
+        >:</label>
+        <input
+          id="codigoPostal"
+          formControlName="codigoPostal"
+          class="form-control"
+          type="text"
+          (input)="soloNumeros($event)"
+
+          [ngClass]="esValido('codigoPostal') ? 'required' : ''"
+          (change)="establecerValoresEnEstado(formAviso, 'codigoPostal')"
+        />
+        <div *ngIf="noEsValido('codigoPostal')" class="mensaje-error">
+          <div *ngIf="formAviso.get('codigoPostal')?.errors?.['required']">
+            Este campo es obligatorio
+          </div>
+          <span *ngIf="formAviso.get('codigoPostal')?.errors?.['maxlength']">
+            Por favor, no escribas más de 5 caracteres
+          </span>
+        </div>
+      </div>
+    </div>
+   <!--- } @if (tipoAviso === 'por defecto' || tipoAviso === 'TAV.MON') {
+     Datos de la operación de importación -->
+     @if (formAviso.get('ideGenerica1')?.value !== 'TAV.IMP'|| formAviso.get('ideGenerica1')?.value === 'TAV.MON' ) {
+    <div class="row">
+      <div class="col-md-12 mt-5">
+        <ng-titulo titulo="Datos de la operación de importación" />
+      </div>
+      <div class="col-md-12 mt-3">
+        <app-tabla-dinamica
+          [tipoSeleccionTabla]="tipoSeleccionTabla"
+          [configuracionTabla]="configuracionColumnas"
+          [datos]="operacionDeImportacionLista"
+          (filaSeleccionada)="onFilaSeleccionada($event)"
+          [disableSeleccionTablaCheckBox]="esSoloLectura"
+        >
+        </app-tabla-dinamica>
+      </div>
+      <div class="col-md-12 mt-5">
+        <div class="d-flex justify-content-end">
+          <button type="button" id="idEliminarOperacionImp"  class="btn btn-outline-secondary me-3 px-4 py-2" style="border: 2px solid;" [disabled]="esSoloLectura" (click)="eliminarOperacionImp()">
+            Eliminar
+          </button>
+          <button
+            id="idModificarOperacionImp"
+            class="btn btn-danger me-3"
+            type="button"
+            (click)="modificarOperacionImp()"
+            [disabled]="esSoloLectura"
+          >
+            Modificar
+          </button>
+          <button
+            id="idAgregarOperacionImp"
+            class="btn btn-primary"
+            type="button"
+            (click)="agregarOperacionImp()"
+            [disabled]="esSoloLectura"
+          >
+            Agregar
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+  
+  </form>
+</div>
+
+<ng-template #templateSeleccionRequerida>
+  <div class="modal-header">
+    <h6 class="modal-title text-warning">Mensaje</h6>
+  </div>
+  <div class="modal-body">
+    <p class="mb-0">{{ mensajeSeleccion }}</p>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="cerrarModalSeleccionRequerida()"
+    >
+      Aceptar
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #templateConfirmacionEliminacion>
+  <div class="modal-header">
+    <h4 class="modal-title text-danger"></h4>
+  </div>
+  <div class="modal-body">
+    <p class="mb-0">¿Está seguro que desea eliminar los registros marcados?</p>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="confirmarEliminacionOperacionImportacion()"
+    >
+      Aceptar
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="cerrarModalConfirmacionEliminacion()"
+    >
+      Cancelar
+    </button>
+  </div>
+</ng-template>
+
+<div
+  class="modal fade"
+  id="modalAgregarMercancias"
+  tabindex="-1"
+  aria-labelledby="modalAgregarMercanciasLabel"
+  aria-hidden="true"
+  #modalAgregarMercancias
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      
+<form [formGroup]="frmDatosOperacionImp">
+  <div class="row">
+    <div class="col-md-12">
+      <ng-titulo [titulo]="modalOperacionModo === 'agregar' ? 'Agregar operación de importación' : 'Modificar operación de importación'" />
+    </div>
+  </div>
+  <div class="row mt-3">
+    <div class="col-md-6">
+      <label for="patente">Patente o autorización del Agente Aduanal<span
+        class="require"
+        [ngClass]="{
+          'text-danger':
+          frmDatosOperacionImp.get('patente')?.invalid &&
+          frmDatosOperacionImp.get('patente')?.touched
+        }"
+        >*</span
+      >:</label>
+      <input
+        id="patente"
+        formControlName="patente"
+        class="form-control"
+        [ngClass]="esValidoModal('patente') ? 'required' : ''"
+        (change)="establecerValoresEnEstado(frmDatosOperacionImp, 'patente')"
+      />
+      <div *ngIf="frmDatosOperacionImp.get('patente')?.touched && frmDatosOperacionImp.get('patente')?.errors" class="mensaje-error">
+        <div *ngIf="frmDatosOperacionImp.get('patente')?.errors?.['required']">
+          Este campo es obligatorio
+        </div>
+        <div *ngIf="frmDatosOperacionImp.get('patente')?.errors?.['maxlength']">
+          Por favor, no escribas más de 4 caracteres
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <label for="rfc">RFC del Agente o Apoderado Aduanal<span
+        class="require"
+        [ngClass]="{
+          'text-danger':
+          frmDatosOperacionImp.get('rfc')?.invalid &&
+          frmDatosOperacionImp.get('rfc')?.touched
+        }"
+        >*</span
+      >:</label>
+      <input
+        id="rfc"
+        formControlName="rfc"
+        class="form-control"                 
+        [ngClass]="esValidoModal('rfc') ? 'required' : ''"
+        (change)="establecerValoresEnEstado(frmDatosOperacionImp, 'rfc')"
+      />
+      <div *ngIf="frmDatosOperacionImp.get('rfc')?.touched && frmDatosOperacionImp.get('rfc')?.errors" class="mensaje-error">
+        <div *ngIf="frmDatosOperacionImp.get('rfc')?.errors?.['required']">
+          Este campo es obligatorio
+        </div>
+        <div *ngIf="frmDatosOperacionImp.get('rfc')?.errors?.['maxlength']">
+          Por favor, no escribas más de 13 caracteres
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-3">
+    <div class="col-md-6">
+      <label for="pedimento">Número de pedimento<span
+        class="require"
+        [ngClass]="{
+          'text-danger':
+          frmDatosOperacionImp.get('pedimento')?.invalid &&
+          frmDatosOperacionImp.get('pedimento')?.touched
+        }"
+        >*</span
+      >:</label>
+      
+      <input
+        id="pedimento"
+        formControlName="pedimento"
+        class="form-control"
+        [ngClass]="esValidoModal('pedimento') ? 'required' : ''"
+        (change)="establecerValoresEnEstado(frmDatosOperacionImp, 'pedimento')"
+      />
+      <div *ngIf="frmDatosOperacionImp.get('pedimento')?.touched && frmDatosOperacionImp.get('pedimento')?.errors" class="mensaje-error">
+        <div *ngIf="frmDatosOperacionImp.get('pedimento')?.errors?.['required']">
+          Este campo es obligatorio
+        </div>
+        <div *ngIf="frmDatosOperacionImp.get('pedimento')?.errors?.['maxlength']">
+          Por favor, no escribas más de 7 caracteres
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <app-catalogo-select
+        formControlName="aduana"
+        [catalogo]="opcionAduana.catalogos"
+        [label]="opcionAduana.labelNombre"
+        [required]="opcionAduana.required"
+        name="aduana"
+        (selectionChange)="establecerValoresEnEstadoModal(frmDatosOperacionImp, 'aduana')"
+      ></app-catalogo-select>
+      <div *ngIf="frmDatosOperacionImp.get('aduana')?.touched && frmDatosOperacionImp.get('aduana')?.errors" class="mensaje-error">
+          Este campo es obligatorio
+    </div>
+    </div>
+    
+    
+  </div>
+  <div class="row mt-3">
+    <div class="col-md-12">
+      <div class="pull-right">
+        <button
+          type="button"
+          id="cancelarDatosOperacionImp"
+          class="mid btn btn-default me-3"
+          
+          #closeModal (click)="cerrarModalForma()"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          id="agregarDatosOperacionImp"
+          class="default btn btn-primary"
+          
+          (click)="guardarDatosOperacionImp()"
+        >
+          Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
+
+<lib-notificaciones *ngIf="esValidoForma" [notificacionInput]="nuevaNotificacion" (confirmacionModal)="cerrarModal()"></lib-notificaciones>
+
+    </div>
+  </div>
+</div>
+
+<lib-notificaciones *ngIf="esEliminar" [notificacionInput]="nuevaNotificacion" (confirmacionModal)="cerrarModalEliminar($event)"></lib-notificaciones>
+<lib-notificaciones *ngIf="noRowSelected" [notificacionInput]="nuevaNotificacion" (confirmacionModal)="cerrarNoRow()"></lib-notificaciones>
+<lib-notificaciones *ngIf="showSuccessModal" [notificacionInput]="nuevaNotificacion" (confirmacionModal)="closeSuccessModal()"></lib-notificaciones>

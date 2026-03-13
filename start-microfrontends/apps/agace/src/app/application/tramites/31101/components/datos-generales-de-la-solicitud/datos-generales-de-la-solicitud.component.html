@@ -1,0 +1,1614 @@
+<div class="container">
+  <form [formGroup]="datosGeneralesForm">
+    <div class="row mt-5">
+      <div class="col-md-12">
+        <ng-titulo titulo="Tipo de garantía" />
+      </div>
+      <div class="col-md-12">
+        <label class="form-label mb-5">Tipo de Garantía *:</label>
+        <app-input-radio
+          formControlName="tipoDeGarantia"
+          [selectedValue]="datosGeneralesForm.get('tipoDeGarantia')?.value"
+          [radioOptions]="tipoDeGarantiaOpcion.radioOptions"
+          [isRequired]="tipoDeGarantiaOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          (valueChange)="actualizarTipoDeGarantia($event)"
+        ></app-input-radio>
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">Nota:</label><br />
+        <p>
+          Es importante señalar que para cumplir con todos los requisitos
+          establecidos en la normatividad vigente, para la aceptación de la
+          garantía (carta de crédito), DEBERÁ presentar en las oficinas de la
+          AGACE ubicadas en: Av. Hidalgo 77, Col. Guerrero, C.P. 06300, Ciudad
+          de México, el original de la carta de crédito en materia de IVA e IEPS
+          emitida en hoja membretada de la Institución de Crédito emisora.
+        </p>
+        <p>
+          Dicha carta de crédito deberá ser presentada mediante escrito libre
+          que contenga los requisitos establecidos en los artículos 18 y 18-A
+          del Código Fiscal de la Federación, y acreditando la personalidad del
+          representante legal de conformidad con el artículo 19 del Código
+          Fiscal de la Federación.
+        </p>
+        <ng-titulo titulo="Modalidad de la garantía" />
+        <label class="form-label mb-5">Modalidad de la Garantía *:</label>
+        <app-input-radio
+          formControlName="modalidadDeLaGarantia"
+          [selectedValue]="
+            datosGeneralesForm.get('modalidadDeLaGarantia')?.value
+          "
+          [radioOptions]="modalidadDeLaGarantiaOpcion.radioOptions"
+          [isRequired]="modalidadDeLaGarantiaOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          (valueChange)="actualizarModalidadDeLaGarantia($event)"
+        ></app-input-radio>
+      </div>
+      <div class="col-md-12">
+        <ng-titulo titulo="Tipo sector" />
+        <label class="form-label mb-5"
+          >Tipo sector<span
+            [ngClass]="noEsValido('tipoSector') ? 'text-danger' : ''"
+            >*</span
+          >:</label
+        >
+        <app-input-radio
+          formControlName="tipoSector"
+          [selectedValue]="datosGeneralesForm.get('tipoSector')?.value"
+          [radioOptions]="tipoSectorOpcion.radioOptions"
+          [isRequired]="tipoSectorOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          (valueChange)="actualizarTipoSector($event)"
+        ></app-input-radio>
+      </div>
+      <div class="col-md-4">
+        @if(espectaculoConcepto){
+        <app-catalogo-select
+          formControlName="concepto"
+          [catalogo]="conceptoLista.catalogos"
+          [label]="conceptoLista.labelNombre"
+          [placeholder]="conceptoLista.primerOpcion"
+          [required]="false"
+          [isDisabled]="esFormularioSoloLectura"
+          name="concepto"
+          id="concepto"
+          (selectionChange)="actualizarConcepto($event)"
+        ></app-catalogo-select>
+        }
+      </div>
+      <div class="col-md-12">
+        <ng-titulo titulo="Manifiesto bajo protesta" />
+        <div class="form-check text-start">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            formControlName="alerta2"
+            (change)="actualizarAlerta2($event)"
+          />
+          Bajo protesta de decir la verdad, manifiesto que los datos asentados
+          en el presente documento son ciertos y que las facultades que me
+          fueron otorgadas para representar al solicitante no me han sido
+          modificadas y/o revocadas<b>*</b>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <ng-titulo titulo="Requisitos" />
+      </div>
+      <div class="col-md-12">
+        <label class="fw-0 text-start"
+          >Señale si al momento de ingresar su solicitud se encuentra al
+          corriente en el cumplimiento de sus obligaciones fiscales y
+          aduaneras.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3500"
+          (valueChange)="actualizar3500($event)"
+        ></app-input-radio>
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >Indique si autorizó al SAT hacer pública su opinión positiva sobre el
+          cumplimiento de obligaciones fiscales.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3501"
+          (valueChange)="actualizar3501($event)"
+        ></app-input-radio>
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >Indique si cuenta con la totalidad de personal registrado ante el
+          IMSS, del SUA, y realiza el pago de las cuotas obrero patronales, así
+          como que cumple con la obligación de retener y enterar el ISR de los
+          trabajadores.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3502"
+          (valueChange)="actualizar3502($event)"
+        ></app-input-radio>
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="form-label text-start"
+          >Indique la denominación o razón social de los subcontratistas de
+          quienes reciba los servicios especializados o la ejecución de obras
+          especializadas.</label
+        >
+      </div>
+      <div class="col-md-4">
+        <label class="form-label text-start" for="RFC">RFC:</label>
+        <input
+          class="form-control"
+          type="text"
+          size="80"
+          id="RFC"
+          name="RFC"
+          formControlName="datosGeneralesRFC"
+          (change)="actualizarDatosGeneralesRFC($event)"
+        />
+      </div>
+      <div class="col-md-8"></div>
+      <div class="col-md-12">
+        <div class="form-group pull-right">
+          <button
+            type="button"
+            name="Agregar"
+            [disabled]="esFormularioSoloLectura"
+            id="btnBusqRfc"
+            class="btn btn-primary me-5"
+            (click)="agregarRFCDato()"
+          >
+            Agregar
+          </button>
+        </div>
+      </div>
+      <div class="col-md-12 mt-5">
+        <app-tabla-dinamica
+          [tipoSeleccionTabla]="tipoSeleccionTabla"
+          [configuracionTabla]="configuracionColumnas"
+          [datos]="listaDeSubcontratistas"
+          [mode]="'client'"
+          [totalItems]="listaDeSubcontratistas.length"
+          [showPagination]="true"
+          [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+          (listaDeFilaSeleccionada)="seleccionarSubContratistasDatos($event)"
+        >
+        </app-tabla-dinamica>
+      </div>
+      <div class="col-md-12">
+        <div class="form-group pull-right">
+          @if(subContratistasDatos.length === 1){
+          <button
+            type="button"
+            name="eliminar"
+            [disabled]="esFormularioSoloLectura"
+            id="btnBusqRfcEliminar"
+            class="btn btn-danger me-5"
+            (click)="eliminarRFCDatos()"
+          >
+            Eliminar
+          </button>
+          }
+        </div>
+      </div>
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >Señale si se encuentra en el listado de empresas publicadas por el
+          SAT en términos del artículo 69 del CFF, con excepción de lo dispuesto
+          en la fracción VI del referido artículo.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3503"
+          (valueChange)="actualizar3503($event)"
+        ></app-input-radio>
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >Del mismo modo indique si se encuentra en el listado de empresas
+          publicadas por el SAT en términos del artículo 69-B, párrafo cuarto
+          del CFF.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3504"
+          (valueChange)="actualizar3504($event)"
+        ></app-input-radio>
+      </div>
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >Indique si se encuentra en el listado de empresas publicadas por el
+          SAT en términos del articulo 69-B Bis noveno párrafo, párrafo cuarto
+          del CFF.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3505"
+          (valueChange)="actualizar3505($event)"
+        ></app-input-radio>
+      </div>
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >Señale si sus certificados de sellos digitales están vigentes.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3506"
+          (valueChange)="actualizar3506($event)"
+        ></app-input-radio>
+      </div>
+      @if(espectaculoEnCasoNegativo){
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >En caso negativo señale si se infringió alguno de los supuestos
+          previstos en el artículo 17-H Bis del CFF, durante los últimos doce
+          meses.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3507"
+          (valueChange)="actualizar3507($event)"
+        ></app-input-radio>
+      </div>
+      }
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >Señale si tiene actualizado sus medios de contacto para efectos del
+          buzón tributario en términos del artículo 17-K, penúltimo párrafo del
+          CFF.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3508"
+          (valueChange)="actualizar3508($event)"
+        ></app-input-radio>
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >Señale si se encuentra suspendida en el Padrón de Importadores o en
+          el Padrón de Importadores de Sectores Específicos o Padrón de
+          Exportadores Sectorial.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3509"
+          (valueChange)="actualizar3509($event)"
+        ></app-input-radio>
+      </div>
+
+      <div class="col-md-12">
+        <ng-titulo titulo="Clientes y provedores en el Extranjero" />
+      </div>
+
+      <div class="col-md-12">
+        <label class="form-label text-start"
+          >Archivo con la totalidad de sus clientes y proveedores en el
+          extranjero, directa o indirectamente vinculados con el régimen
+          aduanero con el que se solicita la certificación, con los que haya
+          realizado operaciones de comercio exterior durante los últimos 12
+          meses.</label
+        >
+        <div class="mt-3">
+          <b>Para descargar plantilla del archivo de excel de click </b>
+          <a href="/assets/pdf/carga_proveedoresExtranjeros_aviso.xlsx">aquí</a>
+        </div>
+        <div class="row" style="margin-top: 20px">
+          <div class="col-md-4">
+            <input
+              type="file"
+              accept=".xlsx"
+              class="form-control sfile"
+              name="archivoExtranjero"
+              id="archivoExtranjero"
+              formControlName="file1"
+              title="Examinar"
+            />
+          </div>
+          <div class="col-md-8"></div>
+          <div class="col-md-8"></div>
+          <div class="col-md-4 d-flex justify-content-end">
+            <button
+              type="button"
+              name="cargaArchivoProcesos"
+              id="cargaArchivoProcesos"
+              [disabled]="esFormularioSoloLectura"
+              class="btn btn-primary me-md-3"
+            >
+              Cargar archivo
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <ng-titulo titulo="Provedores Nacionales" />
+      </div>
+
+      <div class="col-md-12">
+        <label class="form-label text-start"
+          >Archivo que contiene el RFC de los proveedores de insumos adquiridos
+          en territorio nacional, vinculados al proceso bajo el régimen que
+          solicita de los últimos 6 meses.</label
+        >
+        <div class="mt-3">
+          <b>Para descargar plantilla del archivo de excel de click </b>
+          <a href="/assets/pdf/carga_proveedoresExtranjeros_aviso.xlsx">aquí</a>
+        </div>
+        <div class="row" style="margin-top: 20px">
+          <div class="col-md-4">
+            <input
+              type="file"
+              accept=".xlsx"
+              class="form-control sfile"
+              name="archivoExtranjero"
+              id="archivoExtranjero"
+              title="Examinar"
+              formControlName="file2"
+            />
+          </div>
+          <div class="col-md-8"></div>
+          <div class="col-md-8"></div>
+          <div class="col-md-4 d-flex justify-content-end">
+            <button
+              type="button"
+              [disabled]="esFormularioSoloLectura"
+              name="cargaArchivoProcesos"
+              id="cargaArchivoProcesos"
+              class="btn btn-primary me-md-3"
+            >
+              Cargar archivo
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >Señale si el SAT ha interpuesto querella o denuncia penal en contra
+          de los socios, accionistas, representante legal con facultad para
+          actos de administración o de dominio, o integrantes de la
+          administración de la empresa solicitante o, en su caso declaratoria de
+          perjuicio, durante los últimos tres años anteriores a la presentación
+          de la solicitud.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3511"
+          (valueChange)="actualizar3511($event)"
+        ></app-input-radio>
+      </div>
+
+      <div class="col-md-12">
+        <ng-titulo titulo="Control de inventarios" />
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >Indique si cuenta con un sistema de control de inventarios, para el
+          registro de sus operaciones de comercio exterior de conformidad con el
+          artículo 59, fracción I de la Ley.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3512"
+          (valueChange)="actualizar3512($event)"
+        ></app-input-radio>
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >Indique, si cuenta con un sistema de control de inventarios de
+          conformidad con las disposiciones previstas por el Anexo 24.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3513"
+          (valueChange)="actualizar3513($event)"
+        ></app-input-radio>
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <div class="alert alert-info">
+          <div class="form-check">
+            En caso de declarar que se cuenta con un sistema de control de
+            inventarios conforme al anexo 24, deberá anexar un archivo con el
+            reporte de saldos de mercancía de importación temporal de un periodo
+            de un mes, que se encuentre dentro de los tres meses anteriores a la
+            fecha de la presente solicitud.
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="form-label text-start"
+          >Nombre del sistema o datos para su identificación</label
+        >
+        <textarea
+          formControlName="textoGenerico1"
+          id="textoGenerico1"
+          class="form-control no-resize h-50"
+          rows="3"
+          (change)="actualizarTextoGenerico1($event)"
+        ></textarea>
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="form-label text-start"> Lugar de radicación</label>
+        <textarea
+          formControlName="textoGenerico2"
+          id="textoGenerico2"
+          class="form-control no-resize h-50"
+          rows="3"
+          (change)="actualizarTextoGenerico2($event)"
+        ></textarea>
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >Señale si lleva la contabilidad en medios electrónicos de conformidad
+          con el artículo 28, fracción III, del CFF y la regla 2.8.1.5. de la
+          RMF.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3514"
+          (valueChange)="actualizar3514($event)"
+        ></app-input-radio>
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >Señale si ingresa mensualmente su información contable a través del
+          portal del SAT, de conformidad con el artículo 28, fracción IV, del
+          CFF y la regla 2.8.1.6. de la RMF.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3515"
+          (valueChange)="actualizar3515($event)"
+        ></app-input-radio>
+      </div>
+
+      <div class="col-md-12">
+        <ng-titulo titulo="Miembros de la empresa" />
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >Señale si los socios, accionistas, según corresponda, representante
+          legal con facultad para actos de administración o de dominio, e
+          integrantes de la administración de conformidad con la constitución de
+          la empresa solicitante, se encuentran al corriente en el cumplimiento
+          de sus obligaciones fiscales.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3516"
+          (valueChange)="actualizar3516($event)"
+        ></app-input-radio>
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="form-label text-start"
+          >Opinión positiva vigente del cumplimiento de obligaciones fiscales de
+          la solicitante, los socios, accionistas, representante legal con
+          facultad para actos de administración o de dominio, administrador
+          único o miembros del consejo de administración, según sea el
+          caso.</label
+        >
+        <textarea
+          id="textoGenerico3"
+          class="form-control no-resize h-50"
+          rows="3"
+          formControlName="textoGenerico3"
+          (change)="actualizarTextoGenerico3($event)"
+        ></textarea>
+      </div>
+
+      <div class="col-md-12">
+        <ng-titulo titulo="Miembros de la empresa" />
+      </div>
+
+      <div class="col-md-12">
+        <app-tabla-dinamica
+          [tipoSeleccionTabla]="tipoSeleccionTabla"
+          [configuracionTabla]="seccionSociosICConfiguracionColumnas"
+          [datos]="listaSeccionSociosIC"
+          [mode]="'client'"
+          [totalItems]="listaSeccionSociosIC.length"
+          [showPagination]="true"
+          [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+          (listaDeFilaSeleccionada)="listaDeFilaSeleccionada($event)"
+        >
+        </app-tabla-dinamica>
+      </div>
+
+      <div class="col-md-12">
+        <div class="d-flex justify-content-end">
+          @if(selectedListaSeccionSociosIC.length === 1){
+          <button
+            type="button"
+            id="eliminarSocio"
+            [disabled]="esFormularioSoloLectura"
+            (click)="eliminarMiembrosEmpresa()"
+            class="btn btn-danger ms-3"
+          >
+            Eliminar
+          </button>
+          }
+          <button
+            type="button"
+            id="agregarSocio"
+            data-bs-toggle="modal"
+            [disabled]="esFormularioSoloLectura"
+            data-bs-target="#modalAgregarMiembrosEmpresa"
+            (click)="agregarMiembrosEmpresa()"
+            class="btn btn-primary ms-3"
+          >
+            Agregar
+          </button>
+        </div>
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >Manifieste si sus socios o accionistas, e integrantes de la
+          administración, su representante legal con facultad para actos de
+          administración o de dominio, o sus partes relacionadas en términos de
+          la Ley del ISR no se encuentren vinculados con alguna empresa a la que
+          se hubiere cancelado su Registro en el Esquema de Certificación de
+          Empresas, de conformidad con las fracciones V, VI y VII del Apartado
+          A; II y III del Apartado B de la regla 7.2.4 .; y/o VI, VII y XI de la
+          regla 7.2.5.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3517"
+          (valueChange)="actualizar3517($event)"
+        ></app-input-radio>
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >Indique si sus proveedores se encuentran en el listado de empresas
+          publicadas por el SAT, en términos del 69 del CFF, con excepción de la
+          fracción VI, articulo 69-B, párrafo cuarto y 69-B Bis noveno párrafo
+          del CFF.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3518"
+          (valueChange)="actualizar3518($event)"
+        ></app-input-radio>
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >Manifieste si se le ha determinado algún crédito fiscal firme en los
+          doce meses anteriores a la fecha de presentación de la
+          solicitud.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3519"
+          (valueChange)="actualizar3519($event)"
+        ></app-input-radio>
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >Manifieste si cuenta con inversión en territorio nacional y acredita
+          la legal posesión de la misma, sin que sea admisible aquella que se
+          obtiene de manera gratuita.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3520"
+          (valueChange)="actualizar3520($event)"
+        ></app-input-radio>
+      </div>
+      <div class="col-md-4 mt-4">
+        <app-catalogo-select
+          formControlName="tipoInversion"
+          [catalogo]="tipoDeInversionLista.catalogos"
+          [label]="tipoDeInversionLista.labelNombre"
+          [placeholder]="tipoDeInversionLista.primerOpcion"
+          [required]="tipoDeInversionLista.required"
+          [isDisabled]="esFormularioSoloLectura"
+          name="tipoInversion"
+          id="tipoInversion"
+          (selectionChange)="actualizarTipoInversion($event)"
+        ></app-catalogo-select>
+      </div>
+      <div class="col-md-4 mt-4">
+        <label class="form-label text-start" for="valorenpesos"
+          >Valor en pesos<span
+            [ngClass]="noEsValido('cantidadInversion') ? 'text-danger' : ''"
+            >*</span
+          >:</label
+        >
+        <input
+          class="form-control"
+          type="text"
+          size="80"
+          maxlength="18"
+          id="valorenpesos"
+          name="valorenpesos"
+          formControlName="cantidadInversion"
+          (change)="actualizarCantidadInversion($event)"
+        />
+        <div *ngIf="noEsValido('cantidadInversion')" class="text-danger">
+          Este campo es obligatorio
+        </div>
+      </div>
+      <div class="col-md-4 mt-4"></div>
+      <div class="col-md-12 mt-4">
+        <label class="form-label text-start" for="valorenpesos"
+          >Descripción general<span
+            [ngClass]="noEsValido('descInversion') ? 'text-danger' : ''"
+            >*</span
+          >:</label
+        >
+        <input
+          class="form-control"
+          type="text"
+          size="80"
+          id="valorenpesos"
+          maxlength="700"
+          name="valorenpesos"
+          formControlName="descInversion"
+          (change)="actualizarDescInversion($event)"
+        />
+        <div *ngIf="noEsValido('descInversion')" class="text-danger">
+          Este campo es obligatorio
+        </div>
+      </div>
+      <div class="col-md-12 mt-5">
+        <app-tabla-dinamica
+          [tipoSeleccionTabla]="tipoSeleccionTabla"
+          [configuracionTabla]="tipoDeInversionConfiguracionColumnas"
+          [datos]="tipoDeInversionDatos"
+          [mode]="'client'"
+          [totalItems]="tipoDeInversionDatos.length"
+          [showPagination]="true"
+          [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+          (listaDeFilaSeleccionada)="seleccionarTipoSeleccionTabla($event)"
+        >
+        </app-tabla-dinamica>
+      </div>
+
+      <div class="col-md-12">
+        <div class="d-flex justify-content-end">
+          @if(tipoSeleccionListo.length === 1){
+          <button
+            type="button"
+            id="eliminarSocio"
+            [disabled]="esFormularioSoloLectura"
+            (click)="eliminarMiembrosDeLaEmpresa()"
+            class="btn btn-danger"
+          >
+            Eliminar
+          </button>
+          }
+          <button
+            type="button"
+            id="agregarSocio"
+            [disabled]="esFormularioSoloLectura"
+            (click)="agregarMiembrosDeLaEmpresa()"
+            class="btn btn-primary ms-3"
+          >
+            Agregar
+          </button>
+        </div>
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >Señale si previamente contó con la Certificación en materia de IVA e
+          IEPS, el Registro en el Esquema de Certificación de Empresas bajo la
+          modalidad IVA e IEPS o Garantía del interés fiscal del IVA e
+          IEPS.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3521"
+          (valueChange)="actualizar3521($event)"
+        ></app-input-radio>
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >En caso afirmativo, señale si se encuentra al corriente en el
+          cumplimiento de las obligaciones relativas al Anexo 30 sobre dicho
+          registro.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3522"
+          (valueChange)="actualizar3522($event)"
+        ></app-input-radio>
+      </div>
+
+      <div class="col-md-12 mt-4 text-start">
+        <ng-titulo titulo="Régimen aduanero" />
+        <h5 class="form-label text-start">Régimen aduanero*:</h5>
+        <div
+          *ngFor="let regimen of listaRegimenAduanero; let i = index"
+          class="mb-2"
+        >
+          <div class="d-flex align-items-center">
+            <div class="form-check">
+              <input
+                type="checkbox"
+                [formControlName]="'claveEnumeracionD' + i"
+                class="form-check-input"
+                [id]="'regimen_valorPorDefecto' + i"
+                (change)="
+                  seleccionarRegimenAduanero($event, 'claveEnumeracionD' + i)
+                "
+              />
+
+              <span class="ms-3">{{ regimen }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      @if(solicitud31101State.claveEnumeracionD0){
+      <div class="col-md-12 mt-4">
+        <label class="form-label text-start"
+          >Indique todos los domicilios registrados ante el SAT de la persona
+          moral solicitante e indique aquellos en que se desarrollen actividades
+          relacionadas con su proceso productivo y/o la prestación de servicios
+          (Se requiere tabla, agregar las filas necesarias de acuerdo al número
+          de instalaciones).</label
+        >
+      </div>
+
+      <div class="col-md-6 mt-4 text-start">
+        <app-catalogo-select
+          formControlName="modalidadProgramaImmex"
+          [catalogo]="modalidadDelProgramaIMMEX.catalogos"
+          [label]="modalidadDelProgramaIMMEX.labelNombre"
+          [placeholder]="modalidadDelProgramaIMMEX.primerOpcion"
+          [required]="false"
+          [isDisabled]="esFormularioSoloLectura"
+          name="modalidadDelProgramaIMMEX"
+          id="modalidadDelProgramaIMMEX"
+          (selectionChange)="actualizarModalidadProgramaImmex($event)"
+        ></app-catalogo-select>
+      </div>
+      <div class="col-md-8 mt-4"></div>
+      <div class="col-md-12 mt-4">
+        <app-tabla-dinamica
+          [tipoSeleccionTabla]="tipoSeleccionTabla"
+          [configuracionTabla]="domiciliosConfiguracionColumnas"
+          [datos]="domiciliosDatos"
+          [inputSelection]="inputSelection"
+          [mode]="'client'"
+          [totalItems]="domiciliosDatos.length"
+          [showPagination]="true"
+          [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+          (listaDeFilaSeleccionada)="seleccionarDomiciliosLista($event)"
+        >
+        </app-tabla-dinamica>
+      </div>
+      <div class="col-md-12">
+        <div class="d-flex justify-content-end">
+          <button
+            type="button"
+            id="modificarSocio"
+            class="btn btn-default"
+            [disabled]="esFormularioSoloLectura"
+            (click)="modificarImmexProgramModel()"
+          >
+            Modificar
+          </button>
+
+          <button
+            type="button"
+            id="eliminarSocio"
+            [disabled]="esFormularioSoloLectura"
+            (click)="eliminarImmexProgram()"
+            class="btn btn-danger ms-3"
+          >
+            Eliminar
+          </button>
+
+          <button
+            type="button"
+            id="agregarSocio"
+            class="btn btn-primary ms-3"
+            [disabled]="esFormularioSoloLectura"
+            (click)="agregarImmexProgramModel()"
+          >
+            Agregar
+          </button>
+        </div>
+      </div>
+      <div class="col-md-6 mt-5">
+        <label class="form-label text-start" for=""
+          >Número de Programa I M M E X *:</label
+        >
+        <input
+          class="form-control"
+          formControlName="textoGenerico4"
+          type="text"
+          size="80"
+          maxlength="30"
+          id="textoGenerico4"
+          name="textoGenerico4"
+          (change)="actualizarTextoGenerico4($event)"
+        />
+        <div *ngIf="noEsValido('textoGenerico4')" class="text-danger">
+          Este campo es obligatorio
+        </div>
+      </div>
+      <div class="col-md-6 mt-5">
+        <label class="form-label text-start" for=""
+          >Modalidad del Programa I M M E X *:</label
+        >
+        <input
+          class="form-control"
+          formControlName="textoGenerico5"
+          type="text"
+          size="80"
+          maxlength="30"
+          id="textoGenerico5"
+          name="textoGenerico5"
+          (change)="actualizarTextoGenerico5($event)"
+        />
+        <div *ngIf="noEsValido('textoGenerico5')" class="text-danger">
+          Este campo es obligatorio
+        </div>
+      </div>
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >Señale si ha realizado operaciones al amparo de su programa
+          IMMEX.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3523"
+          (valueChange)="actualizar3523($event)"
+        ></app-input-radio>
+      </div>
+      } @if(solicitud31101State.claveEnumeracionD1){
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >Señale si al momento de la presentación de su solicitud cuenta con la
+          autorización para operar el régimen de depósito fiscal para someterse
+          al proceso de ensamble y fabricación de vehículos, a empresas de la
+          industria automotriz terminal.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3524"
+          (valueChange)="actualizar3524($event)"
+        ></app-input-radio>
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="form-label text-start"
+          >Indique el fin de vigencia y el número de oficio con el cual se le
+          otorgó la autorización para operar el régimen de depósito fiscal para
+          someterse al proceso de ensamble y fabricación de vehículos, a
+          empresas de la industria automotriz terminal.</label
+        >
+      </div>
+      <div class="col-md-4 mt-4">
+        <input-fecha
+          [datos]="fechaDeFinDeVigencia"
+          [isDisabled]="esFormularioSoloLectura"
+          [setFecha]="datosGeneralesForm.get('fechaFinVigencia1')?.value"
+          (valorCambiado)="actualizarFechaFinVigencia1($event)"
+        >
+        </input-fecha>
+      </div>
+      <div class="col-md-4 mt-4">
+        <label class="form-label text-start" for=""
+          >Numero de oficio de autorización*:</label
+        >
+        <input
+          class="form-control"
+          formControlName="numeroAutorizacion1"
+          type="text"
+          maxlength="50"
+          id="numeroAutorizacion1"
+          name="numeroAutorizacion1"
+          (change)="actualizarNumeroAutorizacion1($event)"
+        />
+        <div *ngIf="noEsValido('numeroAutorizacion1')" class="text-danger">
+          Este campo es obligatorio
+        </div>
+      </div>
+      <div class="col-md-4 mt-4"></div>
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >Señale si al momento de la presentación de su solicitud se encuentra
+          sujeto a un proceso de cancelación de la autorización para operar el
+          régimen de depósito fiscal para someterse al proceso de ensamble y
+          fabricación de vehículos, a empresas de la industria automotriz
+          terminal.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3525"
+          (valueChange)="actualizar3525($event)"
+        ></app-input-radio>
+      </div>
+      } @if(solicitud31101State.claveEnumeracionD2 ||
+      solicitud31101State.claveEnumeracionD3){
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >Señale si al momento de la presentación de su solicitud cuenta con la
+          autorización para operar el régimen de elaboración, transformación o
+          reparación en Recinto Fiscalizado y/o Recinto Fiscalizado
+          Estratégico.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3526"
+          (valueChange)="actualizar3526($event)"
+        ></app-input-radio>
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="form-label text-start"
+          >Indique el fin de vigencia y el número de oficio con el cual se le
+          otorgó la autorización para operar el régimen de elaboración,
+          transformación o reparación en Recinto Fiscalizado y/o Recinto
+          Fiscalizado Estratégico.</label
+        >
+      </div>
+      <div class="col-md-4 mt-4">
+        <input-fecha
+          [datos]="fechaDeFinDeVigencia"
+          [isDisabled]="esFormularioSoloLectura"
+          [setFecha]="datosGeneralesForm.get('fechaFinVigencia2')?.value"
+          (valorCambiado)="actualizarFechaFinVigencia2($event)"
+        >
+        </input-fecha>
+      </div>
+      <div class="col-md-4 mt-4">
+        <label class="form-label text-start" for=""
+          >Número de oficio de autorización*:</label
+        >
+        <input
+          class="form-control"
+          formControlName="numeroAutorizacion2"
+          type="text"
+          maxlength="50"
+          id="numeroAutorizacion2"
+          name="numeroAutorizacion2"
+          (change)="actualizarNumeroAutorizacion2($event)"
+        />
+        <div *ngIf="noEsValido('numeroAutorizacion2')" class="text-danger">
+          Este campo es obligatorio
+        </div>
+      </div>
+      <div class="col-md-4 mt-4"></div>
+
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >Indique si se encuentra sujeto a un proceso de cancelación de la
+          autorización para operar el régimen de elaboración, transformación o
+          reparación en Recinto Fiscalizado y/o Recinto Fiscalizado
+          Estratégico.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3527"
+          (valueChange)="actualizar3527($event)"
+        ></app-input-radio>
+      </div>
+      }
+      <div class="col-md-12">
+        <ng-titulo titulo="Infraestructura" />
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >Señale si al momento de su solicitud cuenta con la infraestructura
+          necesaria para realizar la operación, el proceso productivo o de
+          servicios, según corresponda al régimen aduanero por el que se
+          solicita el registro.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3528"
+          (valueChange)="actualizar3528($event)"
+        ></app-input-radio>
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >Manifieste si se le ha emitido resolución de improcedencia de las
+          devoluciones del IVA cuyo monto represente más del 20% del total de
+          las devoluciones autorizadas y/o que el monto negado resultante supere
+          los $5,000,000.00 (cinco millones de pesos 00/100 m.n.) en lo
+          individual o en su conjunto, durante los últimos seis meses contados a
+          partir de la fecha de presentación de la solicitud.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3529"
+          (valueChange)="actualizar3529($event)"
+        ></app-input-radio>
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="form-label text-start"
+          >En caso afirmativo, señale el porcentaje y el monto que representan
+          de la totalidad de solicitudes de devolución autorizadas, aquéllas en
+          que la autoridad haya emitido resolución de improcedencia.</label
+        >
+      </div>
+      <div class="col-md-4 mt-4">
+        <label class="form-label text-start" for="textoGenerico6"
+          >Porcentaje *:</label
+        >
+        <input
+          class="form-control"
+          formControlName="textoGenerico6"
+          type="text"
+          id="textoGenerico"
+          name="textoGenerico"
+          (change)="actualizarTextoGenerico6($event)"
+        />
+        <div *ngIf="noEsValido('textoGenerico6')" class="text-danger">
+          Este campo es obligatorio
+        </div>
+      </div>
+      <div class="col-md-4 mt-4">
+        <label class="form-label text-start" for="textoGenerico7"
+          >Monto *:</label
+        >
+        <input
+          class="form-control"
+          formControlName="textoGenerico7"
+          type="text"
+          id="textoGenerico7"
+          name="textoGenerico7"
+          (change)="actualizarTextoGenerico7($event)"
+        />
+        <div *ngIf="noEsValido('textoGenerico7')" class="text-danger">
+          Este campo es obligatorio
+        </div>
+      </div>
+      <div class="col-md-4 mt-4"></div>
+
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >Manifiesta que cuenta con la capacidad financiera para llevar a cabo
+          su proyecto productivo o de servicios, a través de solvencia económica
+          propia o asumiendo la responsabilidad solidaria.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3530"
+          (valueChange)="actualizar3530($event)"
+        ></app-input-radio>
+      </div>
+
+      <div class="col-md-12">
+        <label class="form-label text-start"
+          >Archivo con monto anual de las importaciones temporales que realizará
+          por fracción arancelaria. El monto deberá ser acorde en su capacidad
+          productiva y financiera.</label
+        >
+        <div class="mt-3">
+          <b>Para descargar plantilla del archivo de excel de click </b>
+          <a href="/assets/pdf/carga_proveedoresExtranjeros_aviso.xlsx">aquí</a>
+        </div>
+        <div class="row" style="margin-top: 20px">
+          <div class="col-md-4">
+            <input
+              type="file"
+              accept=".xlsx"
+              class="form-control sfile"
+              name=""
+              id=""
+              title="Examinar"
+              formControlName="file3"
+            />
+          </div>
+          <div class="col-md-8"></div>
+          <div class="col-md-8"></div>
+          <div class="col-md-4 d-flex justify-content-end">
+            <button
+              type="button"
+              name="cargaArchivoProcesos"
+              [disabled]="esFormularioSoloLectura"
+              id="cargaArchivoProcesos"
+              class="btn btn-primary me-md-3"
+            >
+              Cargar archivo
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="fw-0 text-start"
+          >Indique si durante los últimos doce meses ha importado temporalmente
+          mercancías y que, al menos el 50% de las importaciones temporales de
+          insumos realizadas durante el mismo período fueron transformadas y
+          retoradas, retornadas en su mismo estado, transferidas, destruidas, o
+          se les prestó un servicio.</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gridLayout]="true"
+          [isBold]="true"
+          formControlName="3531"
+          (valueChange)="actualizar3531($event)"
+        ></app-input-radio>
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="form-label text-start" for="textoGenerico9"
+          >Capture el valor en aduana total en moneda nacional de sus
+          importaciones temporales de insumos del periodo requerido conforme al
+          parrafo anterior *:</label
+        >
+        <input
+          class="form-control"
+          formControlName="textoGenerico9"
+          type="text"
+          id="textoGenerico9"
+          name="textoGenerico9"
+          (change)="actualizarTextoGenerico9($event)"
+        />
+        <div *ngIf="noEsValido('textoGenerico9')" class="text-danger">
+          Este campo es obligatorio
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-3 mt-4">
+          <p class="text-center">(A)</p>
+          <label class="form-label text-start" for=""
+            >Concepto (declare solo los que apliquen)</label
+          >
+        </div>
+        <div class="col-md-3 mt-4">
+          <p class="text-center">(B)</p>
+          <label class="form-label text-start" for=""
+            >Valor comercial del concepto indicado en la Columna A (moneda
+            nacional)</label
+          >
+        </div>
+        <div class="col-md-3 mt-4">
+          <p class="text-center">(C)</p>
+          <label class="form-label text-start" for=""
+            >Valor en Aduana de los insumos importados temporalmente incluidos
+            en concepto de la columna A</label
+          >
+        </div>
+        <div class="col-md-3 mt-4">
+          <p class="text-center">(D)</p>
+          <label class="form-label text-start" for=""
+            >Porcentaje que representa respecto del total de importaciones
+            temporales de materiales directos einsumos</label
+          >
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-3 mt-4">
+          <label class="form-label text-start" for="">Retornos</label>
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            formControlName="textoGenerico10"
+            class="form-control"
+            name="textoGenerico10"
+            id="textoGenerico10"
+            (change)="actualizarTextoGenerico10($event)"
+          />
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            formControlName="textoGenerico11"
+            class="form-control"
+            name="textoGenerico11"
+            id="textoGenerico11"
+            (change)="actualizarTextoGenerico11($event)"
+          />
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            formControlName="textoGenerico12"
+            class="form-control"
+            name="textoGenerico12"
+            id="textoGenerico12"
+            (change)="actualizarTextoGenerico12($event)"
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-3 mt-4">
+          <label class="form-label text-start" for=""
+            >Transferencias virtuales de mercancías</label
+          >
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="textoGenerico13"
+            name="textoGenerico13"
+            id="textoGenerico13"
+            (change)="actualizarTextoGenerico13($event)"
+          />
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="textoGenerico14"
+            name="textoGenerico14"
+            id="textoGenerico14"
+            (change)="actualizarTextoGenerico14($event)"
+          />
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="textoGenerico15"
+            name="textoGenerico15"
+            id="textoGenerico15"
+            (change)="actualizarTextoGenerico15($event)"
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-3 mt-4">
+          <label class="form-label text-start" for="">Desperdicios</label>
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="textoGenerico16"
+            name="textoGenerico16"
+            id="textoGenerico16"
+            (change)="actualizarTextoGenerico16($event)"
+          />
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="textoGenerico17"
+            name="textoGenerico17"
+            id="textoGenerico17"
+            (change)="actualizarTextoGenerico17($event)"
+          />
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="textoGenerico18"
+            name="textoGenerico18"
+            id="textoGenerico18"
+            (change)="actualizarTextoGenerico18($event)"
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-3 mt-4">
+          <label class="form-label text-start" for=""
+            >Constancias de Transferencia de Mercancías ( C T M)</label
+          >
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="textoGenerico19"
+            name="textoGenerico19"
+            id="textoGenerico19"
+            (change)="actualizarTextoGenerico19($event)"
+          />
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="textoGenerico20"
+            name="textoGenerico20"
+            id="textoGenerico20"
+            (change)="actualizarTextoGenerico20($event)"
+          />
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="textoGenerico21"
+            name="textoGenerico21"
+            id="textoGenerico21"
+            (change)="actualizarTextoGenerico21($event)"
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-3 mt-4">
+          <label class="form-label text-start" for="">Totales</label>
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="textoGenerico22"
+            name="textoGenerico22"
+            id="textoGenerico22"
+          />
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="textoGenerico23"
+            name="textoGenerico23"
+            id="textoGenerico23"
+          />
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="textoGenerico24"
+            name="textoGenerico24"
+            id="textoGenerico24"
+          />
+        </div>
+      </div>
+
+      <div class="col-md-12 mt-5">
+        <div class="alert alert-info">
+          <div class="form-check">
+            En caso de haber declarado que realiza Constancias de Transferencia
+            de Mercancías (CTM), anexe un archivo con los nombres y domicilios
+            de las empresas a las que les transfirió mercancías mediante
+            Constancias de Transferencia de Mercancías (CTM), así como los
+            montos en moneda nacional y, en su caso, dos Constancias de
+            Transferencia de Mercancías (CTM).
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones
+    [notificacionInput]="nuevaNotificacion"
+    (confirmacionModal)="eliminarPedimento($event)"
+  >
+  </lib-notificaciones>
+</section>
+}
+@if (confirmaNotificacion) {
+<section>
+  <lib-notificaciones
+    [notificacionInput]="confirmaNotificacion"
+    (confirmacionModal)="confirmaPedimento($event)"
+  >
+  </lib-notificaciones>
+</section>
+}
+@if (eliminarImmexNotificacion) {
+<section>
+  <lib-notificaciones
+    [notificacionInput]="eliminarImmexNotificacion"
+    (confirmacionModal)="eliminarPedimentoImmexNotificacion($event)"
+  >
+  </lib-notificaciones>
+</section>
+} @if (eliminadosCorrectamenteNotificacion) {
+<section>
+  <lib-notificaciones
+    [notificacionInput]="eliminadosCorrectamenteNotificacion"
+    (confirmacionModal)="eliminarCorrectamenteImmexNotificacion($event)"
+  >
+  </lib-notificaciones>
+</section>
+}
+
+<div
+  class="modal fade"
+  id="modalAgregarMiembrosEmpresa"
+  tabindex="-1"
+  aria-labelledby="modalAgregarMiembrosEmpresaLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <app-miembro-de-la-empresa
+        (eventoActualizarMiembro)="eventoActualizarMiembro($event)"
+      ></app-miembro-de-la-empresa>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  #modificarImmexProgram
+  tabindex="-1"
+  aria-labelledby="modalModificarImmexProgram"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <app-modificar-immex-program
+        [seleccionarDomiciliosDatos]="seleccionarDomiciliosDatos"
+        (modificarImmexValor)="modificarImmexValor($event)"
+      ></app-modificar-immex-program>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  tabindex="-1"
+  id="agregarImmexProgram"
+  #agregarImmexProgram
+  aria-labelledby="modalAgregarImmexProgram"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <app-agregar-immex-program
+        (agregarImmexValor)="agregarImmexValor($event)"
+      ></app-agregar-immex-program>
+    </div>
+  </div>
+</div>

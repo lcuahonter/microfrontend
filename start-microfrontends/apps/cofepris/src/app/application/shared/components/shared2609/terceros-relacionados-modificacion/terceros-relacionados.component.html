@@ -1,0 +1,375 @@
+<div class="container" *ngIf="!estaOculto">
+  <ng-titulo titulo="Terceros relacionados"></ng-titulo>
+  <div class="row mt-5">
+    <ng-alert
+      [CONTENIDO]="isAdjuntar ? TEXTOS.ADJUNTAR : MENSAJE_TABLA_OBLIGATORIA"
+      [CUSTOMECLASS]="infoAlert"
+    ></ng-alert>
+  </div>
+  <div class="row mt-5">
+    <div class="col-md-3">
+      <h6>
+        Fabricante<span class="form-label" *ngIf="!esCampoRequerido('fabricante')" [ngClass]="{'mensaje-error':isContinuarButtonClicked && (fabricanteTablaDatos.length === 0)}">*</span><span class="form-label">:</span>
+      </h6>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <app-tabla-dinamica
+      [configuracionTabla]="configuracionTablaFabricante"
+      [datos]="fabricanteTablaDatos"
+      [tipoSeleccionTabla]="tipoSeleccionTabla"
+      (listaDeFilaSeleccionada)="fabricanteSeleccionadoDatos = $event"
+      [disableSeleccionTablaCheckBox]="formularioDeshabilitado !== undefined ? formularioDeshabilitado : (esFormularioSoloLectura ? true : false)"
+      [isInvalida]="!esCampoRequerido('fabricante') && isContinuarButtonClicked && (fabricanteTablaDatos.length === 0)"
+    ></app-tabla-dinamica>
+    
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-md-12">
+      <div class="pull-right" *ngIf="mostrarBotonesAccion && !estaOculto">
+        @if (fabricanteSeleccionadoDatos.length > 0 && fabricanteTablaDatos.length>0) {       
+          <button
+            type="button"
+            name="eliminarMercancias"
+            class="btn btn-danger me-2"
+            (click)="eliminarFabricante()"
+            [disabled]="formularioDeshabilitado !== undefined ? formularioDeshabilitado : (esFormularioSoloLectura ? true : false)"
+          >
+            Eliminar
+          </button>
+        }
+        @if (fabricanteSeleccionadoDatos.length === 1 && fabricanteTablaDatos.length>0) {
+          <button
+            type="button"
+            name="modificarMercancias"
+            class="btn btn-default me-2"
+            (click)="modificarFabricante()"
+            [disabled]="formularioDeshabilitado !== undefined ? formularioDeshabilitado : (esFormularioSoloLectura ? true : false)"
+            *ngIf="!esVisible"
+          >
+            Modificar
+          </button>
+          <button 
+            type="button"
+            name="modificarMercanciasModal"
+            class="btn btn-default me-2"
+            (click)="fabricanteEventoModificarModal.emit(fabricanteSeleccionadoDatos)"
+            [disabled]="formularioDeshabilitado !== undefined ? formularioDeshabilitado : (esFormularioSoloLectura ? true : false)"
+            *ngIf="esVisible"
+          >
+            Modificar
+          </button>
+        }    
+        <button
+          type="button"
+          name="agregarMercancias"
+          class="btn btn-primary"
+          (click)="onAgregarFabricante()"
+          [disabled]="formularioDeshabilitado"
+          *ngIf="!esVisible || (esVisible && estaOculto)"
+        >
+          Agregar
+        </button>
+       
+      </div>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <div class="col-md-3">
+      <h6> Destinatario (destino final)<span class="form-label" *ngIf="!esCampoRequerido('destinoFinal')" [ngClass]="{'mensaje-error':isContinuarButtonClicked && (destinatarioFinalTablaDatos.length === 0)}">*</span><span class="form-label">:</span>
+      </h6>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <app-tabla-dinamica
+      [configuracionTabla]="configuracionTablaDestinatarioFinal"
+      [datos]="destinatarioFinalTablaDatos"
+      [tipoSeleccionTabla]="tipoSeleccionTabla"
+      (listaDeFilaSeleccionada)="destinatarioSeleccionadoDatos = $event"
+      [disableSeleccionTablaCheckBox]="formularioDeshabilitado !== undefined ? formularioDeshabilitado : (esFormularioSoloLectura ? true : false)"
+      [isInvalida]="!esCampoRequerido('destinoFinal') && isContinuarButtonClicked && (destinatarioFinalTablaDatos.length === 0)"
+    ></app-tabla-dinamica>
+   
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-md-12">
+      <div class="pull-right" *ngIf="mostrarBotonesAccion && !estaOculto">
+        @if (destinatarioSeleccionadoDatos.length > 0 && destinatarioFinalTablaDatos.length>0) {
+          <button
+          type="button"
+          name="eliminarMercancias"
+          class="btn btn-danger me-2"
+          (click)="eliminarDestinatario()"
+          [disabled]="formularioDeshabilitado !== undefined ? formularioDeshabilitado : (esFormularioSoloLectura ? true : false)"
+          >
+            Eliminar
+          </button>
+        }
+        @if (destinatarioSeleccionadoDatos.length === 1 && destinatarioFinalTablaDatos.length>0) {
+          <button
+            type="button"
+            name="modificarMercancias"
+            class="btn btn-default me-2"
+            (click)="modificarDestinatario()"
+            [disabled]="formularioDeshabilitado !== undefined ? formularioDeshabilitado : (esFormularioSoloLectura ? true : false)"
+          >
+            Modificar
+          </button>
+        }
+        <button
+          type="button"
+          name="agregarMercancias"
+          class="btn btn-primary"
+          (click)="onAgregarDestinatarioFinal()"
+          [disabled]="formularioDeshabilitado"
+          *ngIf="!esVisible || (esVisible && estaOculto)"
+        >
+          Agregar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  @if(habilitarProveedor===true ){
+  <div class="row mt-5"><h6>Proveedor:</h6></div>
+  <div class="row mt-5">
+    <app-tabla-dinamica
+      [configuracionTabla]="configuracionTablaProveedor"
+      [datos]="proveedorTablaDatos"
+      [tipoSeleccionTabla]="tipoSeleccionTabla"
+      (listaDeFilaSeleccionada)="proveedorSeleccionadoDatos = $event"
+      [disableSeleccionTablaCheckBox]="formularioDeshabilitado !== undefined ? formularioDeshabilitado : (esFormularioSoloLectura ? true : false)"
+    ></app-tabla-dinamica>
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-md-12">
+      <div class="pull-right" *ngIf="mostrarBotonesAccion && !estaOculto">
+        @if (proveedorSeleccionadoDatos.length > 0 && proveedorTablaDatos.length>0) {
+        <button
+          type="button"
+          name="eliminarMercancias"
+          class="btn btn-danger me-2"
+          (click)="eliminarProveedor()"
+          [disabled]="formularioDeshabilitado !== undefined ? formularioDeshabilitado : (esFormularioSoloLectura ? true : false)"
+        >
+          Eliminar
+        </button>        
+        }
+        @if (proveedorSeleccionadoDatos.length === 1 && proveedorTablaDatos.length>0) {
+           <button
+             type="button"
+             name="modificarMercancias"
+             class="btn btn-default me-2"
+             (click)="modificarProveedor()"
+             [disabled]="formularioDeshabilitado !== undefined ? formularioDeshabilitado : (esFormularioSoloLectura ? true : false)"
+           >
+             Modificar
+           </button>
+         }
+        <button
+          type="button"
+          name="agregarMercancias"
+          class="btn btn-primary"
+          [disabled]="formularioDeshabilitado"
+          *ngIf="!esVisible || (esVisible && estaOculto)"
+          (click)="onAgregarProveedorFinal()"
+        >
+          Agregar
+        </button>
+      </div>
+    </div>
+  </div>
+  } @if(habilitarFacturador === true){
+  <div class="row mt-5"><h6>Facturador:</h6></div>
+  <div class="row mt-5">
+    <app-tabla-dinamica
+      [configuracionTabla]="configuracionTablaFacturador"
+      [datos]="facturadorTablaDatos"
+      [tipoSeleccionTabla]="tipoSeleccionTabla"
+      (listaDeFilaSeleccionada)="facturadorSeleccionadoDatos = $event"
+      [disableSeleccionTablaCheckBox]="formularioDeshabilitado !== undefined ? formularioDeshabilitado : (esFormularioSoloLectura ? true : false)"
+    ></app-tabla-dinamica>
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-md-12">
+      <div class="pull-right" *ngIf="mostrarBotonesAccion && !estaOculto">
+        @if (facturadorSeleccionadoDatos.length > 0 && facturadorTablaDatos.length>0) {        
+        <button
+          type="button"
+          name="eliminarMercancias"
+          class="btn btn-danger me-2"
+          (click)="eliminarFacturador()"
+          [disabled]="formularioDeshabilitado !== undefined ? formularioDeshabilitado : (esFormularioSoloLectura ? true : false)"
+        >
+          Eliminar
+        </button>
+        }
+        @if (facturadorSeleccionadoDatos.length === 1 && facturadorTablaDatos.length>0) {
+         <button
+           type="button"
+           name="modificarMercancias"
+           class="btn btn-default me-2"
+           (click)="modificarFacturador()"
+           [disabled]="formularioDeshabilitado !== undefined ? formularioDeshabilitado : (esFormularioSoloLectura ? true : false)"
+         >
+           Modificar
+         </button>
+       }
+        <button
+          type="button"
+          name="agregarMercancias"
+          class="btn btn-primary"
+          (click)="onFacturadorAgregar()"
+          [disabled]="formularioDeshabilitado"
+          *ngIf="!esVisible || (esVisible && estaOculto)"
+        >
+          Agregar
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+  <div class="row mt-5"></div>
+</div>
+@if(mostrarAlerta){
+<section>
+  <lib-notificaciones
+    [notificacionInput]="seleccionarFilaNotificacion"
+    (confirmacionModal)="mostrarAlerta = false"
+  >
+  </lib-notificaciones>
+</section>
+} @if(eliminarAlerta){
+<section>
+  <lib-notificaciones
+    [notificacionInput]="seleccionarFilaNotificacion"
+    (confirmacionModal)="eliminarAlertaConfirmation($event)"
+  >
+  </lib-notificaciones>
+</section>
+}
+@if(eliminarAlertaConfirm){
+<section>
+  <lib-notificaciones
+    [notificacionInput]="seleccionarFilaNotificacion"
+    (confirmacionModal)="eliminarDotosAlerta($event)"
+  >
+  </lib-notificaciones>
+</section>
+}
+
+<!-- Fabricante Modal -->
+<div class="modal fade" id="fabricanteModal" tabindex="-1" aria-labelledby="fabricanteModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="fabricanteModalLabel">
+          {{ fabricanteSeleccionadoParaModificar.length > 0 ? 'Modificar Fabricante' : 'Agregar Fabricante' }}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="cerrarFabricanteModal()"></button>
+      </div>
+      <div class="modal-body">
+        <app-agregar-fabricante-modificacion
+        [estaOculto]="estaOculto"
+          *ngIf="fabricanteModalAbierto"
+          [idProcedimiento]="idProcedimiento"
+          [tramiteID]="tramiteID"
+          [idProcedimiento]="tramiteIDNumber"
+          [fabricanteTablaDatos]="fabricanteTablaDatos"
+          [datoSeleccionado]="fabricanteSeleccionadoParaModificar"
+          (updateFabricanteTablaDatos)="onFabricanteUpdated($event)"
+          (cancelarmodal)="cerrarFabricanteModal()">
+        </app-agregar-fabricante-modificacion>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Destinatario Modal -->
+<div class="modal fade" id="destinatarioModal" tabindex="-1" aria-labelledby="destinatarioModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="destinatarioModalLabel">
+          {{ destinatarioSeleccionadoParaModificar.length > 0 ? 'Modificar Destinatario' : 'Agregar Destinatario' }}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="cerrarDestinatarioModal()"></button>
+      </div>
+      <div class="modal-body">
+        <app-agregar-destinatario-final-modificacion
+          *ngIf="destinatarioModalAbierto"
+          [idProcedimiento]="idProcedimiento"
+          [destinatarioFinalTablaDatos]="destinatarioFinalTablaDatos"
+          [datoSeleccionado]="destinatarioSeleccionadoParaModificar"
+          (updateDestinatarioFinalTablaDatos)="onDestinatarioUpdated($event)"
+          (cancelarDestinario)="cerrarDestinatarioModal()"
+          (guardarYSalir)="cerrarDestinatarioModal()"
+          [tramiteID]="tramiteID"
+           [idProcedimiento]="tramiteIDNumber">
+        </app-agregar-destinatario-final-modificacion>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Update the Proveedor Modal -->
+<div class="modal fade" id="proveedorModal" tabindex="-1" aria-labelledby="proveedorModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="proveedorModalLabel">
+          {{ proveedorSeleccionadoParaModificar.length > 0 ? 'Modificar Proveedor' : 'Agregar Proveedor' }}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="cerrarProveedorModal()"></button>
+      </div>
+      <div class="modal-body">
+        <app-agregar-proveedor-modificacion
+          *ngIf="proveedorModalAbierto"
+          [idProcedimiento]="idProcedimiento"
+          [proveedorTablaDatos]="proveedorTablaDatos"
+          [datoSeleccionado]="proveedorSeleccionadoParaModificar"
+          (updateProveedorTablaDatos)="onProveedorUpdated($event)"
+          (cancelarmodal)="cerrarProveedorModal()"
+          (guardarYSalir)="cerrarProveedorModal()"
+          [tramiteID]="tramiteID"
+           [idProcedimiento]="tramiteIDNumber">
+        </app-agregar-proveedor-modificacion>
+      
+    </div>
+  </div>
+</div>
+</div>
+<!-- Facturador Modal AgregarFacturadorComponent-->
+
+<div class="modal fade" id="facturadorModal" tabindex="-1" aria-labelledby="facturadorModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="facturadorModalLabel">
+          {{ facturadorSeleccionadoParaModificar.length > 0 ? 'Modificar facturador' : 'Agregar facturador' }}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="cerrarFacturadorModal()"></button>
+      </div>
+      <div class="modal-body">
+        <app-agregar-facturador-modificacion
+          *ngIf="facturadorModalAbierto"
+          [idProcedimiento]="idProcedimiento"
+          [facturadoresTablaDatos]="facturadorTablaDatos"
+          [datoSeleccionado]="facturadorSeleccionadoParaModificar"
+          (updateFacturadorTablaDatos)="onFacturadorUpdated($event)"
+          (cancelarDestinario)="cerrarFacturadorModal()"
+          (guardarYSalir)="cerrarFacturadorModal()"
+          [tramiteID]="tramiteID"
+           [idProcedimiento]="tramiteIDNumber">
+        </app-agregar-facturador-modificacion>
+      </div>
+    </div>
+  </div>
+</div>
+
+         

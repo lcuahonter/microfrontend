@@ -1,0 +1,446 @@
+<div class="container">
+  <div id="divTabIngrSocio" class="tabs mt-5">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" data-bs-toggle="tab" href="#subtabs-3" (click)="seleccionarPestana('parquevehicular')"
+          role="tab" aria-controls="subtabs-3" aria-selected="true">
+          Parque vehicular
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#subtabs-4" (click)="seleccionarPestana('unidaddearrastre')" role="tab"
+          aria-controls="subtabs-4" aria-selected="false">
+          Unidad de arrastre
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div *ngIf="pestanaSeleccionada === 'Parque vehicular'" class="tab-content">
+    <div class="tab-pane fade show active" id="subtabs-4" role="tabpanel">
+      <ng-titulo titulo="Parque vehicular" />
+      <label>Vehículos:</label>
+      <app-tabla-dinamica [tipoSeleccionTabla]="tipoSeleccionTabla"
+        [configuracionTabla]="vehiculosTablaConfig.encabezadas" [datos]="vehiculosTablaConfig.datos"
+        (listaDeFilaSeleccionada)="enVehiculoFilaSeleccionada($event)">
+      </app-tabla-dinamica>
+      <div class="d-flex justify-content-end">
+      <button type="button" class="btn btn-default ms-3"
+        [disabled]="esSoloLectura || !vehiculoSeleccionado || vehiculoSeleccionado.length === 0"
+        (click)="iniciarEditarVehiculo()">
+        Modificar
+      </button>
+      <button type="button" class="btn btn-danger ms-3"
+  [disabled]="!vehiculoSeleccionado || vehiculoSeleccionado.length === 0"
+  data-bs-toggle="modal" data-bs-target="#confirmarEliminarVehiculoModal" (click)="eliminarFilaVehiculo()">
+        Eliminar
+      </button>
+      <button type="button" class="btn btn-primary ms-3" (click)="abrirPedimento()">
+        Agregar
+      </button>
+      
+      <!-- Confirmar Eliminación Vehiculo Modal -->
+        <div id="confirmarEliminarVehiculoModal" class="modal fade" tabindex="-1"
+          aria-labelledby="confirmarEliminarVehiculoModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-sm eliminar-modal" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" aria-label="Close" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body">
+                <label>¿Estás seguro que deseas eliminar los registros marcados?</label>
+              </div>
+              <div class="modal-footer" style="justify-content: center">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" (click)="eliminarFilaVehiculo()"
+                  data-bs-dismiss="modal">Aceptar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Datos del vehículo Modal Datos -->
+<div class="modal fade" id="vehiculoModal" tabindex="-1" #vehiculoModal aria-labelledby="vehiculoModal"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <ng-titulo titulo="Datos del vehículo" />
+        <form [formGroup]="vehiculoFormulario">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-4">
+                <label>Número de identificación vehícula*: <span class="bi bi-question-circle-fill fs-4 m-1"
+                    title="Número de identificación vehícular (NIV) o serie del vehículo" ata-bs-toggle="tooltip">
+                  </span></label>
+                <input type="text" class="form-control" formControlName="numero" [required]="true"
+                  (change)="setValoresStore(vehiculoFormulario, 'numero', 'setDatosVehiculoNumero')" maxlength="17" />
+                @if(vehiculoFormulario.get('numero')?.invalid && (vehiculoFormulario.get('numero')?.touched || enviada)) {
+                  <div class="text-danger small mt-1">
+                    Este campo es obligatorio.
+                  </div>
+                }
+              </div>
+              <div class="col-md-4 ">
+                <app-catalogo-select [catalogo]="tipoDeVehiculoCatalogo" [label]="'Tipo de vehículo'" [required]="false"
+                  id="tipoDeVehiculo" formControlName="tipoDeVehiculo"
+                  (change)="setValoresStore(vehiculoFormulario, 'tipoDeVehiculo', 'setDatosVehiculoTipoDeVehiculo')">
+                </app-catalogo-select>
+              </div>
+              <div class="col-md-4 ">
+                <label>ID de Vehículo*:</label>
+                <input type="text" class="form-control" formControlName="idDeVehiculo"
+                  [ngClass]="isValid(vehiculoFormulario,'idDeVehiculo') ? 'idDeVehiculo' : 'true'"
+                  (change)="setValoresStore(vehiculoFormulario, 'idDeVehiculo', 'setDatosVehiculoIdDeVehiculo')" />
+                @if(vehiculoFormulario.get('idDeVehiculo')?.invalid && vehiculoFormulario.get('idDeVehiculo')?.touched) {
+                  <div class="text-danger small mt-1">
+                    Este campo es obligatorio.
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-4">
+                <label>Número de placas*:</label>
+                <input type="text" class="form-control" formControlName="numeroPlaca"
+                  (change)="setValoresStore(vehiculoFormulario, 'numeroPlaca', 'setDatosVehiculoNumeroPlaca')"
+                  maxlength="8" />
+                @if(vehiculoFormulario.get('numeroPlaca')?.invalid && (vehiculoFormulario.get('numeroPlaca')?.touched || enviada)) {
+                  <div class="text-danger small mt-1">
+                    Este campo es obligatorio.
+                  </div>  
+                }
+              </div>
+              <div class="col-md-4 ">
+                <app-catalogo-select [catalogo]="paisEmisorCatalogo" [label]="'País emisor'" [required]="false"
+                  id="paisEmisor" formControlName="paisEmisor"
+                  (change)="setValoresStore(vehiculoFormulario, 'paisEmisor', 'setDatosVehiculoPaisEmisor')">>
+                </app-catalogo-select>
+              </div>
+              <div class="col-md-4 ">
+                <label>Estado o provincia*:</label>
+                <input type="text" class="form-control" formControlName="estado"
+                  [ngClass]="isValid(vehiculoFormulario,'estado') ? 'idDeVehiculo' : 'true'"
+                  (change)="setValoresStore(vehiculoFormulario, 'estado', 'setDatosVehiculoEstado')" maxlength="20" />
+                @if(vehiculoFormulario.get('estado')?.invalid && vehiculoFormulario.get('estado')?.touched) {
+                  <div class="text-danger small mt-1">
+                    Este campo es obligatorio.
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-4">
+                <label>Marca*:</label>
+                <input type="text" class="form-control" formControlName="marca"
+                  (change)="setValoresStore(vehiculoFormulario, 'marca', 'setDatosVehiculoMarca')" maxlength="100" />
+                @if(vehiculoFormulario.get('marca')?.invalid && vehiculoFormulario.get('marca')?.touched) {
+                  <div class="text-danger small mt-1">
+                    Marca es obligatoria.
+                  </div>
+                }
+              </div>
+              <div class="col-md-4 ">
+                <label>Modelo*:</label>
+                <input type="text" class="form-control" formControlName="modelo"
+                  [ngClass]="isValid(vehiculoFormulario,'modelo') ? 'modelo' : 'true'"
+                  (change)="setValoresStore(vehiculoFormulario, 'modelo', 'setDatosVehiculoEstado')" maxlength="50" />
+                @if(vehiculoFormulario.get('modelo')?.invalid && vehiculoFormulario.get('modelo')?.touched) {
+                  <div class="text-danger small mt-1">
+                    Este campo es obligatorio.
+                  </div>
+                }
+              </div>
+              <div class="col-md-4 ">
+                <app-catalogo-select [catalogo]="anoCatalogo" [label]="'Año'" [required]="false" id="ano"
+                  formControlName="ano" (change)="setValoresStore(vehiculoFormulario, 'ano', 'setDatosVehiculoAno')">>
+                </app-catalogo-select>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-4">
+                <label>Transponder*:</label>
+                <input type="text" class="form-control" formControlName="transponder"
+                  (change)="setValoresStore(vehiculoFormulario, 'transponder', 'setDatosVehiculoTransponder')"
+                  maxlength="50" />
+                @if(vehiculoFormulario.get('transponder')?.invalid && vehiculoFormulario.get('transponder')?.touched) {
+                  <div class="text-danger small mt-1">
+                    Este campo es obligatorio.
+                  </div>
+                }
+              </div>
+              <div class="col-md-4 ">
+                <app-catalogo-select [catalogo]="colorVehiculoCatalogo" [label]="'Color del vehículo'"
+                  [required]="false" id="colorVehiculo" formControlName="colorVehiculo"
+                  (change)="setValoresStore(vehiculoFormulario, 'colorVehiculo', 'setDatosVehiculoColorVehiculo')">>
+                </app-catalogo-select>
+              </div>
+              <div class="col-md-4 ">
+                <label>Número económico*:</label>
+                <input type="text" class="form-control" formControlName="numuroEconomico"
+                  [ngClass]="isValid(vehiculoFormulario,'numuroEconomico') ? 'modelo' : 'true'"
+                  (change)="setValoresStore(vehiculoFormulario, 'numuroEconomico', 'setDatosVehiculoNumuroEconomico')"
+                  maxlength="17" />
+                @if(vehiculoFormulario.get('numuroEconomico')?.invalid && vehiculoFormulario.get('numuroEconomico')?.touched) {
+                  <div class="text-danger small mt-1">
+                    Este campo es obligatorio.
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-4">
+                <label>Número de 2da placa:</label>
+                <input type="text" class="form-control" formControlName="numero2daPlaca"
+                  (change)="setValoresStore(vehiculoFormulario, 'numero2daPlaca', 'setDatosVehiculoNumero2daPlaca')"
+                  maxlength="8" />
+              </div>
+              <div class="col-md-4 ">
+                <label>Estado emisor de 2da placa:</label>
+                <input type="text" class="form-control" formControlName="estado2daPlaca"
+                  (change)="setValoresStore(vehiculoFormulario, 'estado2daPlaca', 'setDatosVehiculoEstado2daPlaca')"
+                  maxlength="8" />
+              </div>
+              <div class="col-md-4 ">
+                <app-catalogo-select [catalogo]="paisEmisorCatalogo" [label]="'País emisor de 2da placa'"
+                  [required]="false" id="paisEmisor2daPlaca" formControlName="paisEmisor2daPlaca"
+                  (change)="setValoresStore(vehiculoFormulario, 'paisEmisor2daPlaca', 'setDatosVehiculoPaisEmisor2daPlaca')">
+                </app-catalogo-select>
+
+              </div>
+
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-8">
+                <label>Descripción del vehículo:</label>
+                <input type="text" class="form-control" formControlName="descripcion"
+                  (change)="setValoresStore(vehiculoFormulario, 'descripcion', 'setDatosVehiculoDescripcion')"
+                  maxlength="200" />
+              </div>
+
+            </div>
+          </div>
+        </form>
+        <div class="modal-footer custom-footer justify-content-end mt-4">
+          <button type="button" class="btn btn-primary" (click)="limpiarVahiculodata()">
+            Limpiar
+          </button>
+          <button type="button" class="btn btn-default" data-bs-dismiss="modal" #cerrarModal> Cancelar </button>
+          <button type="submit" class="btn btn-primary" (click)="agregarVahiculodata()"> Guardar </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div *ngIf="pestanaSeleccionada === 'Unidad de arrastre'" class="tab-content">
+  <div class="tab-pane fade show active" id="subtabs-3" role="tabpanel">
+    <ng-titulo titulo="Unidad de arrastre" />
+    <label>Unidad de arrastre:</label>
+    <app-tabla-dinamica [tipoSeleccionTabla]="tipoSeleccionTabla" [configuracionTabla]="unidadesTablaConfig.encabezadas"
+      [datos]="unidadesTablaConfig.datos" (listaDeFilaSeleccionada)="enUnidadFilaSeleccionada($event)">
+    </app-tabla-dinamica>
+    <div class="d-flex justify-content-end">
+
+      <button type="button" class="btn btn-default ms-3"
+        [disabled]="esSoloLectura || !filasUnidadSeleccionadas || filasUnidadSeleccionadas.length === 0"
+        (click)="iniciarEditarUnidad()">
+        Modificar
+      </button>
+
+      <button type="button" class="btn btn-danger ms-3"
+        [disabled]="!filasUnidadSeleccionadas || filasUnidadSeleccionadas.length === 0"
+        data-bs-toggle="modal" data-bs-target="#confirmarEliminarUnidadModal">
+        Eliminar
+      </button>
+      
+      <button type="button" class="btn btn-primary ms-3" (click)="abrirPedimentoUnidad()">
+        Agregar
+      </button>
+
+      <!-- Confirmar Eliminación Unidad Modal -->
+      <div id="confirmarEliminarUnidadModal" class="modal fade" tabindex="-1"
+        aria-labelledby="confirmarEliminarUnidadModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm  eliminar-modal" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" aria-label="Close" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <label>¿Estás seguro que deseas eliminar los registros marcados?</label>
+            </div>
+            <div class="modal-footer" style="justify-content: center">
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-primary" (click)="eliminarFilaUnidad()"
+                data-bs-dismiss="modal">Aceptar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Datos del vehículo de arrastre Modal Datos -->
+<div class="modal fade" id="unidadModal" tabindex="-1" #unidadModal aria-labelledby="unidadModal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <ng-titulo titulo="Datos del vehículo de arrastre" />
+        <form [formGroup]="unidadFormulario">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-4">
+                <label>Número de identificación vehícular*: <span class="bi bi-question-circle-fill fs-4 m-1"
+                    title="Número de identificación vehícular (NIV) o serie del vehículo" ata-bs-toggle="tooltip">
+                  </span></label>
+
+                <input type="text" class="form-control" formControlName="vinVehiculo" [required]="true"
+                  (change)="setValoresStore(unidadFormulario, 'vinVehiculo', 'setDatosUnidadVinVehiculo')"
+                  maxlength="17" />
+                @if(unidadFormulario.get('vinVehiculo')?.invalid && unidadFormulario.get('vinVehiculo')?.touched) {
+                  <div class="text-danger small mt-1">
+                    Este campo es obligatorio.
+                  </div>
+                }
+              </div>
+              <div class="col-md-4 ">
+                <app-catalogo-select [catalogo]="tipoArrastreCatalogo" [label]="'Tipo de vehículo de arrastre'"
+                  [required]="false" id="tipoDeUnidadArrastre" formControlName="tipoDeUnidadArrastre"
+                  (change)="setValoresStore(unidadFormulario, 'tipoDeUnidadArrastre', 'setDatosUnidadTipoDeUnidadArrastre')">>
+                </app-catalogo-select>
+              </div>
+              <div class="col-md-4 ">
+                <label>ID de Vehículo de arrastre*:</label>
+                <input type="text" class="form-control" formControlName="idDeVehiculoUnidad"
+                  [ngClass]="isValid(unidadFormulario,'idDeVehiculoUnidad') ? 'idDeVehiculoUnidad' : 'true'"
+                  (change)="setValoresStore(unidadFormulario, 'idDeVehiculoUnidad', 'setDatosUnidadIdDeUnidad')"
+                  maxlength="10" />
+                @if(unidadFormulario.get('idDeVehiculoUnidad')?.invalid && unidadFormulario.get('idDeVehiculoUnidad')?.touched) {
+                  <div class="text-danger small mt-1">
+                    Este campo es obligatorio.
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-4">
+                <label>Número de placas*:</label>
+                <input type="text" class="form-control" formControlName="numeroPlaca" [required]="true"
+                  (change)="setValoresStore(unidadFormulario, 'numeroPlaca', 'setDatosUnidadNumeroPlaca')"
+                  maxlength="8" />
+                @if(unidadFormulario.get('numeroPlaca')?.invalid && unidadFormulario.get('numeroPlaca')?.touched) {
+                  <div class="text-danger small mt-1">
+                    Este campo es obligatorio.
+                  </div>
+                }
+              </div>
+              <div class="col-md-4 ">
+                <app-catalogo-select [catalogo]="paisEmisorCatalogo" [label]="'País emisor'" [required]="false"
+                  id="paisEmisor" formControlName="paisEmisor"
+                  (change)="setValoresStore(unidadFormulario, 'paisEmisor', 'setDatosUnidadPaisEmisor')">>
+                </app-catalogo-select>
+              </div>
+              <div class="col-md-4 ">
+                <label>Estado o Provincia*:</label>
+                <input type="text" class="form-control" formControlName="estado"
+                  [ngClass]="isValid(unidadFormulario,'estado') ? 'estado' : 'true'"
+                  (change)="setValoresStore(unidadFormulario, 'estado', 'setDatosUnidadEstado')" maxlength="20" />
+                @if(unidadFormulario.get('estado')?.invalid && unidadFormulario.get('estado')?.touched) {
+                  <div class="text-danger small mt-1">
+                    Este campo es obligatorio.
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-4 ">
+                <app-catalogo-select [catalogo]="colorVehiculoCatalogo" [label]="'Color de vehículo de arrastre'"
+                  [required]="false" id="colorVehiculo" formControlName="colorVehiculo"
+                  (change)="setValoresStore(unidadFormulario, 'colorVehiculo', 'setDatosUnidadColorVehiculo')">>
+                </app-catalogo-select>
+              </div>
+              <div class="col-md-4 ">
+                <label>Número económico*:</label>
+                <input type="text" class="form-control" formControlName="numeroEconomico"
+                  [ngClass]="isValid(unidadFormulario,'numeroEconomico') ? 'modelo' : 'true'"
+                  (change)="setValoresStore(unidadFormulario, 'numeroEconomico', 'setDatosUnidadNumeroEconomico')"
+                  maxlength="17" />
+                @if(unidadFormulario.get('numeroEconomico')?.invalid && unidadFormulario.get('numeroEconomico')?.touched) {
+                  <div class="text-danger small mt-1">
+                    Este campo es obligatorio.
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-4">
+                <label>Número de 2da placa:</label>
+                <input type="text" class="form-control" formControlName="numero2daPlaca"
+                  (change)="setValoresStore(unidadFormulario, 'numero2daPlaca', 'setDatosUnidadNumero2daPlaca')"
+                  maxlength="8" />
+              </div>
+              <div class="col-md-4 ">
+                <label>Estado emisor de 2da placa:</label>
+                <input type="text" class="form-control" formControlName="estado2daPlaca"
+                  (change)="setValoresStore(unidadFormulario, 'estado2daPlaca', 'setDatosUnidadEstado2daPlaca')"
+                  maxlength="20" />
+              </div>
+              <div class="col-md-4 ">
+                <app-catalogo-select [catalogo]="paisEmisorCatalogo" [label]="'País emisor de 2da placa'"
+                  [required]="false" id="paisEmisor2daPlaca" formControlName="paisEmisor2daPlaca"
+                  (change)="setValoresStore(unidadFormulario, 'paisEmisor2daPlaca', 'setDatosUnidadPaisEmisor2daPlaca')">
+                </app-catalogo-select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-8">
+                <label>Descripción de la unidad de arrastre:</label>
+                <input type="text" class="form-control" formControlName="descripcion"
+                  (change)="setValoresStore(unidadFormulario, 'descripcion', 'setDatosUnidadDescripcion')"
+                  maxlength="200" />
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="modal-footer custom-footer justify-content-end mt-4">
+          <button type="button" class="btn btn-primary" (click)="limpiarUnidaddata()">Limpiar</button>
+          <button type="button" class="btn btn-default" data-bs-dismiss="modal" #cerrarUnidadModal> Cancelar </button>
+          <button type="submit" class="btn btn-primary" (click)="agregarUnidadData()"> Guardar </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

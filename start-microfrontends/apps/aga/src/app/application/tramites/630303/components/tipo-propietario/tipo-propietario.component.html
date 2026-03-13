@@ -1,0 +1,54 @@
+<form [formGroup]="tipoPropietarioFormulario">
+  <ng-titulo [titulo]="'Tipo de Propietario'"></ng-titulo>
+  <div class="row">
+    <div class="col-md-4">
+      <app-catalogo-select
+        [label]="'Propietario'"
+        [required]="true"
+        [tooltipQuestionCircle]="true"
+        [tooltipQuestionCircleText]="'Indicar si la persona es propietario'"
+        [catalogo]="propietarioOpciones"
+        formControlName="propietario"
+        [isDisabled]="esFormularioSoloLectura"
+        (selectionChange)="
+          establecerCambioDeValor({ campo: 'propietario', valor: $event });
+          cambiarPropietario()
+        "
+          [markTouched]="tipoPropietarioFormulario.get('propietario')?.touched ?? false"
+      ></app-catalogo-select>
+    </div>
+  </div>
+  @if (mostrarTipoPropietario) {
+  <div class="row mt-2">
+    <div class="col-md-4">
+      <app-catalogo-select
+        [label]="'Tipo de propietario'"
+        [required]="true"
+        formControlName="tipoDePropietario"
+        [catalogo]="tipoDePropietarioOpciones"
+        [isDisabled]="esFormularioSoloLectura"
+        (selectionChange)="
+          establecerCambioDeValor({
+            campo: 'tipoDePropietario',
+            valor: $event
+          });
+          cambiarTipoPropietario()
+        "
+          [markTouched]="tipoPropietarioFormulario.get('tipoDePropietario')?.touched ?? false"
+      ></app-catalogo-select>
+    </div>
+  </div>
+
+  @if(mostrarFormularioPersonaExtranjera){
+  <formas-dinamicas
+    [forma]="tipoPropietarioFormulario"
+    [formularioDatos]="formularioDatosPropietarioDireccion"
+    [estado]="estadoSeleccionado"
+    [soloLectura]="esFormularioSoloLectura"
+    (emitirCambioDeValor)="establecerCambioDeValor($event)"
+  ></formas-dinamicas>
+  } }
+</form>
+@if(mostrarSolicitante) {
+<solicitante></solicitante>
+}

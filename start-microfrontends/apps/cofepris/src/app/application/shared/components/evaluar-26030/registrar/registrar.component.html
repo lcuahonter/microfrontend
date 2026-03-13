@@ -1,0 +1,124 @@
+@if(!firmar){
+<div class="container mt-2 mb-5" >
+   <div class="row">
+      <div class="col-md-12">
+         <h2 class="titulo mt-5 mb-5">Generar Opinión</h2>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-md-12 mt-3 mb-3">
+         <lib-encabezado-requerimiento [numFolioTramite]="guardarDatos.folioTramite" [tipoTramite]="guardarDatos.tipoDeTramite"></lib-encabezado-requerimiento>
+      </div>
+   </div>
+   <div>
+      <div class="col-md-12 text-end d-flex align-items-center justify-content-end" style="gap: 1rem;">
+         <button type="button" class="btn btn-primary ms-3" style="margin-top: 12px; margin-bottom: 12px;" (click)="guardarYFirmar()">
+         Guardar y firmar
+         </button>
+          <button type="button" class="btn btn-primary ms-3" style="margin-top: 12px; margin-bottom: 12px;" (click)="guardar()" >
+         Guardar 
+         </button>
+      </div>
+   </div>
+   <div style="margin-top: 10px;">
+      <form [formGroup]="opinionForm">
+         <!-- Row 1: Área solicitante and Sentido de la Opinión -->
+         <div class="row mt-4">
+            <div class="col-md-6">
+               <label for="description" class="form-label fw-bold">Área solicitante</label>
+               <input class="form-control" 
+                  [class]="opinionForm.get('description')?.invalid && (opinionForm.get('description')?.dirty || opinionForm.get('description')?.touched) ? 'form-control border-danger' : 'form-control'"
+                  id="description" 
+                  formControlName="description" />
+               <div *ngIf="opinionForm.get('description')?.invalid && (opinionForm.get('description')?.dirty || opinionForm.get('description')?.touched)" class="text-danger mt-1">
+                  <small>La descripción es requerida.</small>
+               </div>
+            </div>
+            <div class="col-md-3 d-flex align-items-start justify-content-center">
+               <label class="form-label fw-bold">Sentido de la Opinión</label>
+            </div>
+            <div class="col-md-3">
+             
+               <div class="d-flex gap-2">
+                  <div class="form-check">
+                     <input class="form-check-input" type="radio" name="sentidoDictamen" id="aceptada" 
+                        value="SEDI.AC" formControlName="sentidoDictamen" />
+                     <label class="form-check-label" for="aceptada">
+                        Aceptado
+                     </label>
+                  </div>
+                  <div class="form-check">
+                     <input class="form-check-input" type="radio" name="sentidoDictamen" id="rechazada" 
+                        value="SEDI.RZ" formControlName="sentidoDictamen" />
+                     <label class="form-check-label" for="rechazada">
+                        Rechazado
+                     </label>
+                  </div>
+               </div>
+               <div *ngIf="opinionForm.get('sentidoDictamen')?.invalid && (opinionForm.get('sentidoDictamen')?.dirty || opinionForm.get('sentidoDictamen')?.touched)" class="text-danger mt-1">
+                  <small>Debe seleccionar un sentido.</small>
+               </div>
+            </div>
+         </div>
+
+         <!-- Row 2: Fecha de solicitud -->
+         <div class="row mt-4">
+            <div class="col-md-6">
+               <label for="fechaSolicitud" class="form-label fw-bold">Fecha de solicitud</label>
+               <input class="form-control" 
+                  [class]="opinionForm.get('fechaSolicitud')?.invalid && (opinionForm.get('fechaSolicitud')?.dirty || opinionForm.get('fechaSolicitud')?.touched) ? 'form-control border-danger' : 'form-control'"
+                  id="fechaSolicitud" 
+                  formControlName="fechaSolicitud" />
+               <div *ngIf="opinionForm.get('fechaSolicitud')?.invalid && (opinionForm.get('fechaSolicitud')?.dirty || opinionForm.get('fechaSolicitud')?.touched)" class="text-danger mt-1">
+                  <small>Este campo es obligatorio.</small>
+               </div>
+            </div>
+         </div>
+
+         <!-- Row 3: Justificación and Opinión (side by side) -->
+         <div class="row mt-4">
+            <div class="col-md-6">
+               <label for="justificacion" class="form-label fw-bold">Justificación de la solicitud de opinión</label>
+               <textarea class="form-control" 
+                  [class]="opinionForm.get('justificacion')?.invalid && (opinionForm.get('justificacion')?.dirty || opinionForm.get('justificacion')?.touched) ? 'form-control border-danger' : 'form-control'"
+                  id="justificacion" 
+                  rows="4" 
+                  formControlName="justificacion" style="resize: none; height: 120px; overflow-y: hidden;"></textarea>
+               <div *ngIf="opinionForm.get('justificacion')?.invalid && (opinionForm.get('justificacion')?.dirty || opinionForm.get('justificacion')?.touched)" class="text-danger mt-1">
+                  <small>La justificación es requerida.</small>
+               </div>
+            </div>
+            <div class="col-md-6">
+               <label for="opinion" class="form-label fw-bold"><span [class]="opinionForm.get('opinion')?.invalid && (opinionForm.get('opinion')?.dirty || opinionForm.get('opinion')?.touched) ? 'text-danger' : ''">*</span>Opinión</label>
+               <div *ngIf="opinionForm.get('opinion')?.invalid && (opinionForm.get('opinion')?.dirty || opinionForm.get('opinion')?.touched)" class="text-danger mt-1">
+                  <small>Este campo es obligatorio.</small>
+               </div>
+               <textarea class="form-control" 
+                  [class]="opinionForm.get('opinion')?.invalid && (opinionForm.get('opinion')?.dirty || opinionForm.get('opinion')?.touched) ? 'form-control border-danger' : 'form-control'"
+                  id="opinion" 
+                  rows="4" 
+                  formControlName="opinion" style="resize: none; height: 120px; overflow-y: hidden;"></textarea>
+               
+            </div>
+         </div>
+      </form>
+   </div>
+</div>
+}
+@if(firmar) {
+  <div class="row">
+    <div class="col-md-12">
+      <h2 class="titulo mt-5 mb-5">Firmar</h2>
+    </div>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <firma-electronica
+        [tipo]="''"
+        [cadenaOriginal]="cadenaOriginalRequerimiento"
+        (datosFirma)="obtieneFirma($event)">
+      </firma-electronica>
+    </div>
+  </div>
+}

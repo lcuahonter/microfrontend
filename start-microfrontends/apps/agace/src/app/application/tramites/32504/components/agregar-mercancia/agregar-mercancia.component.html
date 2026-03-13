@@ -1,0 +1,104 @@
+<div class="container">
+  <div class="form" [formGroup]="mercanciaForm">
+    <ng-titulo titulo="Datos de la mercancía transferida para submanufactura" />
+
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <app-catalogo-select [label]="'Fracción arancelaria'" [catalogo]="fraccionArancelariaCatalogo"
+          [markTouched]="mercanciaForm.get('fraccionArancelaria')?.touched ?? false"
+          formControlName="fraccionArancelaria" [required]="true" />
+      </div>
+
+      <div class="col-md-4">
+        <label for="fraccionArancelaria" class="form-label">NICO<span
+            [ngClass]="controlValido('nico') ? 'has-error' : ''">*</span>:</label>
+        <input type="text" id="nico" maxlength="2" [ngClass]="controlValido('nico') ? 'required':'' " libSoloNumeros
+          class="form-control" formControlName="nico" />
+        <div *ngIf="mercanciaForm.get('nico')?.invalid && mercanciaForm.get('nico')?.touched" class="text-danger">
+          <div [innerHTML]="mensajeCampoObligatorio"></div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <app-catalogo-select [markTouched]="mercanciaForm.get('fraccionArancelaria')?.touched ?? false"
+          [label]="'Unidad de medida'" [catalogo]="unidadMedidaCatalogo" formControlName="unidadMedida"
+          [required]="true" [markTouched]="controlValido('unidadMedida')" />
+      </div>
+
+    </div>
+
+
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label for="cantidad" class="form-label">Cantidad<span
+            [ngClass]="controlValido('cantidad') ? 'has-error' : ''">*</span>:</label>
+        <input type="text" id="cantidad" class="form-control" formControlName="cantidad" maxlength="15"
+          [ngClass]="controlValido('cantidad') ? 'required':'' " />
+        @if (mercanciaForm.get('cantidad')?.hasError('required') &&
+        mercanciaForm.get('cantidad')?.touched) {
+        <div class="text-danger">
+          <small>Este campo es obligatorio</small>
+        </div>
+        } @if (mercanciaForm.get('cantidad')?.hasError('pattern') &&
+        mercanciaForm.get('cantidad')?.touched) {
+        <div class="text-danger">
+          <small>Por favor, escribe un número entero válido</small>
+        </div>
+        } @if (mercanciaForm.get('cantidad')?.hasError('maxDigits') &&
+        mercanciaForm.get('cantidad')?.touched) {
+        <div class="text-danger">
+          <small>Por favor, escribe un valor menor o igual a 999999999999.99</small>
+        </div>
+        }
+      </div>
+
+      <div class="col-md-4">
+        <label for="fraccionArancelaria" class="form-label">Valor USD<span
+            [ngClass]="controlValido('valorUSD') ? 'has-error' : ''">*</span>:</label>
+        <input type="text" id="valorUSD" class="form-control" formControlName="valorUSD" maxlength="15"
+          [ngClass]="controlValido('valorUSD') ? 'required':'' " />
+        @if (mercanciaForm.get('valorUSD')?.hasError('required') &&
+        mercanciaForm.get('valorUSD')?.touched) {
+        <div class="text-danger">
+          <small>Este campo es obligatorio</small>
+        </div>
+        } @if (mercanciaForm.get('valorUSD')?.hasError('pattern') &&
+        mercanciaForm.get('valorUSD')?.touched) {
+        <div class="text-danger">
+          <small>Por favor, escribe un número entero válido</small>
+        </div>
+        } @if (mercanciaForm.get('valorUSD')?.hasError('maxDigits') &&
+        mercanciaForm.get('valorUSD')?.touched) {
+        <div class="text-danger">
+          <small>Por favor, escribe un valor menor o igual a 999999999999.99</small>
+        </div>
+        }
+      </div>
+    </div>
+
+
+    <div class="row mb-3">
+      <div class="col-8">
+        <label for="descMercancia" class="form-label">Descripcíon de la mercancía<span
+            [ngClass]="controlValido('descMercancia') ? 'has-error' : ''">*</span>:</label>
+        <input type="text" id="descMercancia" class="form-control" formControlName="descMercancia" maxlength="250"
+          [ngClass]="controlValido('descMercancia') ? 'required':'' " />
+        <div *ngIf="mercanciaForm.get('descMercancia')?.invalid && mercanciaForm.get('descMercancia')?.touched"
+          class="text-danger">
+          <div [innerHTML]="mensajeCampoObligatorio"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-5 d-flex justify-content-end">
+      <button type="button" (click)="cancelar()" class="btn btn-primary ms-3" [disabled]="false">
+        Cancelar
+      </button>
+      <button type="button" class="btn btn-primary ms-3" (click)="agregarMercancia()">
+        Agregar
+      </button>
+    </div>
+
+  </div>
+
+</div>

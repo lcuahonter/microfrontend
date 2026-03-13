@@ -1,0 +1,59 @@
+<div class="container">
+  <div class="row">
+    <ul class="nav nav-tabs">
+      <li [ngClass]="indice === 1 ? 'active' : ''">
+        <a
+          data-toggle="tab"
+          tabindex="0"
+          (keyup)="seleccionaTab(1)"
+          (click)="seleccionaTab(1)"
+          >Solicitante</a
+        >
+      </li>
+      <li [ngClass]="indice === 2 ? 'active' : ''">
+        <a
+          data-toggle="tab"
+          tabindex="0"
+          (keyup)="seleccionaTab(1)"
+          (click)="seleccionaTab(2)"
+          >Registro para la toma de muestras de mercancías</a
+        >
+      </li>
+      <li [ngClass]="indice === 3 ? 'active' : ''">
+        <a
+          data-toggle="tab"
+          tabindex="0"
+          (keyup)="seleccionaTab(1)"
+          (click)="seleccionaTab(3)"
+          >Pago de derechos</a
+        >
+      </li>
+    </ul>
+    <ng-container>
+      <div [hidden]="indice !== 1">
+        <solicitante #Solicitante></solicitante>
+      </div>
+      
+      <div [hidden]="indice !== 2">
+        <app-registro-para-la (emitirElValorSeleccionado)="actualizarPagina($event)" #registroParaLa
+          [hidden]="!esDatosRespuesta">
+        </app-registro-para-la>
+      
+        <div [hidden]="!(esDatosRespuesta && seccionSeleccionada === '1')">
+          <app-de-la-muestra #delamuestra></app-de-la-muestra>
+        </div>
+      
+        <div [hidden]="!(esDatosRespuesta && seccionSeleccionada === '1' || seccionSeleccionada === '2')">
+          <app-informacion-de-la #informaciondela></app-informacion-de-la>
+        </div>
+      </div>
+      
+      <div [hidden]="indice !== 3">
+        <app-pago-de-derechos #pagodederechos [hidden]="!esDatosRespuesta">
+        </app-pago-de-derechos>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+

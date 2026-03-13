@@ -1,0 +1,101 @@
+<div class="container">
+  <div class="row padding-top">
+    <div class="row">
+      <div class="col-12">
+        <h2 class="fw-bold my-5 titulo-tasks">Requerimiento</h2>
+        <hr class="red">
+      </div>
+    </div>
+    <form [formGroup]="formRequerimiento">
+      <div class="row">
+        <div class="col-md-12" *ngIf="isTipoRequerimiento">
+          <div class="col-md-4">
+            <div class="row">
+              <app-catalogo-select-clave [catalogo]="catTipoRequerimiento" formControlName="tipoRequerimiento"
+                [label]="'Tipo requerimiento'" [required]="true" name="tipoRequerimiento"
+                (change)="tipoRequerimientoSeleccionado(formRequerimiento,'tipoRequerimiento', 'settipoRequerimientoValue')"></app-catalogo-select-clave>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12 left" *ngIf="isAreaSolicitante">
+          <label for="areasSolicitantes" class="form-label">Área(s) solicitante(s)*:</label>
+          <select multiple formControlName="areasSolicitantes" id="areasSolicitantes" class="form-control text-height"
+            (change)="areasSolicitantesSeleccionada(formRequerimiento,'areasSolicitantes', 'setareasSolicitantesValue', $event)">
+            <option *ngFor="let item of catAreasSolicitantes" [value]="item.clave">
+              {{ item.descripcion }}
+            </option>
+            </select>               
+          <div
+            *ngIf="formRequerimiento.get('areasSolicitantes')?.invalid && (formRequerimiento.get('areasSolicitantes')?.touched || formRequerimiento.get('justificacionRequerimiento')?.dirty)"
+            class="text-danger">
+            <div *ngIf="formRequerimiento.get('areasSolicitantes')?.errors?.['required']">
+              Este campo es obligatorio.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12 left" *ngIf="isJustificacionRequerimiento">
+          <label for="justificacionRequerimiento" class="form-label">Justificación del requerimiento*:</label>
+          <textarea name="justificacionRequerimiento" id="justificacionRequerimiento" class="form-control text-height"
+            formControlName="justificacionRequerimiento" (input)="onInput()"
+            (blur)="setValoresStore(formRequerimiento,'justificacionRequerimiento', 'setjustificacionRequerimientoValue')"
+            (keydown)="onKeydown($event)" (paste)="onPaste($event)"></textarea>          
+          <div
+            *ngIf="formRequerimiento.get('justificacionRequerimiento')?.invalid && (formRequerimiento.get('justificacionRequerimiento')?.touched || formRequerimiento.get('justificacionRequerimiento')?.dirty)"
+            class="text-danger">
+            <div *ngIf="formRequerimiento.get('justificacionRequerimiento')?.errors?.['required']">
+              Este campo es obligatorio.
+            </div>
+            <div *ngIf="formRequerimiento.get('justificacionRequerimiento')?.errors?.['maxlength']">
+              Por favor, no escriba más de {{ MAX_CHARS }} caracteres.
+            </div>
+          </div>
+          <!-- Mensaje personalizado para límite de caracteres alcanzado -->
+          <div
+            *ngIf="showCharLimitMessage && !formRequerimiento.get('justificacionRequerimiento')?.errors?.['maxlength']"
+            class="text-danger">
+            <div>Por favor, no escriba más de {{ MAX_CHARS }} caracteres.</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <p class="small">*Campos obligatorios</p>
+      </div>
+    </form>
+    @if(this.iniciarResponse.observaciones && this.iniciarResponse.observaciones.length > 0) {
+    <div class="row">
+      <div class="col-12">
+        <h2 class="fw-bold my-5 titulo-tasks">Observaciones al requerimiento</h2>
+        <hr class="red">
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="row">
+        <table class="table table-bordered">
+          <thead class="table-light">
+            <tr>
+              <th>Fecha de generación</th>
+              <th>Fecha de atención</th>
+              <th>Generada por</th>
+              <th>Estatus</th>
+              <th>Detalle</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let observacion of this.iniciarResponse.observaciones">
+              <td>{{observacion.fecha_observacion | date:'dd/MM/yyyy'}}</td>
+              <td>{{observacion.fecha_atencion | date:'dd/MM/yyyy'}}</td>
+              <td>{{observacion.nombre_completo}}</td>
+              <td>{{observacion.estado_observacion}}</td>
+              <td>
+                <div class="scroll-td">
+                  {{ observacion.observacion }}
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    }
+  </div>
+</div>

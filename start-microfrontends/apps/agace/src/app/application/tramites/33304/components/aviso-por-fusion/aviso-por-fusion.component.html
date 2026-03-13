@@ -1,0 +1,95 @@
+<div class="container">
+  <ng-titulo titulo="Aviso de fusión o escisión"></ng-titulo>
+  <form [formGroup]="formularioAvisoFusion">
+
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+           <app-input-radio [radioOptions]="avisoDeOpciones" formControlName="avisoDeOperacion" [gap]="'493px'"
+          [isBold]="true" [labelMargin]="'0px'" [layout]="'vertical'"
+          (change)="setValoresStore(formularioAvisoFusion, 'avisoDeOperacion')">
+        </app-input-radio>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <app-input-radio [radioOptions]="tipoOpcionesFiltradas" formControlName="tipoOperacion" [gap]="'493px'"
+            [isBold]="true" [labelMargin]="'0px'" [layout]="'horizontal'"
+            (change)="setValoresStore(formularioAvisoFusion, 'tipoOperacion')">
+          </app-input-radio>
+        </div>
+      </div>
+    </div>
+
+    <div class="fusion-container" *ngIf="formularioAvisoFusion.get('tipoOperacion')?.value === '1'">
+
+      <div class="row">
+        <div class="col-md-12">
+          <ng-titulo titulo="Datos de la empresa fusionante"></ng-titulo>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="Cuenta" class="form-label text-nowrap" style="margin: 0; white-space: nowrap;">Cuenta con
+              registro
+              en el Esquema Integral de Certificación</label>
+            <app-input-radio [radioOptions]="cuentaOptions" [isRequired]="true" [layout]="'horizontal'" [gap]="'493px'"
+              [isBold]="true" [labelMargin]="'0px'" formControlName="cuenta"
+              (change)="setValoresStore(formularioAvisoFusion,'cuenta')">
+            </app-input-radio>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" *ngIf="formularioAvisoFusion?.get('cuenta')?.value === '0'">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="rfc">RFC*:</label>
+            <input type="text" class="form-control" formControlName="rfc" id="rfc"
+              (change)="setValoresStore(formularioAvisoFusion, 'rfc')" />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="denominacion">Denominación o razón social de la sociedad*:</label>
+            <input type="text" class="form-control" formControlName="denominacion" id="denominacion"
+              (change)="setValoresStore(formularioAvisoFusion, 'denominacion')" />
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="fechaFusioneEfecto">Fecha en que surte efecto la fusión*:</label>
+            <input-fecha class="flex-grow-1" id="fechaFusioneEfecto" [datos]="fechaInputDatos"
+              [setFecha]="formularioAvisoFusion.get('fechaFusioneEfecto')?.value"
+              (valorCambiado)="actualizarFecha($event, 'fechaFusioneEfecto'); setValoresStore(formularioAvisoFusion,'fechaFusioneEfecto')">
+            </input-fecha>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="folioAcuse">Folio del Acuse de movimiento de actualización de situación fiscal*:</label>
+            <input type="text" class="form-control" formControlName="folioAcuse" id="folioAcuse"
+              (change)="setValoresStore(formularioAvisoFusion, 'folioAcuse')" />
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <ng-titulo titulo="Datos de las empresas fusionadas"></ng-titulo>
+          <app-datos-empresas-fusionadas> </app-datos-empresas-fusionadas>
+        </div>
+      </div>
+
+    </div>
+  </form>
+</div>

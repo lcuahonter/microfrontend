@@ -1,0 +1,154 @@
+<div class="container-fluid">
+    <form [formGroup]="empresaForm">
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <ng-titulo [titulo]="miembroAModificar ? 'Editar miembro de la empresa' : 'Agregar miembro de la empresa'" />
+            </div>
+            <div class="col-md-5">
+                <app-catalogo-select [catalogo]="contenedores.catalogos" [label]="contenedores.labelNombre"
+                    [placeholder]="contenedores.primerOpcion" [required]="true" [markTouched]="!!empresaForm.get('caracterDe')?.touched" formControlName="caracterDe"></app-catalogo-select>
+            </div>
+            @if (mostrarCamposSi) {
+              <div class="col-md-5">
+                  <label for="rfcBusqueda" class="form-label">RFC<span [ngClass]="{'text-danger': empresaForm.get('rfcBusqueda')?.invalid && (empresaForm.get('rfcBusqueda')?.touched || empresaForm.get('rfcBusqueda')?.dirty)}">*</span>:</label>
+                  <input type="text" id="rfcBusqueda" class="form-control" formControlName="rfcBusqueda" />
+                  @if (empresaForm.get('rfcBusqueda')?.invalid && (empresaForm.get('rfcBusqueda')?.touched || empresaForm.get('rfcBusqueda')?.dirty)) {
+                    @if (empresaForm.get('rfcBusqueda')?.hasError('required')) {
+                      <small class="mensaje-error">Este campo es obligatorio</small>
+                    }
+                    @if (empresaForm.get('rfcBusqueda')?.hasError('pattern')) {
+                      <small class="mensaje-error">Formato de RFC inválido</small>
+                    }
+                  }
+              </div>
+            }
+            @if (mostrarCamposSi) {
+              <div class="col-md-2">
+                  <div class="form-group mt-5 pull-left">
+                      <button type="button" name="Buscar" id="Buscar" class="btn btn-primary me-5" (click)="buscarMiembro()">
+                          Buscar
+                      </button>
+                  </div>
+              </div>
+            }
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-5">
+              <label class="form-label text-start">Obligado a tributar en México<span [ngClass]="{'text-danger': empresaForm.get('instalacionesPrincipales')?.invalid && (empresaForm.get('instalacionesPrincipales')?.touched || empresaForm.get('instalacionesPrincipales')?.dirty)}">*</span>:</label>              
+                <app-input-radio [radioOptions]="sinoOpcion.radioOptions" [isRequired]="sinoOpcion.isRequired"
+                    [layout]="'horizontal'" [gap]="'50px'" formControlName="instalacionesPrincipales" (valueChange)="actualizar290($event)"></app-input-radio>
+                @if (empresaForm.get('instalacionesPrincipales')?.invalid && (empresaForm.get('instalacionesPrincipales')?.touched || empresaForm.get('instalacionesPrincipales')?.dirty)) {
+                  @if (empresaForm.get('instalacionesPrincipales')?.hasError('required')) {
+                    <small class="mensaje-error">Este campo es obligatorio</small>
+                  }
+                }
+            </div>
+            <div class="col-md-5">
+              @if (mostrarCamposSi) {
+                <div id="registro-federal-contribuyentes">
+                  <label for="registro" class="form-label">Registro Federal de Contribuyentes<span [ngClass]="{'text-danger': empresaForm.get('registroFederalContribuyentes')?.invalid && (empresaForm.get('registroFederalContribuyentes')?.touched || empresaForm.get('registroFederalContribuyentes')?.dirty)}">*</span>:</label>
+                  <input type="text" id="registro" class="form-control" formControlName="registroFederalContribuyentes" />
+                  @if (empresaForm.get('registroFederalContribuyentes')?.invalid && (empresaForm.get('registroFederalContribuyentes')?.touched || empresaForm.get('registroFederalContribuyentes')?.dirty)) {
+                    @if (empresaForm.get('registroFederalContribuyentes')?.hasError('required')) {
+                      <small class="mensaje-error">Este campo es obligatorio</small>
+                    }
+                    @if (empresaForm.get('registroFederalContribuyentes')?.hasError('pattern')) {
+                      <small class="mensaje-error">Formato de RFC inválido</small>
+                    }
+                  }
+                </div>
+              }
+              @if (mostrarCamposNo) {
+                <div id="tipo-persona">
+                  <app-catalogo-select [catalogo]="tipoPersona.catalogos" [label]="tipoPersona.labelNombre"
+                      [placeholder]="tipoPersona.primerOpcion" [required]="true" [markTouched]="!!empresaForm.get('tipoPersona')?.touched" 
+                      formControlName="tipoPersona" (selectionChange)="onTipoPersonaChange()"></app-catalogo-select>
+                </div>
+              }
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-5">
+                <app-catalogo-select [catalogo]="nacionalidad.catalogos" [label]="nacionalidad.labelNombre"
+                    [placeholder]="nacionalidad.primerOpcion" [required]="true" [markTouched]="!!empresaForm.get('nacionalidad')?.touched" formControlName="nacionalidad"></app-catalogo-select>
+            </div>
+            @if (mostrarCamposSi) {
+              <div class="col-md-5">
+                  <label for="nombreCompleto" class="form-label">Nombre completo<span [ngClass]="{'text-danger': empresaForm.get('nombreCompleto')?.invalid && (empresaForm.get('nombreCompleto')?.touched || empresaForm.get('nombreCompleto')?.dirty)}">*</span>:</label>
+                  <input type="text" id="nombreCompleto" class="form-control" formControlName="nombreCompleto" />
+                  @if (empresaForm.get('nombreCompleto')?.invalid && (empresaForm.get('nombreCompleto')?.touched || empresaForm.get('nombreCompleto')?.dirty)) {
+                    @if (empresaForm.get('nombreCompleto')?.hasError('required')) {
+                      <small class="mensaje-error">Este campo es obligatorio</small>
+                    }
+                  }
+              </div>
+            }
+            @if (mostrarCamposNo && tipoPersonaEsFisica) {
+              <div class="col-md-7">
+                <div class="row g-2">
+                  <div class="col-md-4">
+                      <label for="nombreS" class="form-label">Nombre (s)<span [ngClass]="{'text-danger': empresaForm.get('nombreS')?.invalid && (empresaForm.get('nombreS')?.touched || empresaForm.get('nombreS')?.dirty)}">*</span>:</label>
+                      <input type="text" id="nombreS" class="form-control" formControlName="nombreS" />
+                      @if (empresaForm.get('nombreS')?.invalid && (empresaForm.get('nombreS')?.touched || empresaForm.get('nombreS')?.dirty)) {
+                        @if (empresaForm.get('nombreS')?.hasError('required')) {
+                          <small class="mensaje-error">Este campo es obligatorio</small>
+                        }
+                      }
+                  </div>
+
+                  <div class="col-md-4">
+                    <label for="apellidoPaterno" class="form-label">Apellido paterno<span [ngClass]="{'text-danger': empresaForm.get('apellidoPaterno')?.invalid && (empresaForm.get('apellidoPaterno')?.touched || empresaForm.get('apellidoPaterno')?.dirty)}">*</span>:</label>
+                    <input type="text" id="apellidoPaterno" class="form-control" formControlName="apellidoPaterno" />
+                    @if (empresaForm.get('apellidoPaterno')?.invalid && (empresaForm.get('apellidoPaterno')?.touched || empresaForm.get('apellidoPaterno')?.dirty)) {
+                      @if (empresaForm.get('apellidoPaterno')?.hasError('required')) {
+                        <small class="mensaje-error">Este campo es obligatorio</small>
+                      }
+                    }
+                  </div>
+
+                  <div class="col-md-4">
+                      <label for="apellidoMaterno" class="form-label">Apellido materno:</label>
+                      <input type="text" id="apellidoMaterno" class="form-control" formControlName="apellidoMaterno" />
+                  </div>
+                </div>                         
+              </div>
+            }   
+            @if (mostrarCamposNo && tipoPersonaEsMoral) {
+            <div class="col-md-5">
+              <label for="nombreEmpresa" class="form-label">Nombre de la empresa<span [ngClass]="{'text-danger': empresaForm.get('nombreEmpresa')?.invalid && (empresaForm.get('nombreEmpresa')?.touched || empresaForm.get('nombreEmpresa')?.dirty)}">*</span>:</label>
+              <input type="text" id="nombreEmpresa" class="form-control" formControlName="nombreEmpresa" />
+              @if (empresaForm.get('nombreEmpresa')?.invalid && (empresaForm.get('nombreEmpresa')?.touched || empresaForm.get('nombreEmpresa')?.dirty)) {
+                @if (empresaForm.get('nombreEmpresa')?.hasError('required')) {
+                  <small class="mensaje-error">Este campo es obligatorio</small>
+                }
+              } 
+          </div>  
+          }         
+        </div>
+        <div class="d-flex justify-content-end mt-4">
+            <button type="button" id="aceptar" class="btn btn-primary" (click)="validarYEnviarFormulario()">
+                {{ miembroAModificar ? 'Aceptar' : 'Aceptar' }}
+            </button>
+
+            <button type="button" id="cancelar" class="btn btn-danger ms-3" (click)="cancelarAccion()" data-bs-dismiss="modal">
+                Cancelar
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="modal fade" id="modalError" tabindex="-1" aria-labelledby="modalErrorLabel" aria-hidden="true" #modalError>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>{{ mensajeError }}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>

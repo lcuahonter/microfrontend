@@ -1,0 +1,110 @@
+<div [config]="{ show: true, backdrop: 'static' }" (onHidden)="onHidden()" bsModal #modal="bs-modal" class="modal fade"
+    tabindex="-1" role="dialog" aria-labelledby="dialog-auto-name">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="dialog-auto-name" class="modal-title pull-left">
+                    {{ titulo }}
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="FormEnlaceOperativo" novalidate>
+                    <div class="row mb-3 align-items-end">
+                        <div class="col-md-4">
+                            <label for="rfcBusqueda" class="form-label">Registro Federal de Contribuyentes*:</label>
+                            <input type="text" id="rfcBusqueda" class="form-control" formControlName="rfcBusqueda"
+                                libUppercase />
+                            <div *ngIf="(formSubmitted || FormEnlaceOperativo.get('rfcBusqueda')?.touched) && FormEnlaceOperativo.get('rfcBusqueda')?.invalid"
+                                class="invalid-feedback d-block">
+                                RFC requerido.
+                            </div>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button class="btn btn-primary ms-2" type="button" (click)="buscarEnlaceOperativo()">
+                                Buscar
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="rfc" class="form-label">RFC:</label>
+                            <input id="rfc" type="text" class="form-control" formControlName="rfc" libUppercase />
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="nombre" class="form-label">Nombre:</label>
+                            <input id="nombre" type="text" class="form-control" formControlName="nombre" libUppercase />
+                            <div *ngIf="(formSubmitted || FormEnlaceOperativo.get('nombre')?.touched) && FormEnlaceOperativo.get('nombre')?.invalid"
+                                class="invalid-feedback d-block">
+                                Nombre requerido.
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="apellidoPaterno" class="form-label">Apellido Paterno:</label>
+                            <input id="apellidoPaterno" type="text" class="form-control"
+                                formControlName="apellidoPaterno" libUppercase />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="apellidoMaterno" class="form-label">Apellido Materno:</label>
+                            <input id="apellidoMaterno" type="text" class="form-control"
+                                formControlName="apellidoMaterno" libUppercase />
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <label for="ciudad" class="form-label">Ciudad o Estado de Residencia:</label>
+                            <input id="ciudad" type="text" class="form-control" formControlName="ciudad" libUppercase />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="cargoPuesto" class="form-label">Cargo o Puesto:</label>
+                            <input id="cargoPuesto" type="text" class="form-control" formControlName="cargoPuesto"
+                                libUppercase />
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="telefono" class="form-label">Teléfono:</label>
+                            <input id="telefono" type="text" class="form-control" formControlName="telefono" />
+                            <div *ngIf="(formSubmitted || FormEnlaceOperativo.get('telefono')?.touched) && FormEnlaceOperativo.get('telefono')?.invalid"
+                                class="invalid-feedback d-block">
+                                Teléfono requerido o inválido.
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="correoElectronico" class="form-label">Correo Electrónico:</label>
+                            <input id="correoElectronico" type="email" class="form-control"
+                                formControlName="correoElectronico" />
+                            <div *ngIf="(formSubmitted || FormEnlaceOperativo.get('correoElectronico')?.touched) && FormEnlaceOperativo.get('correoElectronico')?.invalid"
+                                class="invalid-feedback d-block">
+                                Correo electrónico requerido o inválido.
+                            </div>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-center">
+                            <div class="form-check mt-4">
+                                <input id="suplente" type="checkbox" class="form-check-input"
+                                    formControlName="suplente" />
+                                <label for="suplente" class="form-check-label">Suplente</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default ms-2" (click)="cancelar()">Cancelar</button>
+                <button class="btn btn-primary ms-2" type="button" (click)="aceptaEnlace()">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+@if (nuevaNotificacion) {
+<section>
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+    </lib-notificaciones>
+</section>
+}

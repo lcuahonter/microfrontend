@@ -1,0 +1,352 @@
+<div class="container">
+  <form [formGroup]="autoTransportistaForm">
+    <div class="row">
+      <div class="col-md-12">
+        <label class="form-label text-start">Conforme a la regla 7.1.5., fracción I, acredite lo siguiente.</label>
+      </div>
+      <div class="col-md-12">
+        <label class="form-label text-left"><span class="text-danger">*</span> Indique si cuenta con 2 años como mínimo de experiencia en la prestación de servicios de Autotransporte
+          Terrestre Federal de mercancías</label>
+        <app-input-radio [radioOptions]="sinoOpcion.radioOptions" [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'" [gap]="'50px'" formControlName="autotransporteDosAnios"
+          (valueChange)="actualizar($event,'autotransporteDosAnios')"></app-input-radio>
+      </div>
+      <div *ngIf="autoTransportistaForm.get('autotransporteDosAnios')?.value === 1">
+        <div class="col-md-12 text-danger ml-4"
+          *ngIf="autoTransportistaForm.get('fechaInicio')?.value === '' || autoTransportistaForm.get('fechaInicio')?.value === null">
+          <b>Debe contar con al menos 2 años de experiencia</b>
+        </div>
+        <div class="col-md-12">
+          <label class="form-label text-left"><span class="text-danger">*</span> Indique la fecha en que inicio a prestar el servicio de Autotransporte Terrestre Federal de mercancías.</label>
+        </div>
+        <div class="col-md-6">
+          <input-fecha [datos]="fechaDeFinDeVigencia" [isDisabled]="esFormularioSoloLectura"
+            [setFecha]="autoTransportistaForm.get('fechaInicio')?.value"
+            (valorCambiado)="actualizar($event,'fechaInicio')">
+          </input-fecha>
+        </div>
+      </div>
+
+      <div class="col-md-6 mt-4"></div>
+      <div class="col-md-12">
+        <label class="form-label text-left"><span class="text-danger">*</span> Indique si cuenta el permiso vigente, expedido por la SCT para prestar el servicio de autotransporte federal de carga.</label>
+        <app-input-radio [radioOptions]="sinoOpcion.radioOptions" [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'" [gap]="'50px'" formControlName="permisoVigenteSCT"
+          (valueChange)="actualizar($event,'permisoVigenteSCT')"></app-input-radio>
+      </div>
+      <div class="col-md-12">
+        <label class="form-label text-start">
+          Anexe copia del documento expedido por la SCT, con el que acredite que cuenta con el permiso vigente, para
+          prestar el servicio de autotransporte federal de carga.
+        </label>
+      </div>
+      <div class="col-md-9">
+        <label class="form-label text-start">
+          Número de Registro del Código Alfanumérico Armonizado del Transportista (CAAT):
+        </label>
+        <input class="form-control" formControlName="numeroRegistroCAAT" type="text" id="numeroRegistroCAAT"
+          name="numeroRegistroCAAT" (change)="setValorsStore('numeroRegistroCAAT')">
+      </div>
+      <div class="col-md-3"></div>
+      <div class="col-md-6">
+        <input-fecha [datos]="fechaDeVigencia" [isDisabled]="esFormularioSoloLectura"
+          [setFecha]="autoTransportistaForm.get('fechaVigencia')?.value" (valorCambiado)="actualizar($event,'fechaVigencia')">
+        </input-fecha>
+      </div>
+      <div class="col-md-6"></div>
+      <div class="col-md-9 mt-4">
+        <label class="form-label text-start" for="numeroUnidadesPropias">
+          Número de unidades propias utilizadas para la prestación del servicio:
+        </label>
+        <input class="form-control" formControlName="numeroUnidadesPropias" type="text" id="numeroUnidadesPropias"
+          name="numeroUnidadesPropias" (change)="setValorsStore('numeroUnidadesPropias')" maxlength="5"
+          (keypress)="soloNumeros($event)" />
+      </div>
+      <div class="col-md-3"></div>
+      <div class="col-md-9 mt-4">
+        <label class="form-label text-start" for="numeroUnidadesArrendadas">
+          Número de unidades arrendadas utilizadas para la prestación del servicio:
+        </label>
+        <input class="form-control" formControlName="numeroUnidadesArrendadas" type="text" id="numeroUnidadesArrendadas"
+          name="numeroUnidadesArrendadas" (change)="setValorsStore('numeroUnidadesArrendadas')" maxlength="5"
+          (keypress)="soloNumeros($event)" />
+      </div>
+      <div class="col-md-3"></div>
+      <div class="col-md-12">
+        <label class="form-label text-start">
+          Anexe escrito libre en donde se declare bajo protesta de decir la verdad en las cantidades de unidades con las
+          que cuenta la solicitante y cuantas son propias y cuantas arrendadas.
+        </label>
+        <label class="form-label text-start" *ngIf="debeMostrarEtiquetaArrendadas()">
+          Anexe el contrato con el que acredite las unidades arrendadas.*
+        </label>
+      </div>
+      <div class="col-md-12">
+        <label class="form-label text-left"><span class="text-danger">*</span> Señale si los medios de transporte que utilizará para el translado de las mercancías de importación, cuenta
+          con sistemas de rastreo.</label>
+        <app-input-radio [radioOptions]="sinoOpcion.radioOptions" [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'" [gap]="'50px'" formControlName="sistemasRastreo"
+          (valueChange)="actualizar($event,'sistemasRastreo')"></app-input-radio>
+      </div>
+      <div class="col-md-12 text-danger ml-4" *ngIf="autoTransportistaForm.get('sistemasRastreo')?.value === 2">
+        Los medios de transporte deben contar con sistemas de rastreo
+      </div>
+      <div class="col-md-12">
+      <label class="form-label text-left"><span class="text-danger">*</span> Manifieste si cumple con los estándares mínimos en materia de seguridad establecidos en el formato denominado
+          "Perfil del Auto Transportista Terrestre".</label>
+        <app-input-radio [radioOptions]="sinoOpcion.radioOptions" [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'" [gap]="'50px'" formControlName="seguridadPerfilTransportista"
+          (valueChange)="actualizar($event,'seguridadPerfilTransportista')"></app-input-radio>
+      </div>
+      <div class="col-md-12 text-danger ml-4"
+        *ngIf="autoTransportistaForm.get('seguridadPerfilTransportista')?.value === 2">
+        Respuesta Obligatoria
+      </div>
+      <div class="col-md-12">
+        <ng-titulo titulo="Reconocimiento Mutuo" />
+      </div>
+      <div class="col-md-12">
+       <label class="form-label text-left"><span class="text-danger">*</span> La adopción de México de las normas establecidas en el Marco Normativo SAFE
+          de la OMA para Asegurar y Facilitar el
+          Comercio Global publicado por la OMA, donde se incorporan prácticas y normas en materia de seguridad, tiene
+          como uno
+          de sus objetivos, alcanzar el Reconocimiento Mutuo" con aquellos países que cuentan con un programa similar en
+          materia
+          de seguridad, que cumplen con la condición de Operadores Económicos Autorizados de acuerdo al "Marco SAFE" y
+          la
+          legislación de cada país. Por lo tanto, como parte de la estrategia para evitar la duplicación de controles de
+          seguridad y
+          contribuir de manera significativa a la facilitación y control de las mercancías que circulan en la cadena de
+          suministro
+          internacional, es necesario contar con la participación de aquellos que logren obtener el Registro en el
+          Esquema de
+          Certificación de Empresas y autorizar el intercambio de información que permita enriquecer los sistemas
+          informáticos,
+          eliminar y/o reducir la redundancia y/o duplicación de esfuerzos en el proceso de inscripción.</label>
+        <label class="form-label text-start">Por lo anterior y de conformidad con lo dispuesto en el artículo 21 de la
+          Ley Federal de Transparencia y Acceso a la
+          Información Pública Gubernamental, autorizo al sujeto obligado denominado SAT, a través de la AGACE, a
+          compartir,
+          difundir o distribuir con otras autoridades nacionales o extranjeras los datos personales y demás información
+          de la
+          empresa que represento, y que se genere durante el transcurso en que la misma se encuentre inscrita en el
+          Registro en el
+          Esquema de Certificación de Empresas.</label>
+
+        <app-input-radio [radioOptions]="mutuo.radioOptions" [isRequired]="mutuo.isRequired" [layout]="'horizontal'"
+          [gap]="'50px'" formControlName="reconocimientoMuto"
+          (valueChange)="actualizar($event,'reconocimientoMuto')"></app-input-radio>
+      </div>
+      <div class="col-md-12">
+        <ng-titulo titulo="Listado de Socio Comercial Certificado" />
+      </div>
+      <div class="col-md-12 mt-3">
+        <label class="form-label text-left"><span class="text-danger">*</span> Con la finalidad de crear cadenas de suministros más seguras, se
+          establecerá un listado con las empresas que hayan
+          obtenido la certificación como Socio Comercial, misma que se publicará en el Portal del SAT que incluirá los
+          datos
+          generales que la empresa autorice, así como el estatus de su certificación, mismas que podrán ser consultadas
+          por las
+          empresas que hayan obtenido su inscripción en el Registro de certificación de empresas.</label>
+        <label class="form-label text-start">
+          RFC
+        </label>
+        <app-input-radio [radioOptions]="sinoOpcion.radioOptions" [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'" [gap]="'50px'" formControlName="socioComercialRFCListado"
+          (valueChange)="actualizar($event,'socioComercialRFCListado')"></app-input-radio>
+      </div>
+      <div class="col-md-12 mt-3">
+        <label class="form-label text-start">
+          Nombre o Razón Social
+        </label>
+        <app-input-radio [radioOptions]="sinoOpcion.radioOptions" [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'" [gap]="'50px'" formControlName="socioComercialNombre"
+          (valueChange)="actualizar($event,'socioComercialNombre')"></app-input-radio>
+      </div>
+      <div class="col-md-12 mt-3">
+        <label class="form-label text-start">
+          Dirección Fiscal
+        </label>
+        <app-input-radio [radioOptions]="sinoOpcion.radioOptions" [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'" [gap]="'50px'" formControlName="direccionFiscal"
+          (valueChange)="actualizar($event,'direccionFiscal')"></app-input-radio>
+      </div>
+      <div class="col-md-12 mt-3">
+        <label class="form-label text-start">
+          Página Electrónica
+        </label>
+        <app-input-radio [radioOptions]="sinoOpcion.radioOptions" [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'" [gap]="'50px'" formControlName="paginaElectronica"
+          (valueChange)="actualizar($event,'paginaElectronica')"></app-input-radio>
+        <input *ngIf="autoTransportistaForm.get('paginaElectronica')?.value === 1" class="form-control"
+          formControlName="paginaElectronicaURL" type="text" id="paginaElectronicaURL" name="paginaElectronicaURL"
+          (change)="setValorsStore('paginaElectronicaURL')" />
+      </div>
+      <div class="col-md-12 text-danger ml-4"
+        *ngIf="autoTransportistaForm.get('paginaElectronica')?.value === 1 && (autoTransportistaForm.get('paginaElectronicaURL')?.value === '' || autoTransportistaForm.get('paginaElectronicaURL')?.value === null)">
+        Respuesta Obligatoria
+      </div>
+      <div class="col-md-12 mt-3">
+        <label class="form-label text-start">
+          Correo Electrónico de contacto
+        </label>
+        <app-input-radio [radioOptions]="sinoOpcion.radioOptions" [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'" [gap]="'50px'" formControlName="correoElectronicoContacto"
+          (valueChange)="actualizar($event,'correoElectronicoContacto')"></app-input-radio>
+        <input *ngIf="autoTransportistaForm.get('correoElectronicoContacto')?.value === 1" class="form-control"
+          formControlName="correoElectronicoContactoEmail" type="email" id="correoElectronicoContactoEmail"
+          name="correoElectronicoContactoEmail" (change)="setValorsStore('correoElectronicoContactoEmail')" />
+      </div>
+      <div class="col-md-12 text-danger ml-4"
+        *ngIf="autoTransportistaForm.get('correoElectronicoContacto')?.value === 1 && (autoTransportistaForm.get('correoElectronicoContactoEmail')?.value === '' || autoTransportistaForm.get('correoElectronicoContactoEmail')?.value === null)">
+        Respuesta Obligatoria
+      </div>
+      <div class="col-md-12 mt-3">
+        <label class="form-label text-start">
+          Teléfono de contacto
+        </label>
+        <app-input-radio [radioOptions]="sinoOpcion.radioOptions" [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'" [gap]="'50px'" formControlName="telefonoContacto"
+          (valueChange)="actualizar($event,'telefonoContacto')"></app-input-radio>
+      </div>
+      <ng-container *ngIf="autoTransportistaForm.get('telefonoContacto')?.value === 1">
+        <div class="col-md-2">
+          <div class="form-group"><label class="form-label" for="lada1">Lada:</label>
+            <input class="form-control" type="text" maxlength="5" formControlName="lada1" id="lada1"
+              (keypress)="soloNumeros($event)" (change)="setValorsStore('lada1')">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="telefono1">Teléfono:</label>
+            <input class="form-control" type="text" maxlength="10" formControlName="telefono1" id="telefono1"
+              (change)="setValorsStore('telefono1')">
+          </div>
+        </div>
+        <div class="col-md-6"></div>
+        <div class="col-md-2">
+          <div class="form-group"><label class="form-label" for="lada2">Lada:</label>
+            <input class="form-control" type="text" maxlength="5" formControlName="lada2" id="lada2"
+              (keypress)="soloNumeros($event)" (change)="setValorsStore('lada2')">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="telefono2">Teléfono:</label>
+            <input class="form-control" type="text" maxlength="10" formControlName="telefono2" id="telefono2"
+              (change)="setValorsStore('telefono2')">
+          </div>
+        </div>
+        <div class="col-md-6"></div>
+        <div class="col-md-2">
+          <div class="form-group"><label class="form-label" for="lada3">Lada:</label>
+            <input class="form-control" type="text" maxlength="5" formControlName="lada3" id="lada3"
+              (keypress)="soloNumeros($event)" (change)="setValorsStore('lada3')">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="telefono3">Teléfono:</label>
+            <input class="form-control" type="text" maxlength="10" formControlName="telefono3" id="telefono3"
+              (change)="setValorsStore('telefono3')">
+          </div>
+        </div>
+        <div class="col-md-6"></div>
+      </ng-container>
+      <div class="col-md-12 text-danger ml-4 mt-4" *ngIf="debeMostrarErrorTelefonos()">
+        Respuesta Obligatoria
+      </div>
+
+      <div class="col-md-12">
+        <ng-titulo titulo="Clasificación de la Información" />
+      </div>
+      <div class="col-md-12 mt-3">
+        <label class="form-label text-left"><span class="text-danger">*</span> La información proporcionada, durante este trámite para el Registro
+          de Certificación de Empresas es clasificada por la empresa
+          como:</label>
+        <app-input-radio [radioOptions]="clasificacionInformacion.radioOptions"
+          [isRequired]="clasificacionInformacion.isRequired" [layout]="'horizontal'" [gap]="'50px'"
+          formControlName="clasificacionInformacionEmpresa"
+          (valueChange)="actualizar($event,'clasificacionInformacionEmpresa')"></app-input-radio>
+      </div>
+      <ng-titulo titulo="Pago de derechos" />
+      <div class="row mt-5">
+        <div class="col-md-6">
+          <label class="form-label text-left"><span class="text-danger">*</span> Clave de referencia:</label>
+          <input type="text" class="form-control gris-color" formControlName="claveReferencia" readonly required />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label text-left"><span class="text-danger">*</span> Número de operación:</label>
+          <input type="text" class="form-control" formControlName="numeroOperacion" maxlength="30"
+            (change)=" setValorsStore('numeroOperacion') " />
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-md-6">
+          <label class="form-label text-left"><span class="text-danger">*</span> Cadena de la dependencia:</label>
+          <input type="text" formControlName="cadenaDependencia" class="form-control gris-color" readonly required />
+        </div>
+        <div class="col-md-6">
+          <app-catalogo-select [catalogo]="bancoCatalogo.catalogos" [label]="'* Banco'" formControlName="banco"  [isDisabled]="esFormularioSoloLectura"
+            (change)="setValorsStore('banco')"></app-catalogo-select>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-md-4">
+          <label class="form-label text-left"><span class="text-danger">*</span> Llave de pago:</label>
+          <input type="text" class="form-control" maxlength="20" formControlName="llave"
+            (change)="setValorsStore('llave')" />
+        </div>
+        <div class="col-md-4">
+          <input-fecha [setFecha]="autoTransportistaForm.get('fechaPago')?.value" [datos]="fechaDePago" [isDisabled]="esFormularioSoloLectura"
+            (valorCambiado)="actualizar($event,'fechaPago')"></input-fecha>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label text-left"><span class="text-danger">*</span> Importe de pago:</label>
+          <input type="text" class="form-control gris-color" formControlName="importePago" readonly />
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-md-12 mt-5 d-flex justify-content-end">
+          <button type="button" class="btn btn-danger"> Borrar datos del pago </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal fade" id="transportistas" tabindex="-1" aria-labelledby="modaltransportistas" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content custom-modal-content">
+      <app-agregar-transportistas></app-agregar-transportistas>
+    </div>
+    </div>
+</div>
+<div class="modal fade" #confirmModal tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group">
+              <p>Este requisito es obligatorio para acceder al Registro en el Esquema de Certificación de Empresas, de
+                conformidad con las reglas de las RGCE.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="closeConfirmModal()">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<lib-notificaciones 
+  *ngIf="esHabilitarElDialogo"
+  [notificacionInput]="nuevaNotificacion" 
+  (confirmacionModal)="cerrarModal()">
+</lib-notificaciones>

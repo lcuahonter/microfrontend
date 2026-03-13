@@ -1,0 +1,391 @@
+<div class="container">
+  <div class="row mt-5">
+      <div class="col-md-12">
+        <ng-titulo titulo="Terceros relacionados" /> 
+        <ng-alert [CONTENIDO]="TEXTOS.TEXTOS_TERCEROS"></ng-alert>
+        <div class="col-md-12 mt-5">
+          <label class="form-label" for="">Fabricante*:</label>
+          <app-tabla-dinamica
+            [tipoSeleccionTabla]="destinatarioSeleccionTabla"
+            [configuracionTabla]="destinatarioConfiguracionTabla"
+            [datos]="fabricanteDatos"
+  (listaDeFilaSeleccionada)="enCambioDeFilasSeleccionadas($event, 'fabricante')"
+             [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+          >
+          </app-tabla-dinamica>
+        </div>
+        <div class="col-md-12 d-flex justify-content-end">
+          <div class="btn-group">
+           <div>
+            <button
+  *ngIf="filasSeleccionadasFabricante.size > 0"
+            class="btn btn-default"
+              class="btn btn-default 3"
+              type="button"
+              data-bs-toggle="modal"
+             (click)="enEliminado('fabricante')"
+            >
+              Eliminar
+            </button>
+            <button
+  *ngIf="currentTable && filasSeleccionadasFabricante.size === 1 && currentTable === 'fabricante'"
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#modalAgregarDestinatario"
+              class="btn btn-default btn-space ms-3"
+              (click)="openModificarMercancias()"    
+            >
+              Modificar
+            </button>
+            </div>
+            <button
+            type="button"
+            class="btn btn-primary ms-3"
+            data-bs-toggle="modal"
+          data-bs-target="#modalAgregarDestinatario"
+    (click)="agregarMercancias('fabricante', 'Agregar Fabricante')"
+              [disabled]="esFormularioSoloLectura"
+          >
+              Agregar
+            </button>
+          </div>  
+      </div>
+      @if (nuevaNotificacion) {
+        <section >
+        <lib-notificaciones 
+        [notificacionInput]="nuevaNotificacion" 
+        (confirmacionModal)="eliminarPedimento($event)">
+        </lib-notificaciones>
+        </section>
+        }
+        <div class="col-md-12 mt-5">
+          <label class="form-label" for="">Destinatario(destino final)*:</label>
+          <app-tabla-dinamica
+            [tipoSeleccionTabla]="destinatarioSeleccionTabla"
+            [configuracionTabla]="destinatarioConfiguracionTabla"
+            [datos]="destinatarioDatos"
+  (listaDeFilaSeleccionada)="enCambioDeFilasSeleccionadas($event, 'destinatario')"
+             [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+          >
+          </app-tabla-dinamica>
+        </div>
+        <div class="col-md-12 d-flex justify-content-end">
+          <div class="btn-group">
+            <div>
+              <button
+            *ngIf="filasSeleccionadasDestinatario.size > 0"
+            class="btn btn-default"
+              class="btn btn-default 3"
+              type="button"
+              data-bs-toggle="modal"
+              (click)="enEliminado('destinatario')"
+            >
+              Eliminar
+            </button>
+            <button
+  *ngIf="currentTable && filasSeleccionadasDestinatario.size === 1 && currentTable === 'destinatario'"
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#modalAgregarDestinatario"
+              class="btn btn-default btn-space ms-3"
+              (click)="openModificarMercancias()"    
+            >
+              Modificar
+            </button>
+            <button
+            type="button"
+            class="btn btn-primary ms-3"
+            data-bs-toggle="modal"
+          data-bs-target="#modalAgregarDestinatario"
+    (click)="agregarMercancias('destinatario', 'Agregar Destinatario')"
+              [disabled]="esFormularioSoloLectura"
+          >
+              Agregar
+            </button>
+          </div>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <label class="form-label" for="">Proveedor:</label>
+          <app-tabla-dinamica
+            [tipoSeleccionTabla]="destinatarioSeleccionTabla"
+            [configuracionTabla]="destinatarioConfiguracionTabla"
+            [datos]="proveedorDatos"
+  (listaDeFilaSeleccionada)="enCambioDeFilasSeleccionadas($event, 'proveedor')"
+             [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+             
+             >
+          </app-tabla-dinamica>
+        </div>
+        <div class="col-md-12 d-flex justify-content-end">
+          <div class="btn-group">
+           <div>
+              <button
+            *ngIf="filasSeleccionadasProveedor.size > 0"
+            class="btn btn-default"
+              class="btn btn-default 3"
+              type="button"
+              data-bs-toggle="modal"
+               (click)="enEliminado('proveedor')"
+            >
+              Eliminar
+            </button>
+            <button
+  *ngIf="currentTable && filasSeleccionadasProveedor.size === 1 && currentTable === 'proveedor'"
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#modalAgregarDestinatario"
+              class="btn btn-default btn-space ms-3"
+  (click)="openModificarMercancias()"
+            >
+              Modificar
+            </button>
+             <button
+            type="button"
+            class="btn btn-primary ms-3"
+            data-bs-toggle="modal"
+          data-bs-target="#modalAgregarDestinatario"
+    (click)="agregarMercancias('proveedor', 'Agregar Proveedor')"
+              [disabled]="esFormularioSoloLectura"
+          >
+              Agregar
+            </button>
+          </div>
+          </div>
+        </div>
+        <div class="col-md-12 mt-5">
+          <label class="form-label" for="">Facturador:</label>
+          <app-tabla-dinamica
+            [tipoSeleccionTabla]="destinatarioSeleccionTabla"
+            [configuracionTabla]="destinatarioConfiguracionTabla"
+            [datos]="facturadorDatos"
+  (listaDeFilaSeleccionada)="enCambioDeFilasSeleccionadas($event, 'facturador')"
+             [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+          >
+          </app-tabla-dinamica>
+        </div>
+        
+        <div class="col-md-12 d-flex justify-content-end">
+          <div class="btn-group">
+           <div>
+              <button
+            *ngIf="filasSeleccionadasFacturador.size > 0"
+            class="btn btn-default"
+              class="btn btn-default 3"
+              type="button"
+              data-bs-toggle="modal"
+            (click)="enEliminado('facturador')"
+            >
+              Eliminar
+            </button>
+            <button
+          *ngIf="currentTable && filasSeleccionadasFacturador.size === 1 && currentTable === 'facturador'"
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#modalAgregarDestinatario"
+              class="btn btn-default btn-space ms-3"
+             (click)="openModificarMercancias()"
+            >
+              Modificar
+            </button>
+             <button
+            type="button"
+            class="btn btn-primary ms-3"
+            data-bs-toggle="modal"
+          data-bs-target="#modalAgregarDestinatario"
+    (click)="agregarMercancias('facturador', 'Agregar Facturador')"
+              [disabled]="esFormularioSoloLectura"
+          >
+              Agregar
+            </button>
+          </div>
+          </div>
+        </div>
+      </div>
+  </div>
+  </div>
+  <div class="modal fade" id="modalAgregarDestinatario" tabindex="-1" aria-labelledby="modalAgregarDestinatarioLabel" aria-hidden="true">
+  <div class="modal-dialog custom-modal-width">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalAgregarDestinatarioLabel">{{formTitle}}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+  <div *ngIf="esFormularioVisible">
+    <form [formGroup]="destinatarioForm" (ngSubmit)="onGuardar()">
+      <ng-titulo titulo="Agregar destinatario (destino final)" />
+      <ng-container formGroupName="agregarDestinatario">
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <label class="form-label" for="tipoPersona">Tipo persona*:</label>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <app-input-radio 
+              [radioOptions]="tercerosNacionalidadRadioOptions" 
+              [selectedValue]="tipoDePublicos1" 
+              [isRequired]="true" 
+              (valueChange)="setNacionalidad($event)" 
+              formControlName="nacionalidad" 
+              (change)="setValoresStore(agregarDestinatario,'nacionalidad', 'setNacionalidad')"
+              [disabled]="esFormularioSoloLectura">
+            </app-input-radio>
+          
+      </div>
+      <div class="col-md-6">
+        <app-input-radio 
+          [radioOptions]="tipoPersonaRadioOptions" 
+          [selectedValue]="tipoDePublicos" 
+          [isRequired]="true" 
+          (valueChange)="setTipoPersona($event)" 
+          formControlName="tipoPersona" 
+          (change)="setValoresStore(agregarDestinatario,'tipoPersona', 'setTipoPersona')"
+          [disabled]="esFormularioSoloLectura">
+        </app-input-radio>
+           </div>
+        </div>
+        </div>
+      </ng-container>
+      <ng-titulo titulo="Datos personales" />
+      <ng-container formGroupName="datosPersonales">
+        @if (tipoPersonaSeleccionada === 'fisica') {
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label class="form-label" for="nombre">Nombre(s)*:</label>
+            <input class="form-control" id="nombre" type="number" formControlName="nombre"
+            (change)="setValoresStore(agregarDestinatario,'nombre', 'setNombre')"
+            [disabled]="esFormularioSoloLectura"
+               />
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label" for="primerApellido">Primer apellido*:</label>
+            <input class="form-control" id="primerApellido" type="text" formControlName="primerApellido"
+            (change)="setValoresStore(agregarDestinatario,'primerApellido', 'setPrimerApellido')"
+            [disabled]="esFormularioSoloLectura"
+               />
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label" for="segundoApellido">Segundo apellido:</label>
+            <input class="form-control" id="segundoApellido" type="text" formControlName="segundoApellido"
+            (change)="setValoresStore(agregarDestinatario,'segundoApellido', 'setSegundoApellido')"
+            [disabled]="esFormularioSoloLectura"
+               />
+          </div>
+        </div>
+        } 
+        <div class="row">
+        <div class="col-md-4">
+          <label for="rfc" class="form-label">R.F.C:</label>
+          <input type="text" id="rfc" class="form-control" formControlName="rfc" readonly [disabled]="true">
+      </div>
+      <div class="col-md-4">
+          <label for="curp" class="form-label">C.U.R.P:
+          </label>
+          <input type="text" id="curp" class="form-control" formControlName="curp" readonly
+              [disabled]="true">
+      </div>
+    </div>
+        @if (tipoPersonaSeleccionada === 'moral') {
+        <div class="row">
+          <div class="col-md-8 mb-3">
+            <label class="form-label" for="denominacion">Denominación/razón social*:</label>
+            <input class="form-control" id="denominacion" type="text" formControlName="denominacion"
+            (change)="setValoresStore(agregarDestinatario,'denominacion', 'setDenominacion')" 
+            [disabled]="esFormularioSoloLectura"
+               />
+          </div>
+        </div>
+        
+        }
+        <ng-titulo titulo="Domicilio" />    
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <app-catalogo-select 
+            id=paisData
+            formControlName="pais"
+            [catalogo]="paisData.catalogos" 
+             [label]="'Pais'"
+              [required]="true"
+              (change)="setValoresStore(agregarDestinatario,'pais', 'setPais')"
+              [isDisabled]="esFormularioSoloLectura ? true : false"
+              ></app-catalogo-select>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label" for="estado">Estado*:</label>
+            <input class="form-control" id="estado" type="text" formControlName="estado"
+            (change)="setValoresStore(agregarDestinatario,'estado', 'setEstado')"
+            [disabled]="esFormularioSoloLectura"
+               />
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label" for="codigopostal">Codigo postal o equivalente:</label>
+            <input class="form-control" id="codigopostal" type="text" formControlName="codigopostal"
+            (change)="setValoresStore(agregarDestinatario,'codigopostal', 'setCodigoPostal')" 
+            [disabled]="esFormularioSoloLectura"
+               />
+          </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <label class="form-label" for="calle">Calle*:</label>
+                <input class="form-control" id="calle" type="text" formControlName="calle"
+                (change)="setValoresStore(agregarDestinatario,'calle', 'setCalle')" 
+                [disabled]="esFormularioSoloLectura"
+                   />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="numeroexterior">Numero exterior*:</label>
+                <input class="form-control" id="numeroexterior" type="text" formControlName="numeroExterior"
+                (change)="setValoresStore(agregarDestinatario,'numeroExterior', 'setNumeroExterior')"  
+                [disabled]="esFormularioSoloLectura"
+                   />
+            </div>
+        </div>    
+        <div class="row">
+            <div class="col-md-4">
+                <label class="form-label" for="numerointerior">Numero interior*:</label>
+                <input class="form-control" id="numerointerior" type="text" formControlName="numeroInterior"
+                (change)="setValoresStore(agregarDestinatario,'numeroInterior', 'setNumeroInterior')"
+                [disabled]="esFormularioSoloLectura"
+                   />
+            </div>
+          <div class="col-md-1 mb-3">
+            <label class="form-label" for="lada">Lada:</label>
+            <input class="form-control" id="lada" type="number" formControlName="lada"
+            (change)="setValoresStore(agregarDestinatario,'lada', 'setLada')" 
+            [disabled]="esFormularioSoloLectura"
+               />
+          </div>
+          <div class="col-md-3 mb-3">
+            <label class="form-label" for="telefono">Teléfono:</label>
+            <input class="form-control" id="telefono" type="number" formControlName="telefono"
+            (change)="setValoresStore(agregarDestinatario,'telefono', 'setTelefono')"
+            [disabled]="esFormularioSoloLectura"
+             />
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label" for="correoElectronico">Correo electrónico:</label>
+            <div class="input-group">
+             <input class="form-control" id="correoElectronico" type="email" formControlName="correoElectronico"
+             (change)="setValoresStore(agregarDestinatario,'correoElectronico', 'setCorreoElectronico')" 
+             [disabled]="esFormularioSoloLectura"
+               />
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <div class="col-md-12 d-flex justify-content-end">
+      <div class="btn-group">
+        <button class="btn btn-danger" type="button" (click)="cancelarFormulario()" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-danger" type="button" (click)="limpiarFormulario()" >Limpiar</button>
+        <button class="btn btn-primary me-2" type="submit" data-bs-dismiss="modal">Guardar</button>
+      </div>
+    </div>
+      </form>
+</div>
+      </div>
+    </div>
+  </div>
+</div>
+  

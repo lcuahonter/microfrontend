@@ -1,0 +1,73 @@
+<div class="container">
+  <div class="row">
+    <div class="row">
+      <div class="row">
+        <ng-titulo [titulo]="'Operaciones de Comercio Exterior'"></ng-titulo>
+      </div>
+      <div class="row">
+        <form [formGroup]="miformulario">
+          <div class="col-md-4">
+            <app-catalogo-select [markTouched]="miformulario.get('operacion')?.touched || false"
+              [placeholder]="'Seleccione una opción'" [catalogo]="optionsPaisList" [label]="'Operación'"
+              [required]="true" id="operacion" formControlName="operacion"
+              (change)="actualizarOperacionDesdeSeleccion()"
+              [isDisabled]="esFormularioSoloLectura"></app-catalogo-select>
+          </div>
+        </form>
+      </div>
+      <div class="row" *ngIf="miformulario.get('operacion')?.value === 'TIOPCE.HIS'">
+        <div class="col-md-12">
+          <ng-titulo [titulo]="'Periodo(s) a solicitar'"></ng-titulo>
+        </div>
+        <div class="col-md-12">
+          <app-tabla-dinamica [tipoSeleccionTabla]="tipoSolicitarSeleccion"
+            [configuracionTabla]="configuracionSolicitarColumnas" [datos]="cuerpoSolicitarTablaFila"
+            (listaDeFilaSeleccionada)="onListaDeFilaSeleccionada($event)"
+            [disableSeleccionTablaCheckBox]="esFormularioSoloLectura" [styleCenter]="true">
+          </app-tabla-dinamica>
+          <div class="col-md-12 mt-5 d-flex justify-content-end">
+            <button type="button" data-bs-toggle="modal" [disabled]="esFormularioSoloLectura" data-bs-target="#modalPeriodos" class="btn btn-primary">
+              Agregar
+            </button>
+            <button type="button" class="btn btn-danger ms-2" (click)="eliminarPeriodoPorId()">
+              Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <ng-titulo [titulo]="'Personas para oír y recibir notificaciones'"></ng-titulo>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <app-tabla-dinamica [tipoSeleccionTabla]="tipoPersonasSeleccion"
+            [configuracionTabla]="configuracionPersonasColumnas" [datos]="cuerpoPersonasTablaFila" [styleCenter]="true">
+          </app-tabla-dinamica>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para agregar las materias primas -->
+<div class="modal fade" id="modalPeriodos" tabindex="-1" aria-labelledby="modalPeriodosLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+      <app-periodos (agregarPeriodos)="agregarPeriodos($event)"></app-periodos>
+    </div>
+  </div>
+</div>
+
+@if (mostrarAlerta) {
+<lib-notificaciones [notificacionInput]="nuevaNotificacion" (confirmacionModal)="aceptar()"></lib-notificaciones>
+}
+
+@if (mostrarInfo) {
+<lib-notificaciones [notificacionInput]="nuevaNotificacionInfo"
+  (confirmacionModal)="aceptarInfo($event)"></lib-notificaciones>
+}
+
+@if(nuevaAlertaNotificacion.mensaje){
+<lib-notificaciones [notificacionInput]="nuevaAlertaNotificacion" >
+</lib-notificaciones>
+}

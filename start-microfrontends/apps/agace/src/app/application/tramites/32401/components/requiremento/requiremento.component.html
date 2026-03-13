@@ -1,0 +1,73 @@
+<div class="container">
+  <div class="row mb-3">
+    <h1>Requerimiento</h1>
+  </div>
+  <div class="row">
+    <label
+      >Folio Tramite:
+      <span class="fs-3 fw-normal">{{ folioTramite.folioTramite }}</span></label
+    >
+    <label
+      >Tipo de solicitud:
+      <span class="fs-3 fw-normal">{{ folioTramite.tipoTramite }}</span></label
+    >
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group pull-right">
+          <button
+            type="button"
+            [disabled]="consultaState.readonly"
+            class="btn btn-danger me-5"
+            (click)="cancelar()"
+          >
+            Cancelar
+          </button>
+          @if(containerbtn){
+          <button
+            type="submit"
+            class="btn btn-primary"
+            (click)="continuar()"
+            [disabled]="consultaState.create"
+          >
+            Continuar
+          </button>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <ul class="nav nav-tabs">
+      <li [ngClass]="indice === 1 ? 'active' : ''">
+        <a
+          data-toggle="tab"
+          (click)="seleccionaTab(1)"
+          (keydown.enter)="seleccionaTab(1)"
+          (keydown.space)="seleccionaTab(1)"
+          role="button"
+          tabindex="1"
+          >Capturar Requerimiento</a
+        >
+      </li>
+      <li [ngClass]="indice === 2 ? 'active' : ''">
+        <a
+          data-toggle="tab"
+          (click)="seleccionaTab(2)"
+          (keydown.enter)="seleccionaTab(2)"
+          (keydown.space)="seleccionaTab(2)"
+          role="button"
+          tabindex="2"
+          >Seleccionar documentos</a
+        >
+      </li>
+    </ul>
+    <ng-container>
+      @switch (indice) { @case (1) {
+      <app-capturar-requerimiento></app-capturar-requerimiento>
+      }@case (2) {
+      <app-seleccionar-documentos></app-seleccionar-documentos>
+      }}
+    </ng-container>
+  </div>
+</div>

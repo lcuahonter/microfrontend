@@ -1,0 +1,57 @@
+<div class="container">
+  <!-- Formulario dinamico de tipo de personas -->
+  <form [formGroup]="form">
+    <div class="form" formGroupName="datosGenerales">
+    <div>
+      <ng-titulo titulo="Solicitud" />
+      <div class="row">
+        <div class="col-md-4">
+          <label class="form-label" for="rfc">Folio del trámite:</label>
+          <input type="text" class="form-control" id="rfc" [value]="folioTramite.row.folioTramite" readonly>
+        </div>
+    
+        <div class="col-md-8">
+          <label class="form-label" for="federal">Fecha inicio de trámite:</label>
+          <input type="date" class="form-control" id="federal" [value]="fechaInicioTramite" readonly>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label" for="tipo">Estado del trámite:</label>
+          <input type="text" class="form-control" id="tipo" [value]="folioTramite.row.estadoDelTramite" readonly>
+        </div>
+        <div class="col-md-8">
+          <label class="form-label" for="federal">Tipo de solicitud:</label>
+          <input type="text" class="form-control" id="federal" [value]="folioTramite.row.tipoTramite" readonly>
+        </div>
+      </div>
+    </div>
+      
+      <ng-titulo titulo="Datos generales del solicitante" />
+
+      <div class="row">
+        @for (item of persona; track $index) {
+        <div [ngClass]="item.class" [ngStyle]="{'visibility': item.visibility}">
+          <div class="form-group">
+            <label class="form-label" [for]="item.campo">{{ item.labelNombre }}</label>
+            <input class="form-control" [type]="item.tipo_input" [id]="item.campo" [placeholder]="item.placeholder"
+              [formControlName]="item.campo" libUppercase>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+
+    <div class="form" formGroupName="domicilioFiscal">
+      <ng-titulo titulo="Domicilio fiscal del solicitante" />
+      <div class="row">
+        @for (item of domicilioFiscal; track $index) {
+        <div [ngClass]="item.class">
+          <div class="form-group">
+            <label class="form-label" [for]="item.campo">{{ item.labelNombre }}</label>
+            <input class="form-control" [type]="item.tipo_input" [id]="item.campo" [placeholder]="item.placeholder" [formControlName]="item.campo" libUppercase>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+  </form>
+</div>

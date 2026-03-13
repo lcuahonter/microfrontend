@@ -1,0 +1,37 @@
+<form [formGroup]="manifiestoFormulario">
+  <ng-titulo [titulo]="'Manifiesto'"></ng-titulo>
+
+  <div class="alert alert-info mb-0">
+    <div class="row d-flex justify-content-center align-items-center">
+      <div class="col-md-1">
+        <input
+          type="checkbox"
+          class="form-check-input pull-left"
+          formControlName="declaracion"
+          id="declaracion"
+          [disabled]="esFormularioSoloLectura"
+          (change)="setValorStore(manifiestoFormulario, 'declaracion')"
+        />
+        <label for="declaracion" class="form-check-label ms-1"
+          ><span
+            [ngClass]="{
+              'text-danger':
+                manifiestoFormulario.get('declaracion')?.invalid &&
+                (manifiestoFormulario.get('declaracion')?.touched ||
+                  manifiestoFormulario.get('declaracion')?.dirty)
+            }"
+            >*</span
+          ></label
+        >
+      </div>
+      <div class="col-md-10">
+        <p class="text-justify">
+          {{ manifiestoDeclaracionTexto }}
+        </p>
+      </div>
+    </div>
+  </div>
+  @if(manifiestoFormulario.controls['declaracion'].errors?.['required']) {
+  <span class="mensaje-error">Este campo es obligatorio</span>
+  }
+</form>

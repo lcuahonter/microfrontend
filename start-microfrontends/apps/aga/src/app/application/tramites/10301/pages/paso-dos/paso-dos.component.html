@@ -1,0 +1,331 @@
+<div class="container">
+  <form [formGroup]="tramiteForm" (ngSubmit)="validarDestinatarioFormulario()">
+    <ng-container formGroupName="importadorExportador">
+      <ng-titulo titulo="Requisitos obligatorios"></ng-titulo>
+      <div style="overflow-x: scroll; width: 100%">
+        <table class="table table-bordered">
+          <tbody>
+            <tr>
+              <td class="grey-column">1</td>
+              <td>
+                Carta de donación emitida por el donante a favor del interesado,
+                en la que conste: La descripción detallada de la mercancía
+                objeto de la donación, cantidad, tipo, y en su caso marca,
+                año-modelo y número de serie.
+              </td>
+            </tr>
+            <tr>
+              <td class="grey-column">2</td>
+              <td>
+                Documento emitido por el SAT que acredite la autorización de
+                donataria para recibir donativos deducibles del impuesto sobre
+                la renta.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <i
+        style="margin-left: 550px"
+        width="25"
+        height="25"
+        class="bi bi-1-square"
+        viewBox="0 0 16 16"
+      ></i>
+      <ng-titulo titulo="Requisitos opcionales" />
+
+      <ng-alert
+        [CONTENIDO]="TEXTOS.INSTRUCCIONES"
+        [CUSTOMECLASS]="infoAlert"
+      ></ng-alert>
+
+      <div class="col-md-6">
+        <app-catalogo-select
+          [catalogo]="tipoDocumento.catalogos"
+          [label]="tipoDocumento.labelNombre"
+          [placeholder]="tipoDocumento.primerOpcion"
+          [required]="true"
+          id="tipoDocumento"
+          formControlName="tipoDocumento"
+          (change)="
+            setValoresStore(
+              importadorExportador,
+              'tipoDocumento',
+              'setTipoDocumento'
+            )
+          "
+        ></app-catalogo-select>
+
+        <div class="col-md-6 mt-5">
+          <button
+            type="button"
+            style="margin-left: 307px; width: 87%"
+            class="btn btn-primary"
+          >
+            Agregar nuevo
+          </button>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <table class="table table-bordered" style="overflow-x: scroll">
+          <tbody>
+            <tr>
+              <td></td>
+              <td>
+                <input
+                  type="checkbox"
+                  id="tableCheck"
+                  formControlName="tableCheck"
+                  (change)="
+                    setValoresStore(
+                      importadorExportador,
+                      'tableCheck',
+                      'setTableCheck'
+                    )
+                  "
+                />
+              </td>
+              <td>Tipo de documento</td>
+            </tr>
+            <tr>
+              <td class="grey-column">1</td>
+              <td>
+                <input
+                  type="checkbox"
+                  id="donacion"
+                  formControlName="donacion"
+                  (change)="
+                    setValoresStore(
+                      importadorExportador,
+                      'donacion',
+                      'setDonacion'
+                    )
+                  "
+                />
+              </td>
+              <td>
+                Traducción de la carta de donación en caso de que se presente en
+                idioma distinto al español.
+              </td>
+            </tr>
+            <tr>
+              <td class="grey-column">2</td>
+              <td>
+                <input
+                  type="checkbox"
+                  id="persona"
+                  formControlName="persona"
+                  (change)="
+                    setValoresStore(
+                      importadorExportador,
+                      'persona',
+                      'setPersona'
+                    )
+                  "
+                />
+              </td>
+              <td>
+                Cuando el donante sea una persona física, documento que acredite
+                que es extranjero
+              </td>
+            </tr>
+            <tr>
+              <td class="grey-column">3</td>
+              <td>
+                <input
+                  type="checkbox"
+                  id="otro"
+                  formControlName="otro"
+                  (change)="
+                    setValoresStore(importadorExportador, 'otro', 'setOtro')
+                  "
+                />
+              </td>
+              <td>Otro</td>
+            </tr>
+          </tbody>
+        </table>
+        <button
+          type="button"
+          style="margin-left: 307px"
+          class="btn btn-default ms-3"
+        >
+          Elimiar
+        </button>
+      </div>
+
+      <div class="row mt-10">
+        <ng-alert style="margin-top: 30px" [CONTENIDO]="TEXTO_DE_ALERTA">
+        </ng-alert>
+      </div>
+
+      <table class="table">
+        <thead class="table-light">
+          <tr>
+            <th style="width: 690px">Tipo de documentos</th>
+            <th>Documentos</th>
+            <th>ver documento</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let docType of tiposDeDocumentos; let i = index">
+            <td>{{ docType }}</td>
+            <td>
+              <ng-container *ngIf="!procesoCompletado; else fileNameDisplay">
+                                <app-catalogo-select
+            [catalogo]="documentos.catalogos"
+            [label]="documentos.labelNombre"
+            [placeholder]="documentos.primerOpcion"
+            [required]="true"
+            formControlName="documentos"
+            (change)="
+             setValoresStore(importadorExportador, 'documentos', 'setDocumentos')
+                  "
+          ></app-catalogo-select>
+              </ng-container>
+              <ng-template #fileNameDisplay>
+                {{ nombresArchivosSubidos[i] }}
+              </ng-template>
+            </td>
+            <td class="text-center">
+              <button
+                class="btn btn-link"
+                [disabled]="!documentoSeleccion[i]"
+                (click)="verDocument(i)"
+              >
+                <i class="bi bi-file-earmark-pdf" style="font-size: 1.5rem"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="col-md-12 mt-5 d-flex justify-content-end">
+        <button
+          type="button"
+          style="margin-right: 15px"
+          class="btn btn-default ms-3"
+        >
+          Guardar
+        </button>
+
+        <button
+          class="adjuntar-button"
+          [disabled]="todosDocumentos()"
+          (click)="mostrarTabla = true"
+        >
+          Adjuntar documentos
+        </button>
+      </div>
+
+      <div *ngIf="mostrarTabla" class="mt-4">
+        <ng-titulo titulo="Adjuntar documentos" />
+        <ng-alert [CONTENIDO]="TEXTO_DE_ADJUNTAR"></ng-alert>
+        <table class="table" *ngIf="mostrarTabla">
+          <thead class="table-light">
+            <tr>
+              <th>Tipo de documento</th>
+              <th>Tamaño máximo permitido(en MB)</th>
+              <th>Resolución mínima de las imágenes contenidas(en DPIs)</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let doc of documentoSeleccion; let i = index">
+              <td>{{ tiposDeDocumentos[i] }}</td>
+              <td>
+                {{
+                  tamanosDeArchivos[i] !== null
+                    ? tamanosDeArchivos[i] + ' MB'
+                    : ''
+                }}
+              </td>
+              <td>{{ resoluciones[i] }}</td>
+              <td>
+                <div class="custome-file-container">
+                  <input
+                    type="file"
+                    id="fileInput{{ i }}"
+                    (change)="cambioArchivo($event, i)"
+                    class="visually-hidden-file"
+                  />
+                  <label
+                    class="custome-file-label"
+                    for="fileInput{{ i }}"
+                    value="Seleccionar archivo"
+                    >Seleccionar archivo</label
+                  >
+                </div>
+              </td>
+              <td>{{ nombresArchivosSubidos[i] }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="alert alert-warning" role="alert">
+          La carga del documento puede tardar varois segundos, este tiempo
+          dependerá del tamaño de tu archivo y de tu velocidad de conexión
+        </div>
+        <div class="col-md-12 mt-5 d-flex justify-content-end">
+          <button
+            type="button"
+            style="margin-right: 15px"
+            class="btn btn-default ms-3"
+          >
+            Cerrar
+          </button>
+
+          <button class="btn btn-primary" (click)="adjuntarArchivos()">
+            Adjuntar
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-backdrop" style="width: 100%" *ngIf="cargando">
+        <div class="modal-content custom-modal" style="padding: 0; width: 10%">
+          <div
+            style="background-color: black; width: 100%; margin: 0; padding: 0"
+          >
+            <h5
+              style="
+                background-color: black;
+                color: white;
+                height: 55px;
+                text-align: center;
+                margin: 0;
+                line-height: 55px;
+              "
+            >
+              Cargando...
+            </h5>
+          </div>
+          <p class="mt-3">{{ progreso }}%</p>
+        </div>
+      </div>
+
+      <div *ngIf="mostrarTablaArchivosSubidos" class="mt-4">
+        <table class="table">
+          <thead class="table-light">
+            <tr>
+              <th>Documento</th>
+              <th>Estatus</th>
+              <th>Mensajes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let fileName of nombresArchivosSubidos">
+              <td>{{ fileName }}</td>
+              <td>Correct</td>
+              <td>ok</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="col-md-12 mt-5 d-flex justify-content-end">
+          <button class="btn btn-primary" (click)="cerrarProceso()">
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </ng-container>
+  </form>
+</div>

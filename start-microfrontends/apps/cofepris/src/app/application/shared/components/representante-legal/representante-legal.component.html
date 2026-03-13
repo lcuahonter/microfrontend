@@ -1,0 +1,91 @@
+    <ng-titulo titulo="Representante legal" />
+    <form [formGroup]="representanteLegalForm">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label" for="rfc">RFC<span
+                        [ngClass]="
+                      {
+                        'text-danger':  representanteLegalForm.get('rfc')?.errors?.['required']&& representanteLegalForm.get('rfc')?.touched
+                      }"
+                        >*</span
+                      >:</label>
+                    <input class="form-control" id="rfc" maxlength="13" formControlName="rfc" type="text" (change)="setValoresStore(representanteLegalForm,'rfc', 'setRfc')"
+                    [ngClass]="{
+                        'is-invalid':
+                        representanteLegalForm.get('rfc')?.invalid &&
+                        representanteLegalForm.get('rfc')?.touched
+                      }"/>
+                </div>
+                <div
+                  *ngIf="
+                    representanteLegalForm.get('rfc')?.errors?.['required'] &&
+                    representanteLegalForm.get('rfc')?.touched
+                  "
+                  class="mensaje-error"
+                >Este campo es obligatorio
+                </div>
+            </div>
+            <div class="col-md-4" *ngIf="botonOcultar">
+                <button type="button" class="btn btn-primary btn-space"(click)="buscarRepresentanteRfc()" [disabled]="esFormularioSoloLectura">
+                    Buscar
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+            <div class="form-group">
+                <label class="form-label" for="nombreRazonSocial">Nombre o Razón Social<span
+                  [ngClass]="
+                {
+                  'text-danger':  representanteLegalForm.get('nombreRazonSocial')?.value===''&& representanteLegalForm.get('nombreRazonSocial')?.touched
+                }"
+                  >*</span
+                >:</label>
+                <input class="form-control" id="nombreRazonSocial" formControlName="nombreRazonSocial"
+                type="text" (change)="setValoresStore(representanteLegalForm,'nombreRazonSocial', 'setNombreRazonSocial')"/>
+                <div
+                  *ngIf="
+                    representanteLegalForm.get('nombreRazonSocial')?.value===''&&
+                    representanteLegalForm.get('nombreRazonSocial')?.touched
+                  "
+                  class="mensaje-error"
+                >Este campo es obligatorio
+                </div>
+            </div>
+            </div>
+            <div class="col-md-4">
+            <div class="form-group">
+                <label class="form-label" for="apellidoPaterno">Apellido paterno<span
+                  [ngClass]="
+                {
+                  'text-danger':  representanteLegalForm.get('apellidoPaterno')?.value===''&& representanteLegalForm.get('apellidoPaterno')?.touched
+                }"
+                  >*</span
+                >:</label>
+                <input class="form-control" id="apellidoPaterno" formControlName="apellidoPaterno" type="text" (change)="setValoresStore(representanteLegalForm,'apellidoPaterno', 'setApellidoPaterno')"/>
+                <div
+                  *ngIf="
+                    representanteLegalForm.get('apellidoPaterno')?.value===''&&
+                    representanteLegalForm.get('apellidoPaterno')?.touched
+                  "
+                  class="mensaje-error"
+                >Este campo es obligatorio
+                </div>
+            </div>
+
+            </div>
+            <div class="col-md-4">
+            <div class="form-group">
+                <label class="form-label" for="apellidoMaterno">Apellido materno:</label>
+                <input class="form-control" id="apellidoMaterno" formControlName="apellidoMaterno" type="text" (change)="setValoresStore(representanteLegalForm,'apellidoMaterno', 'setApellidoMaterno')"/>
+            </div>
+            </div>
+        </div>
+    </form>
+@if (nuevaNotificacion) {
+    <section>
+      <lib-notificaciones [notificacionInput]="nuevaNotificacion" (confirmacionModal)="eliminarPedimento()">
+      </lib-notificaciones>
+    </section>
+    }

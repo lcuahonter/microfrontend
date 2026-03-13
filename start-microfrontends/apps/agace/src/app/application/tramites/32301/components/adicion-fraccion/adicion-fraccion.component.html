@@ -1,0 +1,233 @@
+<div class="container">
+  <form [formGroup]="declaracionForm" class="form-group">
+    <div class="row">
+      <div class="col-12 mb-4">
+        <ng-titulo [titulo]="'Aviso de adición de fracciones'"></ng-titulo>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12 mb-4">
+        <ng-alert [CONTENIDO]="messageFraccion"></ng-alert>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <div class="form-group d-flex align-items-center justify-content-center">
+          <app-input-radio [radioOptions]="radioOptions" [isRequired]="true" [layout]="'horizontal'" [gap]="'50px'"
+            formControlName="idCarga" (valueChange)="valorSeleccionadoTipoCarga($event)"></app-input-radio>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 mb-4">
+        <ng-titulo [titulo]="'Fracciones añadidas'"></ng-titulo>
+      </div>
+      @if(divBtnCargaMVisible){
+      <div class="col-12 text-end mb-4">
+        <button type="button" class="btn btn-primary me-md-3" id="cargaFracciones" (click)="abrirModalCargaMasivaFr()"
+          [disabled]="esFormularioSoloLectura">
+          Carga masiva
+        </button>
+      </div>
+      }
+
+      <div class="col-12">
+        <div class="table-responsive">
+          <app-tabla-dinamica [datos]="gridFraccionesHeader" [tipoSeleccionTabla]="seleccionTabla"
+            [configuracionTabla]="configuraciongridFraccionesHeader"
+            (filaSeleccionada)="seleccionDeFilas($event)"
+            [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"></app-tabla-dinamica>
+        </div>
+        <div class="d-flex justify-content-end mt-5">
+          <button type="button" class="btn btn-primary me-md-3" id="agregaFracciones"
+            [disabled]="esFormularioSoloLectura" (click)="modalAgregaCarga()">
+            Agregar
+          </button>
+          <button type="button" class="btn btn-primary me-md-3" id="modificarFracciones"
+            [disabled]="esFormularioSoloLectura" (click)="modificarSeleccionada(seleccionadasFila!)">
+            Modificar
+          </button>
+          <button type="button" class="btn btn-primary me-md-3" id="eliminarFracciones"
+            [disabled]="esFormularioSoloLectura" (click)="eliminarFraccionSeleccionada(seleccionadasFila?.id!)">
+            Eliminar
+          </button>
+          <button type="button" class="btn btn-primary me-md-3" id="descargarReporteFracciones"
+            [disabled]="esFormularioSoloLectura || !declaracionForm.get('idCarga')?.value">
+            Vista Previa
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 mb-4">
+        <ng-titulo [titulo]="'Manifiestos*'"></ng-titulo>
+      </div>
+
+      <div class="col-md-12">
+        <div class="alert alert-info">
+          <div class="form-check">
+            <lib-input-check [id]="'manifiestos'" [required]="true" [label]="alotoFracciones" [fontWeight]="true"
+              formControlName="manifiestos" [isDisabled]="esFormularioSoloLectura"></lib-input-check>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="modal fade" tabindex="-1" #cargaMasivaFrModal>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Fracciones</h5>
+      </div>
+      <form [formGroup]="declaracionFormModel" class="form-group">
+        <div class="modal-body p-4">
+          <div class="row">
+            <div class="col-12">
+              <div class="alert alert-info mt-3 mb-4 p-3 d-flex align-items-center justify-content-center">
+                Descargue la plantilla para la carga masiva de Fracciones
+                <a href="#" (click)="descargarPlantilla($event)">Aquí</a>
+              </div>
+            </div>
+            <div class="col-7">
+              <div class="d-flex align-items-center custom-input-file">
+                <button class="mb-2" type="button" for="archivoProceso" class="file-upload"
+                  (click)="activarSeleccionArchivo()">
+                  Seleccionar archivo
+                </button>
+                <div class="ml-2">{{ etiquetaDeArchivo }}</div>
+                <input type="file" id="archivoProceso" (change)="onCambioDeArchivo($event)"
+                  formControlName="archivoProceso" class="file-upload" style="display: none;" accept="">
+              </div>
+            </div>
+            <div class="col-5">
+              <div class="button-group d-flex justify-content-end">
+                <button type="button" class="btn btn-primary me-md-3" [disabled]="esFormularioSoloLectura"
+                  (click)="cargarArchivoProcesosAjax()">
+                  Anexar
+                </button>
+                <button type="button" class="btn btn-primary">
+                  Vista previa
+                </button>
+              </div>
+            </div>
+
+            <div class="button-group d-flex justify-content-end mt-5">
+              <button type="button" class="btn btn-primary m-2" [disabled]="esFormularioSoloLectura"
+                (click)="closeCargaMasivaFrModal()">
+                Regresar
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+ <div class="text-right">
+         <div class="pull-left text-muted text-vertical-align-button" id="lblCamposObligatorios">
+              {{ mensajeCamposObligatorios }}
+            </div>
+        <button type="button" class="btn btn-danger me-3">
+            Cancelar
+        </button>
+         <button type="submit"  (click)="continuar()" class="btn btn-primary">
+          Continuar
+        </button>
+    </div>
+    
+
+<div class="modal fade" tabindex="-1" #fraccionesModel>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Fracciones</h5>
+      </div>
+      <form [formGroup]="cargaManualForm" class="form-group">
+        <div class="modal-body p-5">
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="rfc" class="form-label">Fracción declarada en la certificación *</label>
+                <input type="number" id="fraccionDeclarada" formControlName="fraccionDeclarada"
+                  class="form-control" />
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <app-catalogo-select formControlName="actividadRelacionada" [label]="'Actividad relacionada con el proceso'"
+                  [required]="true" [catalogo]="activRelProcMod"
+                  [isDisabled]="esFormularioSoloLectura"></app-catalogo-select>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group">
+                <label for="descripcionFraccionActual" class="form-label">Descripción de la mercancía*:</label>
+                <textarea class="form-control" rows="3" id="descripcionFraccionActual"
+                  formControlName="descripcionFraccionActual" style="height: 80px"></textarea>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <app-catalogo-select formControlName="correlacionFraccionActual" [label]="'Correlación fracción actual'"
+                  [required]="true" [catalogo]="cveFraccionCorrelacionMod" (selectionChange)="getAdicianFraccionUnidadMedidaModOption();getAdicianFraccionNicoModOptions()"
+                  [isDisabled]="esFormularioSoloLectura"></app-catalogo-select>
+              </div>
+            </div>
+
+            <div class="col-6">
+              <div class="form-group">
+                <app-catalogo-select formControlName="umt" [label]="'Unidad de medida de la tarifa (UMT)'"
+                  [required]="true" [catalogo]="unidadMedidaMod"
+                  [isDisabled]="esFormularioSoloLectura"></app-catalogo-select>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <app-catalogo-select formControlName="nico" [label]="'NICO'" [required]="true" [catalogo]="cveNicoMod"
+                  [isDisabled]="esFormularioSoloLectura"></app-catalogo-select>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label for="descripcionNico" class="form-label">Descripción NICO:</label>
+                <textarea class="form-control" rows="3" id="descripcionNico" formControlName="descripcionNico"
+                  style="height: 80px"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="row" [ngStyle]="{ 'pointer-events': esFormularioSoloLectura ? 'none' : 'auto' }">
+            <div class="col-12">
+              <ng-titulo [titulo]="'País(es) de origen'"></ng-titulo>
+            </div>
+            <crosslist [fechas]="selectRangoDias" [showSearchInput1]="false" [showSearchInput2]="false"
+              (fechasSeleccionadasChange)="aduanaSeleccionadasChange($event)"
+              [botones]=" botonField" [fechasSeleccionadas]="fechasDatos"></crosslist>
+          </div>
+
+          <div class="button-group d-flex justify-content-end mt-5 me-md-3">
+            <button type="button" class="btn btn-primary m-2" [disabled]="esFormularioSoloLectura"
+              (click)="saveFracciones()">
+              Aceptar
+            </button>
+            <button type="button" class="btn btn-primary m-2" [disabled]="esFormularioSoloLectura"
+              (click)="closefraccionesModelModels()">
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+  </lib-notificaciones>
+</section>
+}

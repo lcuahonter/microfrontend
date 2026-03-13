@@ -1,0 +1,189 @@
+name: Deploy Microfront App to QA
+
+on:
+  workflow_dispatch:
+    inputs:
+      app_name:
+        description: 'Microfront app name (e.g. inah-microfront)'
+        required: true
+        default: 'inah-microfront'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.get-version.outputs.VERSION }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Nx build
+        run: npx nx build
+
+      - name: Reset Nx cache
+        run: npx nx reset
+
+      - name: Get version from package.json
+        id: get-version
+        run: |
+          VERSION=$(jq -r .version package.json)
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_PAT }}
+
+      - name: Install yq (YAML processor)
+        run: |
+          sudo wget -q https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
+          sudo chmod +x /usr/local/bin/yq
+
+      - name: Update Docker Compose image tag (if needed)
+        env:
+          APP_NAME: ${{ github.event.inputs.app_name }}
+          VERSION: ${{ steps.get-version.outputs.VERSION }}
+        run: |
+          if [ -f "docker/qa/modulefederation-${APP_NAME}.yml" ]; then
+            yq -i ".services.*.image = \"ghcr.io/vucem30/dockerized-modulefederation-${APP_NAME}:${VERSION}\"" docker/qa/modulefederation-${APP_NAME}.yml
+          fi
+
+      - name: Build Docker image for microfront app
+        env:
+          APP_NAME: ${{ github.event.inputs.app_name }}
+        run: |
+          docker compose -f docker/qa/modulefederation-${APP_NAME}.yml build --no-cache
+
+      - name: Push Docker image
+        env:
+          APP_NAME: ${{ github.event.inputs.app_name }}
+          VERSION: ${{ steps.get-version.outputs.VERSION }}
+        run: |
+          docker push ghcr.io/vucem30/dockerized-modulefederation-${APP_NAME}:${VERSION}
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    environment:
+      name: qa
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install yq (YAML processor)
+        run: |
+          sudo wget -q https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
+          sudo chmod +x /usr/local/bin/yq
+
+      - name: Debug (List YAML files before copy)
+        env:
+          APP_NAME: ${{ github.event.inputs.app_name }}
+        run: |
+          echo "Showing YAML files in k8s/qa/${APP_NAME}/"
+          ls -l k8s/qa/${APP_NAME}/ || echo "Directory does not exist"
+          echo "Full find output:"
+          find k8s/qa/${APP_NAME}/ || echo "Directory does not exist"
+
+      - name: Update deployment YAML image tag
+        env:
+          APP_NAME: ${{ github.event.inputs.app_name }}
+          VERSION: ${{ needs.build-and-push.outputs.image_tag }}
+        run: |
+          set -e
+          count=0
+          for yaml in k8s/qa/${APP_NAME}/*deployment*.yaml; do
+            if [ -f "$yaml" ]; then
+              yq -i '
+                .spec.template.spec.containers[] |= (
+                  .image = "ghcr.io/vucem30/dockerized-modulefederation-'${APP_NAME}':'${VERSION}'"
+                  | .imagePullPolicy = "Always"
+                )
+              ' "$yaml"
+              count=1
+            fi
+          done
+          if [ $count -eq 0 ]; then
+            echo "No deployment YAML files found for app ${APP_NAME}!"
+            exit 1
+          fi
+
+      - name: Copy deployment files to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.REMOTE_SRV_IP }}
+          username: ${{ secrets.REMOTE_SRV_USER }}
+          key: ${{ secrets.REMOTE_SRV_PRIV_KEY }}
+          source: k8s/qa/${{ github.event.inputs.app_name }}/*.yaml
+          target: ~/deployments/${{ github.event.inputs.app_name }}/
+          strip_components: 3
+
+      - name: List files on remote after copy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.REMOTE_SRV_IP }}
+          username: ${{ secrets.REMOTE_SRV_USER }}
+          key: ${{ secrets.REMOTE_SRV_PRIV_KEY }}
+          script: |
+            APP_NAME="${{ github.event.inputs.app_name }}"
+            ls -l ~/deployments/${APP_NAME}/
+
+      - name: SSH Deploy and Restart (scale-to-zero workaround)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.REMOTE_SRV_IP }}
+          username: ${{ secrets.REMOTE_SRV_USER }}
+          key: ${{ secrets.REMOTE_SRV_PRIV_KEY }}
+          script: |
+            set -ex
+            APP_NAME="${{ github.event.inputs.app_name }}"
+            IMAGE_TAG="${{ needs.build-and-push.outputs.image_tag }}"
+            DEPLOY_DIR=~/deployments/$APP_NAME
+            DEPLOYMENT_FILE="${APP_NAME}-deployment-qa.yaml"
+            SERVICE_FILE="${APP_NAME}-service-qa.yaml"
+            INGRESS_FILE="${APP_NAME}-ingress-qa.yaml"
+            NAMESPACE=default
+            DEPLOYMENT="modulefederation-$APP_NAME-deployment-qa"
+            LABEL_KEY="app"
+            LABEL_VALUE="$DEPLOYMENT"
+
+            cd "$DEPLOY_DIR"
+
+            if ! grep "image: ghcr.io/vucem30/dockerized-modulefederation-$APP_NAME:$IMAGE_TAG" "$DEPLOYMENT_FILE"; then
+              echo "Error: Expected image tag not found in $DEPLOYMENT_FILE"
+              exit 1
+            fi
+
+            echo "Applying Kubernetes manifests..."
+            microk8s kubectl apply -f "$DEPLOYMENT_FILE"
+            microk8s kubectl apply -f "$SERVICE_FILE" || true
+            microk8s kubectl apply -f "$INGRESS_FILE" || true
+
+            echo "Scaling deployment down to 0 to delete all pods for this deployment..."
+            microk8s kubectl scale deployment $DEPLOYMENT --replicas=0 -n $NAMESPACE
+
+            echo "Waiting for pods to terminate..."
+            for i in $(seq 1 20); do
+              PODCOUNT=$(microk8s kubectl get pods -n $NAMESPACE -l ${LABEL_KEY}=${LABEL_VALUE} --no-headers 2>/dev/null | wc -l)
+              if [ "$PODCOUNT" = "0" ]; then
+                echo "All $APP_NAME pods terminated."
+                break
+              fi
+              echo "Still $PODCOUNT pods exist, waiting..."
+              sleep 4
+            done
+
+            echo "Scaling deployment up to 1"
+            microk8s kubectl scale deployment $DEPLOYMENT --replicas=1 -n $NAMESPACE
+
+            echo "Waiting for rollout to finish..."
+            microk8s kubectl rollout status deployment $DEPLOYMENT -n $NAMESPACE
+
+            echo "Current pods:"
+            microk8s kubectl get pods -n $NAMESPACE -l ${LABEL_KEY}=${LABEL_VALUE}
+
+            echo "🚀 QA Deployment completed for $APP_NAME with tag $IMAGE_TAG"

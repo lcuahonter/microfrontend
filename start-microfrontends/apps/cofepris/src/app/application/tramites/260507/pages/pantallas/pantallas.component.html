@@ -1,0 +1,91 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <h4>Permiso de importación de plaguicidas por dependencias
+                y entidades de la administración pública con el propósito
+                de atender situaciones de emergencia declaradas
+                conforme a los ordenamientos legales aplicables</h4>
+        </div>
+        <div *ngIf="isPeligro" class="alert alert-danger text-center" role="alert" [innerHTML]="textoPeligro">
+        {{textoPeligro}}
+      </div>
+        <app-wizard [listaPasos]="pantallasPasos"></app-wizard>
+    </div>
+    <div class="row">
+        @switch (indice) {
+        @case (1) {
+        <app-datos #pasoUnoRef [isContinuarTriggered]="isContinuarTriggered" (formValidityChange)="onFormValidityChange($event)"></app-datos>
+        } @case (2) {
+        <app-paso-carga-documento 
+          [idSolicitud]="guardarIdSolicitud"
+          [idTipoTRamite]="'260507'"
+          [cargaArchivosEvento]="cargarArchivosEvento"
+          (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+          (reenviarCargaRealizada)="cargaRealizada($event)"
+          (cargaEnProgreso)="onCargaEnProgreso($event)"
+        ></app-paso-carga-documento>
+        } @case (3) {
+            <paso-firma [idSolicitud]="guardarIdSolicitud" [procedure]="260507" [procedureUrl]="'importacion-plafest/solicitud'"></paso-firma>
+        }
+    }
+    </div>
+
+<div class="row">
+    <div class="col-md-12">
+    @if (indice !== 2) {
+    <btn-continuar 
+        [datos]="datosPasos" 
+        [dePadre]="true"
+        (continuarEvento)="getValorIndice($event)">
+    </btn-continuar>
+        } @else {
+          <div class="mt-5 mb-3 d-flex justify-content-end">
+          <button
+            type="button"
+            class="btn btn-default"
+            (click)="anterior()"
+            *ngIf="seccionCargarDocumentos"
+          >
+            Anterior
+          </button>
+
+        @if(isSaltar) {
+          <button
+            type="button"
+            class="btn btn-default ms-3"
+            (click)="saltar()"
+          >
+            Saltar
+          </button>
+        }
+          <button
+            class="btn btn-primary ms-3"
+            (click)="
+              seccionCargarDocumentos ? onClickCargaArchivos() : siguiente()
+            "
+            [disabled]="(seccionCargarDocumentos && !activarBotonCargaArchivos) || (!seccionCargarDocumentos && cargaEnProgreso)"
+          >
+            {{ seccionCargarDocumentos ? 'Cargar archivos' : 'Continuar' }}
+          </button>
+        </div>
+        }
+        </div>
+</div>
+
+    @if (indice === 1) {
+    <ng-alert [CONTENIDO]="TEXTOS" [CUSTOMECLASS]="infoAlert"></ng-alert>
+    }
+</div>
+
+  @if(paymentInfoRequiredObj.mostrarAlerta) {
+  <section>
+    <lib-notificaciones [notificacionInput]="paymentInfoRequiredObj.seleccionarFilaNotificacion" (confirmacionModal)="cerrarModal($event)">
+    </lib-notificaciones>
+  </section>
+  }
+
+  <app-representante-legal-rfc *ngIf="shwComponent" hidden="true"> </app-representante-legal-rfc>
+  <app-manifiestos *ngIf="shwComponent" hidden="true"> </app-manifiestos>
+  <app-datos-del-establecimiento-rfc *ngIf="shwComponent" hidden="true"> </app-datos-del-establecimiento-rfc>
+  <app-domicillo *ngIf="shwComponent" hidden="true"> </app-domicillo>
+  <app-terceros-fabricante *ngIf="shwComponent" hidden="true"> </app-terceros-fabricante>

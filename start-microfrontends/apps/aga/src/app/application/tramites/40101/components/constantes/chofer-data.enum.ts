@@ -1,0 +1,15 @@
+export const CHOFER_DATA = {
+  nombre: 'Juan',
+  apellidoPaterno: 'Pérez',
+  apellidoMaternoCHN: 'González',
+  rfc: 'JUAN890123ABC',
+  gafete: '123456',
+  vigenciagafete: '2025-12-31',
+  calle: 'Av. Reforma',
+  numeroExterior: '123',
+  numeroInterior: 'A1',
+  paisCHN: 'MEX',
+  entidadFederativaCHN: 'CDMX',
+  delegacionCHN: 'Benito Juárez',
+  coloniaCHN: 'Nápoles',
+};

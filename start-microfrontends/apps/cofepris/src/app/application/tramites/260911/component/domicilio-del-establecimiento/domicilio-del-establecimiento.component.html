@@ -1,0 +1,682 @@
+<div class="col-md-12">
+  <form [formGroup]="form">
+    <div>
+      <ng-titulo titulo="Domicilio del establecimiento"></ng-titulo>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="codigoPostal">Código postal*:</label>
+            <input
+              class="form-control"
+              type="text"
+              id="codigoPostal"
+              formControlName="codigoPostal"
+              appUppercase
+              aria-labelledby="codigoPostal"
+              maxlength="12"
+              (input)="onCodigoPostalInput($event)"
+              (change)="setValorStore(form, 'codigoPostal')"
+            />
+            <div *ngIf="form.get('codigoPostal')?.touched && form.get('codigoPostal')?.invalid" class="text-danger">
+              <div *ngIf="form.get('codigoPostal')?.errors?.['required']">
+                Este campo es obligatorio
+              </div>
+              <div *ngIf="form.get('codigoPostal')?.errors?.['pattern'] || form.get('codigoPostal')?.errors?.['min'] || form.get('codigoPostal')?.errors?.['max']">
+                Por favor, escribe un número entero válido
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+             <app-catalogo-select
+              [catalogo]="estado"
+              [label]="'Estado'"
+              name="estado"
+              [required]="true"
+              [isDisabled]="esFormularioSoloLectura || !!form.get('estado')?.disabled"
+              formControlName="estado"
+              (change)="setValorStore(form, 'estado')"
+              [markTouched]="domicilio.get('estado')?.touched ?? false"
+            >
+            </app-catalogo-select>
+            <div *ngIf="form.get('estado')?.touched && form.get('estado')?.hasError('required')" class="text-danger">
+              Este campo es obligatorio.
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="municipioOAlcaldia"
+            >Municipio o alcaldía*:</label
+            >
+          <input
+              class="form-control"
+              type="text"
+              id="municipioOAlcaldia"
+              formControlName="municipioOAlcaldia"
+              appUppercase
+              aria-labelledby="municipioOAlcaldia"
+                  maxlength="120"
+                  (input)="onMunicipioOAlcaldiaInput($event)"
+                  (change)="setValorStore(form, 'municipioOAlcaldia')"
+            />
+            <div *ngIf="form.get('municipioOAlcaldia')?.touched && form.get('municipioOAlcaldia')?.invalid" class="text-danger">
+              <div *ngIf="form.get('municipioOAlcaldia')?.hasError('required')">
+                Este campo es obligatorio
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <div class="row mt-5 text-center" *ngIf="form.get('localidad')?.enabled && form.get('colonias')?.enabled">
+      <ng-alert 
+        [CONTENIDO]="TEXTOS.ADVERTENCIA" 
+        [CUSTOMECLASS]="class"
+      ></ng-alert>
+    </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="localidad">Localidad:</label>
+             <input
+              class="form-control"
+              type="text"
+              id="localidad"
+              formControlName="localidad"
+              appUppercase
+              aria-labelledby="localidad"
+              maxlength="120"
+          (input)="onLocalidadInput($event)"
+          (change)="setValorStore(form, 'localidad')"
+        />
+        <div *ngIf="form.get('localidad')?.touched && form.get('localidad')?.invalid" class="text-danger">
+          <div *ngIf="form.get('localidad')?.hasError('required')">
+            Este campo es obligatorio
+          </div>
+          <div *ngIf="form.get('localidad')?.hasError('pattern')">
+            El valor capturado no es válido.
+          </div>
+        </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="colonias">Colonia:</label>
+            <input
+              class="form-control"
+              type="text"
+              id="colonias"
+              formControlName="colonias"
+              appUppercase
+              aria-labelledby="colonias"
+                maxlength="120"
+                (input)="onColoniasInput($event)"
+                (change)="setValorStore(form, 'colonias')"
+            />
+            <div *ngIf="form.get('colonias')?.touched && form.get('colonias')?.invalid" class="text-danger">
+              <div *ngIf="form.get('colonias')?.hasError('required')">
+                Por favor, corrija la colonias.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label class="form-label" for="calle">Calle*: <span 
+              class="bi bi-question-circle-fill" 
+              title="Domicilio, calle, número
+                    interior, número exterior,
+                    lote"
+              data-bs-toggle="tooltip"
+              ></span
+            ></label>
+            <input
+              class="form-control"
+              type="text"
+              id="calle"
+              formControlName="calle"
+              appUppercase
+              aria-labelledby="calle"
+              maxlength="100"
+              (input)="onCalleInput($event)"
+              (change)="setValorStore(form, 'calle')"
+              [ngClass]="{'is-invalid': esInvalido('calle')}"
+            />
+           <div *ngIf="form.get('calle')?.touched && form.get('calle')?.invalid" class="text-danger">
+              <div *ngIf="form.get('calle')?.hasError('required')">
+                Este campo es obligatorio
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-md-1">
+          <div class="form-group">
+            <label class="form-label" for="lada">Lada:</label>
+            <input
+              class="form-control"
+              type="text"
+              id="lada"
+              formControlName="lada"
+              appUppercase
+              aria-labelledby="lada"
+              maxlength="5"
+              (input)="onLadaInput($event)"
+              (change)="setValorStore(form, 'lada')"
+            />
+            <div *ngIf="form.get('lada')?.touched && form.get('lada')?.invalid" class="text-danger">
+              <div *ngIf="form.get('lada')?.hasError('required')">
+                Por favor, corrija la lada.
+              </div>
+              <div *ngIf="form.get('lada')?.hasError('pattern')">
+                Por favor, escribe un número entero válido
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label class="form-label" for="telefono">Teléfono*:</label>
+            <input
+              class="form-control"
+              type="text"
+              id="telefono"
+              formControlName="telefono"
+              appUppercase
+              aria-labelledby="telefono"
+              maxlength="30"
+              (input)="onTelefonoInput($event)"
+              (change)="setValorStore(form, 'telefono')"
+            />
+
+            <div *ngIf="form.get('telefono')?.touched && form.get('telefono')?.invalid" class="text-danger">
+              <div *ngIf="form.get('telefono')?.errors?.['required']">
+               Este campo es obligatorio
+              </div>
+              <div *ngIf="form.get('telefono')?.errors?.['pattern']">
+                Por favor, escribe un número entero válido
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  <div class="row mt-5">
+    <label class="form-label mt-4 text-start">S.C.I.A.N.*:</label>
+  </div>
+  <div class="row">
+    <app-tabla-dinamica 
+  [tipoSeleccionTabla]="tablaSeleccionCheckbox" 
+  [configuracionTabla]="nicoTabla"
+  [datos]="nicoTablaDatos" 
+  [disableSeleccionTablaCheckBox]="esFormularioSoloLectura || isNicoTablaDisabled"
+  (listaDeFilaSeleccionada)="onScianRowSelected($event)">
+    </app-tabla-dinamica>
+    <!-- Row selection UI below the table -->
+    <div class="mt-3">
+    </div>
+    <div class="container text-end mt-5">
+  <button class="btn btn-default me-2" [disabled]="esFormularioSoloLectura" *ngIf="!botonDesactivarParaProrrogar" (click)="onEliminarScian(selectedScianIndex === null ? null : selectedScianIndex)">Eliminar</button>
+  <!-- Modal shown when NO row is selected -->
+  <div class="modal fade" id="modalSeleccionaRegistro" tabindex="-1"aria-labelledby="modalSeleccionaRegistroLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          
+        </div>
+        <div class="modal-body text-start">
+          Selecciona un registro
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" (click)="cerrarSeleccionaRegistroModal()">Aceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal shown when a row IS selected -->
+  <div class="modal fade" id="modalConfirmarEliminarScian" tabindex="-1" aria-labelledby="modalConfirmarEliminarScianLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalConfirmarEliminarScianLabel"></h5>
+        </div>
+        <div class="modal-body">
+          ¿Estás seguro que deseas eliminar los registros marcados?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" (click)="cancelarEliminarScian()">Cancelar</button>
+          <button type="button" class="btn btn-primary" (click)="aceptarEliminarScian()">Aceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+      <button 
+        class="btn btn-primary me-2" 
+        [disabled]="esFormularioSoloLectura"
+        (click)="openScianModal()"
+        *ngIf="!botonDesactivarParaProrrogar"
+      >
+        Agregar
+      </button>
+  <!-- Modal para agregar nicoTablaDatos -->
+  <div class="modal fade" id="modalAddNicoTabla" #modalAddNicoTabla tabindex="-1" aria-labelledby="modalAddNicoTablaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+      <div class="modal-content">
+        <div class="text-start">
+           <ng-titulo titulo="Clave S.C.I.A.N."></ng-titulo>
+        </div>
+        <div class="modal-body">
+         <form [formGroup]="nicoTablaForm">
+        <div class="row">
+            <div class="col-md-6 text-start">
+                <div class="form-group text-start">
+                  <app-catalogo-select
+                    [catalogo]="entidad"
+                    [label]="'Clave S.C.I.A.N.'"
+                    [required]="true"
+                    name="entidad"
+                    [isDisabled]="esFormularioSoloLectura"
+                    [required]="true"
+                    formControlName="entidad"
+                    (selectionChange)="setValorStore(nicoTablaForm, 'entidad')"
+                    >
+                  </app-catalogo-select>
+           <div *ngIf="esInvalido('entidad')" class="text-danger">
+              <small *ngIf="nicoTablaForm.get('entidad')?.errors?.['required']">
+                Este campo es obligatorio.
+              </small>
+          </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 text-start">
+                <div class="form-group text-start">
+                  <app-catalogo-select
+                  [catalogo]="subRepresentacion"
+                  [label]="'Descripción del S.C.I.A.N.'"
+                  [required]="false"
+                  name="representacion"
+                  [isDisabled]="esFormularioSoloLectura "
+                  formControlName="representacion"
+                  (selectionChange)="setValorStore(nicoTablaForm, 'representacion')"
+                  >
+                  </app-catalogo-select>
+          <div *ngIf="esInvalido('representacion')" class="text-danger">
+              <small *ngIf="nicoTablaForm.get('representacion')?.errors?.['required']">
+                Este campo es obligatorio.
+              </small>
+          </div>
+          </div>
+        </div>
+        </div>
+       </form>
+      </div>
+      <div class="modal-footer">
+            <div class="col-md-8">
+            <div class="pull-right ml-2 mb-8">
+                  <button type="button" name="eliminarScian" class="btn btn-default" (click)="limpiarScian()">
+                    Limpiar  
+                  </button>
+                  <button type="button" name="cancelarScian" class="btn btn-default ms-2" (click)="cancelar(true)">
+                    Cancelar
+                  </button>
+                <button type="button" name="agregarScian" class="btn btn-primary ms-2" (click)="agregarScian()">
+                    Agregar
+                </button>
+            </div>
+        </div>
+          
+     </div>
+      </div>
+    </div>
+  </div>
+    </div>
+  </div>
+  <form [formGroup]="domicilio">
+  
+<div class="row align-item-center">
+  <div class="col-md-4 mt-5">
+    <lib-input-check 
+      [id]="'avisoCheckbox'" 
+      [label]="'Aviso de funcionamiento:'" 
+      [required]="true"
+      formControlName="avisoCheckbox" 
+      [isDisabled]="esFormularioSoloLectura || !!domicilio.get('licenciaSanitaria')?.value || botonDesactivarParaProrrogar"
+      (change)="setValorStore(domicilio, 'avisoCheckbox')"
+    ></lib-input-check>
+  </div>
+  <div class="col-md-4">
+    <div class="form-group">
+      <label class="form-label" for="licenciaSanitaria"
+      >No. de licencia sanitaria:
+        <span 
+          class="bi bi-question-circle-fill" 
+          title="Número de la autorización
+                indicado en el documento
+                emitido por la autoridad
+                sanitaria competente"
+          data-bs-toggle="tooltip"
+          ></span
+        ></label>
+        <input 
+          class="form-control" 
+          id="licenciaSanitaria" 
+          placeholder="" 
+          type="text"
+          maxlength="20"
+          formControlName="licenciaSanitaria"
+          (input)="onLicenciaSanitariaInput($event)"
+          (change)="setValorStore(domicilio, 'licenciaSanitaria')"
+          [disabled]="domicilio.get('avisoCheckbox')?.value"
+          />
+    </div>
+  </div>
+</div>
+
+
+    <div class="row">
+      <div class="col-md-4">
+        <app-catalogo-select 
+          [catalogo]="estado" 
+          formControlName="regimen" 
+          [label]="'Régimen'" 
+          [required]="true"
+          [isDisabled]="esFormularioSoloLectura || !!domicilio.get('regimen')?.disabled"
+          name="regimen" 
+          [tooltipQuestionCircle]="true"
+          [tooltipQuestionCircleText]="'Régimen al que se destinará la mercancía'"
+          (change)="setValorStore(domicilio, 'regimen')"
+          [markTouched]="domicilio.get('regimen')?.touched ?? false"
+        ></app-catalogo-select>
+          <div *ngIf="esInvalido('regimen')" class="text-danger">
+              <small *ngIf="domicilio.get('regimen')?.errors?.['required']">
+                Este campo es obligatorio.
+              </small>
+          </div>
+      </div>
+      <div class="col-md-8">
+        <app-catalogo-select 
+          [catalogo]="estado" 
+          formControlName="aduanasEntradas" 
+          [label]="'Aduanas de entradas'"
+          [required]="true" 
+          [isDisabled]="esFormularioSoloLectura || !!domicilio.get('aduanasEntradas')?.disabled"
+          name="aduanasEntradas"
+          (change)="setValorStore(domicilio, 'aduanasEntradas')"
+          [markTouched]="domicilio.get('aduanasEntradas')?.touched ?? false"
+        ></app-catalogo-select>
+          <div *ngIf="esInvalido('aduanasEntradas')" class="text-danger">
+              <small *ngIf="domicilio.get('aduanasEntradas')?.errors?.['required']">
+                Este campo es obligatorio.
+              </small>
+          </div>
+      </div>
+    </div>
+     <div class="col-md-4 mt-2">
+        <div class="form-group">
+          <label class="form-label" for="importPermitNumberCNSNS"
+          >Número de Permiso de Importación expedido por la CNSNS:
+            <span 
+              class="bi bi-question-circle-fill"
+              title="No. de licencia sanitaria"
+              data-bs-toggle="tooltip"
+              ></span
+            ></label>
+          <input 
+            class="form-control" 
+            id="importPermitNumberCNSNS" 
+            placeholder="" 
+            type="text"
+            formControlName="importPermitNumberCNSNS" />
+        </div>
+      </div>
+    <div class="row mt-5">
+      <div class="col-md-4"></div>
+      <div class="col-md-4"></div>
+      <div class="col-md-4">
+
+        <lib-input-check 
+          [id]="'aifaCheckbox'" 
+          [label]="'Aeropuerto Internacional Felipe Ángeles (AIFA).'"
+          [required]="true" 
+          formControlName="aifaCheckbox" 
+          [isDisabled]="esFormularioSoloLectura || !!nicoTablaForm.get('entidad')?.disabled"
+          (change)="setValorStore(domicilio, 'aifaCheckbox')"
+        > <span 
+              class="bi bi-question-circle-fill" 
+              title="Marcar la
+                    casilla si
+                    requiere usar
+                    esta aduana."
+              data-bs-toggle="tooltip"
+              ></span
+            ></lib-input-check>
+      </div>
+    </div>
+
+    <div>
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <h4>Mercancías*:</h4>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <app-tabla-dinamica 
+          [tipoSeleccionTabla]="tablaSeleccionCheckbox" 
+          [configuracionTabla]="mercanciasTabla"
+          [datos]="mercanciasTablaDatos" 
+          [disableSeleccionTablaCheckBox]="esFormularioSoloLectura || isMercanciasTableDisabled"
+          (listaDeFilaSeleccionada)="onMercanciaRowSelected($event)">
+        </app-tabla-dinamica>
+        <div class="container text-end mt-5">
+          
+          <button class="btn btn-danger ms-3" [disabled]="esFormularioSoloLectura" *ngIf="!botonDesactivarParaProrrogar" (click)="selectedMercanciaIndex !== null ? onEliminarMercancia(selectedMercanciaIndex) : mostrarSeleccionaRegistroMercancia()">Eliminar</button>
+          <button class="btn btn-default ms-3" [disabled]="esFormularioSoloLectura" *ngIf="!botonDesactivarParaProrrogar" (click)="selectedMercanciaIndex !== null && selectedMercanciaCount === 1 ? onModificarMercancia(selectedMercanciaIndex) : mostrarSeleccionaRegistroMercancia()">Modificar</button>
+          <button 
+            class="btn btn-primary ms-3" 
+            [disabled]="esFormularioSoloLectura"
+            *ngIf="!botonDesactivarParaProrrogar"
+            (click)="openMercanciaModal()"
+          >
+            Agregar
+          </button>
+        </div>
+          <!-- Modal para agregar/modificar Mercancía -->
+          <div class="modal fade" id="modalAddMercancias" #modalAddMercancias tabindex="-1" aria-labelledby="modalAddMercanciasLabel" aria-hidden="true">
+            <div class="modal-dialog modal-fullscreen">
+              <div class="modal-content">
+                <div class="modal-header">
+                </div>
+                <div class="modal-body">
+                  <app-datos-mercancia-contenedora
+                    #datosMercanciaContenedoraComp
+                    (agregarMercancia)="onAgregarMercancia($event)"
+                    (cancelarMercanciaModal)="cerrarMercanciaModal()"
+                    [mercanciaFormState]="mercanciaFormState"
+                  ></app-datos-mercancia-contenedora>
+                </div>
+              </div>
+            </div>
+          </div>
+        <!-- Modal para confirmar eliminación de Mercancías -->
+        <div class="modal fade" id="modalConfirmarEliminarMercancia" tabindex="-1" aria-labelledby="modalConfirmarEliminarMercanciaLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="modalConfirmarEliminarMercanciaLabel">Eliminar Mercancía</h5>
+              </div>
+              <div class="modal-body">
+                ¿Estás seguro que deseas eliminar los registros marcados?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" (click)="cancelarEliminarMercancia()"> Aceptar</button>
+                <button type="button" class="btn btn-primary" (click)="aceptarEliminarMercancia()">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal para seleccionar registro Mercancía -->
+        <div class="modal fade" id="modalSeleccionaRegistroMercancia" tabindex="-1" aria-labelledby="modalSeleccionaRegistroMercanciaLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header"></div>
+              <div class="modal-body text-start">
+                Selecciona un registro.
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="cerrarSeleccionaRegistroMercanciaModal()">Aceptar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+      <div class="col-md-12">
+        <ng-titulo titulo="Manifiestos y declaraciones" />
+        <div class="form-check bg-light p-0">
+          <div class="alert alert-info content-with-checkbox py-6">
+            <lib-input-check 
+              [id]="'manifiesto'" 
+              [label]="''" 
+              [required]="true"
+              formControlName="manifests"
+                  [isDisabled]="esFormularioSoloLectura || !!nicoTablaForm.get('representacion')?.disabled"
+              (change)="onManifestsChange()"
+            ></lib-input-check>
+            <span class="fw-bold align-middle"> *</span>
+            <div>{{ manifests }}</div>
+          </div>
+        </div>
+        <div *ngIf="!domicilio.get('manifests')?.value && domicilio.get('manifests')?.touched" class="text-danger">
+          Este campo es obligatorio
+        </div>
+      </div>
+    </div>
+  <div>
+    <form [formGroup]="representanteLegal">
+      <h6>
+        Los datos o anexos pueden contener información confidencial ¿Está de
+        acuerdo en hacerlos públicos?*:
+      </h6>
+      <div class="row px-3">
+        <app-input-radio 
+          [radioOptions]="opcionDeBotonDeRadio" 
+          [layout]="'horizontal'" 
+          formControlName="acuerdoPublico"
+          (change)="setValorStore(representanteLegal, 'acuerdoPublico')"
+        ></app-input-radio>
+      </div>
+         <div *ngIf="esInvalido('representacion')" class="text-danger">
+              <small *ngIf="representanteLegal.get('acuerdoPublico')?.errors?.['required']">
+                Este campo es obligatorio.
+              </small>
+          </div>
+      <ng-titulo titulo="Representante legal"></ng-titulo>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="rfc">RFC*:</label>
+            <input 
+              class="form-control" 
+              type="text" id="rfc" 
+              formControlName="rfc" 
+              appUppercase aria-labelledby="rfc"
+              maxlength="13"
+              (input)="onRfcInput($event)"
+              (change)="setValorStore(representanteLegal, 'rfc')" 
+              [ngClass]="{'is-invalid': representanteLegal.get('rfc')?.touched && representanteLegal.get('rfc')?.invalid}"
+            />
+         
+           <div *ngIf="representanteLegal.get('rfc')?.touched && representanteLegal.get('rfc')?.invalid" class="text-danger">
+            <div *ngIf="representanteLegal.get('rfc')?.hasError('required')">
+              Este campo es obligatorio
+            </div>
+          </div>
+          
+          </div>
+        </div>
+        <div class="col-md-3 mt-5">
+          <button class="btn btn-default me-2" [disabled]="esFormularioSoloLectura" *ngIf="!botonDesactivarParaProrrogar" (click)="onBuscarRepresentanteLegal()">Buscar</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="nombre"
+              >Nombre o Razón Social*:</label
+            >
+            <input 
+              class="form-control" 
+              type="text" 
+              id="nombre" 
+              formControlName="nombre" 
+              appUppercase
+              aria-labelledby="nombre" 
+              [disabled]="!enableLegalFields"
+            />
+          </div>
+          <div *ngIf="esInvalido('nombre')" class="text-danger">
+              <small *ngIf="representanteLegal.get('nombre')?.errors?.['required']">
+                Este campo es obligatorio.
+              </small>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="apellidoPaterno"
+              >Apellido paterno*:</label
+            >
+            <input 
+              class="form-control" 
+              type="text" 
+              id="apellidoPaterno" 
+              formControlName="apellidoPaterno" 
+              appUppercase
+              aria-labelledby="apellidoPaterno" 
+              [disabled]="!enableLegalFields"
+            />
+          </div>
+          <div *ngIf="esInvalido('apellidoPaterno')" class="text-danger">
+              <small *ngIf="representanteLegal.get('apellidoPaterno')?.errors?.['required']">
+                Este campo es obligatorio.
+              </small>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="apellidoMaterno">Apellido materno:</label>
+            <input 
+              class="form-control" 
+              type="text" 
+              id="apellidoMaterno" 
+              formControlName="apellidoMaterno" 
+              appUppercase
+              aria-labelledby="apellidoMaterno" 
+              [disabled]="!enableLegalFields"
+            />
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>

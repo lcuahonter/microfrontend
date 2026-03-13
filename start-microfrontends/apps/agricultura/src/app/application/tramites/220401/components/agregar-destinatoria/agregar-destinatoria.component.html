@@ -1,0 +1,130 @@
+<div class="container">
+  <form [formGroup]="destinatarioForm">
+    <ng-titulo titulo="Agregar destinatario (destino final)" />
+
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <label class="form-label" for="tipoPersona">Tipo persona*:</label>
+      </div>
+      <div class="col-md-12">
+        <input type="radio" id="fisica" name="tipoPersona" formControlName="tipoPersona" [checked]="fisica"
+          (change)="entradaSeleccionada('fisica')">
+        <label for="fisica">Física</label>
+      </div>
+      <div class="col-md-12">
+        <input type="radio" id="moral" name="tipoPersona" [checked]="moral" (change)="entradaSeleccionada('moral')">
+        <label for="moral">Moral</label>
+      </div>
+    </div>
+
+    <ng-titulo titulo="Datos personales" />
+    @if (fisica) {
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <label class="form-label" for="nombre">Nombre(s)*:</label>
+        <input type="text" class="form-control" id="nombre" formControlName="nombre" maxlength="200">
+        @if (
+          destinatarioForm.controls['nombre'].invalid &&
+          destinatarioForm.controls['nombre'].touched
+          ) {
+          <div class="text-danger small">
+            @if (destinatarioForm.controls['nombre'].errors?.['required']) {
+            <div>Este campo es obligatorio.</div>
+            }
+          </div>
+          }
+      </div>
+      <div class="col-md-4 mb-3">
+        <label class="form-label" for="primerApellido">Primer apellido*:</label>
+        <input type="text" class="form-control" id="primerApellido" formControlName="primerApellido" maxlength="200">
+        @if (
+          destinatarioForm.controls['primerApellido'].invalid &&
+          destinatarioForm.controls['primerApellido'].touched
+          ) {
+          <div class="text-danger small">
+            @if (destinatarioForm.controls['primerApellido'].errors?.['required']) {
+            <div>Este campo es obligatorio.</div>
+            }
+          </div>
+          }
+      </div>
+      <div class="col-md-4 mb-3">
+        <label class="form-label" for="segundoApellido">Segundo apellido:</label>
+        <input type="text" class="form-control" id="segundoApellido" formControlName="segundoApellido" maxlength="200">
+      </div>
+    </div>
+    }
+
+    @if (moral) {
+    <div class="row">
+      <div class="col-md-8 mb-3">
+        <label class="form-label" for="denominación">Denominación/razón social*:</label>
+        <input type="text" class="form-control" id="denominacion" formControlName="denominacion" maxlength="250">
+      </div>
+    </div>
+    }
+
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <app-catalogo-select [catalogo]="pais" formControlName="pais" [label]="'País'" [required]="true" name="pais"
+          formControlName="pais"></app-catalogo-select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-8 mb-3">
+        <label class="form-label" for="domicilio">Domicilio*:</label>
+        <textarea class="form-control" id="domicilio" rows="2" height="50"
+          placeholder="Calle, No Ext, No Int, Ciudad, C.P." style="height: 100px;"
+          formControlName="domicilio" maxlength="4000"></textarea>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-1 mb-3">
+        <label class="form-label" for="lada">Lada:</label>
+        <input type="text" class="form-control" id="lada" formControlName="lada" maxlength="5">
+      </div>
+      <div class="col-md-3 mb-3">
+        <label class="form-label" for="telefono">Teléfono:</label>
+        <input type="text" class="form-control" id="telefono" formControlName="telefono" maxlength="30">
+        @if (
+          destinatarioForm.controls['telefono'].invalid &&
+          destinatarioForm.controls['telefono'].touched
+          ) {
+          <div class="text-danger small">
+            @if (destinatarioForm.controls['telefono'].errors?.['pattern']) {
+            <div>Existen datos incorrectos que no cumplen con el formato esperado.</div>
+            }
+          </div>
+          }
+      </div>
+      <div class="col-md-4 mb-3">
+        <label class="form-label" for="correoElectronico">Correo electrónico: <span class="bi bi-question-circle-fill" title="ejemplo@dominio.com"
+                data-bs-toggle="tooltip"></span></label>
+        <div class="input-group">
+          <input type="email" class="form-control" id="correoElectronico" formControlName="correoElectronico" maxlength="320">
+        </div>
+        @if (
+        destinatarioForm.controls['correoElectronico'].invalid &&
+        destinatarioForm.controls['correoElectronico'].touched
+        ) {
+        <div class="text-danger small">
+          @if (destinatarioForm.controls['correoElectronico'].errors?.['required']) {
+          <div>Este campo es obligatorio.</div>
+          }
+          @if (destinatarioForm.controls['correoElectronico'].errors?.['email']) {
+          <div>Por favor, escribe una dirección de correo válida.</div>
+          }
+        </div>
+        }
+      </div>
+    </div>
+  </form>
+
+  <div class="container-fluid text-end mt-5">
+    <button class="btn btn-default me-2">Limpiar</button>
+    <button class="btn btn-danger me-2" (click)="cerrarModal()">Cancelar</button>
+    <button class="btn btn-primary">Guardar</button>
+  </div>
+</div>

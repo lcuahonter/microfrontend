@@ -1,0 +1,136 @@
+<ng-titulo titulo="Manifiestos y declaraciones" />
+
+<form [formGroup]="manifiestosRepresentanteForm">
+    <div class="form-check bg-light p-0">
+        <div class="alert alert-info content-with-checkbox py-6">
+          <div class="checkbox-wrapper"></div>
+          <input
+            formControlName="manifests"
+            type="checkbox"
+            id="manifiesto"
+            (change)="onControlChange('manifests')"
+            [disabled]="formularioDeshabilitado ? true : false"
+            [ngClass]="{'is-invalid': manifiestosRepresentanteForm.get('manifests')?.invalid && manifiestosRepresentanteForm.get('manifests')?.touched}"
+          />
+          <span class="fw-bold align-middle mt-2">*</span>
+          <div class="ms-5 ps-3">{{ manifiestosText }} </div>
+          <div *ngIf="hasError('manifests', 'required')" class="text-danger mt-1">
+            Debe aceptar el manifiesto.
+          </div>
+          
+        </div>
+      </div>
+      <div class="row">
+        <label>
+          Los datos o anexos pueden contener información confidencial ¿Está de acuerdo en hacerlos públicos?*:
+        </label>
+        <app-input-radio
+        [radioOptions]="informacionConfidencialRadioOption"
+        [isRequired]="true"
+        [layout]="'horizontal'"
+        (change)="onControlChange('informacionConfidencialRadio')"
+        [gap]="'50px'"
+        formControlName="informacionConfidencialRadio"
+      ></app-input-radio>
+      <div *ngIf="hasError('informacionConfidencialRadio', 'required')" class="text-danger mt-1">
+        Este campo es obligatorio.
+      </div>
+      </div>
+ <div *ngIf="showRepresentanteLegal">
+  <ng-titulo titulo="Representante legal" class="mt-4"></ng-titulo>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="form-label" for="representanteRfc">RFC*:</label>
+        <input
+          class="form-control"
+          id="representanteRfc"
+          type="text"
+          maxlength="13"
+          formControlName="representanteRfc"
+          (change)="onControlChange('representanteRfc')"
+          [ngClass]="{'is-invalid': manifiestosRepresentanteForm.get('representanteRfc')?.invalid && manifiestosRepresentanteForm.get('representanteRfc')?.touched}"
+        />
+        <div *ngIf="hasError('representanteRfc', 'required')" class="text-danger mt-1">
+          <small>Este campo es obligatorio</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2 mt-5">
+      <button
+        type="button"
+        name="representanteRfcBuscar"
+        class="btn btn-primary"
+        (click)="buscarRepresentanteRfc()"
+        [disabled]="formularioDeshabilitado ? true : false"
+      >
+        Buscar
+      </button>
+    </div>
+  </div>
+  <div class="row mt-2">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="form-label" for="representanteNombre"
+          >Nombre o Razón Social*:</label
+        >
+        <input
+          class="form-control"
+          id="representanteNombre"
+          type="text"
+          formControlName="representanteNombre"
+          (change)="onControlChange('representanteNombre')"
+          [ngClass]="{'is-invalid': manifiestosRepresentanteForm.get('representanteNombre')?.invalid && manifiestosRepresentanteForm.get('representanteNombre')?.touched}"
+        />
+        <div *ngIf="hasError('representanteNombre', 'required')" class="text-danger mt-1">
+          <small>Este campo es obligatorio</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="form-label" for="apellidoPaterno"
+          >Apellido paterno*:</label
+        >
+        <input
+          class="form-control"
+          id="apellidoPaterno"
+          type="text"
+          formControlName="apellidoPaterno"
+          (change)="onControlChange('apellidoPaterno')"
+          [ngClass]="{'is-invalid': manifiestosRepresentanteForm.get('apellidoPaterno')?.invalid && manifiestosRepresentanteForm.get('apellidoPaterno')?.touched}"
+        />
+        <div *ngIf="hasError('apellidoPaterno', 'required')" class="text-danger mt-1">
+          <small>Este campo es obligatorio</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="form-label" for="apellidoMaterno"
+          >Apellido materno:</label
+        >
+        <input
+          class="form-control"
+          id="apellidoMaterno"
+          type="text"
+          formControlName="apellidoMaterno"
+          (change)="onControlChange('apellidoMaterno')"
+        />
+      </div>
+    </div>
+  </div>
+
+</div>
+     
+</form>
+
+@if(mostrarAlertaRfc) {
+  <section>
+    <lib-notificaciones
+      [notificacionInput]="notificacionRfc"
+      (confirmacionModal)="cerrarAlertaRfc()"
+    ></lib-notificaciones>
+  </section>
+}
+

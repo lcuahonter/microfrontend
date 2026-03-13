@@ -1,0 +1,79 @@
+<div class="row">
+  <div class="col-md-12 mt-5" *ngIf="vistaAlerta">
+    <ng-alert [CONTENIDO]="textos" [CUSTOMECLASS]="infoAlerta"></ng-alert>
+  </div>
+  <form [formGroup]="periodoForm">
+    <div class="col-md-12">
+      <div class="col-md-4">
+        <app-catalogo-select [markTouched]="periodoForm.get('periodo')?.touched || false" [catalogo]="periodoList"
+          [label]="'Periodo'" [required]="true" id="operacion" formControlName="periodo"></app-catalogo-select>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <label class="form-label" for="periodoInicial">Fecha sobre el periodo :</label>
+    </div>
+
+    <div class="col-md-12">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="periodoInicial">Periodo inicial<span [ngClass]="{
+                    'text-danger':
+                      periodoForm.get('periodoInicial')?.touched &&
+                      periodoForm.get('periodoInicial')?.invalid
+                  }">*</span>:</label>
+          <input class="form-control" id="periodoInicial" placeholder="MM/YYYY (mes/año)" type="text"
+            formControlName="periodoInicial" (input)="formatPeriodoInicial($event)" [class.is-invalid]="
+                  periodoForm.get('periodoInicial')?.touched &&
+                  periodoForm.get('periodoInicial')?.invalid
+                " />
+          <div *ngIf="
+                  periodoForm.get('periodoInicial')?.touched &&
+                  periodoForm.get('periodoInicial')?.invalid
+                ">
+            <small *ngIf="periodoForm.get('periodoInicial')?.errors?.['required']"
+              class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+          </div>
+          <small *ngIf="periodoForm.get('periodoInicial')?.errors?.['maxlength']"
+            class="text-danger espaciador-campo-pequeño">Por favor, no escribas menos de 7 caracteres</small>
+          <small *ngIf="periodoForm.get('periodoInicial')?.errors?.['pattern']"
+            class="text-danger espaciador-campo-pequeño">Formato inválido</small>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="periodoFinal">Periodo final<span [ngClass]="{
+                    'text-danger':
+                      periodoForm.get('periodoFinal')?.touched &&
+                      periodoForm.get('periodoFinal')?.invalid
+                  }">*</span>:</label>
+          <input class="form-control" id="periodoFinal" placeholder="MM/YYYY (mes/año)" type="text"
+            formControlName="periodoFinal" (input)="formatPeriodoFinal($event)" [class.is-invalid]="
+                  periodoForm.get('periodoFinal')?.touched &&
+                  periodoForm.get('periodoFinal')?.invalid
+                " />
+          <div *ngIf="
+                  periodoForm.get('periodoFinal')?.touched &&
+                  periodoForm.get('periodoFinal')?.invalid
+                ">
+            <small *ngIf="periodoForm.get('periodoFinal')?.errors?.['required']"
+              class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+          </div>
+          <small *ngIf="periodoForm.get('periodoFinal')?.errors?.['maxlength']"
+            class="text-danger espaciador-campo-pequeño">Por favor, no escribas menos de 7 caracteres</small>
+          <small *ngIf="periodoForm.get('periodoFinal')?.errors?.['pattern']"
+            class="text-danger espaciador-campo-pequeño">Formato inválido</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12 mt-5 d-flex justify-content-end">
+      <button type="button" class="btn btn-default" (click)="reiniciarForm()" data-bs-dismiss="modal">
+        Cancelar
+      </button>
+      <button type="button" class="btn btn-primary ms-3" (click)="agregarPersona()">
+        Agregar
+      </button>
+    </div>
+  </form>
+</div>
+
+

@@ -1,0 +1,41 @@
+<div>
+    <ng-container *ngIf="showInfoAlert">
+      <div class="alert alert-info alert-dismissible fade show text-center alert-info-custom" role="alert">
+        Para modificar o dar de baja una unidad de arrastre existente en su CAAT, primero debe realizar su búsqueda.
+      </div>
+    </ng-container>
+    <h5>Modificación de unidades de arrastre</h5>
+    <app-tabla-dinamica [tipoSeleccionTabla]="tipoSeleccionTabla" [configuracionTabla]="columnasUnidad"
+        [datos]="unidadesArrastre" (listaDeFilaSeleccionada)="onUnidadRowSelected($event)">
+    </app-tabla-dinamica>
+    <div class="row mt-3">
+        <div class="col-md-12 text-end">
+            <div class="btn-group">
+                <button class="btn btn-danger" type="button" (click)="deleteUnidadRow()"
+                    [disabled]="esSoloLectura || selectedUnidadIndex === null">
+                    Eliminar
+                </button>
+                <button class="btn btn-primary ms-2" type="button" (click)="agregarModal()" [disabled]="esSoloLectura">
+                    Buscar
+                </button>
+            </div>
+        </div>
+    </div>
+    <ng-container *ngIf="mostrarDialogoUnidad">
+      <div class="modal-backdrop fade show"></div>
+      <div class="modal d-block modal-overlay" tabindex="-1">
+        <app-unidad-dialog
+          [unidad]="datosDialogoUnidad"
+          [unidades]="unidadesArrastreDatos"
+          [readonly]="esSoloLectura"
+          [tipoDeUnidadCatalogo]="tipoDeUnidadCatalogo"
+          [paisEmisorCatalogo]="paisEmisorCatalogo"
+          [anoCatalogo]="anoCatalogo"
+          [tipoArrastre]="tipoArrastre"
+          [contexto]="'modificacion'"
+          (guardar)="alGuardarDialogoUnidad($event)"
+          (cancelar)="mostrarDialogoUnidad = false">
+        </app-unidad-dialog>
+      </div>
+    </ng-container>
+</div>

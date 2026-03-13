@@ -1,0 +1,71 @@
+<div class="container">
+    <ng-titulo [titulo]="'Datos del nombre o denominación social del representante en México o centro de operaciones'"></ng-titulo>
+    <form [formGroup]="datisDelNombre" >
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <app-catalogo-select 
+                [label]="'¿Desea consultar al representante por RFC?'" 
+                [required]="true"
+                [catalogo]="consultarPorRFC" 
+                formControlName="esConsultaRep" 
+                id="ddlRepresentante" 
+                [isDisabled]="esFormularioSoloLectura"
+                (selectionChange)="establecerCambioDeValor({campo:'esConsultaRep',valor:$event});cambiarPropietario()"></app-catalogo-select>
+            </div>
+            
+  @if(mostrarSolicitante)
+  {
+  <div class="col-md-4">
+      <label for="rfc" class="form-label">Registro Federal de Contribuyentes</label>
+      <span class="require">*</span>
+      <input type="text" class="form-control" formControlName="rfc" id="rfc" >
+      <div *ngIf="datisDelNombre.get('rfc')?.invalid && datisDelNombre.get('rfc')?.touched">
+          <small class="text-danger" *ngIf="datisDelNombre.get('rfc')?.errors?.['required']">Este campo es
+              obligatorio.</small>
+          <small class="text-danger" *ngIf="datisDelNombre.get('rfc')?.errors?.['pattern']">Por favor, corrija
+              el nombre.</small>
+      </div>
+  </div>
+  <div class="row mt-5 mb-5">
+      <div class="col-md-12 d-flex justify-content-end">
+          <button type="button" class="btn btn-primary" (click)="continuar()" [disabled]="esFormularioSoloLectura">Consultar</button>
+      </div>
+  </div>
+
+  }
+  @if(consultarPorRFCOpcionseleccionada=== true) {
+  <div><app-datos-generales></app-datos-generales>
+      <app-domicilio-fiscal></app-domicilio-fiscal>
+  </div>
+  }
+        </div>
+        @if (mostrarTipoPropietario) {
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <app-catalogo-select [label]="'Tipo de representante'" [required]="true"
+                    formControlName="datosRepresentante" [catalogo]="tipoDeRepresentanteOpciones" id="ddlTipoPersona_representante"
+                    [isDisabled]="esFormularioSoloLectura"
+                    (selectionChange)="establecerCambioDeValor({campo:'datosRepresentante',valor:$event});cambiarTipoPropietario()"></app-catalogo-select>
+            </div>
+             @if(mostrarFormularioPersonaExtranjera){
+                <div class="row mt-4">
+                        <formas-dinamicas [forma]="datisDelNombre" [formularioDatos]="formularioDatosPropietarioNombre"
+                            [estado]="estadoSeleccionado" [soloLectura]="esFormularioSoloLectura"
+                            (emitirCambioDeValor)="establecerCambioDeValor($event)"></formas-dinamicas>
+                    </div>
+                
+            }
+            <div class="row mt-4">
+            <formas-dinamicas [forma]="datisDelNombre" [formularioDatos]="formularioDatosPropietarioDireccion"
+                [estado]="estadoSeleccionado" [soloLectura]="esFormularioSoloLectura"
+                (emitirCambioDeValor)="establecerCambioDeValor($event)"></formas-dinamicas>
+            </div>
+        </div>
+    
+    }
+  
+</form>
+</div>
+
+
+
