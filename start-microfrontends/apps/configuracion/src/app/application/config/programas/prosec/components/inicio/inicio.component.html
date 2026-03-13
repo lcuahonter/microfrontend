@@ -1,0 +1,272 @@
+<div class="container">
+  <div class="row mt-2">
+    <p>Antecesor | Activo</p>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <h3>{{ title }}</h3>
+    </div>
+  </div>
+  @if (mode === 'registrar' || mode === 'modificar') {
+  <form [formGroup]="form">
+    <div class="row">
+      <div class="col-md-12">
+        <h3>{{ programTitle }}</h3>
+      </div>
+    </div>
+    <div class="row">
+      <div [ngClass]="mode === 'modificar' ? 'col-md-3' : 'col-md-8'">
+        <p><strong>Programa:</strong></p>
+      </div>
+      <div [ngClass]="mode === 'modificar' ? 'col-md-5' : 'col-md-4'">
+        <p>{{ programTitle }}</p>
+      </div>
+      @if (mode === 'modificar') {
+      <div class="col-md-4">
+        <p><strong>Activación del programa PROSEC</strong></p>
+      </div>
+      }
+    </div>
+    <div class="row">
+      <div [ngClass]="mode === 'modificar' ? 'col-md-3' : 'col-md-8'">
+        <p><strong>Clasificación del régimen:</strong></p>
+      </div>
+      <div [ngClass]="mode === 'modificar' ? 'col-md-5' : 'col-md-4'">
+        <p>Fracción a producir</p>
+      </div>
+      @if (mode === 'modificar' && programData) {
+      <div class="col-md-4 input-check">
+        <lib-input-check
+          [required]="false"
+          formControlName="activacion"
+          [label]="'Activo'"
+          [id]="'activacion'"
+          [reverse]="true"
+          [isDisabled]="!programData.activo"
+          (change)="onActivacionChange()"
+        ></lib-input-check>
+      </div>
+      }
+    </div>
+    <div class="row">
+      @if(mode === 'registrar') {
+      <div class="col-md-12">
+        <label for="sectorCatalogo">Sector</label>
+        <select
+          id="sectorCatalogo"
+          class="form-control form-select"
+          formControlName="sector"
+        >
+          <option [ngValue]="null">Seleccione una opción</option>
+          <option *ngFor="let option of sectorCatalogo" [value]="option.clave">
+            {{ option.descripcion }}
+          </option>
+        </select>
+        @if (form.controls['sector'].invalid && form.controls['sector'].touched)
+        {
+        <div class="text-danger">
+          @if (form.controls['sector'].errors?.['required']) {
+          <small>Este campo es obligatorio.</small>
+          }
+        </div>
+        }
+      </div>
+      } @if (mode === 'modificar' && programData) {
+      <div class="col-md-3">
+        <p><strong>Sector</strong></p>
+      </div>
+      <div class="col-md-4">
+        <p>{{ programData.sector }}</p>
+      </div>
+      }
+    </div>
+  </form>
+  <div class="row">
+    <div class="col-md-12">
+      <h3>Gestión de fracciones arancelarias</h3>
+    </div>
+    <div class="col-md-12">
+      <p>
+        <strong>1.- Agregar:</strong>
+        En esta sección se agregará cada elemento de forma individual y
+        realizando sus validaciones correspondientes según sea el caso.
+      </p>
+    </div>
+    <div class="col-md-12">
+      <p>
+        <strong>2.- Eliminar:</strong>
+        En esta sección se eliminarán los elementos ya sea de forma individual o
+        por conjuntos por medio de filtros para su mejor visualización, además
+        se cuenta con un botón donde se podrán eliminar todos los elementos.
+      </p>
+    </div>
+    <div class="col-md-12">
+      <p>
+        <strong>3.- Consultar:</strong>
+        En esta sección se muestran los elementos cargados ya sea de forma
+        manual o masiva (por archivo) por medio de filtros para una mejor
+        visualización, además se podrá descargar un archivo donde se muestran
+        todos los elementos cargados.
+      </p>
+    </div>
+    <div class="col-md-12">
+      <p>
+        <strong>4.- Cargar archivo:</strong>
+        En esta sección se cargará un archivo con el formato predeterminado, en
+        caso de ser exitoso los resultados se podrán observar en la sección de
+        consulta, si el archivo contiene errores se muestra un botón donde se
+        podrá descargar un archivo indicando la linea y una descripción del
+        error.
+      </p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <button
+        class="btn btn-primary me-2"
+        type="button"
+        (click)="goToAgregarFraccion()"
+        [disabled]="mode === 'modificar' ? !programData?.activo : false"
+      >
+        Agregar Fraccion(es)
+      </button>
+      <button
+        class="btn btn-primary me-2"
+        type="button"
+        (click)="goToEliminarFraccion()"
+      >
+        Eliminar Fraccion(es)
+      </button>
+      <button
+        class="btn btn-primary me-2"
+        type="button"
+        (click)="goToConsultarFraccion()"
+      >
+        Consultar Fraccion
+      </button>
+      <button
+        class="btn btn-primary me-2"
+        type="button"
+        (click)="goToCargarFraccion()"
+      >
+        Cargar Archivo
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 mb-4">
+      <app-vigencia
+        [mode]="mode"
+        [showFechaFin]="!(mode === 'registrar')"
+      ></app-vigencia>
+    </div>
+  </div>
+  @if (mode === 'modificar') {
+  <div class="row">
+    <div class="col-md-12 d-flex justify-content-end ms-3">
+      <button
+        class="btn btn-primary me-2 rounded-pill"
+        type="button"
+        (click)="showBitacora()"
+      >
+        Mostrar bitácora
+      </button>
+    </div>
+  </div>
+  } @if (showBitacoraTable) {
+  <div class="row mt-3">
+    <div class="col-md-12">
+      <app-expandir-tabla title="Resultados de la Búsqueda">
+        <app-tabla-dinamica
+          [configuracionTabla]="columns"
+          [datos]="programDataList"
+        ></app-tabla-dinamica>
+      </app-expandir-tabla>
+    </div>
+  </div>
+  }
+  <div class="row">
+    <div class="col-md-12">
+      <app-action-buttons
+        [errors]="errors"
+        [successMessage]="successMessage"
+        [saveButtonDisabled]="
+          mode === 'modificar' ? !programData?.activo : false
+        "
+        (save)="onSave()"
+        (cancel)="onCancel()"
+      ></app-action-buttons>
+    </div>
+  </div>
+  } @else {
+  <div class="row">
+    <div class="col-md-12">
+      <app-consultar-form></app-consultar-form>
+    </div>
+  </div>
+  }
+</div>
+
+<div
+  class="modal"
+  id="modal"
+  #modal
+  tabindex="-1"
+  aria-labelledby="modal3"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered"
+    [ngClass]="{
+      'modal-xl': showModalAddFraccion || showModalDeleteFraccion || showModalConsultFraccion,
+      'modal-lg': showModalUploadFraccion,
+      'modal-sm': showActivacionModal || showCancelModal,
+    }"
+  >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ modalTitle }}</h5>
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          (click)="closeModal()"
+        ></button>
+      </div>
+      <div class="modal-body">
+        @if (showModalAddFraccion) {
+        <app-agregar-fracciones
+          (cancelEmitter)="closeModal()"
+        ></app-agregar-fracciones>
+        } @if (showModalDeleteFraccion) {
+        <app-consultar-fracciones
+          (cancelEmitter)="closeModal()"
+          mode="eliminar"
+        ></app-consultar-fracciones>
+        } @if (showModalConsultFraccion) {
+        <app-consulta-de-fracciones
+          (cancelEmitter)="closeModal()"
+        ></app-consulta-de-fracciones>
+        } @if (showModalUploadFraccion) {
+        <app-cargar-archivo-menus (cancel)="closeModal()"></app-cargar-archivo-menus>
+        } @if (showActivacionModal) {
+        <app-action-message
+          [message]="'¿Está dando de baja la configuración del Sector, esta seguro de continuar?'"
+          [confirmText]="'Aceptar'"
+          [showCancelBtn]="false"
+          (confirmAction)="confirmActivationAction()"
+        ></app-action-message>
+        } @if (showCancelModal) {
+        <app-action-message
+          [message]="'¿Está seguro de abandonar la modificación?'"
+          [confirmText]="'Si'"
+          [cancelText]="'No'"
+          (confirmAction)="onCancelConfirmation()"
+          (cancelAction)="closeModal()"
+        ></app-action-message>
+        }
+      </div>
+      <div class="pb-4"></div>
+    </div>
+  </div>
+</div>

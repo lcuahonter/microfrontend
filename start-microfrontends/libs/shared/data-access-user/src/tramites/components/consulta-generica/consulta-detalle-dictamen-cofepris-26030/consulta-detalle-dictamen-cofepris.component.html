@@ -1,0 +1,166 @@
+<form [formGroup]="detalleForm">
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="estatus" class="form-label">Estatus</label>
+                <input class="form-control" id="estatus"  type="text" formControlName="estatus"
+                    libUppercase>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="sentidoDictamen" class="form-label">Sentido del dictamen</label>
+                <input class="form-control" id="sentidoDictamen"  type="text"
+                    formControlName="sentidoDictamen" libUppercase>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="fechaCreacion" class="form-label">Fecha de creación</label>
+                <input class="form-control" id="fechaCreacion"  type="text"
+                    formControlName="fechaCreacion" libUppercase>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="tipoDictamen" class="form-label">Tipo de dictamen</label>
+                <input class="form-control" id="tipoDictamen" placeholder="Tipo de dictamen" type="text"
+                    formControlName="tipoDictamen" libUppercase>
+            </div>
+        </div>
+    </div> -->
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="dictaminadoPor" class="form-label">Dictaminado por</label>
+                <input class="form-control" id="dictaminadoPor"  type="text"
+                    formControlName="dictaminadoPor" libUppercase>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="fechaGeneracion" class="form-label">Fecha de generación</label>
+                <input class="form-control" id="fechaGeneracion"  type="text"
+                    formControlName="fechaGeneracion" libUppercase>
+            </div>
+        </div>
+    </div>
+        <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="verificadoPor" class="form-label">Verificado por</label>
+                <input class="form-control" id="verificadoPor"  type="text"
+                    formControlName="verificadoPor" libUppercase>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="fechaVerificacion" class="form-label">Fecha de verificación</label>
+                <input class="form-control" id="fechaVerificacion" type="text"
+                    formControlName="fechaVerificacion" libUppercase>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="autorizadoPor" class="form-label">Autorizado por</label>
+                <input class="form-control" id="autorizadoPor"  type="text"
+                    formControlName="autorizadoPor" libUppercase>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="fechaAutorizacion" class="form-label">Fecha de autorización</label>
+                <input class="form-control" id="fechaAutorizacion" type="text"
+                    formControlName="fechaAutorizacion" libUppercase>
+            </div>
+        </div>
+    </div>
+
+    @if(detalleForm.get('sentidoDictamen')?.value==='Rechazado' || detalleForm.get('sentidoDictamen')?.value==='Parcial'){
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="justificacionNegativa" class="form-label">Justificación del dictamen</label>
+                <textarea id="justificacionNegativa" class="form-control text-height" formControlName="justificacionNegativa"
+                    libUppercase></textarea>
+            </div>
+        </div>
+    </div>
+    }
+    @if(detalleForm.get('sentidoDictamen')?.value==='Aceptado' || detalleForm.get('sentidoDictamen')?.value==='Parcial'){
+        
+        @if(mostrarFecha){
+        <div class="row">
+            <div class="col-md-4">
+                <label for="fechaFinVigencia" class="form-label">Fecha de fin de vigencia autorizada</label>
+                <input class="form-control" id="fechaFinVigencia"  type="text"
+                    formControlName="fechaFinVigencia">
+            </div>
+        </div>
+        }
+}
+    @if(detalleForm.get('sentidoDictamen')?.value==='Rechazado' || detalleForm.get('sentidoDictamen')?.value==='Parcial'){
+     <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="idMotivoTipoTramite" class="form-label">
+                    {{ detalleForm.get('sentidoDictamen')?.value === 'Rechazado'
+                    ? 'Motivo del rechazo:'
+                    : 'Motivo del oficio' }}
+                </label>
+                <input class="form-control" id="idMotivoTipoTramite"  type="text"
+                    formControlName="idMotivoTipoTramite" libUppercase>
+            </div>
+        </div>
+    </div>
+    }
+    
+</form>
+
+<div class="card mt-4" *ngIf="dictamenDetalle?.observaciones?.length">
+    <div class="card-header">
+        <h5 class="card-title">Observaciones al dictamen</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            @for (item of encabezadoTablaObservaciones; track $index) {
+                            <th>{{ item.valor }}</th>
+                            }
+                            <th class="center">Detalle</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngIf="datosTablaObservaciones.length === 0">
+                            <td [attr.colspan]="encabezadoTablaObservaciones.length + 1" class="text-center">Sin registros que mostrar</td>
+                        </tr>
+                        @for (row of datosTablaObservaciones; track $index) {
+                        <tr class="table-row">
+                            @for (item of encabezadoTablaObservaciones; let i = $index; track $index) {
+                            <td>{{ row[item.key] }}</td>
+                            }
+                            <td class="center">
+                                <button type="button" class="btn btn-link me-2" id="verDetalle" data-bs-toggle="button"
+                                    data-bs-placement="top" title="Detalle del dictamen" (click)="verDetalle(row.id)">
+                                    <i class="bi bi-eye bi-c text-gold"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,220 @@
+<div class="container">
+  @if(esJustificacion){
+  <div class="row mt-5">
+    <form [formGroup]="formDeJustificacion" class="container">
+      <div class="mb-3">
+        <label for="justificacion" class="form-label"> *Justificación: </label>
+        <textarea id="justificacion" class="form-control" rows="3" formControlName="justificacion" style="height: 90px"
+          [disabled]="esFormularioSoloLectura"></textarea>
+        <div class="error-message">
+          <small class="text-danger" *ngIf="
+              formDeJustificacion.get('justificacion')?.touched &&
+              formDeJustificacion.get('justificacion')?.hasError('required')
+            ">
+            Este campo es obligatorio.
+          </small>
+        </div>
+      </div>
+    </form>
+  </div>
+  } @if(!estaOculto){
+  <div class="row mt-5">
+    <ng-titulo titulo="Permiso definitivo (no temporal)"></ng-titulo>
+  </div>
+  } @if(!esAduna){
+  <div class="row">
+    <ng-titulo titulo="Aduana de entrada
+      "></ng-titulo>
+  </div>
+  } @if(esAdunaTexto){
+  <div class="row mt-5 titulo">Aduana</div>
+  }
+
+  <div class="row mt-3">
+    <crosslist [fechas]="seleccionarAduanasDisponibles"
+      [label]="aduanasDisponiblesLabelTipo? aduanasDisponiblesLabelRequired : aduanasDisponiblesLabel"
+      [fechasSeleccionadas]="seleccionarAduanasDisponiblesDatos"
+      [botones]="usarBotonesPersonalizados ? aduanasEntradaBotons : aduanasBotones" (fechasSeleccionadasChange)="
+        aduanasDisponiblesSeleccionadasChange($event)
+      " [isDisabled]="esFormularioSoloLectura"></crosslist>
+  </div>
+  <div class="row mt-5">
+    <form [formGroup]="form" class="container">
+      <div class="row mb-3">
+        @if(!ocultarPermisoGeneral){
+        <div class="col-md-4">
+          <label for="permisoGeneral" class="form-label">Permiso general*:</label>
+          <input type="text" id="permisoGeneral" class="form-control" formControlName="permisoGeneral" [required]="true"
+            (input)="onPermisoGeneralInput($event)" [disabled]="esFormularioSoloLectura" />
+            <div class="error-message">
+            <small class="text-danger" *ngIf="
+                form.get('permisoGeneral')?.touched &&
+                form.get('permisoGeneral')?.hasError('required')
+              ">
+             Este campo es obligatorio.
+            </small>
+            <small class="text-danger" *ngIf="
+                form.get('permisoGeneral')?.touched &&
+                form.get('permisoGeneral')?.hasError('maxlength')
+              ">
+              Máximo 20 caracteres permitidos.
+            </small>
+          </div>
+        </div>
+        }
+        <div class="col-md-8">
+          <label for="paisDestino" class="form-label">{{
+            paisEtiqueta.get(idProcedimiento)
+            ? paisEtiqueta.get(idProcedimiento)
+            : 'País de'
+            }}:</label>
+          <input type="text" id="paisDestino" class="form-control" formControlName="paisDestino" readonly
+            [disabled]="esFormularioSoloLectura" />
+        </div>
+      </div>
+      @if(fetchaPago){
+      <div class="row mb-3">
+        <!-- Fecha única de pago -->
+        <div class="col-md-4">
+          <input-fecha [datos]="fechaInicioInput" name="fechaPago" (valorCambiado)="onFechaCambiada($event)" [tooltipQuestionCircle]="true" [tooltipQuestionCircleText]="fechaInicioInput.labelNombre"
+            [setFecha]="form.get('fechaPago')?.value" [isDisabled]="esFormularioSoloLectura"></input-fecha>
+          <div class="error-message">
+            <small class="text-danger" *ngIf="
+                form.get('fechaPago')?.touched &&
+                form.get('fechaPago')?.hasError('required')
+              ">
+              Este campo es obligatorio.
+            </small>
+          </div>
+        </div>
+      </div>
+      } @if(fetchaSalida){
+      <div class="row mb-3">
+        <!-- Fecha única de salida de la mercancía -->
+        <div class="col-md-5">
+          <input-fecha [datos]="fechaSalidaInput" name="fechaSalida" (valorCambiado)="onFechaSalidaCambiada($event)"
+            [setFecha]="form.get('fechaSalida')?.value" [isDisabled]="esFormularioSoloLectura"></input-fecha>
+          <div class="error-message">
+            <small class="text-danger" *ngIf="
+                form.get('fechaSalida')?.touched &&
+                form.get('fechaSalida')?.hasError('required')
+              ">
+              Este campo es obligatorio.
+            </small>
+          </div>
+        </div>
+      </div>
+      }
+      <div class="mb-3">
+        <label for="usoFinal" class="form-label">
+          Uso final de la mercancía*:
+      <span class="p-2" tooltip="(lugar y evento donde se llevarán a cabo las actividades deportivas)" placement="top">
+                  <i class="bi bi-question-circle-fill"></i>
+                </span>
+        </label>
+        <textarea id="usoFinal" class="form-control" [maxLength]="1000" rows="3" formControlName="usoFinal" style="height: 90px"
+          [required]="true" [disabled]="esFormularioSoloLectura"></textarea>
+        <div class="error-message">
+          <small class="text-danger" *ngIf="
+              form?.get('usoFinal')?.touched &&
+              form?.get('usoFinal')?.hasError('required')
+            ">
+            Este campo es obligatorio.
+          </small>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="row mt-5">
+    <h5>Mercancías*:</h5>
+    <app-tabla-dinamica [tipoSeleccionTabla]="mercanciaTablaConfiguracion.tipoSeleccionTabla"
+      [configuracionTabla]="mercanciaTablaConfiguracion.configuracionTabla" [datos]="datosMercanciaTabla"
+      (listaDeFilaSeleccionada)="mercanciaTablaSeleccionada = $event"
+      [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"></app-tabla-dinamica>
+  </div>
+  <div class="row mt-3">
+    <div class="col-md-12">
+      <div class="pull-right ml-2">
+        @if(this.datosMercanciaTabla.length > 0){
+        <button type="button" name="modificarMercancias" class="btn btn-default" (click)="modificarDestinatario()"
+          [disabled]="
+            mercanciaTablaSeleccionada.length !== 1 || esFormularioSoloLectura
+          ">
+          Modificar
+        </button>
+        <button type="button" name="eliminarMercancias" class="btn btn-danger ms-2"
+          (click)="eliminarDestinatarioFinal()" [disabled]="
+            mercanciaTablaSeleccionada.length !== 1 || esFormularioSoloLectura
+          ">
+          Eliminar
+        </button>
+        }
+        <button type="button" name="agregarClave" class="btn btn-primary m-2" [disabled]="esFormularioSoloLectura"
+          (click)="irAAcciones()">
+          Agregar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  @if(periodoHabilitado){
+
+    <div  class="row mt-5">
+      <div>
+        <ng-titulo titulo="Periodo"></ng-titulo>
+      </div>
+      <h4>Periodo*:</h4>
+      <form *ngIf="form" [formGroup]="form" class="container">
+        <div class="row py-0">
+          <div class="col-md-4">
+            <app-input-radio [radioOptions]="periodoUnoSemestreOpciones" [isRequired]="true" [layout]="'horizontal'"
+              [gap]="'10px'" formControlName="unoSemestre" (valueChange)="actualizarUnoSemestre($event)"
+              [disabled]="esFormularioSoloLectura || (form.get('unoSemestre')?.disabled ?? false)"></app-input-radio>
+          </div>
+        </div>
+    
+        <div class="row">
+          <div class="col-md-4">
+            <lib-input-check [id]="'anoEnCurso'" [fontWeight]="true" [label]="'Año en curso:'" [required]="false" formControlName="anoEnCurso"
+              [isDisabled]="esFormularioSoloLectura || (form.get('anoEnCurso')?.disabled ?? false)"></lib-input-check>
+            <div class="error-message">
+              <small class="text-danger" *ngIf="
+                  form.get('anoEnCurso')?.touched &&
+                  form.get('anoEnCurso')?.hasError('required')
+                ">
+                Este campo es obligatorio.
+              </small>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  } @if(manifiestosDeclaraciones){
+  <div class="row">
+    <div class="col-md-12">
+      <ng-titulo titulo="Manifiestos y declaraciones"></ng-titulo>
+      <div class="alert alert-info">
+        <form [formGroup]="form" class="container">
+          <div class="form-check text-left d-flex align-items-center">
+            <div class="input_box">
+              <input type="checkbox" class="form-check-input pull-left" formControlName="informacionConfidencial"
+                id="informacionConfidencial" [required]="true" [disabled]="esFormularioSoloLectura" />
+              <span> *</span>
+              <div class="error-message">
+                <small class="text-danger" *ngIf="
+                    form.get('informacionConfidencial')?.touched &&
+                    form.get('informacionConfidencial')?.hasError('required')
+                  ">
+                  Este campo es obligatorio.
+                </small>
+              </div>
+            </div>
+            <label class="form-check-label" for="informacionConfidencial" style="font-weight: normal; padding: 41px">{{
+              manifiestosTexto }}</label>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  }
+</div>

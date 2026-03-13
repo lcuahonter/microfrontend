@@ -1,0 +1,59 @@
+<div class="container">
+  <ng-titulo [titulo]="'Consulta CAAT Aereo'"></ng-titulo>
+ <form [formGroup]="buscarFormulario" (ngSubmit)=" envio()">
+    <div class="col-md-12">
+      <ng-container>
+        <label>Nombre, denominaci&oacute;n o raz&oacute;n social</label>
+        <input type="text" maxlength="50" placeholder="nombre"
+          class="form-control mb-3 w-auto ng-untouched ng-pristine ng-valid" formControlName="denominacion" id="nombre" />
+  
+        <label>RFC</label>
+  
+        <input type="text" maxlength="20" placeholder="rfc"
+          class="form-control mb-3 w-auto ng-untouched ng-pristine ng-valid" formControlName="rfc" id="rfc" />
+  
+        <label>CAAT</label>
+        <input type="text" maxlength="20" placeholder="caat"
+          class="form-control mb-3 w-auto ng-untouched ng-pristine ng-valid" formControlName="caat" id="caat" />
+  
+        <button class="btn btn-primary mb-3" (click)="buscar()">Buscar</button>
+      </ng-container>
+    </div>
+  </form>
+
+    <ng-titulo [titulo]="'Empresa con CAAT registrado'"></ng-titulo>
+    <table class="table table-striped table-bordered">
+      <thead>
+
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">RFC/CURP/NSS/</th>
+          <th scope="col">Nombre, denominación o razón social</th>
+          <th scope="col"># CAAT</th>
+          <th scope="col">Perfil del CAAT</th>
+          <th scope="col">Inicio de vigencia</th>
+          <th scope="col">Fin de vigencia</th>
+          <th scope="col">Director General</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(item of listConsultaCAATAereo; track $index) {
+        @if(item?.rfc) {
+        <tr>
+          <td> {{$index + 1}}</td>
+          <td> {{item?.rfc}}</td>
+          <td> {{item?.denominacion}}</td>
+          <td> {{item?.caat}}</td>
+          <td> {{item?.perfil_caat}}</td>
+          <td> {{item?.fecha_inicial | date: 'dd/MM/yyyy'}}</td>
+          <td> {{item?.fecha_final | date: 'dd/MM/yyyy'}}</td>
+          <td> {{item?.director_general}}</td>
+        </tr>
+        }
+        }
+      </tbody>
+    </table>
+    <app-table-pagination [totalItems]="totalElementos" [itemsPerPage]="elementosPagina" [currentPage]="paginaActual"
+      (pageChange)="cambioPagina($event)" (itemsPerPageChange)="elementosPaginaCambio($event)">
+    </app-table-pagination>
+</div>

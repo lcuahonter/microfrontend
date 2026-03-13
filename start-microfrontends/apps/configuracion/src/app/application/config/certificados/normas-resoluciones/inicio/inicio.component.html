@@ -1,0 +1,77 @@
+<div class="container">
+  <div class="mb-3">
+    <span class="text-primary text-decoration-underline cursor-pointer">Antecesor</span> | Activo
+  </div>
+  <ng-titulo titulo="Consulta de Normas y Resoluciones"></ng-titulo>
+  <app-error-messages *ngIf="errors.length > 0" [errors]="errors"></app-error-messages>
+  <section class="bg-light p-4 rounded shadow-sm mb-4">
+    <form [formGroup]="form">
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="form-label fw-bold">
+            <span class="text-danger">*</span>Tratado Acuerdo
+          </label>
+          <select formControlName="tratado" class="form-control form-select">
+            <option value="">Seleccione</option>
+            <option *ngFor="let t of tratados" [value]="t.clave">{{ t.descripcion }}</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-bold">
+            <span class="text-danger">*</span>Bloque/País
+          </label>
+          <select formControlName="bloquePais" class="form-control form-select">
+            <option value="">Seleccione</option>
+            <option *ngFor="let p of paises" [value]="p.clave">{{ p.descripcion }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="row justify-content-end gap-2 px-3">
+        <button type="button" class="btn btn-primary rounded-pill col-auto" (click)="onRegistrar()">
+          Registrar Normas y Resoluciones
+        </button>
+        <button type="button" class="btn btn-primary rounded-pill col-auto" (click)="onBuscar()">
+          Buscar
+        </button>
+        <button type="button" class="btn btn-primary rounded-pill col-auto" (click)="onLimpiar()">
+          Limpiar
+        </button>
+      </div>
+    </form>
+  </section>
+  <div *ngIf="datos.length > 0">
+    <div class="text-end mb-2 text-muted fw-bold">
+      Seleccione los instrumentos que desea modificar
+    </div>
+    <app-expandir-tabla title="Criterios Activos">
+      <app-tabla-dinamica
+        [configuracionTabla]="configuracionTabla"
+        [datos]="datos"
+        [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX"
+        [showPagination]="true"
+        [totalItems]="totalItems"
+        [itemsPerPage]="itemsPerPage"
+        [currentPage]="currentPage"
+        (pageChange)="onPageChange($event)"
+        (listaDeFilaSeleccionada)="onListaSeleccionada($event)"
+      ></app-tabla-dinamica>
+    </app-expandir-tabla>
+    <div class="row justify-content-center gap-3 mt-4">
+      <button type="button" class="btn btn-primary rounded-pill col-auto px-5" 
+              (click)="onModificar('norma')" 
+              [disabled]="filasSeleccionadas.length === 0">
+        Modificar Norma
+      </button>
+      <button type="button" class="btn btn-primary rounded-pill col-auto px-5" 
+              (click)="onModificar('resoluciones')" 
+              [disabled]="filasSeleccionadas.length === 0">
+        Modificar Resoluciones
+      </button>
+    </div>
+  </div>
+  <lib-notificaciones
+    *ngIf="notificacion"
+    [notificacionInput]="notificacion"
+    (confirmacionModal)="onConfirmacion($event)"
+  ></lib-notificaciones>
+</div>

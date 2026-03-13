@@ -1,0 +1,140 @@
+<div class="mercancias-container">
+    <ng-titulo titulo="Descripción del producto" />
+    <div class="row">
+        <h6>Descripción del producto:*</h6>
+        <app-tabla-expandible [datos]="producto" [configuracionTabla]="configuracionTabla"
+            [configuracionTablaAnidada]="configuracionMercanciasTabla" [obtenerDatosAnidados]="obtenerDatosAnidados"
+            [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX" [tableId]="'products-table'"
+            (filaSeleccionada)="alSeleccionarProducto($event)" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura">
+        </app-tabla-expandible>
+    </div>
+
+    <div class="col-md-12 mt-5 d-flex justify-content-end">
+        <button type="button" class="btn btn-danger" [disabled]="esFormularioSoloLectura">Borrar</button>
+        <button type="button" class="btn btn-default ms-3" [disabled]="esFormularioSoloLectura">Guardar datos</button>
+        <button type="button" class="btn btn-primary ms-3" (click)="abrirModalMercancias()" [disabled]="esFormularioSoloLectura">Agregar</button>
+    </div>
+</div>
+
+<app-modal [active]="mostrarModalMercancias">
+    <div>
+        <ng-titulo titulo="Mercancías sin CFI" />
+        <form [formGroup]="formMercancias">
+            <div class="row">
+
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <app-catalogo-select [catalogo]="descripcion" formControlName="descripcion"
+                            [label]="'Descripción del producto'" [required]="true" name="descripcion"
+                            (change)="establecerValoresStore(formMercancias, 'descripcion')"></app-catalogo-select>
+                    </div>
+                </div>
+            </div>
+            <ng-titulo titulo="Detalle" />
+            <div class="row">
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <app-catalogo-select [catalogo]="fraccion" formControlName="fraccion"
+                            [label]="'Fracción arancelaria'" [required]="true" name="fraccion"
+                            (change)="establecerValoresStore(formMercancias, 'fraccion')"></app-catalogo-select>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label class="form-label" for="arancelaria">Descripción de la fracción arancelaria*: </label>
+                        <input class="form-control" id="arancelaria" type="text" formControlName="arancelaria"
+                            (change)="establecerValoresStore(formMercancias, 'arancelaria')" />
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label" for="cantidad">Cantidad*:</label>
+                        <input class="form-control" id="cantidad" type="text" formControlName="cantidad"
+                            (change)="establecerValoresStore(formMercancias, 'cantidad')" />
+
+                    </div>
+                    @if(formMercancias.controls['cantidad'].invalid && formMercancias.controls['cantidad'].touched) {
+                    <div class="d-grid">
+                        @if(formMercancias.controls['cantidad'].errors?.['required']) {
+                        <span class="mensaje-error">Este campo es obligatorio</span>
+                        }
+
+                    </div>
+                    }
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <app-catalogo-select [catalogo]="medida" formControlName="medida" [label]="'Unidad de medida'"
+                            [required]="true" name="medida"
+                            (change)="establecerValoresStore(formMercancias, 'medida')"></app-catalogo-select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <app-catalogo-select [catalogo]="genero" formControlName="genero" [label]="'Género'"
+                            [required]="true" name="genero"
+                            (change)="establecerValoresStore(formMercancias, 'genero')"></app-catalogo-select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <app-catalogo-select [catalogo]="especie" formControlName="especie" [label]="'Especie'"
+                            [required]="true" name="especie"
+                            (change)="establecerValoresStore(formMercancias, 'especie')"></app-catalogo-select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <app-catalogo-select [catalogo]="comun" formControlName="comun" [label]="'Nombre común'"
+                            [required]="true" name="comun"
+                            (change)="establecerValoresStore(formMercancias, 'comun')"></app-catalogo-select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <app-catalogo-select [catalogo]="origen" formControlName="origen" [label]="'País de origen'"
+                            [required]="true" name="origen"
+                            (change)="establecerValoresStore(formMercancias, 'origen')"></app-catalogo-select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <app-catalogo-select [catalogo]="procedencia" formControlName="procedencia"
+                            [label]="'País de procedencia'" [required]="true" name="procedencia"
+                            (change)="establecerValoresStore(formMercancias, 'procedencia')"></app-catalogo-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 mt-5 d-flex justify-content-end">
+
+                <button type="button" class="btn btn-default ms-3">Borrar</button>
+                <button type="button" class="btn btn-primary ms-3" (click)="agregarDetalle()">Agregar</button>
+            </div>
+
+        </form>
+        <div class="row">
+            <h6>Fracción:*</h6>
+            <app-tabla-dinamica [configuracionTabla]="configuracionMercanciasTabla" [datos]="fraccionData"
+                [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX"></app-tabla-dinamica>
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item"><a class="page-link">1</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="col-md-12 mt-5 d-flex justify-content-end">
+
+            <button type="button" class="btn btn-default ms-3" (click)="cancelarDetalle()">Cancelar</button>
+            <button type="button" class="btn btn-primary ms-3" (click)="guardarDetalle()">Guardar</button>
+        </div>
+    </div>
+</app-modal>

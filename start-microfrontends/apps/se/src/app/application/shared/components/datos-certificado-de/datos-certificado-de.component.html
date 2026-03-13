@@ -1,0 +1,75 @@
+<div>
+  <form [formGroup]="formDatosCertificado">
+    <ng-titulo titulo="Datos del certificado" />
+
+    <div class="row">
+      <div class="col-md-8">
+        <label for="justificacionDictamen" class="form-label">Observaciones:</label>
+        <textarea id="justificacionDictamen" formControlName="observacionesDates"
+          (change)="setValoresStore('formDatosCertificado','observacionesDates','setFormDatosCertificado')"
+          class="form-control mb-4 h-20 w-100" 
+          [ngClass]="{'is-invalid': formDatosCertificado.get('observacionesDates')?.invalid && (formDatosCertificado.get('observacionesDates')?.touched || formDatosCertificado.get('observacionesDates')?.dirty)}"
+          placeholder="" rows="6"></textarea>
+            <div class="d-grid">
+              @if(formDatosCertificado.get('observacionesDates')?.errors?.['maxlength']) {
+                <span class="mensaje-error">Observaciones NO debe tener más de 500 caracteres de longitud</span>
+              }
+            </div>
+          <!-- } -->
+      </div>
+      @if(presenta){
+      <div class="col-md-8">
+        <label for="presenta" class="form-label">Presenta:</label>
+        <textarea id="presenta" formControlName="presenta"
+          (change)="setValoresStore('formDatosCertificado','presenta','setPresenta')"
+          class="form-control mb-4 h-20 w-100" placeholder="" rows="6"></textarea>
+      </div>
+      }
+      @if(idioma ){
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <app-catalogo-select [label]="'Idioma'" [hiddenPrimerOption]="false" [disabledPrimerOption]="false" [isDisabled]="esFormularioSoloLectura" [catalogo]="idiomaDatos || []" [required]="true" name="estado"
+            formControlName="idiomaDates" [markTouched]="formDatosCertificado.get('idiomaDates')?.touched??false"
+            (change)="setValoresStore('formDatosCertificado','idiomaDates','setFormDatosCertificado')"
+            (selectionChange)="idiomaSeleccion($event)"></app-catalogo-select>
+
+        </div>
+      </div>
+      }
+      @if(precisa){
+      <div class="col-md-8">
+        <label for="Precisa" class="form-label">Precisa*:</label>
+        <textarea id="Precisa" formControlName="precisaDates" [ngClass]="isValid(formDatosCertificado, 'precisaDates') ? 'required' : ''" 
+          (change)="setValoresStore('formDatosCertificado','precisaDates','setFormDatosCertificado')"
+          class="form-control mb-4 h-20 w-100" placeholder="" rows="6" required="true"></textarea>
+        @if(formDatosCertificado.get('precisaDates')?.invalid && (formDatosCertificado.get('precisaDates')?.touched ||
+        formDatosCertificado.get('precisaDates')?.dirty)) {
+        <div class="d-grid">
+          @if(formDatosCertificado.get('precisaDates')?.errors?.['required']) {
+          <span class="mensaje-error">Este campo es obligatorio</span>
+          }
+        </div>
+        }
+      </div>
+      }
+      <div class="row">
+        <ng-titulo titulo="Representación federal" />
+        <div class="col-md-6">
+          <app-catalogo-select [hiddenPrimerOption]="false" [disabledPrimerOption]="false" [isDisabled]="esFormularioSoloLectura" [label]="'Entidad federativa'"
+            [catalogo]="entidadFederativaDatos || []" [required]="true" name="estado"
+            [markTouched]="formDatosCertificado.get('EntidadFederativaDates')?.touched??false"
+            formControlName="EntidadFederativaDates" (selectionChange)="onChangeEntidad($event)"
+            (change)="setValoresStore('formDatosCertificado','EntidadFederativaDates','setFormDatosCertificado')"></app-catalogo-select>
+
+        </div>
+        <div class="col-md-6">
+          <app-catalogo-select [hiddenPrimerOption]="false" [disabledPrimerOption]="false" [isDisabled]="esFormularioSoloLectura" [label]="'Representación federal'"
+            [catalogo]="representacionFederal$ || []" [required]="true" name="representacionFederalDates"
+            [markTouched]="formDatosCertificado.get('representacionFederalDates')?.touched??false"
+            formControlName="representacionFederalDates" (selectionChange)="representacionFederalSeleccion($event)"
+            (change)="setValoresStore('formDatosCertificado','representacionFederalDates','setFormDatosCertificado')"></app-catalogo-select>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

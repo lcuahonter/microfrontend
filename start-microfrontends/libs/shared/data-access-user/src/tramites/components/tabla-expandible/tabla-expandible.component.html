@@ -1,0 +1,108 @@
+<div class="table-responsive table-wrapper">
+  <table id="{{tableId}}" class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        @if(tipoSeleccionTabla === TablaSeleccion.RADIO) {
+        <th class="selection-expansion-column">Selección</th>
+        }
+        @else if(tipoSeleccionTabla === TablaSeleccion.CHECKBOX) {
+        <th class="selection-expansion-column">
+          <input class="cursor-pointer" type="checkbox" name="filaSeleccionada"
+            (change)="seleccionarDeseleccionarTodos($event)" aria-label="Seleccionar/Deseleccionar todo"
+            [checked]="filasSeleccionadas.length === datos.length" [disabled]="disableSeleccionTablaCheckBox"/>
+        </th>
+        }
+        @else if(tipoSeleccionTabla === TablaSeleccion.BUTTON) {
+        <th class="selection-expansion-column">Acción</th>
+        }
+        @else {
+        <th class="expansion-column"></th>
+        }
+        
+        <th *ngFor="let col of obtenerConfiguracionOrdenada()">
+          {{ col.encabezado }}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let fila of datos; let i=index">
+        <tr (click)="onFilaClic(datos[i])">
+          @if(tipoSeleccionTabla === TablaSeleccion.RADIO) {
+          <td class="selection-expansion-column">
+            <div class="d-flex align-items-center">
+              <input class="cursor-pointer me-2" type="radio" name="filaSeleccionada" [(ngModel)]="idFilaSeleccionada"
+                [value]="i" (change)="seleccionarFila(i, fila)" [checked]="idFilaSeleccionada === i"
+                aria-label="Seleccionar" />
+              <button class="btn btn-sm expansion-btn" (click)="alternarExpandirFila(i, $event)">
+                <i class="bi" [ngClass]="estaFilaExpandida(i) ? 'bi-dash' : 'bi-plus'"></i>
+              </button>
+            </div>
+          </td>
+          }
+          @else if(tipoSeleccionTabla === TablaSeleccion.CHECKBOX) {
+          <td class="selection-expansion-column">
+            <div class="d-flex align-items-center">
+              <input class="cursor-pointer me-2" type="checkbox" name="filaSeleccionada" [value]="i"
+                (change)="cambiarEstadoCheckbox($event,i )" [checked]="filasSeleccionadas.includes(i)"
+                aria-label="Seleccionar" [disabled]="disableSeleccionTablaCheckBox"/>
+              <button class="btn btn-sm expansion-btn" (click)="alternarExpandirFila(i, $event)">
+                <i class="bi" [ngClass]="estaFilaExpandida(i) ? 'bi-dash' : 'bi-plus'"></i>
+              </button>
+            </div>
+          </td>
+          }
+          @else if(tipoSeleccionTabla === TablaSeleccion.BUTTON) {
+          <td class="selection-expansion-column">
+            <div class="d-flex align-items-center">
+              <button id="button" class="cursor-pointer btn btn-primary me-2" type="button" name="filaSeleccionada" [value]="i"
+                (click)="cambiarValor(fila)" aria-label="Seleccionar">BAJA</button>
+              <button class="btn btn-sm expansion-btn" (click)="alternarExpandirFila(i, $event)">
+                <i class="bi" [ngClass]="estaFilaExpandida(i) ? 'bi-dash' : 'bi-plus'"></i>
+              </button>
+            </div>
+          </td>
+          }
+          @else {
+          <td class="expansion-column">
+            <button class="btn btn-sm expansion-btn" (click)="alternarExpandirFila(i, $event)">
+              <i class="bi" [ngClass]="estaFilaExpandida(i) ? 'bi-dash' : 'bi-plus'"></i>
+            </button>
+          </td>
+          }
+          
+          <td *ngFor="let col of obtenerConfiguracionOrdenada()" (click)="col.hiperenlace?cambiarValor(fila):null">
+            {{ col.clave(fila) || ' ' }}
+          </td>
+        </tr>
+
+        <tr *ngIf="estaFilaExpandida(i)" class="nested-table-row">
+          <td [attr.colspan]="configuracionTabla.length + 1">
+            <div class="nested-table-container">
+              <table class="table table-bordered nested-table">
+                <thead>
+                  <tr>
+                    <th *ngFor="let col of obtenerConfiguracionAnidadaOrdenada()">
+                      {{ col.encabezado }}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let elementoAnidado of obtenerDatosAnidados(fila)">
+                    <td *ngFor="let col of obtenerConfiguracionAnidadaOrdenada()">
+                      {{ col.clave(elementoAnidado) || ' ' }}
+                    </td>
+                  </tr>
+                  <tr *ngIf="obtenerDatosAnidados(fila).length === 0">
+                    <td [attr.colspan]="configuracionTablaAnidada.length" class="text-center">
+                      No hay datos disponibles
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+</div>

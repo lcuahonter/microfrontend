@@ -1,0 +1,177 @@
+<div class="page">
+    <div class="container">
+        <h1>Consulta Autorizaciones LDA</h1>
+        <section>
+            <div (click)="colapsarAcordion()" class="header-collapse bg-light px-3 py-4">
+                <b>Criterios de busqueda: </b>
+                <span>[+]</span>
+            </div>
+            <section [class.collapsed]="collapsed" class="body-colapse">
+                <div class="p-5">
+                    <div class="btn-accion-form container my-3">
+                        <button class="btn btn-primary">Buscar</button>
+                        <button class="btn btn-primary">Exportar Excel</button>
+                    </div>
+                    <form class="form-consultar-autorizaciones" [formGroup]="FormConsulta">
+                        <div class="check-container" id="tipoUbicacion">
+                            <label>
+                                <input class="form-check-input" type="checkbox"
+                                    [checked]="tipoUbicacion === 'UBICACION'" (change)="tipoUbicacion = 'UBICACION'" />
+                                Ubicación
+                            </label>
+                            <label>
+                                <input class="form-check-input" type="checkbox"
+                                    [checked]="tipoUbicacion === 'DOMICILIO'" (change)="tipoUbicacion = 'DOMICILIO'" />
+                                Domicilio
+                            </label>
+                        </div>
+                        <div>
+                            <input-fecha [datos]="fechaInicioInput"
+                                (valorCambiado)="cambioFechaInicio($event)"></input-fecha>
+                        </div>
+                        <div>
+                            <input-fecha [datos]="fechaFinalInput"
+                                (valorCambiado)="cambioFechaFin($event)"></input-fecha>
+                        </div>
+                        <div>
+                            <label for="">
+                                <input class="form-check-input" type="checkbox" formControlName="mostrar_lda" />
+                                Mostrar LDA
+                            </label>
+                        </div>
+                        <div>
+                            <label class="form-label" for="">Folio VUCEM:</label>
+                            <input class="form-control" type="text" formControlName="folio_vucem"
+                                [class.is-invalid]="folioVucem?.invalid && (folioVucem?.dirty || folioVucem?.touched)">
+                            @if (folioVucem?.invalid && (folioVucem?.dirty || folioVucem?.touched)) {
+                            <div class="invalid-feedback">
+                                @if (folioVucem?.hasError('pattern')) {
+                                <div>Solo se permiten números.</div>
+                                }
+                                @if(folioVucem?.hasError('minlength')){
+                                <div>Debe tener al menos 25 caracteres.</div>
+                                }
+                            </div>
+                            }
+                        </div>
+                        <div>
+                            <label class="form-label" for="">Folio interno:</label>
+                            <input class="form-control" type="text" formControlName="folio_interno"
+                                [class.is-invalid]="folioInterno?.invalid && (folioInterno?.dirty || folioInterno?.touched)">
+                            @if (folioInterno?.invalid && (folioInterno?.dirty || folioInterno?.touched)) {
+                            <div class="invalid-feedback">
+                                @if (folioInterno?.hasError('pattern')) {
+                                <div>Solo se permiten números y letras.</div>
+                                }
+                                @if(folioInterno?.hasError('maxlength')){
+                                <div>Solo se permiten máximo 16 caracteres.</div>
+                                }
+                            </div>
+                            }
+                        </div>
+                        <div>
+                            <label class="form-label" for="">Tipo tramite</label>
+                            <select class="form-control form-select" name="" id="" formControlName="tipo_tramite">
+                                <option value="">Seleccione un valor</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label" for="">Estado</label>
+                            <select class="form-control form-select" name="" id="" formControlName="estado">
+                                <option value="">Seleccione un valor</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label" for="">RFC solicitante</label>
+                            <input class="form-control" type="text" formControlName="rfc_solicitante"
+                                [class.is-invalid]="rfcSolicitante?.invalid && (rfcSolicitante?.dirty || rfcSolicitante?.touched)">
+                            @if (rfcSolicitante?.invalid && (rfcSolicitante?.dirty || rfcSolicitante?.touched)) {
+                            <div class="invalid-feedback">
+                                @if (rfcSolicitante?.hasError('pattern')) {
+                                <div>RFC invalido.</div>
+                                }
+                                @if(rfcSolicitante?.hasError('maxlength')){
+                                <div>Solo se permiten máximo 13 caracteres.</div>
+                                }
+                            </div>
+                            }
+                        </div>
+                        <div>
+                            <label class="form-label" for="">RFC tercero</label>
+                            <input class="form-control" type="text" formControlName="rfc_tercero"
+                                [class.is-invalid]="rfcTercero?.invalid && (rfcTercero?.dirty || rfcTercero?.touched)">
+                            @if (rfcTercero?.invalid && (rfcTercero?.dirty || rfcTercero?.touched)) {
+                            <div class="invalid-feedback">
+                                @if (rfcTercero?.hasError('pattern')) {
+                                <div>RFC invalido.</div>
+                                }
+                                @if(rfcTercero?.hasError('maxlength')){
+                                <div>Solo se permiten máximo 13 caracteres.</div>
+                                }
+                            </div>
+                            }
+                        </div>
+                        <div>
+                            <label class="form-label" for="">patente</label>
+                            <input class="form-control" type="text" formControlName="patente"
+                            [class.is-invalid]="patente?.invalid && (patente?.dirty || patente?.touched)">
+                            @if (patente?.invalid && (patente?.dirty || patente?.touched)) {
+                            <div class="invalid-feedback">
+                                @if (patente?.hasError('pattern')) {
+                                <div>Solo se permiten números.</div>
+                                }
+                                @if(patente?.hasError('maxlength')){
+                                <div>Solo se permiten máximo 4 caracteres.</div>
+                                }
+                            </div>
+                            }
+                        </div>
+                        <div>
+                            <label class="form-label" for="">Aduana</label>
+                            <select class="form-control form-select" name="" id="">
+                                <option value="">Seleccione un valor</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label" for="">Seccion Aduanera</label>
+                            <select class="form-control form-select" name="" id="">
+                                <option value="">Seleccione un valor</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label" for="">Capítulo Fracción Arancelaria</label>
+                            <select class="form-control form-select" name="" id="">
+                                <option value="">Seleccione un valor</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label" for="">Fracción Arancelaria</label>
+                            <select class="form-control form-select" name="" id="">
+                                <option value="">Seleccione un valor</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </section>
+        <br />
+        <button class="btn btn-primary mb-5">Mostrar detalle</button>
+        <br />
+        <section>
+            <b>Autorizaciones LDA:</b>
+            <app-tabla-dinamica [configuracionTabla]="configuracionTablaAutorizacionLDA" [datos]="datosAutorizacionLDA"
+                [mode]="'client'" />
+        </section>
+        <br />
+        <section class="botones-exortar-container">
+            <button class="btn btn-primary">Exportar excel</button>
+            <button class="btn btn-primary">Exportar excel</button>
+        </section>
+        <br />
+        <section>
+            <b>Tracking:</b>
+            <app-tabla-dinamica [configuracionTabla]="configuracionTablaTracking" [datos]="datosTablaTracking"
+                [mode]="'client'" />
+        </section>
+    </div>
+</div>

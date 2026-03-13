@@ -1,0 +1,1 @@
+export const FECHA_DE_INICIO: string = '08/06/2024 | 09:00';

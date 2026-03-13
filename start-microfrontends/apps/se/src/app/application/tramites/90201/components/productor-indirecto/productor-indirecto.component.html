@@ -1,0 +1,53 @@
+<div class="container mt-4">
+  <ng-titulo titulo="Productor indirecto" />
+  <form *ngIf="formProductorIndirecto" [formGroup]="formProductorIndirecto">
+  <div class="row mb-3">
+    <div class="col-md-12">
+      <label for="rfc" class="form-label fw-bold">Registro federal de contribuyentes*:</label>
+      <input
+        type="text"
+        class="form-control w-50"
+        id="rfc"
+        formControlName="rfc"
+        maxlength="13"
+        soloLetrasNumeros
+         (change)="
+                setValoresStore(
+                  formProductorIndirecto,
+                  'rfc',
+                  'setRfc'
+                )"
+      />
+      <div *ngIf="formProductorIndirecto.get('rfc')?.invalid && formProductorIndirecto.get('rfc')?.touched">
+        <small class="mensaje-error">Este campo es obligatorio.</small>
+      </div>
+    </div>    
+  </div>
+
+  <!-- <div class="d-flex justify-content-end">
+    <button class="btn btn-danger me-3" [disabled]="esFormularioSoloLectura" (click)="eliminarProductor()">Eliminar productor</button>
+    <button class="btn btn-primary" [disabled]="esFormularioSoloLectura" (click)="agregarProductor()">Agregar productor</button>
+  </div>
+   -->
+  </form>
+  <div class="row mb-5">
+        <div class=" text-end mt-5">
+            <button class="btn btn-default me-2" [disabled]="esFormularioSoloLectura" (click)="eliminarProductor()">Eliminar Productor</button>
+            <button class="btn btn-primary" (click)="agregarProductor()" [disabled]="esFormularioSoloLectura">Agregar Productor</button>
+        </div>
+    </div>
+    <div class="row">
+        <h6>Solicitud Prosec Productor Indirecto Tabla:</h6>
+        <app-tabla-dinamica [tipoSeleccionTabla]="checkbox" [configuracionTabla]="productorColumnsConfiguracion" [datos]="tablaDatos" (listaDeFilaSeleccionada)="seleccionTabla($event)" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"></app-tabla-dinamica>
+    </div>
+    <div>
+        @if(espectaculoAlerta){
+            <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+            (confirmacionModal)="eliminarPedimento($event)"></lib-notificaciones>
+        }
+        @if(espectaculoConfirmarAlerta){
+            <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+            (confirmacionModal)="eliminarPedimentoDatos($event)"></lib-notificaciones>
+        }
+    </div>
+</div>

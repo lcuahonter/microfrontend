@@ -1,0 +1,63 @@
+<form [formGroup]="form">
+
+  <formas-dinamicas formularioTitulo="Permiso a prorrogar" [forma]="ninoFormGroup"
+    [formularioDatos]="informacionFormData" [estado]="exportarIlustracionesState"
+    (emitirCambioDeValor)="establecerCambioDeValor($event)"></formas-dinamicas>
+
+  <ng-titulo titulo="Solicitud prórroga para permisos de importación/exportación" />
+  <p>Número de permiso: 1702C624000390</p>
+  <ng-titulo titulo="Prorrogar" />
+
+  <app-tabla-dinamica [configuracionTabla]="configuracionTabla" [datos]="tercerosProd"
+    [tipoSeleccionTabla]="tipoSeleccionTabla.CHECKBOX" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura">
+  </app-tabla-dinamica>
+
+  <div class="datos-prorroga">
+    <ng-titulo titulo="Datos de la prórroga" />
+
+    <div>
+      <label for="saldoDisponible">Saldo disponible aproximado a importar/exportar:</label>
+      <input id="saldoDisponible" type="text" formControlName="saldoDisponible"
+        (change)="setValoresStore(form,'saldoDisponible', 'setsaldoDisponible')" />
+
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+<input-fecha [datos]="fechaInicioInput" [setFecha]="
+                  form.get('fechaPago')
+                    ?.value
+                " (valorCambiado)="cambioFechaPago($event)"
+                    [isDisabled]="esFormularioSoloLectura ? true : false"></input-fecha>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+<input-fecha [datos]="fechaInicioInput" [setFecha]="
+                  form.get('prorrogaAl')
+                    ?.value
+                " (valorCambiado)="oncambioFechaPago($event)"
+            [isDisabled]="esFormularioSoloLectura ? true : false"></input-fecha>
+      </div>
+    </div>
+    <div class="col-md-12">
+
+      <label for="motivoJustificacion">Motivo y/o Justificación*:</label>
+      <textarea id="motivoJustificacion" formControlName="motivoJustificacion" class="form-control h-150"
+        (change)="setValoresStore(form,'motivoJustificacion', 'setmotivoJustificacion')"></textarea>
+      <div class="d-grid">
+        <div *ngIf="form.get('motivoJustificacion')?.touched">
+          <small class="text-danger" *ngIf="form.get('motivoJustificacion')?.hasError('required')">
+            Este campo es obligatorio.
+          </small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <label for="motivoJustificacion">Otras declaraciones:</label>
+      <textarea id="otrasDeclaraciones" formControlName="otrasDeclaraciones" class="form-control h-150 " 
+        (change)="setValoresStore(form,'otrasDeclaraciones', 'setotrasDeclaraciones')"></textarea>
+    </div>
+  </div> 
+  <ng-titulo titulo="Manifiesto de aceptación" />
+  <ng-alert [CONTENIDO]="aduanaAlert"></ng-alert>
+</form>

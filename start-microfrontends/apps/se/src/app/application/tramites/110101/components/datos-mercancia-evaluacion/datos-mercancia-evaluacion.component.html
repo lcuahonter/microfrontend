@@ -1,0 +1,142 @@
+<form [formGroup]="formEvaluarMercancia">
+    
+    <ng-titulo titulo="Datos de la mercancía"></ng-titulo>
+
+    <div class="row">
+        <div class="col-md-12 mb-3">
+            <label for="nombreComercialEvaluar" class="form-label">Nombre comercial de la mercancía (igual que en la factura)</label>
+            <input type="text" id="nombreComercialEvaluar" class="form-control" formControlName="nombreComercialEvaluar">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 mb-3">
+            <label for="nombreInglesEvaluar" class="form-label">Nombre en inglés</label>
+            <input type="text" id="nombreInglesEvaluar" class="form-control" formControlName="nombreInglesEvaluar">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label for="fraccionArancelariaEvaluar" class="form-label">Fracción arancelaria</label>
+            <input type="text" id="fraccionArancelariaEvaluar" class="form-control" formControlName="fraccionArancelariaEvaluar">
+        </div>
+        <div class="col-md-8 mb-3">
+            <label for="nombreTecnicoEvaluar" class="form-label">Nombre técnico</label>
+            <textarea id="nombreTecnicoEvaluar" class="form-control" formControlName="nombreTecnicoEvaluar"></textarea>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label for="precioFrancoFabricaEvaluar" class="form-label">Precio franco fábrica (en dólares)</label>
+            <input type="text" id="precioFrancoFabricaEvaluar" class="form-control" formControlName="precioFrancoFabricaEvaluar">
+        </div>
+    </div>  
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label for="valorTransaccionEvaluar" class="form-label">Valor de transacción</label>
+            <input type="text" id="valorTransaccionEvaluar" class="form-control" formControlName="valorTransaccionEvaluar">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label for="tipoExportadorEvaluar" class="form-label">Tipo de exportador</label>
+            <input type="text" id="tipoExportadorEvaluar" class="form-control" formControlName="tipoExportadorEvaluar">
+        </div>
+    </div>
+    <div class="row" *ngIf="formEvaluarMercancia.get('separacionContableEvaluar')?.value === true">
+        <div class="mb-3 d-flex align-items-center justify-content-start gap-3">
+            <label class="fw-semibold">¿Desea usar la opción del método de separación contable?</label>
+
+            <div class="d-flex align-items-center ms-5">
+                <div class="form-check form-check-inline mb-0 me-5">
+                    <input class="form-check-input" type="radio" id="separacionSi" name="separacionContable" 
+                    [checked]="formEvaluarMercancia.get('separacionContableEvaluar')?.value === true" disabled>
+                    <label class="form-check-label mb-0 ms-1" for="separacionSi">Si</label>
+                </div>
+
+                <div class="form-check form-check-inline mb-0">
+                    <input class="form-check-input" type="radio" id="separacionNo" name="separacionContable" 
+                    [checked]="formEvaluarMercancia.get('separacionContableEvaluar')?.value === false" disabled>
+                    <label class="form-check-label mb-0 ms-1" for="separacionNo">No</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ng-titulo *ngIf="hasAladiData()" titulo="Certificación Origen Título Mercancía A L A D I"></ng-titulo>
+
+    <div *ngIf="hasAladiData()">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="valorTransaccionalFOBEvaluar" class="form-label">Valor Transaccional (Base FOB)</label>
+                <input type="text" id="valorTransaccionalFOBEvaluar" class="form-control" formControlName="valorTransaccionalFOBEvaluar">
+            </div>
+
+            @if (this.consultaState.parameter === "AutorizarDictamen"){
+            <div class="col-md-8 mb-3 mt-5" *ngIf="formEvaluarMercancia.get('tiene_fraccion_aladi')?.value === true">
+                <div class="d-flex align-items-center">
+                    <label class="fw-semibold me-3 mb-0">Calificación de descripción</label>
+
+                    <div class="form-check form-check-inline mb-0 me-4">
+                        <input class="form-check-input" type="radio" id="calificacion_fraccion_aladi_Si" name="calificacion_fraccion_aladi"
+                        [checked]="formEvaluarMercancia.get('calificacion_fraccion_aladi')?.value === true" disabled/>
+                        <label class="form-check-label mb-0 ms-1" for="calificacion_fraccion_aladi_Si">Aceptado</label>
+                    </div>
+
+                    <div class="form-check form-check-inline mb-0">
+                        <input class="form-check-input" type="radio" id="calificacion_fraccion_aladi_No" name="calificacion_fraccion_aladi"
+                        [checked]="formEvaluarMercancia.get('calificacion_fraccion_aladi')?.value === false" disabled/>
+                        <label class="form-check-label mb-0 ms-1" for="calificacion_fraccion_aladi_No">No Aceptado</label>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="clasificacionNALADIEvaluar" class="form-label">Clasificación NALADI</label>
+                <input type="text" id="clasificacionNALADIEvaluar" class="form-control" formControlName="clasificacionNALADIEvaluar">
+            </div>
+            <div class="col-md-8 mb-3">
+                <label for="descripcionNALADIEvaluar" class="form-label">Descripción NALADI</label>
+                <input type="text" id="descripcionNALADIEvaluar" class="form-control" formControlName="descripcionNALADIEvaluar">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="clasificacionNALADISA1993Evaluar" class="form-label">Clasificación NALADISA 1993</label>
+                <input type="text" id="clasificacionNALADISA1993Evaluar" class="form-control" formControlName="clasificacionNALADISA1993Evaluar">
+            </div>
+            <div class="col-md-8 mb-3">
+                <label for="descripcionNALADISA1993Evaluar" class="form-label">Descripción NALADISA 1993</label>
+                <input type="text" id="descripcionNALADISA1993Evaluar" class="form-control" formControlName="descripcionNALADISA1993Evaluar">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="clasificacionNALADISA1996Evaluar" class="form-label">Clasificación NALADISA 1996</label>
+                <input type="text" id="clasificacionNALADISA1996Evaluar" class="form-control" formControlName="clasificacionNALADISA1996Evaluar">
+            </div>
+            <div class="col-md-8 mb-3">
+                <label for="descripcionNALADISA1996Evaluar" class="form-label">Descripción NALADISA 1996</label>
+                <input type="text" id="descripcionNALADISA1996Evaluar" class="form-control" formControlName="descripcionNALADISA1996Evaluar">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="clasificacionNALADISA2002Evaluar" class="form-label">Clasificación NALADISA 2002</label>
+                <input type="text" id="clasificacionNALADISA2002Evaluar" class="form-control" formControlName="clasificacionNALADISA2002Evaluar">
+            </div>
+            <div class="col-md-8 mb-3">
+                <label for="descripcionNALADISA2002Evaluar" class="form-label">Descripción NALADISA 2002</label>
+                <input type="text" id="descripcionNALADISA2002Evaluar" class="form-control" formControlName="descripcionNALADISA2002Evaluar">
+            </div>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,29 @@
+/**
+ * Textos y mensajes utilizados en el componente de carga por archivo para mostrar información y ayudas al usuario.
+ */
+export const TEXTOS = {
+    PARA_1: `Has seleccionado la opción para cargar la capacidad instalada desde un archivo. 
+              A continuación te presentamos las consideraciones que toma en cuenta el sistema
+              para llevar a cabo la carga de las mismas.`,
+    PARA_2: `El archivo debe estar en formato .csv o .txt y debe contener los valores a subir separados por pipes (|).
+              La primera línea del archivo debe contener los encabezados de cada uno de los campos que se cargarán dentro del sistema.`,
+    PARA_3: `A continuación se define el orden de cada uno de los campos.`,
+    CARGA_DE_ARCHIVOS: `Seleccionar archivo`,
+    CARGA_DE_ARCHIVO_DE_TEXTO: `Sin archivos seleccionados`,
+}
+
+/**
+ * Arreglo que define el orden y la descripción de los campos requeridos para la carga por archivo.
+ */
+export const TABLA_DATOS = [
+    { posicion: 1, dato: 'IDENTIFICADOR DE LA PLANTA (EL VALOR DE LA COLUMNA #Planta DEL GRID DE PLANTAS)' },
+    { posicion: 2, dato: 'IDENTIFICADOR DE LA FRACCIÓN ARANCELARIA (EL VALOR DE LA COLUMNA #Fraccion DEL GRID DE FRACCIONES)' },
+    { posicion: 3, dato: 'TURNOS' },
+    { posicion: 4, dato: 'HORAS POR TURNO' },
+    { posicion: 5, dato: 'CANTIDAD DE EMPLEADOS' },
+    { posicion: 6, dato: 'CANTIDAD DE MAQUINARIA' },
+    { posicion: 7, dato: 'DESCRIPCIÓN DE LA MAQUINARIA' },
+    { posicion: 8, dato: 'CAPACIDAD INSTALADA MENSUAL' },
+    { posicion: 9, dato: 'CAPACIDAD INSTALADA ANUAL' },
+    { posicion: 10, dato: 'CAPACIDAD EFECTIVA' },
+  ]

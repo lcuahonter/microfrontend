@@ -1,0 +1,45 @@
+<div class="card border-0 shadow-sm mt-3">
+  <div class="card-header py-2">
+    <h5 class="mb-0 fs-3 fw-bold">Buscar Solicitante</h5>
+  </div>
+  <div class="card-body">
+    <form [formGroup]="form" (ngSubmit)="onBuscar()" class="row align-items-start g-3">
+      <div class="col-md-9">
+        <label class="form-label fw-bold"><span class="text-danger">*</span>Clave Única de Registro de Población</label>
+        <input 
+          type="text" 
+          class="form-control border-dark" 
+          formControlName="curp" 
+          [class.is-invalid]="isInvalid('curp')"
+          placeholder="Ingrese CURP"
+          style="text-transform: uppercase;"
+        >
+        <div *ngIf="isInvalid('curp')" class="invalid-feedback d-block">
+          <span *ngIf="hasError('curp', 'required')" class="text-danger fw-bold">Este campo es obligatorio</span>
+          <span *ngIf="hasError('curp', 'pattern')" class="text-danger fw-bold">Existen datos incorrectos que no cumplen con el formato esperado.</span>
+        </div>
+      </div>
+      <div class="col-md-3 text-end pt-4">
+        <button type="submit" class="btn btn-primary px-5 py-1 rounded-pill shadow-sm" [disabled]="loading">
+          <span *ngIf="!loading">Buscar</span>
+          <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="table-section mt-4" *ngIf="searched && results.length > 0">
+  <div class="p-2 rounded-top mb-0">
+    <h6 class="mb-0 fw-bold">No Contribuyentes</h6>
+  </div>
+  <app-tabla-dinamica
+    [configuracionTabla]="configuracionTabla"
+    [datos]="results"
+    (filaClic)="onFilaClic($event)"
+  ></app-tabla-dinamica>
+  <app-table-pagination
+    [totalItems]="results.length"
+    [itemsPerPage]="10"
+    [currentPage]="1"
+  ></app-table-pagination>
+</div>

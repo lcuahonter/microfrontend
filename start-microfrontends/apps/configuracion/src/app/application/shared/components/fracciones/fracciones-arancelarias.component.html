@@ -1,0 +1,125 @@
+<section class="bg-light p-5">
+    <header class="px-5 py-1">
+        <h5>Gestión de fracciones arancelarias</h5>
+    </header>
+    <section class="bg-light px-5 px-1">
+        <ol>
+            <li><b>Agregar:</b> En esta sección se agregará cada elemento de forma individual y realizando sus
+                validaciones correspondientes según sea el caso.</li>
+            <li><b>Eliminar:</b> En esta sección se eliminarán los elementos ya sea de forma individual o por conjuntos
+                por medio de filtros para su mejor visualización, además se cuenta con un botón dónde se podrán eliminar
+                todos los elementos.</li>
+            <li><b>Consultar:</b> En esta sección se muestran los elementos cargados ya sea de forma manual o masiva
+                (por archivo) por medio de filtros para una mejor visualización, además se podra descargar un archivo
+                donde se muestran todos los elementos cargados.</li>
+            <li><b>Cargar archivo:</b> En esta sección se cargará un archivo con el formato predeterminado, en caso de
+                ser exitoso los resultados se podrán observar en la sección de consulta, si el archivo contiene errores
+                se muestra un botón donde se podrá descargar un archivo indicando la línea y una descripcion del error.
+            </li>
+        </ol>
+    </section>
+    <section class="bg-light p-5 botones-modales">
+        @if(esModalHabilitado(ModalFracciones.AGREGAR)){
+            <button class="btn-primary" (click)="abrirModal('AGREGAR')">Agregar Fraccion(es)</button>
+        }
+        @if(esModalHabilitado(ModalFracciones.ELIMINAR)){
+            <button class="btn-primary" (click)="abrirModal('ELIMINAR')">Eliminar Fraccion(es)</button>
+        }
+        @if(esModalHabilitado(ModalFracciones.CONSULTAR)){
+            <button class="btn-primary" (click)="abrirModal('CONSULTAR')">Consultar Fraccion(es)</button>
+        }
+    </section>
+</section>
+@if(mostrarAgregar && esModalHabilitado(ModalFracciones.AGREGAR)){
+<libs-modal (closed)="mostrarAgregar=false" tituloModal="Agregar Fraccion(es)">
+    <modal-body>
+        <div class="fracciones-tree">
+            <div class="tree-list">
+                @for (fraccion of fraccionesAdapter(); track fraccion.id) {
+                <div class="tree-node" [class.nivel-par]="(fraccion.level || 0) % 2 === 0"
+                    [style.paddingLeft.px]="(fraccion.level || 0) * 20">
+                    <div class="node-content" (click)="expandirArbol(fraccion)">
+                        <div class="expand-icon">
+                            @if (fraccion.hasChildren && !fraccion.isExpanded) {
+                            <span>▶</span>
+                            }
+                            @if (fraccion.hasChildren && fraccion.isExpanded) {
+                            <span>▼</span>
+                            }
+                            @if (!fraccion.hasChildren) {
+                            <span class="dot">•</span>
+                            }
+                        </div>
+
+                        <input type="checkbox" [checked]="esSeleccionada(fraccion)"
+                            (change)="checkCambio(fraccion, $event)" (click)="$event.stopPropagation()"
+                            class="node-checkbox" />
+
+                        <span class="node-title">
+                            {{ fraccion.id }} - {{ fraccion.title }}
+                        </span>
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
+    </modal-body>
+    <modal-footer>
+        <button class="btn-primary" (click)="confirmarSeleccion()" [disabled]="selectedItems.size === 0">
+            Agregar
+        </button>
+    </modal-footer>
+</libs-modal>
+}
+@if(mostrarEliminar && esModalHabilitado(ModalFracciones.ELIMINAR)){
+<libs-modal (closed)="cerrarModal('ELIMINAR')" tituloModal="Eliminar Fraccion(es)">
+    <modal-body>
+        <section>
+            <header>
+                <h5>Consulta de fracciones</h5>
+                <p>Seleccione criterios de búsqueda de fracciones arancelarias y presione buscar.</p>
+            </header>
+            <div class="form-consulta-fracciones">
+
+                <label for="">Número de Clasificación Arancelaria.</label>
+                <input #numeroClasificacion type="text">
+
+                <button type="button" (click)="consultarDatosPorFraccion(numeroClasificacion.value)"
+                    class="btn btn-primary">Consultar</button>
+            </div>
+        </section>
+        <section>
+            <app-tabla-dinamica [itemsPerPage]="10" [showPagination]="true" [datos]="datos()"
+                [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX" [configuracionTabla]="configuracionTabla"
+                (filaClic)="consultaFila($event)"
+                (listaDeFilaSeleccionada)="seleccionarAEliminar($event)"></app-tabla-dinamica>
+        </section>
+    </modal-body>
+    <modal-footer class="footer-actions-container">
+        <button class="btn-primary btn" (click)="eliminarSeleccion('TODO')">Eliminar Todos</button>
+        <button class="btn-primary btn" (click)="eliminarSeleccion('SELECCION')">Eliminar</button>
+    </modal-footer>
+</libs-modal>
+}
+@if(mostrarConsultar && esModalHabilitado(ModalFracciones.CONSULTAR)){
+<libs-modal (closed)="cerrarModal('CONSULTAR')" tituloModal="Consultar Fraccion(es)">
+    <modal-body>
+        <section>
+            <header>
+                <h5>Consulta de fracciones</h5>
+                <p>Seleccione criterios de búsqueda de fracciones arancelarias y presione buscar.</p>
+            </header>
+            <div class="form-consulta-fracciones">
+                <label for="">Número de Clasificación Arancelaria.</label>
+                <input #numeroClasificacion type="text">
+                <button type="button" (click)="consultarDatosPorFraccion(numeroClasificacion.value)"
+                    class="btn btn-primary">Consultar</button>
+            </div>
+        </section>
+        <section>
+            <app-tabla-dinamica [itemsPerPage]="10" [showPagination]="true" [datos]="datos()"
+                [configuracionTabla]="configuracionTabla" (filaClic)="consultaFila($event)"></app-tabla-dinamica>
+        </section>
+    </modal-body>
+</libs-modal>
+}

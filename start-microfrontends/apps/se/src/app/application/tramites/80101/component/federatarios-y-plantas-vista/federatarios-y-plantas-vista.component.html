@@ -1,0 +1,66 @@
+<app-federatarios-y-plantas
+  [federatariosConfig]="federatariosTablaConfiguracion"
+  [federatariosDatos]="(federatariosTablaLista$ | async) || []"
+  [plantasDisponiblesConfig]="plantasDisponiblesTablaConfiguracion"
+  [plantasImmexConfig]="plantasImmexTablaConfiguracion"
+  [plantasDisponiblesDatos]="(plantasDisponiblesTablaLista$ | async) || []"
+  [plantasImmexDatos]="(plantasImmexTablaLista$ | async) || []"
+  (datosFormaFedratario)="setFormaDatos($event)"
+  (updatedDatosFormaFedratario)="setUpdatedFormaDatos($event)"
+  (datosPlantaDisponibles)="setPlantasDisponiblesDatos()"
+  (datosPlantasImmex)="setPlantasImmexDatos($event)"
+  [formularioDeshabilitado]="formularioDeshabilitado"
+  [esFormularioUpdate]="esFormularioUpdate"
+  [datosFederatarios]="datosFederatarios"
+  (accionSeccion)="onAccionSeccion($event)"
+  (datosFederatariosEvent)="setDatosFederatarios($event)"
+  (eliminarPlantaDisponible)="onEliminarPlantaDisponible($event)"
+  (eliminarPlantaId)="onEliminarPlantaId($event)"
+  [errorPlantasDisponiblesNotificacion]="errorPlantasDisponiblesNotificacion"
+  (selectedPlantaId)="onSelectedPlantaId($event)"
+></app-federatarios-y-plantas>
+
+<ng-container *ngIf="mostrarComplementarPlantaPopup">
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <app-complementar-planta [plantaID]="selectedPlantaId" [eliminarPlantaId]="eliminarPlantaId" (obtenerComplementarPlantaList)="obtenerComplementarPlantaList($event)" (obtenerFirmantesList)="obtenerFirmantesList($event)" (cerrarPopup)="cerrarComplementarPlanta()"></app-complementar-planta>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="mostrarMontosDeInversionPopup">
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <app-montos-de-inversion [montosDeInversionDatos]="(montosDeInversionDatos$ | async) || []" (obtenerMontosInversion)="obtenerMontosInversionList($event)" (removeMontosInversionList)="removeMontosInversionList($event)" (cerrarPopup)="cerrarMontosDeInversion()"></app-montos-de-inversion>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="mostrarEmpleadosPopup">
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <app-empleados (obtenerEmpleadosList)="obtenerEmpleadosList($event)" (cerrarPopup)="cerrarEmpleados()"></app-empleados>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="mostrarCapacidadInstaladaPopup">
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <app-capacidad-instalada (obtenerCapacidadInstaladaTablaList)="obtenerCapacidadInstaladaTablaList($event)" (cerrarPopup)="cerrarCapacidadInstalada()" [anexoUnoTablaLista]="anexoUnoTablaLista"></app-capacidad-instalada>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="mostrarProveedorPorArchivoPopup">
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <app-carga-por-archivo (cerrarPopup)="cerrarProveedorPorArchivo()"></app-carga-por-archivo>
+    </div>
+  </div>
+</ng-container>
+
+<section *ngIf="nuevaUnoNotificacion">
+    <lib-notificaciones [notificacionInput]="nuevaUnoNotificacion">
+    </lib-notificaciones>
+</section>

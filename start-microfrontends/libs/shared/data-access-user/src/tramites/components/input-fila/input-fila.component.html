@@ -1,0 +1,18 @@
+<div class="form-group">
+    @if (labelNombre) {
+        <label for="input_fecha" class="form-label">{{labelNombre}}
+            <span 
+                *ngIf="required"
+                [ngClass]="formControl.errors?.['required'] && formControl.touched ? 'text-danger' : ''"
+            >*</span>:
+            @if(tooltipQuestionCircle) { 
+                <span class="bi bi-question-circle-fill" tooltip="{{tooltipText ? tooltipText : labelNombre}}"></span>
+            }
+        </label>
+    }
+    <div class="mt-2">
+        <input type="file" [id]="id" [accept]="accept" #fileInput hidden (change)="onFilaSeleccionada($event)" (click)="onDialogoAbierto()" [disabled]="formControl.disabled">
+        <span for="fileInput" class="custom-upload-btn" [class.disabled]="formControl.disabled" (click)="!formControl.disabled && fileInput.click()">{{ TEXTOS.CARGA_DE_ARCHIVOS }}</span>
+        <span class="file-name">{{ fila }}</span>
+    </div>
+</div>

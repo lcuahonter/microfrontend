@@ -1,0 +1,141 @@
+<div class="container-fluid">
+  <div class="breadcrumb-custom mb-3">
+    <span class="active-link">Antecesor</span> | Activo
+  </div>
+  <h2 class="mb-4">Consultar certificados cancelados por vigencia</h2>
+  <app-error-messages [errors]="errors" [successMessage]="successMessage"></app-error-messages>
+  <div class="tabs-container">
+    <ul class="nav-tabs-custom">
+      <li class="nav-item" *ngFor="let tab of tabs; let i = index">
+        @if(tab.show){
+          <a
+            href="javascript:void(0)"
+            class="nav-link"
+            [class.active]="activeTab === i"
+            (click)="seleccionaTab(i)"
+          >
+            {{ tab.titulo }}
+          </a>
+        }
+      </li>
+    </ul>
+  </div>
+  <div class="tab-content-custom">
+    <div [ngSwitch]="activeTab">
+      <div *ngSwitchCase="0" class="p-3">
+        <div class="search-box mb-4">
+          <h5>Buscar Empresa</h5>
+          <hr style="border-top: 1px solid #ccc; margin: 10px 0" />
+          <form class="row" [formGroup]="form" (ngSubmit)="onBuscar()">
+            <div class="col-md-8">
+              <label for="rfc" class="form-label">
+                <span class="text-danger">*</span>
+                Por favor, ingrese el RFC de la Empresa de la que desea consultar
+              </label>
+              <input
+                type="text"
+                formControlName="rfc"
+                class="form-control"
+                placeholder=""
+                maxlength="13"
+                style="text-transform: uppercase"
+              />
+            </div>
+            <div class="col-md-4 d-flex align-items-end justify-content-end">
+              <button
+                type="submit"
+                class="btn-primary"
+                [disabled]="form.get('rfc')?.invalid"
+              >
+                Buscar
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div *ngIf="datosSolicitante" class="mt-4">
+          <ng-titulo titulo="Datos generales del solicitante"></ng-titulo>
+          <div class="row g-3 px-3">
+            <div class="col-md-4">
+              <label class="form-label font-weight-bold">Nombre(s)</label>
+              <input type="text" class="form-control bg-light" [value]="datosSolicitante.nombre" readonly>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label font-weight-bold">Primer apellido</label>
+              <input type="text" class="form-control bg-light" [value]="datosSolicitante.primerApellido" readonly>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label font-weight-bold">Segundo apellido</label>
+              <input type="text" class="form-control bg-light" [value]="datosSolicitante.segundoApellido" readonly>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label font-weight-bold">Actividad económica preponderante</label>
+              <input type="text" class="form-control bg-light" [value]="datosSolicitante.actividadEconomica" readonly>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label font-weight-bold">RFC</label>
+              <input type="text" class="form-control bg-light" [value]="datosSolicitante.rfc" readonly>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label font-weight-bold">Clave Única de Registro de Población</label>
+              <input type="text" class="form-control bg-light" [value]="datosSolicitante.curp" readonly>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label font-weight-bold">Correo electrónico</label>
+              <input type="text" class="form-control bg-light" [value]="datosSolicitante.email" readonly>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="domicilioFiscal" class="mt-5">
+          <ng-titulo titulo="Domicilio fiscal del solicitante"></ng-titulo>
+          <div class="row g-3 px-3">
+            <div class="col-md-6">
+              <label class="form-label font-weight-bold">Calle</label>
+              <input type="text" class="form-control bg-light" [value]="domicilioFiscal.calle" readonly>
+            </div>
+            <div class="col-md-2">
+              <label class="form-label font-weight-bold">Número exterior</label>
+              <input type="text" class="form-control bg-light" [value]="domicilioFiscal.numeroExterior" readonly>
+            </div>
+            <div class="col-md-2">
+              <label class="form-label font-weight-bold">Número interior</label>
+              <input type="text" class="form-control bg-light" [value]="domicilioFiscal.numeroInterior" readonly>
+            </div>
+            <div class="col-md-2">
+              <label class="form-label font-weight-bold">Código postal</label>
+              <input type="text" class="form-control bg-light" [value]="domicilioFiscal.codigoPostal" readonly>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label font-weight-bold">Colonia</label>
+              <input type="text" class="form-control bg-light" [value]="domicilioFiscal.colonia" readonly>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label font-weight-bold">País</label>
+              <input type="text" class="form-control bg-light" [value]="domicilioFiscal.pais" readonly>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label font-weight-bold">Estado</label>
+              <input type="text" class="form-control bg-light" [value]="domicilioFiscal.estado" readonly>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label font-weight-bold">Localidad</label>
+              <input type="text" class="form-control bg-light" [value]="domicilioFiscal.localidad" readonly>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label font-weight-bold">Municipio o alcaldía</label>
+              <input type="text" class="form-control bg-light" [value]="domicilioFiscal.municipioAlcaldia" readonly>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label font-weight-bold">Teléfono</label>
+              <input type="text" class="form-control bg-light" [value]="domicilioFiscal.telefono" readonly>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngSwitchCase="1">
+        <app-cancelados-por-vigencia [datos]="certificados"></app-cancelados-por-vigencia>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,44 @@
+<div class="page">
+    <div class="container">
+        <section class="bg-light px-5 py-2">
+            <h5>Busqueda de proveedor</h5>
+            @if(alertaVisible){
+                <br />
+                <ng-alert [CONTENIDO]="mensajeAlerta" [CUSTOMECLASS]="claseAlerta"></ng-alert>
+            }
+        </section>
+        <br />
+        <section class="form-rfc-container bg-light p-5">
+            <form [formGroup]="FormBusquedaProveedores" action="">
+                <div class="form-field">
+                    <label class="form-label" for="rfc">RFC Proveedor</label>
+                    <input class="form-control" id="rfc" type="text" formControlName="rfc"
+                        [class.is-invalid]="rfc?.invalid && (rfc?.dirty || rfc?.touched)">
+                    @if (rfc?.invalid && (rfc?.dirty || rfc?.touched)) {
+                    <div class="invalid-feedback">
+                        @if (rfc?.hasError('required')) {
+                        <div>Debe proporcionar RFC.</div>
+                        }
+                    </div>
+                    }
+                </div>
+            </form>
+            <div class="btn-form-action">
+                <button class="btn btn-primary" type="button" (click)="obtenerDatosDelProveedor()">Buscar</button>
+            </div>
+        </section>
+        <br />
+        <section class="bg-light p-5">
+            <h5>Industrias Automotriz del Proveedor</h5>
+            <br />
+            <app-tabla-dinamica [tableId]="'tablaProveedores'" [configuracionTabla]="configuracionTabla" [datos]="datosProveedores"
+                [mode]="'client'" [totalItems]="datosProveedores.length" [showPagination]="true"
+                [itemsPerPage]="15"/>
+                <br/>
+            <div class="botones-accion-tabla">
+                <button class="btn btn-primary" type="button" (click)="limpiarInput()">Limpiar</button>
+                <button class="btn btn-primary" type="button" (click)="exportarExcel()">Exportar Información</button>
+            </div>
+        </section>
+    </div>
+</div>

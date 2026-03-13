@@ -1,0 +1,55 @@
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-12">
+      <h1>Solicitud importación regla octava definitiva</h1>
+    </div>
+    <div class="row mt-5" *ngIf="indice === 3">
+        <div class="col-md-12">
+          <lib-notificaciones [notificacionInput]="alertaNotificacion"></lib-notificaciones>
+        </div>
+      </div>
+    <app-wizard [listaPasos]="pantallasPasos"></app-wizard>
+  </div>
+  <div class="row">
+    @switch (indice) {
+    @case (1) {
+    <app-paso-uno [consultaState]="consultaState" (pestanaCambiado)="pestanaCambiado($event)"></app-paso-uno>
+    }
+    @case (2) {
+    <app-paso-carga-documento [idSolicitud]="solicitudState.idSolicitud || 0" [idTipoTRamite]="'130103'"
+      [cargaArchivosEvento]="cargarArchivosEvento" (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+      (reenviarCargaRealizada)="cargaRealizada($event)"
+      (cargaEnProgreso)="onCargaEnProgreso($event)"></app-paso-carga-documento>
+    } @case (3) {
+    <paso-firma [idSolicitud]="solicitudState.idSolicitud || 0" [procedure]="130103"
+      [procedureUrl]="'importacion-definitiva/pantallas'"></paso-firma>
+    }
+    }
+  </div>
+  <div class="row">
+        <div class="col-md-12">
+          @if (indice !== 2) {
+          <btn-continuar [datos]="datosPasos" (continuarEvento)="getValorIndice($event)"></btn-continuar>
+          } @else {
+          <div class="mt-5 mb-3 d-flex justify-content-end">
+            <button type="button" class="btn btn-default" (click)="anterior()" *ngIf="seccionCargarDocumentos">
+              Anterior
+            </button>
+
+            <button class="btn btn-primary ms-3" (click)="
+              seccionCargarDocumentos ? onClickCargaArchivos() : siguiente()
+            "
+              [disabled]="(seccionCargarDocumentos && !activarBotonCargaArchivos) || (!seccionCargarDocumentos && cargaEnProgreso)">
+              {{ seccionCargarDocumentos ? 'Cargar archivos' : 'Continuar' }}
+            </button>
+          </div>
+          }
+        </div>
+      </div>
+
+  @if (indiceDePestanaSeleccionada===2) {
+  <div class="mt-5">
+    <ng-alert [CONTENIDO]="avisoPrivacidadAlert"></ng-alert>
+  </div>
+  }
+</div>

@@ -1,0 +1,47 @@
+<div class="col-md-12 mt-5">
+  <ul class="nav nav-tabs">
+    <li [class.active]="activeTab === 'step1'">
+      <a href="#step1" (click)="setActiveTab('step1'); $event.preventDefault()">Datos Generales</a>
+    </li>
+    <li [class.active]="activeTab === 'step2'">
+      <a href="#step2" (click)="setActiveTab('step2'); $event.preventDefault()">Información del {{ typeGuide }}</a>
+    </li>
+    <ng-container *ngIf="!isManifest">
+      <li [class.active]="activeTab === 'step3'">
+        <a href="#step3" (click)="setActiveTab('step3'); $event.preventDefault()">Personas / Transporte</a>
+      </li>
+    </ng-container>
+  </ul>
+  <div class="tab-content">
+    <div class="tab-pane fade" id="step1" [class.active]="activeTab === 'step1'" [class.in]="activeTab === 'step1'">
+      <div class="row">
+        <app-tab-general-data></app-tab-general-data>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="step2" [class.active]="activeTab === 'step2'" [class.in]="activeTab === 'step2'">
+      <div class="row">
+        <ng-container *ngIf="isMaster">
+          <app-tab-master-info></app-tab-master-info>
+        </ng-container>
+        <ng-container *ngIf="isManifest">
+          <app-tab-manifest-info></app-tab-manifest-info>
+        </ng-container>
+        <ng-container *ngIf="isHouse">
+          <app-tab-house-info></app-tab-house-info>
+        </ng-container>
+      </div>
+    </div>
+    <ng-container *ngIf="!isManifest">
+      <div class="tab-pane fade" id="step3" [class.active]="activeTab === 'step3'" [class.in]="activeTab === 'step3'">
+        <div class="row">
+          <app-tab-persons-transport></app-tab-persons-transport>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<div class="col-md-12 mt-3 text-right">
+  <button type="button" class="btn btn-danger mr-1" data-toggle="modal" data-target="#cancelModal">Cancelar</button>
+  <gob-button type="button" className="btn-primary" label="Continuar" (clicked)="continueProcess()"></gob-button>
+</div>

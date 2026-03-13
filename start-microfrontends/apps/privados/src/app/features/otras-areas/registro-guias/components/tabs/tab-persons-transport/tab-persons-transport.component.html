@@ -1,0 +1,345 @@
+<form [formGroup]="specialServiceForm" (ngSubmit)="onSubmit()" autocomplete="off">
+  <h3>Personas</h3>
+  <hr class="red" />
+  <div class="row">
+    <div class="col-md-12">
+      <ng-container *ngIf="formsDispatched && !tableIsValid">
+        <div class="alert alert-warning">
+          <strong>¡Precaución!</strong>
+            {{ warningText }}
+        </div>
+      </ng-container>
+      <div [ngClass]="{ 'table-error': valueMissingPeopleTable || !tableIsValid }">
+        <app-table
+          [tableData]="tablePeopleData"
+          [borderedStyle]="true"
+          [isLoading]="isLoadingPeopleData"
+          [error]="errorPeopleData"
+          [hasRedirect]="true"
+          [ableSelectAllTable]="tablePeopleTableHasValue()"
+          [ableSelectRows]="true"
+          [displayHeader]="false"
+          (onRowsSelected)="peopleSelected($event)"/>
+      </div>
+      <ng-container *ngIf="valueMissingPeopleTable || !tableIsValid">
+        <small class="text-error">
+          {{ 'Este campo es obligatorio' }}
+        </small>
+      </ng-container>
+      <div class="text-right">
+        <gob-button
+          type="button"
+          className="btn-primary mr-2"
+          label="Agregar"
+          (clicked)="addPerson()"
+        />
+        <ng-container *ngIf="displayDeleteBtnPeople()">
+          <gob-button
+            type="button"
+            className="btn-danger"
+            label="Eliminar"
+            (clicked)="removePerson()"
+          />
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+
+  <ng-container *ngIf="isHouse">
+    <!-- Origin -->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <label class="control-label">Origin*:</label>
+          <div>
+            <label class="radio-inline mr-5">
+              <input type="radio" [value]="locationEnum.IATA" formControlName="originType" /> IATA
+            </label>
+            <label class="radio-inline">
+              <input
+                type="radio"
+                [value]="locationEnum.CONTROLLED_PREMISES"
+                formControlName="originType"
+              />
+              Recinto Fiscalizado
+            </label>
+          </div>
+          <ng-container *ngIf="formUtils.isValidField(specialServiceForm, 'originType')">
+            <small class="form-text form-text-error">
+              {{ formUtils.getFieldError(specialServiceForm, 'originType') }}
+            </small>
+          </ng-container>
+        </div>
+      </div>
+
+      <ng-container *ngIf="radioHasValue('originType')">
+        <div class="col-md-4 col-sm-6">
+          <div class="form-group">
+            <label class="control-label">I D*:</label>
+            <app-tooltip text="Código del lugar de Origen"></app-tooltip>
+            <select
+              class="form-control"
+              formControlName="originId"
+              [ngClass]="{
+                'form-control-error': formUtils.isValidField(specialServiceForm, 'originId')
+              }"
+            >
+              <option [ngValue]="null">Selecciona un valor</option>
+              <option *ngFor="let id of originIds" [value]="id.valor">{{ id.clave }}</option>
+            </select>
+            <ng-container *ngIf="formUtils.isValidField(specialServiceForm, 'originId')">
+              <small class="form-text form-text-error">
+                {{ formUtils.getFieldError(specialServiceForm, 'originId') }}
+              </small>
+            </ng-container>
+          </div>
+        </div>
+      </ng-container>
+
+      <div class="col-md-4 col-sm-6">
+        <div class="form-group">
+          <label class="control-label">Name:</label>
+          <app-tooltip text="Nombre del lugar de Origen"></app-tooltip>
+          <input type="text" class="form-control" formControlName="originName" readonly/>
+        </div>
+      </div>
+    </div>
+
+    <!-- Final Destination -->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <label class="control-label">Final Destination*:</label>
+          <div>
+            <label class="radio-inline mr-5">
+              <input type="radio" [value]="locationEnum.IATA" formControlName="finalType" /> IATA
+            </label>
+            <label class="radio-inline">
+              <input
+                type="radio"
+                [value]="locationEnum.CONTROLLED_PREMISES"
+                formControlName="finalType"
+              />
+              Recinto Fiscalizado
+            </label>
+          </div>
+          <ng-container *ngIf="formUtils.isValidField(specialServiceForm, 'finalType')">
+            <small class="form-text form-text-error">
+              {{ formUtils.getFieldError(specialServiceForm, 'finalType') }}
+            </small>
+          </ng-container>
+        </div>
+      </div>
+
+      <ng-container *ngIf="radioHasValue('finalType')">
+        <div class="col-md-4 col-sm-6">
+          <div class="form-group">
+            <label class="control-label">I D*:</label>
+            <app-tooltip text="Código del lugar de Destino"></app-tooltip>
+            <select
+              class="form-control"
+              formControlName="finalId"
+              [ngClass]="{
+                'form-control-error': formUtils.isValidField(specialServiceForm, 'finalId')
+              }"
+            >
+              <option [ngValue]="null">Selecciona un valor</option>
+              <option *ngFor="let id of finalIds" [value]="id.valor">{{ id.clave }}</option>
+            </select>
+            <ng-container *ngIf="formUtils.isValidField(specialServiceForm, 'finalId')">
+              <small class="form-text form-text-error">
+                {{ formUtils.getFieldError(specialServiceForm, 'finalId') }}
+              </small>
+            </ng-container>
+          </div>
+        </div>
+      </ng-container>
+
+      <div class="col-md-4 col-sm-6">
+        <div class="form-group">
+          <label class="control-label">Name:</label>
+          <app-tooltip text="Nombre del lugar de Destino"></app-tooltip>
+          <input type="text" class="form-control" formControlName="finalName" readonly/>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <h3>{{ titleDetails }}</h3>
+  <hr class="red" />
+  <div class="row">
+    <div class="col-md-12">
+      <div [ngClass]="{ 'table-error': valueMissingTransportTable }">
+        <app-table
+          [tableData]="tableTransportData"
+          [borderedStyle]="true"
+          [isLoading]="isLoadingTransportData"
+          [hiddenData]="hiddenTransportData"
+          [error]="errorTransportData"
+          [hasRedirect]="true"
+          [ableSelectAllTable]="true"
+          [ableSelectRows]="true"
+          [displayHeader]="false"
+          (onRowsSelected)="transportSelected($event)"/>
+      </div>
+      <ng-container *ngIf="valueMissingPeopleTable">
+        <small class="text-error">
+          {{ 'Este campo es obligatorio' }}
+        </small>
+      </ng-container>
+      <div class="text-right mt-3">
+        <gob-button
+          type="button"
+          className="btn-primary mr-2"
+          label="Agregar"
+          (clicked)="addTransport()"
+        />
+        <ng-container *ngIf="displayUpdateBtnTransport()">
+          <gob-button
+            type="button"
+            className="btn-default mr-2"
+            label="Modificar"
+            (clicked)="updateTransport()"
+          />
+        </ng-container>
+        <ng-container *ngIf="displayDeleteBtnTransport()">
+          <gob-button
+            type="button"
+            className="btn-danger"
+            label="Eliminar"
+            (clicked)="removeTransport()"
+          />
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Subject Code*:</label>
+        <app-tooltip text="Tipo de Operación"></app-tooltip>
+        <select
+          class="form-control"
+          formControlName="subjectCode"
+          [ngClass]="{
+            'form-control-error': formUtils.isValidField(specialServiceForm, 'subjectCode')
+          }"
+        >
+          <option [ngValue]="null">Selecciona una opción</option>
+          <option *ngFor="let code of operationTypes" [value]="code.clave">{{ code.valor }}</option>
+        </select>
+        <ng-container *ngIf="formUtils.isValidField(specialServiceForm, 'subjectCode')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(specialServiceForm, 'subjectCode') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <h3>Servicio de maniobras / Servicio especial</h3>
+  <hr class="red" />
+
+  <!-- Servicio de maniobra -->
+  <div class="row">
+    <div class="col-md-12">
+      <label class="control-label">Servicio de maniobra:</label>
+    </div>
+
+    <div class="col-md-12">
+      <label class="radio-inline">
+        <input type="radio" value="SpecialHandlingCodes" formControlName="handlingType"/> Special Handling Codes
+      </label>
+      <label class="radio-inline">
+        <input type="radio" value="Dangerous" formControlName="handlingType" /> Dangerous
+      </label>
+    </div>
+  </div>
+
+  <div class="row mt-2">
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Description:</label>
+        <app-tooltip text="Descripción del servicio de maniobras"></app-tooltip>
+        <input type="text" class="form-control" formControlName="handlingDescription" [appMaxLength]="12" />
+      </div>
+    </div>
+
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Description Code:</label>
+        <app-tooltip text="Código para del Servicio de maniobras"></app-tooltip>
+        <select class="form-control" formControlName="handlingDescriptionCode">
+          <option [ngValue]="null">Selecciona una opción</option>
+          <option *ngFor="let code of codesHandling" [value]="code.clave">{{ code.valor }}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Servicio especial -->
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <label class="control-label">Servicio especial:</label>
+    </div>
+
+    <div class="col-md-12">
+      <label class="radio-inline">
+        <input type="radio" value="SpecialHandlingCodes" formControlName="specialType" /> Special Handling Codes
+      </label>
+      <label class="radio-inline">
+        <input type="radio" value="Dangerous" formControlName="specialType" /> Dangerous
+      </label>
+    </div>
+  </div>
+
+  <div class="row mt-2">
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Description:</label>
+        <app-tooltip text="Descripción del servicio de maniobras"></app-tooltip>
+        <input type="text" class="form-control" formControlName="specialDescription" [appMaxLength]="35"/>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Description Code:</label>
+        <app-tooltip text="Código para del Servicio de maniobras"></app-tooltip>
+        <select class="form-control" formControlName="specialDescriptionCode">
+          <option [ngValue]="null">Selecciona una opción</option>
+          <option *ngFor="let code of codesSpecial" [value]="code.clave">{{ code.valor }}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-2">
+  <div class="col-md-4 col-sm-6">
+    <div class="form-group">
+      <label class="control-label">Origin Currency*:</label>
+      <app-tooltip text="Moneda Origen"></app-tooltip>
+      <select
+        class="form-control"
+        formControlName="originCurrency"
+        [ngClass]="{
+          'form-control-error': formUtils.isValidField(specialServiceForm, 'originCurrency')
+        }"
+      >
+        <option [ngValue]="null">Selecciona una opción</option>
+        <option *ngFor="let currency of currencyCodes" [value]="currency.clave">{{ currency.valor }}</option>
+      </select>
+      <ng-container *ngIf="formUtils.isValidField(specialServiceForm, 'originCurrency')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(specialServiceForm, 'originCurrency') }}
+          </small>
+        </ng-container>
+    </div>
+  </div>
+  </div>
+</form>
+<app-dialog [id]="'hasAllPersons'" [content]="'Consignor, Consignee, Freight Forwarder y Other ya fueron registrados'"/>
+<app-dialog [id]="'registerDeletedPeople'" [content]="'El registro seleccionado fue eliminado correctamente'"/>
+

@@ -1,0 +1,40 @@
+export const MERCANCIAS = [
+    {
+      labelNombre: 'Aduana por la que ingresara la mercancia',
+      campo: 'aduana',
+      class: 'col-md-8',
+      tipo_input: 'select-catalogos',
+      disabled: false,
+      validators: ['required'],
+      placeholder: '---Seleccionia---',
+    },
+    {
+      labelNombre: 'Organisamo publico',
+      campo: 'organisamoPublico',
+      class: 'col-md-4',
+      tipo_input: 'checkbox',
+      disabled: false,
+      validators: ['required'],
+      placeholder: '',
+    },
+    {
+      labelNombre: 'Fin al cual se destinara la mercancia',
+      campo: 'finAlDestinara',
+      class: 'col-md-12',
+      tipo_input: 'textarea',
+      disabled: false,
+      tooltip: '',
+      validators: ['required'],
+      placeholder: '',
+    },
+    {
+      labelNombre: 'Fin al cual se destinara la mercancia',
+      campo: 'finAlDestinara',
+      class: 'col-md-12',
+      tipo_input: 'table-dinamica',
+      disabled: false,
+      tooltip: '',
+      validators: ['required'],
+      placeholder: '',
+    }
+  ];

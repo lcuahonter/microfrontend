@@ -1,0 +1,104 @@
+<div class="container">
+  <ng-titulo titulo="Terceros relacionados"></ng-titulo>
+  <div class="row mt-5 text-center">
+    <ng-alert [CONTENIDO]="tercerorTextoDeAlerta"></ng-alert>
+  </div>
+  <div class="row mt-5">
+      <h5>Destinatario (destino final)*:</h5>
+  </div>
+  <div class="row">
+    <app-tabla-dinamica
+      [tipoSeleccionTabla]="destinoFinalTablaConfiguracion.tipoSeleccionTabla"
+      [configuracionTabla]="destinoFinalTablaConfiguracion.configuracionTabla"
+      [datos]="destinatarioFinalTablaDatos"
+      (listaDeFilaSeleccionada)="destinarioTablaSeleccionadaEvent($event)"
+      [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+    ></app-tabla-dinamica>
+  </div>
+  <div class="row mt-5">
+    <div class="col-md-12">
+      <div class="pull-right">
+         @if(destinatarioFinalTablaDatos.length > 0) {
+             <button
+            type="button"
+            name="eliminarMercancias"
+            class="btn btn-danger"
+            (click)="eliminarDestinatarioFinal()"
+            [disabled]="destinarioTablaSeleccionada.length !== 1 || esFormularioSoloLectura" 
+          >
+            Eliminar
+          </button>
+          <button
+            type="button"
+            name="modificarMercancias"
+            class="btn btn-default ms-2"
+            (click)="modificarDestinatario()"
+            [disabled]="destinarioTablaSeleccionada.length !== 1 || esFormularioSoloLectura" 
+          >
+            Modificar
+          </button>
+       
+      }
+        <button
+          type="button"
+          name="agregarMercancias"
+          class="btn btn-primary ms-2"
+          [disabled]="esFormularioSoloLectura"
+          (click)="irAAcciones('agregar-destino-final')"
+        >
+          Agregar
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-5">
+ <h5>Proveedor*:</h5>
+  </div>
+  <div class="row">
+    <app-tabla-dinamica
+      [tipoSeleccionTabla]="dproveedorTablaConfiguracion.tipoSeleccionTabla"
+      [configuracionTabla]="dproveedorTablaConfiguracion.configuracionTabla"
+      [datos]="proveedorTablaDatos"
+      (listaDeFilaSeleccionada)="proveedorTablaSeleccionadaEvent($event)"
+      [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+    ></app-tabla-dinamica>
+  </div>
+  <div class="row mt-5">
+    <div class="col-md-12">
+      <div class="pull-right">
+         @if(proveedorTablaDatos.length > 0) {
+           <button
+          type="button"
+          name="eliminarMercancias"
+          class="btn btn-danger"
+          (click)="eliminarProveedorFinal()"
+          [disabled]="proveedorTablaSeleccionada.length !== 1 || esFormularioSoloLectura"
+        >
+          Eliminar
+        </button>
+        <button
+          type="button"
+          name="modificarMercancias"
+          class="btn btn-default ms-2"
+          [disabled]="proveedorTablaSeleccionada.length !== 1 || esFormularioSoloLectura"
+          (click)="modificarProveedor()"
+        >
+          Modificar
+        </button>
+       
+      }
+      @if(!tercerosNacionalidad){
+        <button
+          type="button"
+          name="agregarMercancias"
+          class="btn btn-primary ms-2"
+          [disabled]="esFormularioSoloLectura"
+          (click)="irAAcciones('agregar-proveedor')"
+        >
+          Agregar
+        </button>
+      }
+      </div>
+    </div>
+  </div>
+</div>

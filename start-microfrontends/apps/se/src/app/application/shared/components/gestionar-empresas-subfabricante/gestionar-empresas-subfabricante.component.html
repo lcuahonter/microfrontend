@@ -1,0 +1,170 @@
+<!-- datosSubcontratista empezar -->
+<form [formGroup]="formularioDatosSubcontratista">
+  <ng-titulo titulo="Empresas submanufactureras" />
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label
+          class="form-label text-nowrap text-truncate-ellipsis"
+          [title]="'Registro federal de contribuyentes'"
+          for="rfc"
+          >Registro federal de contribuyentes<span class="require">*:</span>
+        </label>
+        <input
+          type="text"
+          id="rfc"
+          formControlName="rfc"
+          class="form-control mt-custom"
+          size="30"
+          maxlength="13"
+          [ngClass]="esValido(formularioDatosSubcontratista, 'rfc') ? 'required' : ''"
+          (change)="cambiarRFC()"
+        />
+        <div *ngIf="formularioDatosSubcontratista.get('rfc')?.invalid && formularioDatosSubcontratista.get('rfc')?.touched">
+          <p *ngIf="formularioDatosSubcontratista.get('rfc')?.errors?.['required']" class="mensaje-error">Este campo es
+            obligatorio.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <app-catalogo-select
+          [catalogo]="estadoCatalogo"
+          [label]="'Estado'"
+          [required]="true"
+          [isDisabled]="formularioDeshabilitado"
+          [markTouched]="formularioDatosSubcontratista.get('estado')?.touched ?? false"
+          name="estado"
+          formControlName="estado"
+          (selectionChange)="cambiarEstado($event)"
+        ></app-catalogo-select>
+      </div>
+    </div>
+  </div>
+</form>
+<!-- datosSubcontratista fin -->
+
+<div class="row justify-content-end mt-3">
+  <button
+    type="button"
+    class="btn btn-primary col-auto pull-right float-end mt-3"
+    (click)="onBuscar()"
+    [disabled]="formularioDeshabilitado"
+  >
+    Buscar plantas
+  </button>
+</div>
+
+<div class="row mt-5">
+  <div class="col-md-12">
+    <label for="submanufacturerasdisponibles"
+      >Submanufactureras disponibles:</label
+    >
+  </div>
+  <div class="col-md-12">
+    <app-tabla-dinamica
+      [tipoSeleccionTabla]="tablaSeleccion"
+      [configuracionTabla]="configuracionTablaDisponibles"
+      [datos]="datosTablaSubfabricantesDisponibles"
+      (listaDeFilaSeleccionada)="onPlantasDisponiblesSeleccionadas($event)"
+      [disableSeleccionTablaCheckBox]="formularioDeshabilitado"
+    ></app-tabla-dinamica>
+  </div>
+
+  <div class="row justify-content-end">
+    <button
+      type="button"
+      class="btn btn-primary col-auto pull-right float-end mt-3"
+      (click)="agregarPlantas()"
+      [disabled]="formularioDeshabilitado"
+    >
+      Agregar plantas
+    </button>
+  </div>
+</div>
+<div class="row mt-5">
+  <div class="col-md-12">
+    <label for="submanufacturerasdisponibles"
+      >Plantas submanufactureras seleccionadas:</label
+    >
+  </div>
+  <div class="col-md-12">
+    <app-tabla-dinamica
+      [tipoSeleccionTabla]="tablaSeleccion"
+      [configuracionTabla]="configuracionTablaSeleccionadas"
+      [datos]="datosTablaSubfabricantesSeleccionadas"
+      (listaDeFilaSeleccionada)="onPlantasSeleccionadas($event)"
+      [disableSeleccionTablaCheckBox]="formularioDeshabilitado"
+    ></app-tabla-dinamica>
+  </div>
+
+  <div class="row justify-content-end">
+    <button type="button" class="btn btn-danger col-auto mt-3 complementar-margin-right"
+    (click)="complementarPlantas()" data-bs-toggle="modal" data-bs-target="#complementarPlanta"
+    [disabled]="formularioDeshabilitado">
+      Complementar plantas
+      
+    </button>
+ 
+<ng-container *ngIf="showComplementarModal">
+  <div class="tab-modal-overlay">
+    <div class="tab-modal-content">
+      <app-contenedor-complementar-plantas 
+        (guadarEvent)="setGuardar()" 
+        (alRegresarPlantas)="cerrarComplementarModal()"
+        (cerrarPopup)="cerrarComplementarModal()"
+      ></app-contenedor-complementar-plantas>
+    </div>
+  </div>
+</ng-container>
+
+    <button
+      type="button"
+      class="btn btn-danger col-auto pull-right float-end mt-3"
+      [disabled]="datosTablaSubfabricantesSeleccionadas.length === 0"
+      (click)="eliminarPlantas()"
+      [disabled]="formularioDeshabilitado"
+    >
+      Eliminar plantas
+    </button>
+  </div>
+ 
+</div>
+
+  @if(nuevaNotificacion){
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion" (confirmacionModal)="eliminarPedimentoDatos($event)"></lib-notificaciones>
+    }
+
+@if (ComponentNotificacion) {
+<section>
+  <lib-notificaciones 
+    [notificacionInput]="ComponentNotificacion"
+    [invertirBotones]="isConfirmationNotification"
+    (confirmacionModal)="onNotificationConfirmacion($event)"
+    >
+  </lib-notificaciones>
+</section>
+}
+
+@if (showError && errorMessage) {
+<section>
+  <lib-notificaciones 
+    [notificacionInput]="{
+      tipoNotificacion: 'alert',
+      categoria: 'danger',
+      modo: 'action',
+      titulo: '',
+      mensaje: errorMessage,
+      cerrar: true,
+      tiempoDeEspera: 5000,
+      txtBtnAceptar: 'Aceptar',
+      txtBtnCancelar: ''
+    }"
+    (confirmacionModal)="onErrorNotificationConfirmacion($event)"
+    >
+  </lib-notificaciones>
+</section>
+}
+
+    

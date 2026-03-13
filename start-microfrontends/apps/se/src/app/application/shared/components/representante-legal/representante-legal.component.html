@@ -1,0 +1,214 @@
+<div class="container">
+    <form [formGroup]="formExportor">
+        <div class="row mt-5">
+            <ng-titulo titulo="Datos del representante legal del exportador" />
+            <div class="col-md-8">
+                <label class="form-label" for="lugar">Lugar*:</label>
+              <input type="text" id="lugar" class="form-control" formControlName="lugar"maxlength="70"
+              (change)="
+                setValoresStore(
+                'formExportor',
+                'lugar',
+                'setFormExportador'
+                )" />
+                @if(formExportor.controls['lugar'].invalid) {
+                  <div class="d-grid">
+                    @if(formExportor.controls['lugar'].errors?.['required'] && formExportor.controls['lugar'].touched) {
+                      <span class="mensaje-error">Este campo es obligatorio</span>
+                      }
+                  </div>   
+                }
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-8">
+                <label class="form-label" for="exportador">Nombre del representante legal del exportador*:</label>
+              <input type="text" id="exportador" class="form-control" formControlName="exportador" maxlength="70"
+              (change)="
+              setValoresStore(
+              'formExportor',
+              'exportador',
+              'setFormExportador'
+              )"/>
+              @if(formExportor.controls['exportador'].invalid && formExportor.controls['exportador'].touched) {
+                <div class="d-grid">
+                  @if(formExportor.controls['exportador'].errors?.['required']) {
+                    <span class="mensaje-error">Este campo es obligatorio</span>
+                    }
+                </div>   
+              }
+            </div>
+        </div>
+
+        <div *ngIf="campoDestinatario; else defaultTemplate">
+          <div class="row mt-5">
+            <div class="col-md-4">
+                <label class="form-label" for="empresa">Empresa*:</label>
+              <input type="text" id="empresa" class="form-control" formControlName="empresa"
+              (change)="
+                setValoresStore(
+                'formExportor',
+                'empresa',
+                'setFormExportador'
+                )" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="cargo">Cargo*:</label>
+              <input type="text" id="cargo" class="form-control" formControlName="cargo"
+              (change)="
+                setValoresStore(
+                'formExportor',
+                'cargo',
+                'setFormExportador'
+                )" />
+            </div>
+            <div class="col-md-4 form-group">
+              <label class="form-label" for="numeroDeRegistroFiscal">Número de registro fiscal:</label>
+              <input type="text" id="numeroDeRegistroFiscal" class="form-control" formControlName="numeroDeRegistroFiscal" (change)="setValoresStore('formDatosDelDestinatario','numeroDeRegistroFiscal','setFormDatosDelDestinatario')" />
+            </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <label class="form-label" for="correo">Correo electrónico*:</label>
+          <input type="text" id="correo" class="form-control" formControlName="correo"
+          (change)="
+            setValoresStore(
+            'formExportor',
+            'correo',
+            'setFormExportador'
+            )" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="telfono">Teléfono*:</label>
+          <input type="text" id="telfono" class="form-control" formControlName="telfono"
+          (change)="
+            setValoresStore(
+            'formExportor',
+            'telfono',
+            'setFormExportador'
+            )" />          
+        </div>
+        <div class="col-md-4">
+          <label class="form-label" for="fax">FAX*:</label>
+          <input type="text" id="fax" class="form-control" formControlName="fax"
+          (change)="
+            setValoresStore(
+            'formExportor',
+            'fax',
+            'setFormExportador'
+            )" />
+        </div>
+        </div>
+        </div>
+
+        <ng-template #defaultTemplate>
+        <div class="row mt-5">
+            <div class="col-md-4">
+                <label class="form-label" for="empresa">Empresa*:</label>
+              <input type="text" id="empresa" class="form-control" formControlName="empresa"maxlength="90"
+              (change)="
+                setValoresStore(
+                'formExportor',
+                'empresa',
+                'setFormExportador'
+                )" />
+                @if(formExportor.controls['empresa'].invalid && formExportor.controls['empresa'].touched) {
+                  <div class="d-grid">
+                    @if(formExportor.controls['empresa'].errors?.['required']) {
+                      <span class="mensaje-error">Este campo es obligatorio</span>
+                      }
+                  </div>   
+                }
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="cargo">Cargo*:</label>
+              <input type="text" id="cargo" class="form-control" formControlName="cargo" maxlength="70"
+              (change)="
+                setValoresStore(
+                'formExportor',
+                'cargo',
+                'setFormExportador'
+                )" />
+                @if(formExportor.controls['cargo'].invalid && formExportor.controls['cargo'].touched) {
+                  <div class="d-grid">
+                    @if(formExportor.controls['cargo'].errors?.['required']) {
+                      <span class="mensaje-error">Este campo es obligatorio</span>
+                      }
+                  </div>   
+                }
+            </div>
+            <div class="col-md-2" *ngIf="idProcedimiento !== 110205">
+                <label class="form-label" for="lada">Lada:</label>
+              <input type="text" id="lada" class="form-control" formControlName="lada"
+              (change)="
+                setValoresStore(
+                'formExportor',
+                'lada',
+                'setFormExportador'
+                )" />
+            </div>
+            <div  [ngClass]="{
+              'col-md-3': idProcedimiento === 110205,
+              'col-md-2': idProcedimiento !== 110205
+            }"
+            [ngStyle]="idProcedimiento === 110205 ? {'margin-left': '6rem'} : {}">
+                <label class="form-label" for="telfono">Teléfono*:</label>
+              <input type="text" id="telfono" class="form-control" formControlName="telfono" maxlength="16"
+              (change)="
+                setValoresStore(
+                'formExportor',
+                'telfono',
+                'setFormExportador'
+                )" />
+                @if(formExportor.controls['telfono'].invalid ) {
+                  <div class="d-grid">
+                    @if(formExportor.controls['telfono'].errors?.['required']&& formExportor.controls['telfono'].touched) {
+                      <span class="mensaje-error">Este campo es obligatorio</span>
+                      }
+                  </div>   
+                }
+                
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-4" *ngIf="idProcedimiento !== 110205">
+                <label class="form-label" for="fax">FAX*:</label>
+              <input type="text" id="fax" class="form-control" formControlName="fax"
+              (change)="
+                setValoresStore(
+                'formExportor',
+                'fax',
+                'setFormExportador'
+                )" />
+                @if(formExportor.controls['fax'].invalid && formExportor.controls['fax'].touched) {
+                  <div class="d-grid">
+                    @if(formExportor.controls['fax'].errors?.['required']) {
+                      <span class="mensaje-error">Este campo es obligatorio</span>
+                      }
+                  </div>   
+                }
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="correo">Correo electrónico*:</label>
+                <span class="bi bi-question-circle-fill"
+                title="ejemplo@dominio.com"
+                data-bs-toggle="tooltip"></span>
+              <input type="text" id="correo" class="form-control" formControlName="correo" maxlength="70"
+              (change)="
+                setValoresStore(
+                'formExportor',
+                'correo',
+                'setFormExportador'
+                )" />
+                @if(formExportor.controls['correo'].invalid ) {
+                  <div class="d-grid">
+                    @if(formExportor.controls['correo'].errors?.['required']&& formExportor.controls['correo'].touched) {
+                      <span class="mensaje-error">Este campo es obligatorio</span>
+                      }
+                  </div>   
+                }
+            </div>
+        </div>
+        </ng-template>
+    </form>
+</div>

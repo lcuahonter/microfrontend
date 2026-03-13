@@ -1,0 +1,87 @@
+<div class="container mb-5">
+  <form [formGroup]="solicitudForm" (ngSubmit)="onSubmit()">
+    <div class="form">
+      <ng-titulo titulo="Datos del generador de residuos" />
+
+      <div class="row mb-3">
+        <div class="col-md-4 form-group">
+          <label for="numeroRegistroAmbiental"
+            >Número del registro ambiental<span
+              [ngClass]="!esFormularioSoloLectura && isInvalid('numeroRegistroAmbiental') ? 'has-error' : ''"
+              >*</span
+            ><span>:</span></label
+          >
+          <input
+            type="text"
+            class="form-control"
+            maxlength="13"
+            formControlName="numeroRegistroAmbiental"
+            id="numeroRegistroAmbiental"
+            maxlength="13"
+            size="30"
+            [ngClass]="!esFormularioSoloLectura && isInvalid('numeroRegistroAmbiental') ? 'required' : ''"
+            (change)="setValoresStore(solicitudForm, 'numeroRegistroAmbiental')"
+          />
+          <div
+            *ngIf="
+              solicitudForm.get('numeroRegistroAmbiental')?.invalid &&
+              (solicitudForm.get('numeroRegistroAmbiental')?.dirty ||
+                solicitudForm.get('numeroRegistroAmbiental')?.touched)
+            "
+          >
+            <div
+              *ngIf="solicitudForm.get('numeroRegistroAmbiental')?.errors?.['required']"
+            >
+              <small class="text-danger">Este campo es obligatorio</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8 form-group">
+          <label for="descripcionGenerica1"
+            >Giro industrial del importador<span
+              [ngClass]="!esFormularioSoloLectura && isInvalid('numeroRegistroAmbiental') ? 'has-error' : ''"
+              >*</span
+            >:
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="descripcionGenerica1"
+            id="descripcionGenerica1"
+            maxlength="150"
+            size="105"
+            [ngClass]=" !esFormularioSoloLectura&&isInvalid('descripcionGenerica1') ? 'required' : ''"
+            (change)="setValoresStore(solicitudForm, 'descripcionGenerica1')"
+            maxlength="150"
+          />
+          <div
+            *ngIf="
+              solicitudForm.get('descripcionGenerica1')?.invalid &&
+              (solicitudForm.get('descripcionGenerica1')?.dirty ||
+                solicitudForm.get('descripcionGenerica1')?.touched)
+            "
+          >
+            <div
+              *ngIf="solicitudForm.get('descripcionGenerica1')?.errors?.['required']"
+            >
+              <small class="text-danger">Este campo es obligatorio</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-4 form-group">
+          <app-catalogo-select
+            [catalogo]="immexCatalogo"
+            [markTouched]="isInvalid('numeroProgramaImmex') ?? false"
+            formControlName="numeroProgramaImmex"
+            [label]="'Número de autorización IMMEX'"
+            [required]="true"
+            (change)="setValoresStore(solicitudForm, 'numeroProgramaImmex')"
+            [isDisabled]="esFormularioSoloLectura"
+          ></app-catalogo-select>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

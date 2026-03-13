@@ -1,0 +1,68 @@
+<div class="container">
+  <div class="row">
+    <ul class="nav nav-tabs">
+      <li [ngClass]="indice === 1 ? 'active' : ''">
+        <a (click)="seleccionaTab(1)" (keyup.enter)="seleccionaTab(1)" (keydown.space)="seleccionaTab(1)" tabindex="0"
+          data-toggle="tab">Solicitante</a>
+      </li>
+      <li [ngClass]="indice === 2 ? 'active' : ''">
+        <a (click)="seleccionaTab(2)" (keyup.enter)="seleccionaTab(2)" (keydown.space)="seleccionaTab(2)" tabindex="1"
+          data-toggle="tab">Certificado de origen</a>
+      </li>
+      <li [ngClass]="indice === 3 ? 'active' : ''">
+        <a (click)="seleccionaTab(3)" (keyup.enter)="seleccionaTab(3)" (keydown.space)="seleccionaTab(3)" tabindex="2"
+          data-toggle="tab">Histórico productores</a>
+      </li>
+      <li [ngClass]="indice === 4 ? 'active' : ''">
+        <a (click)="seleccionaTab(4)" (keyup.enter)="seleccionaTab(4)" (keydown.space)="seleccionaTab(4)" tabindex="3"
+          data-toggle="tab">Destinatario</a>
+      </li>
+      <li [ngClass]="indice === 5 ? 'active' : ''">
+        <a (click)="seleccionaTab(5)" (keyup.enter)="seleccionaTab(5)" (keydown.space)="seleccionaTab(5)" tabindex="4"
+          data-toggle="tab">Datos certificado</a>
+      </li>
+    </ul>
+    <ng-container>
+      @switch (indice) {
+      @case (1) {
+      <solicitante #Solicitante></solicitante>
+      }
+      @case (2) {
+      @if(esDatosRespuesta){
+       <app-certificado-origen
+          [hidden]="indice !== 2 || !esDatosRespuesta"
+          [isContinuarTriggered]="isContinuarTriggered"
+          #CertificadoOrigenComponent>
+        </app-certificado-origen>
+
+      }
+      }
+      @case (3) {
+      @if(esDatosRespuesta){
+     <app-hist-productores
+          [hidden]="indice !== 3 || !esDatosRespuesta">
+        </app-hist-productores>
+      }
+      }
+      @case (4) {
+      @if(esDatosRespuesta){
+    <app-destinatario
+          [hidden]="indice !== 4 || !esDatosRespuesta"
+          [isContinuarTriggered]="isContinuarTriggered"
+          #DestinatarioComponent>
+        </app-destinatario>
+      }
+      }
+      @case (5) {
+      @if(esDatosRespuesta){
+      <app-datos-certificado
+          [hidden]="indice !== 5 || !esDatosRespuesta"
+          [isContinuarTriggered]="isContinuarTriggered"
+          #DatosCertificadoComponent>
+        </app-datos-certificado>
+      }
+      }
+    }
+    </ng-container>
+  </div>
+</div>

@@ -1,0 +1,262 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+
+      <ng-container *ngIf="displayWarning">
+        <div class="alert alert-danger">
+          <strong>¡Error de registro!</strong>
+            {{ warningText }}
+        </div>
+      </ng-container>
+
+      <h3>Personas</h3>
+      <hr class="red" />
+      <form [formGroup]="personsForm" autocomplete="off">
+        <!-- Fila 1 -->
+        <div class="row">
+          <!-- Type Person -->
+          <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+              <label class="control-label">Type Person*:</label>
+              <app-tooltip text="Tipo de persona"></app-tooltip>
+              <select
+                class="form-control"
+                formControlName="typePerson"
+                [ngClass]="{
+                  'form-control-error': formUtils.isValidField(personsForm, 'typePerson')
+                }"
+              >
+                <option [ngValue]="null">Selecciona una opción</option>
+                <option *ngFor="let type of personTypes" [value]="type.clave">{{ type.valor }}</option>
+              </select>
+              <ng-container *ngIf="formUtils.isValidField(personsForm, 'typePerson')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getFieldError(personsForm, 'typePerson') }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+
+          <!-- Name -->
+          <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+              <label class="control-label">Name*:</label>
+              <app-tooltip text="Nombre del Embarcador"></app-tooltip>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="name"
+                [ngClass]="{
+                  'form-control-error': formUtils.isValidField(personsForm, 'name')
+                }"
+              />
+              <ng-container *ngIf="formUtils.isValidField(personsForm, 'name')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getFieldError(personsForm, 'name') }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+
+          <!-- Street Name -->
+          <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+              <label class="control-label">Street Name*:</label>
+              <app-tooltip text="Calle y Numero"></app-tooltip>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="streetName"
+                [ngClass]="{
+                  'form-control-error': formUtils.isValidField(personsForm, 'streetName')
+                }"
+              />
+              <ng-container *ngIf="formUtils.isValidField(personsForm, 'streetName')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getFieldError(personsForm, 'streetName') }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fila 2 -->
+        <div class="row">
+          <!-- City Name -->
+          <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+              <label class="control-label">City Name*:</label>
+              <app-tooltip text="Nombre de la ciudad"></app-tooltip>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="cityName"
+                [ngClass]="{
+                  'form-control-error': formUtils.isValidField(personsForm, 'cityName')
+                }"
+              />
+              <ng-container *ngIf="formUtils.isValidField(personsForm, 'cityName')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getFieldError(personsForm, 'cityName') }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+
+          <!-- Country ID -->
+          <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+              <label class="control-label">Country I D*:</label>
+              <app-tooltip text="código de país"></app-tooltip>
+              <select
+                class="form-control"
+                formControlName="countryId"
+                [ngClass]="{
+                  'form-control-error': formUtils.isValidField(personsForm, 'countryId')
+                }"
+              >
+                <option [ngValue]="null">Selecciona una opción</option>
+                <option *ngFor="let c of countries" [value]="c.valor + '|' + c.clave">
+                  {{ c.valor }}
+                </option>
+              </select>
+              <ng-container *ngIf="formUtils.isValidField(personsForm, 'countryId')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getFieldError(personsForm, 'countryId') }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+
+          <!-- Country Name -->
+          <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+              <label class="control-label">Country Name:</label>
+              <app-tooltip text="Nombre del país"></app-tooltip>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="countryName"
+                readonly
+                [ngClass]="{
+                  'form-control-error': formUtils.isValidField(personsForm, 'countryName')
+                }"
+              />
+              <ng-container *ngIf="formUtils.isValidField(personsForm, 'countryName')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getFieldError(personsForm, 'countryName') }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fila 3 -->
+        <ng-container *ngIf="otherSelected">
+          <div class="row">
+            <!-- City Name -->
+            <div class="col-md-4 col-sm-6">
+              <div class="form-group">
+                <label class="control-label">Role Code*:</label>
+                <app-tooltip text="Identificador de Parte (Código)"></app-tooltip>
+                <select
+                  class="form-control"
+                  formControlName="roleId"
+                  [ngClass]="{
+                    'form-control-error': formUtils.isValidField(personsForm, 'roleId')
+                  }"
+                >
+                  <option [ngValue]="null">Selecciona una opción</option>
+                  <option *ngFor="let type of rolesParts" [value]="type.clave">{{ type.valor }}</option>
+                </select>
+                <ng-container *ngIf="formUtils.isValidField(personsForm, 'roleId')">
+                  <small class="form-text form-text-error">
+                    {{ formUtils.getFieldError(personsForm, 'roleId') }}
+                  </small>
+                </ng-container>
+              </div>
+            </div>
+
+            <!-- Country Name -->
+            <div class="col-md-8 col-sm-6">
+              <div class="form-group">
+                <label class="control-label">Role:</label>
+                <app-tooltip text="Parte a Notificar"></app-tooltip>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="roleName"
+                  readonly
+                  [ngClass]="{
+                    'form-control-error': formUtils.isValidField(personsForm, 'roleName')
+                  }"
+                />
+                <ng-container *ngIf="formUtils.isValidField(personsForm, 'roleName')">
+                  <small class="form-text form-text-error">
+                    {{ formUtils.getFieldError(personsForm, 'roleName') }}
+                  </small>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </form>
+    </div>
+
+    <div class="col-md-12">
+      <h3>Otro Contacto</h3>
+      <hr class="red" />
+      <app-table
+        [tableData]="tableContactData"
+        [borderedStyle]="true"
+        [isLoading]="isLoadingContactData"
+        [hiddenData]="hiddenContactData"
+        [error]="errorContactData"
+        [hasRedirect]="true"
+        [ableSelectAllTable]="true"
+        [ableSelectRows]="true"
+        [displayHeader]="false"
+        (onRowsSelected)="contactSelected($event)"/>
+        <div class="text-right">
+          <gob-button
+            type="button"
+            className="btn-primary mr-2"
+            label="Agregar"
+            (clicked)="addContact()"
+          />
+          <ng-container *ngIf="displayUpdateBtnContact()">
+            <gob-button
+              type="button"
+              className="btn-default mr-2"
+              label="Modificar"
+              (clicked)="updateContact()"
+            />
+          </ng-container>
+          <ng-container *ngIf="displayDeleteBtnContact()">
+            <gob-button
+              type="button"
+              className="btn-danger"
+              label="Eliminar"
+              (clicked)="removeContact()"
+            />
+          </ng-container>
+        </div>
+    </div>
+    <!-- Botones -->
+    <div class="col-md-12 text-right mt-5">
+      <gob-button
+        type="button"
+        className="btn-primary mr-1"
+        label="Agregar"
+        (clicked)="onSubmit()"
+      ></gob-button>
+      <gob-button
+        type="button"
+        className="btn-danger"
+        label="Cancelar"
+        (clicked)="onCancel()"
+      ></gob-button>
+    </div>
+  </div>
+</div>
+<app-dialog [id]="'registerDeletedContact'" [content]="'El registro seleccionado fue eliminado correctamente'"/>

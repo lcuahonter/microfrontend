@@ -1,0 +1,452 @@
+<div class="container mt-4">
+  <ng-titulo  [titulo]="titluoMensaje"></ng-titulo>
+  <form [formGroup]="agregarProveedorForm">
+    <!-- Datos Generales -->
+    <h4>Datos generales</h4> 
+    <div class="row">
+      <div class="col-md-6">
+        <label class="form-label">Terceros nacionalidad *:</label>
+        <app-input-radio
+          [radioOptions]="tercerosNacionalidadOpciones"
+          [isRequired]="true"
+          [layout]="'vertical'"
+          formControlName="nacionalidad"
+          (valueChange)="terecerosNacionalidadCambioDeValor($event)"
+          [disabled]="esFormularioSoloLectura"
+        ></app-input-radio>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Tipo persona:</label>
+        <app-input-radio
+          [radioOptions]="tipoPersonaRadioOpciones"
+          [isRequired]="true"
+          [layout]="'vertical'"
+           [showTooltip]="true"
+          formControlName="tipoPersona"
+          (valueChange)="tipoPersonaCambioDeValor($event)"
+           [disabled]="esFormularioSoloLectura"
+        ></app-input-radio>
+
+        @if(mostrarCamposNoContribuyente){
+          <app-input-radio
+          [radioOptions]="tipoPersonaRadioOpcionesNoContribuyente"
+          [isRequired]="true"
+          [layout]="'vertical'"
+          formControlName="tipoPersona"
+          (valueChange)="tipoPersonaCambioDeValor($event)"
+           [disabled]="esFormularioSoloLectura"
+        ></app-input-radio>
+        }
+      </div>
+    </div>
+    @if(agregarProveedorForm.get('nacionalidad')?.value !== 'Extranjero' && !esRFC) {
+    <div class="row mt-5">
+      <div class="col-md-6">
+        <label class="form-label">R.F.C. *: </label>
+        <span
+          class="bi bi-question-circle-fill fs-4 m-1"
+          title="R.F.C."
+          ata-bs-toggle="tooltip"
+        ></span>
+        <input type="text" class="form-control" formControlName="rfc" maxlength="15"/>
+        <div class="error-message">
+          <small *ngIf="agregarProveedorForm.get('rfc')?.touched && agregarProveedorForm.get('rfc')?.hasError('required')" class="text-danger">
+            Este campo es obligatorio.
+          </small>
+          <small *ngIf="agregarProveedorForm.get('rfc')?.touched && agregarProveedorForm.get('rfc')?.hasError('maxlength')" class="text-danger">
+            Máximo 15 caracteres permitidos.
+          </small>
+        </div>         
+      </div>
+
+      @if(esCURP){
+        <div class="col-md-6" *ngIf="agregarProveedorForm.get('tipoPersona')?.value !== tipoPersona.MORAL && agregarProveedorForm.get('tipoPersona')?.value !== tipoPersona.FISICA">
+          <label class="form-label">C.U.R.P *:</label>
+          <input type="text" class="form-control" formControlName="curp" maxlength="18"/>
+          <div class="error-message">
+          <small *ngIf="agregarProveedorForm.get('curp')?.touched && agregarProveedorForm.get('curp')?.hasError('required')" class="text-danger">
+            Este campo es obligatorio.
+          </small>
+            <small *ngIf="agregarProveedorForm.get('curp')?.touched && agregarProveedorForm.get('curp')?.hasError('maxlength')" class="text-danger">
+              Máximo 18 caracteres permitidos.
+            </small>
+          </div>           
+        </div>
+      }
+    </div>
+    } 
+    
+    
+    @if(agregarProveedorForm.get('tipoPersona')?.value ===
+    tipoPersona.MORAL || agregarProveedorForm.get('tipoPersona')?.untouched)
+    {
+    <div class="row">
+      <div class="form-group">
+        <label
+          class="form-label row mt-3 mover-izquierda fs-2"
+          for="denominacionRazon"
+          >Denominación/razón social *:</label
+        >
+        <input
+          class="form-control col-md-4"
+          id="denominacionRazon"
+          type="text"
+          formControlName="denominacionRazon"
+          maxlength="254"
+        />
+        <div class="error-message col-md-12 p-0">
+          <small *ngIf="agregarProveedorForm.get('denominacionRazon')?.touched && agregarProveedorForm.get('denominacionRazon')?.hasError('required')" class="text-danger">
+            Este campo es obligatorio.
+          </small>
+          <small *ngIf="agregarProveedorForm.get('denominacionRazon')?.touched && agregarProveedorForm.get('denominacionRazon')?.hasError('maxlength')" class="text-danger">
+            Máximo 254 caracteres permitidos.
+          </small>
+        </div>         
+      </div>
+    </div>
+    }
+
+    <!-- Datos Personales -->
+    @if(agregarProveedorForm.get('tipoPersona')?.value ===
+    tipoPersona.FISICA ||
+    agregarProveedorForm.get('tipoPersona')?.untouched) {
+    <div class="row mt-3">
+      <h4 class="mt-5">Datos personales</h4>
+      <div class="col-md-4">
+        <label class="form-label">Nombre(s)<span *ngIf="campoObligatorioProveedor"> *</span>:</label>
+        <input type="text" class="form-control" formControlName="nombres" maxlength="200"/>
+        <div class="error-message">
+          <small *ngIf="agregarProveedorForm.get('nombres')?.touched && agregarProveedorForm.get('nombres')?.hasError('required')" class="text-danger">
+            Este campo es obligatorio.
+          </small>
+          <small *ngIf="agregarProveedorForm.get('nombres')?.touched && agregarProveedorForm.get('nombres')?.hasError('maxlength')" class="text-danger">
+            Máximo 200 caracteres permitidos.
+          </small>
+        </div>        
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Primer apellido<span *ngIf="campoObligatorioProveedor"> *</span>:</label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="primerApellido"
+          maxlength="200"
+        />
+        <div class="error-message">
+          <small *ngIf="agregarProveedorForm.get('primerApellido')?.touched && agregarProveedorForm.get('primerApellido')?.hasError('required')" class="text-danger">
+            Este campo es obligatorio.
+          </small>
+          <small *ngIf="agregarProveedorForm.get('primerApellido')?.touched && agregarProveedorForm.get('primerApellido')?.hasError('maxlength')" class="text-danger">
+            Máximo 200 caracteres permitidos.
+          </small>
+        </div>          
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Segundo apellido:</label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="segundoApellido"
+          maxlength="200"
+        />
+        <div class="error-message">
+          <small *ngIf="agregarProveedorForm.get('segundoApellido')?.touched && agregarProveedorForm.get('segundoApellido')?.hasError('maxlength')" class="text-danger">
+            Máximo 200 caracteres permitidos.
+          </small>
+        </div>         
+      </div>
+    </div>
+    } 
+    @if (idProcedimiento === 260102 || campoObligatorioProveedor) {
+    <h4 class="mt-5">Domicilio</h4>
+    <div class="row mt-5">
+      <div class="col-md-4">
+        <app-catalogo-select
+          [catalogo]="paisesDatos"
+          formControlName="pais"
+          [label]="'País'"
+          [required]="true"
+          [isDisabled]="esFormularioSoloLectura"
+        ></app-catalogo-select>
+        <div class="error-message">
+          <small *ngIf="agregarProveedorForm.get('pais')?.touched && agregarProveedorForm.get('pais')?.hasError('required')" class="text-danger">
+            Este campo es obligatorio.
+          </small>
+        </div>        
+      </div>
+      <div class="col-md-4 ">
+        <label class="form-label">Estado<span *ngIf="campoObligatorioProveedor"> *</span>:</label>
+        <input type="text" class="form-control" formControlName="estado" maxlength="120"/>
+        <div class="error-message">
+          <small *ngIf="agregarProveedorForm.get('estado')?.touched && agregarProveedorForm.get('estado')?.hasError('required')" class="text-danger">
+            Este campo es obligatorio.
+          </small>
+          <small *ngIf="agregarProveedorForm.get('estado')?.touched && agregarProveedorForm.get('estado')?.hasError('required')" class="text-danger">
+            Máximo 120 caracteres permitidos.
+          </small>
+        </div>           
+      </div>
+
+      <div class="col-md-4 ">
+        <label class="form-label">Código postal o equivalente<span *ngIf="campoObligatorioProveedor">  *</span> :</label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="codigoPostal"
+          maxlength="12"
+        />
+        <div class="error-message">
+          <small *ngIf="agregarProveedorForm.get('codigoPostal')?.touched && agregarProveedorForm.get('codigoPostal')?.hasError('required')" class="text-danger">
+            Existen datos incorrectos que no cumplen con el formato esperado.
+          </small>
+          <small *ngIf="agregarProveedorForm.get('codigoPostal')?.touched && agregarProveedorForm.get('codigoPostal')?.hasError('required')" class="text-danger">
+            Máximo 12 caracteres permitidos.
+          </small>
+        </div>         
+      </div>
+    </div>
+    }
+
+    <!-- Domicilio -->
+    @else{
+    <h4 class="mt-5">Domicilio</h4>
+    <div class="row mt-5">
+      <div class="col-md-4">
+        <app-catalogo-select
+          [catalogo]="paisesDatos"
+          formControlName="pais"
+          [label]="'País'"
+          [required]="true"
+          [isDisabled]="agregarProveedorForm.get('pais')?.disabled || esFormularioSoloLectura ? true : false"
+        ></app-catalogo-select>
+        <div class="error-message">
+          <small *ngIf="agregarProveedorForm.get('pais')?.touched && agregarProveedorForm.get('pais')?.hasError('required')" class="text-danger">
+            Este campo es obligatorio.
+          </small>
+        </div>        
+      </div>
+      <div class="col-md-4 ">
+        <app-catalogo-select
+          [catalogo]="estadosDatos"
+          formControlName="estado"
+          [label]="'Estado/localidad'"
+          [required]="true"
+          [isDisabled]="agregarProveedorForm.get('estado')?.disabled || esFormularioSoloLectura ? true : false"
+          (selectionChange)="agregarProveedorForm.get('estado')?.setValue($event.id)"
+        ></app-catalogo-select>
+        <div class="error-message">
+          <small *ngIf="agregarProveedorForm.get('estado')?.touched && agregarProveedorForm.get('estado')?.hasError('required')" class="text-danger">
+            Este campo es obligatorio.
+          </small>
+        </div>        
+      </div>
+      <div class="col-md-4 ">
+        <app-catalogo-select
+          [catalogo]="municipiosDatos"
+          formControlName="municipio"
+          [label]="'Municipio/alcaldía'"
+          [required]="true"
+          [isDisabled]="
+            agregarProveedorForm.get('tipoPersona')?.value === '' || esFormularioSoloLectura ? true : false"
+          (selectionChange)="agregarProveedorForm.get('municipio')?.setValue($event.id)"
+        ></app-catalogo-select>
+        <div class="error-message">
+          <small *ngIf="agregarProveedorForm.get('municipio')?.touched && agregarProveedorForm.get('municipio')?.hasError('required')" class="text-danger">
+            Este campo es obligatorio.
+          </small>
+        </div>          
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-4 ">
+        <app-catalogo-select
+          [catalogo]="localidadesDatos"
+          formControlName="localidad"
+          [label]="'Localidad'"
+          [required]="true"
+          [isDisabled]="agregarProveedorForm.get('localidad')?.disabled || esFormularioSoloLectura ? true : false"
+       (selectionChange)="onLocalidadChange($event)" ></app-catalogo-select>
+        <div class="error-message">
+          <small *ngIf="agregarProveedorForm.get('localidad')?.touched && agregarProveedorForm.get('localidad')?.hasError('required')" class="text-danger">
+            Este campo es obligatorio.
+          </small>
+        </div>          
+      </div>
+      <div class="col-md-4 ">
+         <label class="form-label">Código postal o equivalente<span *ngIf="campoObligatorioProveedor"> *</span> :</label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="codigoPostal"
+          maxlength="12"
+        />
+        <div class="error-message">
+          <small *ngIf="agregarProveedorForm.get('codigoPostal')?.touched && agregarProveedorForm.get('codigoPostal')?.hasError('required')" class="text-danger">
+            Este campo es obligatorio.
+          </small>
+        </div>         
+      </div>
+      <div class="col-md-4 ">
+        <app-catalogo-select
+          [catalogo]="coloniasDatos"
+          formControlName="colonia"
+          [label]="'Colonia'"
+          [required]="true"
+          [isDisabled]="agregarProveedorForm.get('colonia')?.disabled || esFormularioSoloLectura ? true : false"
+        ></app-catalogo-select>
+        <div class="error-message">
+          <small *ngIf="agregarProveedorForm.get('colonia')?.touched && agregarProveedorForm.get('colonia')?.hasError('required')" class="text-danger">
+            Este campo es obligatorio.
+          </small>
+        </div>         
+      </div>
+    </div>
+    }
+
+    <div class="row mt-3">
+      <div class="col-md-8">
+        <label class="form-label">Calle<span *ngIf=" mostrarAsterisco"> *</span>:</label>
+        <span
+          *ngIf="mostrarInformacion"
+          class="bi bi-question-circle-fill fs-4 m-1"
+          title="Domicilio, calle, número interior, número exterior, lote."
+          ata-bs-toggle="tooltip"
+        ></span>
+        
+        <input type="text" class="form-control" formControlName="calle" maxlength="300"/>
+        <div class="error-message">
+          <small *ngIf="agregarProveedorForm.get('calle')?.touched && agregarProveedorForm.get('calle')?.hasError('required')" class="text-danger">
+            Existen datos incorrectos que no cumplen con el formato esperado.
+          </small>
+          <small *ngIf="agregarProveedorForm.get('calle')?.touched && agregarProveedorForm.get('calle')?.hasError('maxlength')" class="text-danger">
+            Máximo 300 caracteres permitidos.
+          </small>
+        </div>         
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Número exterior<span> *</span>:</label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="numeroExterior"
+          maxlength="55"
+        />
+        <div class="error-message">
+          <small *ngIf="agregarProveedorForm.get('numeroExterior')?.touched && agregarProveedorForm.get('numeroExterior')?.hasError('required')" class="text-danger">
+            Este campo es obligatorio.
+          </small>
+          <small *ngIf="agregarProveedorForm.get('numeroExterior')?.touched && agregarProveedorForm.get('numeroExterior')?.hasError('maxlength')" class="text-danger">
+            Máximo 55 caracteres permitidos.
+          </small>
+        </div>        
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-4">
+        <label class="form-label">Número interior *:</label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="numeroInterior"
+          maxlength="55"
+        />
+        <div class="error-message">
+            <small *ngIf="agregarProveedorForm.get('numeroInterior')?.touched && agregarProveedorForm.get('numeroInterior')?.hasError('required')" class="text-danger">
+            Este campo es obligatorio.
+          </small>
+          <small *ngIf="agregarProveedorForm.get('numeroInterior')?.touched && agregarProveedorForm.get('numeroInterior')?.hasError('maxlength')" class="text-danger">
+            Máximo 55 caracteres permitidos.
+          </small>
+        </div>          
+      </div>
+      <div class="col-md-1">
+        <label class="form-label">Lada *:</label>
+        <input type="text" class="form-control" formControlName="lada" maxlength="5"/>
+        <div class="error-message">
+          <small *ngIf="agregarProveedorForm.get('lada')?.touched && agregarProveedorForm.get('lada')?.hasError('maxlength')" class="text-danger">
+            Máximo 5 caracteres permitidos.
+          </small>
+        </div>         
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Teléfono *:</label>
+        <input type="text" class="form-control" formControlName="telefono"  maxlength="24"/>
+        <div class="error-message">
+            <small *ngIf="agregarProveedorForm.get('telefono')?.touched && agregarProveedorForm.get('telefono')?.hasError('required')" class="text-danger">
+            Este campo es obligatorio.
+          </small>
+        <small *ngIf="agregarProveedorForm.get('telefono')?.touched && agregarProveedorForm.get('telefono')?.hasError('maxlength')" class="text-danger">
+          Máximo 24 caracteres permitidos.
+        </small>
+      </div>        
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Correo electrónico *:
+           <span
+      class="bi bi-question-circle-fill fs-4 m-1"
+      title="ejemplo@dominio.com"
+      data-bs-toggle="tooltip"
+    ></span>
+        </label>
+        <input
+          type="email"
+          class="form-control"
+          formControlName="correoElectronico"
+          maxlength="320"
+        />
+        <div class="error-message">
+          <small *ngIf="agregarProveedorForm.get('correoElectronico')?.touched && agregarProveedorForm.get('correoElectronico')?.hasError('email')" class="text-danger">
+            Por favor, escribe una dirección de correo válida
+          </small>
+          <small *ngIf="agregarProveedorForm.get('correoElectronico')?.touched && agregarProveedorForm.get('correoElectronico')?.hasError('maxlength')" class="text-danger">
+            Máximo 320 caracteres permitidos.
+          </small>
+        </div>        
+      </div>
+    </div>
+
+    <div class="row mt-5 mb-5">
+      <div class="col-md-12">
+        <div class="col-md-4">
+          <p>* Campos obligatorios</p>
+      </div>
+        <div class="pull-right">
+          <button
+            type="button"
+            name="modificarMercancias"
+            class="btn btn-default"
+            (click)="cancelar()"
+             [disabled]="esFormularioSoloLectura"
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            name="eliminarMercancias"
+            class="btn btn-danger ms-2"
+            (click)="limpiarFormulario()"
+             [disabled]="esFormularioSoloLectura"
+          >
+            Limpiar
+          </button>
+          <button
+            type="button"
+            name="agregarMercancias"
+            class="btn btn-primary ms-2"
+            (click)="guardarProveedor()"
+            [disabled]="esFormularioSoloLectura"
+          >
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+ @if (nuevaNotificacion) {
+  <section>
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion"></lib-notificaciones>
+  </section>
+  }

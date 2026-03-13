@@ -1,0 +1,325 @@
+<div class="page">
+    <div class="container">
+        <form [formGroup]="formCupo">
+            <header>
+                <h2 class="titulo titulo-gold mb-5">{{TituloForm}}</h2>
+            </header>
+            <section class="seccion-instrumento bg-light p-5">
+                <div class="row">
+                    <div class="col-3">
+                        <label for="instrumento" class="form-label">Instrumento</label>
+                        <input id="instrumento" type="text" class="form-control" value={{instrumento}} disabled>
+                    </div>
+                    @switch (formType) {
+                    @case (TipoForm.REGISTRAR_CUPO) {
+                    <div class="col-3">
+                        <label class="form-label"><span style="color: red;">*</span> Clasificación de régimen</label>
+                        <select class="form-control form-select" formControlName="clasificacionRegimen">
+                            <option value="">Seleccione</option>
+                            <option value="EXPORTACION">Exportación</option>
+                            <option value="IMPORTACION">Importación</option>
+                        </select>
+                    </div>
+                    }
+                    @case (TipoForm.SUBCUPO) {
+                    <div class="col-8 row" formGroupName="clasificacionSubProducto">
+                        <div class="col-6">
+                            <label class="form-label"><span style="color: red;">*</span> Clasificación de
+                                Subproducto</label>
+                            <select formControlName="clasificacion" class="form-control form-select">
+                                <option value="">Seleccione</option>
+                                <option value="NUEVO">Nuevo</option>
+                                <option value="TRADICIONAL">Tradicional</option>
+                                <option value="INDUSTRIA">Industria</option>
+                                <option value="COMERCIO">Comercio</option>
+                                <option value="SECTOR_PUBLICO">Sector Publico</option>
+                                <option value="OTRO">Otro</option>
+                            </select>
+                        </div>
+                        @if (seleccionOtro) {
+                        <div class="col-6">
+                            <label for="otro" class="form-label">Otro</label>
+                            <input id="otro" type="text" class="form-control" formControlName="otro">
+                        </div>
+                        }
+                    </div>
+                    }
+                    }
+                </div>
+            </section>
+            <br />
+            <section class="bg-light p-5">
+                <div class="celda-agregar-tratado form-group">
+                    <label for="tratadoAcuerdo form-label"><span style="color: red;">*</span> Tratado/ Acuerdo</label>
+                    <select class="form-control form-select" name="tratadoAcuerdo" id="tratadoAcuerdo"
+                        formControlName="tratadoAcuerdo" (change)="obtenerListaPais()">
+                        @if(listaTratados$ | async; as listaTratados){
+                        @for(item of listaTratados; track item.value){
+                        <option value={{item.value}}>{{item.label}}</option>
+                        }
+                        }
+                    </select>
+                </div>
+                <app-pick-list [tituloDisponibles]="'País disponible'" [tituloSeleccionados]="'País seleccionado'"
+                    [listaDisponibles]="disponibles()" [listaSeleccionados]="seleccionados()"
+                    (agregar)="agregar($event)" (agregarTodos)="agregarTodos()" (eliminar)="eliminar($event)"
+                    (eliminarTodos)="eliminarTodos()" [trackBy]="trackByPais" [displayWith]="displayPais">
+                </app-pick-list>
+            </section>
+            <br />
+            <section class="bg-light p-5">
+                <h5>Datos del producto</h5>
+                <div class="row">
+                    <div class="col-4">
+                        <label for=""><span style="color: red;">*</span> Producto</label>
+                        <input [value]="datosProducto.nombre" class="form-control" readonly disabled type="text">
+                    </div>
+                    <div class="col-4">
+                        <label for="">Código</label>
+                        <input [value]="datosProducto.clave" class="form-control" readonly disabled type="text">
+                    </div>
+                </div>
+                <div style="justify-self: self-end;">
+                    <button (click)="modalControler(TipoModal.PRODUCTOS, ModalControl.CERRAR)" class="btn btn-primary">
+                        Seleccionar Producto
+                    </button>
+                </div>
+            </section>
+            <br />
+            <section class="bg-light p-5">
+                <div class="row">
+                    <div class="col-4">
+                        <label for=""><span style="color: red;">*</span> Unidad de Medida</label>
+                        <select class="form-select form-control" formControlName="unidadMedida">
+                            @if (medidas$ | async; as listaMedidas) {
+                            @for (item of listaMedidas; track item.value) {
+                            <option value="{{item.value}}">
+                                {{ item.label }}
+                            </option>
+                            }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-5">
+                        <input formControlName="unidadMedidaComercializacion" class="form-label" type="checkbox">
+                        <label for="">Unidad de Medida de Comercialización</label>
+                    </div>
+                </div>
+            </section>
+            <br />
+            <section class="bg-light p-5">
+                <h5>Datos del Monto</h5>
+                @switch (formType) {
+                @case (TipoForm.REGISTRAR_CUPO) {
+                <div class="row">
+                    <div [class]="medida==='8'?'col-3':'col-4'">
+                        <label class="form-label" for=""><span style="color: red;">*</span> Monto Total Cupo</label>
+                        <input [value]="datosDelMonto?.montoTotalCupo" class="form-control" type="text" disabled
+                            readonly>
+                    </div>
+                    <div [class]="medida==='8'?'col-3':'col-4'">
+                        <label class="form-label" for="">Saldo Expedido Cupo</label>
+                        <input [value]="datosDelMonto?.saldoExpedidoCupo" class="form-control" type="text" disabled
+                            readonly>
+                    </div>
+                    @if(medida==='8'){
+                    <div [class]="medida==='8'?'col-3':'col-4'">
+                        <label for="" class="form-label">Saldo Ejercido Cupo</label>
+                        <input [value]="datosDelMonto?.saldoEjercidoCupo" type="text" class="form-control" disabled
+                            readonly>
+                    </div>
+                    <div [class]="medida==='8'?'col-3':'col-4'">
+                        <label for="" class="form-label">Saldo Ejercido MCE</label>
+                        <input [value]="datosDelMonto?.saldoEjercidoMCE" type="text" class="form-control" disabled
+                            readonly>
+                    </div>
+                    }
+                </div>
+                }
+                @case (TipoForm.SUBCUPO) {
+                <div class="row">
+                    <div class="col-12 row">
+                        <div class="col-4">
+                            <label class="form-label" for=""><span style="color: red;">*</span> Saldo Cupo</label>
+                            <input [value]="datosDelMonto?.montoTotalCupo" class="form-control" type="text" disabled
+                                readonly>
+                        </div>
+                    </div>
+                    <div class="col-12 row">
+                        <div class="col-4">
+                            <label class="form-label" for=""><span style="color: red;">*</span> Monto Total
+                                SubCupo</label>
+                            <input [value]="datosDelMonto?.montoTotalSubCupo" class="form-control" type="text" disabled
+                                readonly>
+                        </div>
+                        <div class="col-4">
+                            <label class="form-label" for=""><span style="color: red;">*</span> Saldo SubCupo</label>
+                            <input [value]="datosDelMonto?.saldoSubCupo" class="form-control" type="text" disabled
+                                readonly>
+                        </div>
+                    </div>
+                </div>
+                }
+                }
+                <div class="mt-5" style="justify-self: self-end;">
+                    <button class="btn btn-primary" (click)="modalControler(TipoModal.MONTO, ModalControl.ABRIR)">
+                        Asignar monto
+                    </button>
+                </div>
+            </section>
+            <br />
+            <section class="bg-light p-5" id="categoria-textil">
+                <h5>Categoría Textil</h5>
+                <div>
+                    <app-tabla-dinamica [configuracionTabla]="configuracionTablaTextil"></app-tabla-dinamica>
+                </div>
+                <br />
+                <div id="bontes-accion">
+                    <button class="btn btn-primary"
+                        (click)="modalControler(TipoModal.TEXTIL, ModalControl.ABRIR)">Agregar Categoría</button>
+                    <button class="btn btn-primary">Modificar Categoría</button>
+                    <button class="btn btn-danger">Eliminar Categoría</button>
+                </div>
+            </section>
+            <br />
+            @if(false){
+            <app-fracciones-arancelarias [ModalesHabilitados]="cargarModalesHabilitados"
+                (fraccionesSeleccionadas)="fraccionesRecibidas($event)">
+            </app-fracciones-arancelarias>
+            }
+            <br />
+            <section class="bg-light p-5">
+                <h5>Vigencia del Cupo</h5>
+                <div class="row">
+                    <input-fecha class="col-4" [datos]="fechaInicioInput"
+                        (valorCambiado)="cambioFechas($event, 'INICIO')"></input-fecha>
+                    <input-fecha class="col-4" [datos]="fechaFinInput"
+                        (valorCambiado)="cambioFechas($event, 'FIN')"></input-fecha>
+                </div>
+            </section>
+            <br />
+            <section class="bg-light p-5">
+                <label class="form-label" for=""><span style="color: red;">*</span> Fundamento</label>
+                <input formControlName="fundamento" class="form-control" type="text">
+            </section>
+            <br />
+            <section class="action-buttons-container">
+                <button class="btn btn-primary" (click)="enviarDatosDelForm()">Guardar</button>
+                <button class="btn btn-danger">Cancelar</button>
+            </section>
+        </form>
+        <br />
+    </div>
+</div>
+@if (modalesVisibles[TipoModal.PRODUCTOS]) {
+<libs-modal (closed)="modalControler(TipoModal.PRODUCTOS, ModalControl.CERRAR)" tituloModal="Asignar Productos">
+    <modal-body>
+        @if(alertaVisible){
+        <ng-alert [CONTENIDO]="mensajeAlerta" [CUSTOMECLASS]="customClass"></ng-alert>
+        }
+        <div>
+            <label for="" class="form-label">Producto</label>
+            <input type="text" class="form-control">
+        </div>
+        <br />
+        <div>
+            <p>Productos Existentes</p>
+            <div class="tabla-productos-contenedor">
+                <app-tabla-dinamica [configuracionTabla]="configuracionTabla"
+                    [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX" [datos]="productos"
+                    (listaDeFilaSeleccionada)="seleccionarProductos($event)">
+                </app-tabla-dinamica>
+            </div>
+        </div>
+    </modal-body>
+    <modal-footer>
+        <button (click)="obtenerProductos()" class="btn btn-primary">
+            Buscar
+        </button>
+        <button class="btn btn-primary" (click)="aceptarProductoSeleccionado()">Aceptar</button>
+    </modal-footer>
+</libs-modal>
+}
+@if(modalesVisibles[TipoModal.MONTO]){
+<libs-modal [anchoModal]="'xs'" (closed)="modalControler(TipoModal.MONTO, ModalControl.CERRAR)"
+    tituloModal="Asignar Montos">
+    <modal-body>
+        <section class="bg-light px-5 py-2">
+            <h5>Monto inicial</h5>
+            <br />
+            @if(alertaVisible){
+            <ng-alert [CONTENIDO]="mensajeAlerta" [CUSTOMECLASS]="customClass"></ng-alert>
+            }
+        </section>
+        <br />
+        <section class="bg-light px-5 py-2">
+            <form [formGroup]="FormMonto">
+                @switch (formType) {
+                @case (TipoForm.REGISTRAR_CUPO) {
+                <div>
+                    <label class="form-label" for=""><span style="color: red;">*</span> Monto a Asignar</label>
+                    <input class="form-control" type="number" formControlName="saldoCupo">
+                </div>
+                <div>
+                    <label for="">Fundamento</label>
+                    <input class="form-control" type="text" size="1000" formControlName="fundamentoCupo">
+                </div>
+                }
+                @case (TipoForm.SUBCUPO) {
+                <div>
+                    <label class="form-label" for=""><span style="color: red;">*</span> Monto a Asignar</label>
+                    <input class="form-control" type="number" formControlName="saldoSubCupo">
+                </div>
+                <div>
+                    <label for="">Fundamento</label>
+                    <input class="form-control" type="text" size="1000" formControlName="fundamentoSubCupo">
+                </div>
+                }
+                }
+            </form>
+        </section>
+    </modal-body>
+    <modal-footer>
+        <button class="btn btn-primary" (click)="asignarMonto()">Aceptar</button>
+    </modal-footer>
+</libs-modal>
+}
+@if(modalesVisibles[TipoModal.TEXTIL]){
+<libs-modal anchoModal="fit" (closed)="modalControler(TipoModal.TEXTIL, ModalControl.CERRAR)">
+    <modal-body>
+        <form class="modal-textil">
+            <div class="form-group">
+                <label for="">Categoría Textil:</label>
+                <select class="form-select form-control">
+                    <option value="-1">Seleccione</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="">Tipo Fracción:</label>
+                <select class="form-select form-control">
+                    <option value="-1">Seleccione</option>
+                    <option value="tigie">TIGIE</option>
+                    <option value="htusa">HTS USA</option>
+                </select>
+            </div>
+            <div>
+                <app-tabla-dinamica [itemsPerPage]="10" [showPagination]="true" [datos]="datosFraccionesTextil()"
+                    [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX"
+                    [configuracionTabla]="configuracionTablaFraccionesTextil" (filaClic)="consultaFilaTextil($event)"
+                    (listaDeFilaSeleccionada)="seleccionarAEliminarTextil($event)"></app-tabla-dinamica>
+            </div>
+            <br />
+            <div class="botones-textil">
+                <button class="btn btn-primary">Agregar Fracción(es)</button>
+                <button class="btn btn-primary">Eliminar Fracción(es)</button>
+                <button class="btn btn-primary">Fracciones USA</button>
+            </div>
+        </form>
+    </modal-body>
+    <modal-footer>
+        <button class="btn btn-primary">Agregar</button>
+    </modal-footer>
+</libs-modal>
+}
+@if(modalesVisibles[TipoModal.FRACCIONES_ARANCELARIAS]){}
+@if(modalesVisibles[TipoModal.FRACCIONES_USA]){}

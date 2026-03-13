@@ -1,0 +1,70 @@
+<form [formGroup]="form" class="row g-3">
+  <div class="col-md-6">
+    <label>Registro Federal de Contribuyentes</label>
+    <input type="text" class="form-control" formControlName="rfc">
+  </div>
+  <div class="col-md-6"></div>
+
+  <div class="col-md-6">
+    <label>Tratado o acuerdo</label>
+    <select class="form-control form-select" formControlName="tratadoAcuerdo">
+      <option [ngValue]="null">Seleccione un valor</option>
+      <ng-container *ngFor="let tratado of tratadosAcuerdos">
+        <option [value]="tratado.clave">{{ tratado.descripcion }}</option>
+      </ng-container>
+    </select>
+  </div>
+
+  <div class="col-md-6">
+    <label>País</label>
+    <select class="form-control form-select" formControlName="pais">
+      <option [ngValue]="null">Seleccione un valor</option>
+      @if(tratadosAcuerdosValue){
+        @for(pais of paises; track $index){
+          <option [value]="pais.clave">{{ pais.descripcion }}</option>
+        }
+      }
+    </select>
+  </div>
+
+  <div class="col-md-6">
+    <input-fecha
+      [datos]="fechaDesdeConfig"
+      [setFecha]="form.get('fechaDesde')?.value"
+      (valorCambiado)="onFechaDesdeChange($event)"
+    ></input-fecha>
+  </div>
+
+  <div class="col-md-6">
+    <input-fecha
+      [datos]="fechaHastaConfig"
+      [setFecha]="form.get('fechaHasta')?.value"
+      (valorCambiado)="onFechaHastaChange($event)"
+    ></input-fecha>
+  </div>
+
+  <div class="col-md-6">
+    <label>Estado del certificado</label>
+    <select class="form-control form-select" formControlName="estadoCertificado">
+      <option [ngValue]="null">Seleccione un valor</option>
+      <option value="POR_GENERAR">Por generar</option>
+      <option value="ENTREGADO">Entregado</option>
+      <option value="GENERADO">Generado</option>
+      <option value="CANCELADO">Cancelado</option>
+    </select>
+  </div>
+
+  <div class="col-md-6">
+    <label><span class="text-danger">*</span> Representación federal</label>
+    <select class="form-control form-select" formControlName="representacionFederal">
+      <option [ngValue]="null">Seleccione un valor</option>
+      @for(representacion of representacionFederal; track $index){
+        <option [value]="representacion.clave">{{ representacion.descripcion }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="col-12 d-flex justify-content-center mt-4">
+    <button type="button" class="btn btn-primary" (click)="onBuscar()">Buscar</button>
+  </div>
+</form>

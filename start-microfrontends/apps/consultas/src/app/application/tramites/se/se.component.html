@@ -1,0 +1,92 @@
+<div class="page">
+    <div class="container">
+        <header>
+            <h2 class="titulo titulo-gold mb-5">Consulta Trámites SE</h2>
+        </header>
+        <section class="bg-light px-5 py-2">
+            <h5>Criterios de busqueda</h5>
+            @if(alertaVisible){
+                <br />
+                <ng-alert [CONTENIDO]="mensajeAlerta" [CUSTOMECLASS]="claseAlerta"></ng-alert>
+            }
+        </section>
+        <br />
+        <section class="form-busqueda-container bg-light p-5">
+            <form [formGroup]="FormBusquedaTramite" action="">
+                <div class="form-field">
+                    <label class="form-label" for="folio">Folio trámite</label>
+                    <input class="form-control" id="folio" type="text" formControlName="folio"
+                        [class.is-invalid]="folio?.invalid && (folio?.dirty || folio?.touched)">
+                    @if (folio?.invalid && (folio?.dirty || folio?.touched)) {
+                    <div class="invalid-feedback">
+                        @if (folio?.hasError('minlength')) {
+                        <div>Por favor, no escriba menos de 25 caracteres.</div>
+                        }
+                        @if (folio?.hasError('pattern')) {
+                        <div>Por favor, sólo escriba dígitos. </div>
+                        }
+                    </div>
+                    }
+                </div>
+                <div class="form-field">
+                    <label class="form-label" for="programa">Programa (inmex-prosec)</label>
+                    <input class="form-control" id="programa" type="text" formControlName="programa"
+                        [class.is-invalid]="programa?.invalid && (programa?.dirty || programa?.touched)">
+                    @if (programa?.invalid && (programa?.dirty || programa?.touched)) {
+                    <div class="invalid-feedback">
+                        @if (programa?.hasError('pattern')) {
+                        <div>Por favor, sólo escriba dígitos. </div>
+                        }
+                    </div>
+                    }
+                </div>
+                <div class="form-field">
+                    <label class="form-label" for="ano">Año (inmex-prosec)</label>
+                    <input class="form-control" id="ano" type="text" formControlName="ano"
+                        [class.is-invalid]="ano?.invalid && (ano?.dirty || ano?.touched)">
+                    @if (ano?.invalid && (ano?.dirty || ano?.touched)) {
+                    <div class="invalid-feedback">
+                        @if (ano?.hasError('maxlength')) {
+                        <div>Por favor, no escriba mas de 4 caracteres.</div>
+                        }
+                    </div>
+                    }
+                </div>
+                <div class="form-field">
+                    <label class="form-label" for="resolucion">No. de resolución</label>
+                    <input class="form-control" id="resolucion" type="text" formControlName="resolucion"
+                        [class.is-invalid]="resolucion?.invalid && (resolucion?.dirty || resolucion?.touched)">
+                    @if (resolucion?.invalid && (resolucion?.dirty || resolucion?.touched)) {
+                    <div class="invalid-feedback">
+                        @if (resolucion?.hasError('maxlength')) {
+                        <div>Por favor, no escriba mas de 19 caracteres.</div>
+                        }
+                    </div>
+                    }
+                </div>
+                <div class="form-field">
+                    <label class="form-label" for="certificado">Número de certificado</label>
+                    <input class="form-control" id="certificado" type="text" formControlName="certificado"
+                        [class.is-invalid]="certificado?.invalid && (certificado?.dirty || certificado?.touched)">
+                    @if (certificado?.invalid && (certificado?.dirty || certificado?.touched)) {
+                    <div class="invalid-feedback">
+                        @if (certificado?.hasError('maxlength')) {
+                        <div>Por favor, no escriba mas de 50 caracteres.</div>
+                        }
+                    </div>
+                    }
+                </div>
+            </form>
+            <div class="btn-form-action">
+                <button class="btn btn-primary" type="button" (click)="buscarTramite()">Buscar</button>
+            </div>
+        </section>
+        <br />
+        <section class="bg-light p-5">
+            <app-tabla-dinamica [configuracionTabla]="configuracionTabla" [datos]="datosBusquedaTramites"
+                [mode]="'client'" [totalItems]="datosBusquedaTramites.length" [showPagination]="true"
+                [itemsPerPage]="15" (filaClic)="seleccionarTramite($event)"/>
+        </section>
+    </div>
+</div>
+<br/>

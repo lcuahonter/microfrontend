@@ -1,0 +1,37 @@
+<div class="page">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <h3>Validar a posteriori el certificado de Japón</h3>
+      </div>
+      <div class="col-12">
+        @if (esFormaValido) {
+        <div
+          class="alert alert-info alert-danger"
+          [innerHTML]="formErrorAlert"
+        ></div>
+        }
+      </div>
+      <app-wizard [listaPasos]="pasos"></app-wizard>
+    </div>
+    <div class="row">
+      @switch (indice) { @case (1) {
+      <app-paso-uno #pasoUnoRef [isContinuarTriggered]="isContinuarTriggered" (cambioDePestana)="alCambiarPestana()"></app-paso-uno>
+      } @case (2) {
+      <paso-firma [idSolicitud]="solicitudState.idSolicitud" [procedure]="110217" [procedureUrl]="'certificado-origen/solicitante'"></paso-firma>
+      }
+      }
+      <btn-continuar
+        [datos]="datosPasos"
+        (continuarEvento)="getValorIndice($event)"
+        [dePadre]="true"
+        [btnGuardar]="true" 
+        [btnGuardarVisible]="'visible'"
+        (btnGuardarClicked)="obtenerDatosDelStore()"
+        ></btn-continuar>
+      @if(indice ===1){
+      <ng-alert [CONTENIDO]="TEXTOS.Aviso"></ng-alert>
+      }
+    </div>
+  </div>
+</div>

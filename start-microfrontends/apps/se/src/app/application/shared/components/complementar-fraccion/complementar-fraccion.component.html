@@ -1,0 +1,134 @@
+<div class="page">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="form-group">
+        <h5 class="form-label text-start">Fracción arancelaria:</h5>
+        <p class="form-label text-start">
+          {{ selectedRow?.encabezadoFraccionArancelaria || selectedDosRow?.encabezadoFraccionExportacion }}
+        </p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <h5 class="form-label text-start">Anexo II:</h5>
+        <p class="form-label text-start">
+          {{ selectedRow?.encabezadoAnexoII || selectedDosRow?.encabezadoAnexoII }}
+        </p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <h5 class="form-label text-start">Tipo:</h5>
+        <p class="form-label text-start">
+          {{ selectedRow?.encabezadoTipo || selectedDosRow?.encabezadoTipo }}
+        </p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <h5 class="form-label text-start">UMT:</h5>
+        <p class="form-label text-start">{{ selectedRow?.encabezadoUmt || selectedDosRow?.encabezadoUmt }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <ng-titulo titulo="Fracción arancelaria del producto" />
+    </div>
+  </div>
+
+  <form [formGroup]="complimentarForm">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <app-catalogo-select [catalogo]="catagoriaSeleccionDatos" formControlName="catagoria" [label]="'Categoría'"
+            [required]="true" name="catagoria" [isDisabled]="formularioDeshabilitado"
+             (change)="setValoresStore(complimentarForm, 'catagoria', 'setCatagoria')"></app-catalogo-select>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <label for="descripcion" class="form-label text-start">Descripción comercial*:</label>
+          <textarea id="descripcion" class="form-control" style="height: 60%; resize: none"
+            formControlName="descripcion" (change)="setValoresStore(complimentarForm, 'descripcion', 'setDescripcion')"
+            ></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-md-10">
+        <label for="monedaNacionalMensual" class="form-label text-start"
+          >Valor en moneda nacional de la producción o del servicio a realizarse mensualmente*:</label>
+      </div>
+      <div class="col-md-2">
+        <input class="form-control min-hgt" id="monedaNacionalMensual" formControlName="monedaNacionalMensual"
+           type="text" min="0" pattern="^[0-9]*$" maxlength="16"
+           (input)="onSoloDigitosInput($event,'monedaNacionalMensual')" 
+           (change)="setValoresStore(complimentarForm, 'monedaNacionalMensual', 'setMonedaNacionalMensual')"/>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-10">
+        <label for="monedaNacionalDeDosPeriodos" class="form-label text-start"
+          >Valor en moneda nacional de la producción o del servicio a realizarse en 2 añoss*:</label
+        >
+      </div>
+      <div class="col-md-2">
+        <input class="form-control min-hgt" id="monedaNacionalDeDosPeriodos"
+          formControlName="monedaNacionalDeDosPeriodos" type="text" min="0" pattern="^[0-9]*$"  maxlength="21"
+          (input)="onSoloDigitosInput($event,'monedaNacionalDeDosPeriodos')"
+          (change)="setValoresStore(complimentarForm, 'monedaNacionalDeDosPeriodos', 'setMonedaNacionalDeDosPeriodos')"
+           />
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-10">
+        <label for="volumenMensual" class="form-label text-start">
+          Volúmen de la producción o del servicio a realizarse mensualmente*:
+        </label>
+      </div>
+      <div class="col-md-2">
+        <input class="form-control min-hgt" id="volumenMensual" formControlName="volumenMensual" type="text" min="0"
+          pattern="^[0-9]*$"  maxlength="16"
+          (input)="onSoloDigitosInput($event,'volumenMensual')" 
+          (change)="setValoresStore(complimentarForm, 'volumenMensual', 'setVolumenMensual')"/>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-10">
+        <label for="twoPeriodVolume" class="form-label text-start">
+          Volúmen de la producción o del servicio a realizarse en 2 años*:
+        </label>
+      </div>
+      <div class="col-md-2">
+        <input class="form-control min-hgt" id="twoPeriodVolume" formControlName="twoPeriodVolume" type="text" min="0"
+          pattern="^[0-9]*$"  maxlength="21"
+          (input)="onSoloDigitosInput($event,'twoPeriodVolume')" 
+          (change)="setValoresStore(complimentarForm, 'twoPeriodVolume', 'setTwoPeriodVolume')"/>
+      </div>
+    </div>
+  </form>
+  <div class="row">
+    <div class="col-12 container text-end mt-5">
+      <button class="btn btn-default me-2" (click)="seleccionGuardar()" [disabled]="formularioDeshabilitado">
+        Guardar
+      </button>
+      <button class="btn btn-primary me-2" (click)="regresar()" [disabled]="formularioDeshabilitado">
+        Regresar Anexo
+      </button>
+    </div>
+  </div>
+</div>
+
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion" (confirmacionModal)="confirmacionModal()">
+  </lib-notificaciones>
+</section>
+}
+

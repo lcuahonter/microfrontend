@@ -1,0 +1,27 @@
+<div class="container">
+  <div class="row">
+    <ul class="nav nav-tabs">
+      @for(tab of listaDeTabs(); track tab.indice){
+      <li [class.active]="tab.indice === indiceTab" [class.disabled]="tab.disabled">
+        <a data-toggle="tab" (click)="indiceTab = tab.indice" role="button"
+          tabindex="{{tab.indice-1}}">{{tab.titulo}}</a>
+      </li>
+      }
+    </ul>
+    <ng-container>
+      @switch (indiceTab) {
+      @case (1) {
+      <solicitante [tabindex]="1" (datosGeneralesLoaded)="onDatosGeneralesLoaded($event)"></solicitante>
+      } @case (2) {
+      <datos-solicitud [tabindex]="2" (habilitarTerceros)="habilitarTerceros($event)"
+        [esGuardarDatos]="esGuardarDatos()"></datos-solicitud>
+      } @case (3) {
+      <terceros [tabindex]="3" [esGuardarDatos]="esGuardarDatos()"></terceros>
+      } @case (4) {
+      <pago-de-derechos [tabindex]="4" [esGuardarDatos]="esGuardarDatos()"></pago-de-derechos>
+      }
+      }
+    </ng-container>
+
+  </div>
+</div>

@@ -1,0 +1,69 @@
+<div class="page">
+  <div class="container">
+    <div class="row">
+      @if (indice ===1) {
+      <div class="col-md-12">
+        <h1 class="titulo titulo-gold">Aviso de reciclaje</h1>
+      </div>
+      } @if (indice === 2) {
+      <div class="col-md-12">
+        <h1 class="titulo titulo-gold">Firmar</h1>
+      </div>
+      }
+
+      <div class="col-12">
+        @if (!esFormaValido) {
+        <div
+          class="alert alert-info alert-danger"
+          [innerHTML]="formErrorAlert"
+        ></div>
+        }
+      </div>
+
+      <div class="row mt-5" *ngIf="indice === 2">
+        <div class="col-md-12">
+          <lib-notificaciones
+            [notificacionInput]="alertaNotificacion"
+          ></lib-notificaciones>
+        </div>
+      </div>
+
+      <app-wizard #wizard [listaPasos]="pasos"></app-wizard>
+    </div>
+
+    <div class="row">
+      @switch (indice) { @case (1) {
+      <app-paso-uno-t231003 [esFormaValido]="esFormaValido" />
+      } @case (2) {
+      <app-paso-dos
+        [procedureUrl]="'aviso-de-reciclaje'"
+        [procedure]="231003"
+      ></app-paso-dos>
+      }}
+    </div>
+
+    <btn-continuar
+      [datos]="datosPasos"
+      (continuarEvento)="getValorIndice($event)"
+      (anteriorEvento)="getValorIndice($event)"
+    ></btn-continuar>
+
+    @if(1 === indice) {
+    <div class="mt-5">
+      <div class="mt-5">
+        <ng-alert
+          [CONTENIDO]="TEXTOS.aviso"
+          [CUSTOMECLASS]="infoAlert"
+        ></ng-alert>
+      </div>
+    </div>
+    }
+  </div>
+</div>
+
+@if(nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+  </lib-notificaciones>
+</section>
+}

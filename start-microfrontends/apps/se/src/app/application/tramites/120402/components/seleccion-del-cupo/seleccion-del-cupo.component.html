@@ -1,0 +1,71 @@
+<div class="container">
+  <form [formGroup]="seleccionForm">
+    <ng-titulo titulo="Selección del cupo"></ng-titulo>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <app-catalogo-select
+          [catalogo]="regimen"
+          [label]="'Régimen aduanero'"
+          name="regimen"
+          formControlName="regimen"
+          (change)="getRegimen()"   [isDisabled]="esFormularioSoloLectura"
+        >
+        </app-catalogo-select>
+      </div>
+      <div class="col-md-4">
+        <app-catalogo-select
+          [catalogo]="tratado"
+          [label]="'Tratado o bloque comercial'"
+          name="tratado"
+          formControlName="tratado"
+          (change)="getTratado()"   [isDisabled]="esFormularioSoloLectura"
+        >
+        </app-catalogo-select>
+      </div>
+      <div class="col-md-4">
+        <app-catalogo-select
+          [catalogo]="nombreProducto"
+          [label]="'Nombre de producto'"
+          name="producto"
+          formControlName="nombreProducto"
+          (change)="obtenerValorProducto()" [isDisabled]="esFormularioSoloLectura"
+        >
+        </app-catalogo-select>
+      </div>
+      <div class="col-md-4">
+        <app-catalogo-select
+          [catalogo]="nombreSubproducto"
+          [label]="'Nombre del subproducto'"
+          name="subproducto"
+          formControlName="nombreSubproducto"
+          (change)="getSubproducto()"  [isDisabled]="esFormularioSoloLectura"
+        >
+        </app-catalogo-select>
+      </div>
+    </div>
+    <hr />
+    <div class="row mt-5 mb-5">
+      <div class="col-md-8"></div>
+      <div class="col-md-4 text-end">
+        <div class="btn-group">
+          <button class="btn btn-primary me-2" (click)="buscarCupos()" type="button">Buscar</button>
+        </div>
+      </div>
+    </div>
+  </form>
+  <ng-alert [CONTENIDO]="'Para continuar con el proceso del trámite deberá seleccionar un registro dando doble click'"></ng-alert>
+
+
+  <div>
+    <div class="table-responsive table-wrapper">
+      <h4> Cupos disponibles</h4>
+      <app-tabla-dinamica [configuracionTabla]="configuracionTabla"  
+      [datos]="datos"
+      (dblclick)="onTablaDblClick($event)"></app-tabla-dinamica>
+    </div>
+  </div>
+<app-descripcion-del-cupo *ngIf="mostrarDescripcionDelCupo || esFormularioSoloLectura">
+</app-descripcion-del-cupo>
+<app-cantidad-solicitada *ngIf="mostrarDescripcionDelCupo || esFormularioSoloLectura"></app-cantidad-solicitada>
+
+</div>

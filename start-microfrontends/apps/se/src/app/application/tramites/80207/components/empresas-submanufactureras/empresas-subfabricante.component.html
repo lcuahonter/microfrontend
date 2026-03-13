@@ -1,0 +1,190 @@
+<!-- InfoRegistro empezar -->
+<form [formGroup]="formularioInfoRegistro">
+  <div class="row mt-md-4">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="modalidad" class="form-label text-nowrap"
+          >Selecciona la modalidad:</label
+        >
+        <input
+          type="text"
+          id="modalidad"
+          name="modalidad"
+          size="30"
+          maxlength="13"
+          class="form-control"
+          formControlName="modalidad"
+        />
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="folio" class="form-label">Folio:</label>
+        <input
+          type="text"
+          id="folio"
+          name="folio"
+          size="30"
+          maxlength="13"
+          class="form-control"
+          formControlName="folio"
+        />
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="ano" class="form-label">Año:</label>
+        <input
+          type="text"
+          id="ano"
+          name="ano"
+          size="30"
+          maxlength="13"
+          class="form-control"
+          formControlName="ano"
+        />
+      </div>
+    </div>
+  </div>
+</form>
+<!-- InfoRegistro fin -->
+
+<!-- datosSubcontratista empezar -->
+
+<form [formGroup]="formularioDatosSubcontratista">
+  <ng-titulo titulo="Empresas submanufactureras" />
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label
+          class="form-label text-nowrap text-truncate-ellipsis"
+          [title]="'Registro federal de contribuyentes'"
+          for="rfc"
+          >Registro federal de contribuyentes*:
+        </label>
+        <input
+          type="text"
+          name="rfc"
+          id="rfc"
+          formControlName="rfc"
+          class="form-control mt-custom"
+          size="30"
+          maxlength="13"
+          (change)="obtenerRFC()"
+          [class.is-invalid]="
+          formularioDatosSubcontratista.get('rfc')?.touched &&
+          formularioDatosSubcontratista.get('rfc')?.invalid
+        "
+        />
+        <div
+            class="invalid-feedback"
+            *ngIf="
+              formularioDatosSubcontratista.get('rfc')?.touched &&
+              formularioDatosSubcontratista.get('rfc')?.invalid
+            "
+          >
+            <span *ngIf="formularioDatosSubcontratista.get('rfc')?.hasError('required')"
+              >Este campo es obligatorio.</span
+            >
+          </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <app-catalogo-select
+          [catalogo]="estadoCatalogo"
+          [label]="'Estado'"
+          [required]="true"
+           [primerOptionValue]="SIN"
+           [hiddenPrimerOption]="false"
+           [disabledPrimerOption]="false"
+          [isDisabled]="esFormularioSoloLectura"
+          formControlName="estado"
+          (change)="enEstadoSeleccionado()"
+           [markTouched]="!!(formularioDatosSubcontratista.get('estado')?.touched &&
+              formularioDatosSubcontratista.get('estado')?.invalid)"
+        ></app-catalogo-select>       
+      </div>
+      </div>
+    </div>
+</form>
+<!-- datosSubcontratista fin -->
+
+<div class="row justify-content-end">
+  <button
+    type="button"
+    class="btn btn-primary col-auto pull-right float-end mt-3 me-5"
+    (click)="realizarBusqueda()"
+    [disabled]="esFormularioSoloLectura"
+  >
+    Buscar plantas
+  </button>
+</div>
+
+<div  class="row mt-5">
+  <div class="col-md-12">
+    <label for="submanufacturerasdisponibles"
+      >Submanufactureras disponibles:</label
+    >
+  </div>
+  <div class="col-md-12">
+    <app-tabla-dinamica
+      [tipoSeleccionTabla]="tablaSeleccion"
+      [configuracionTabla]="configuracionTabla"
+      [datos]="datosTablaSubfabricantesDisponibles"
+      (listaDeFilaSeleccionada)="obtenerRegistroSeleccionado($event)"
+      [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+    ></app-tabla-dinamica>
+  </div>
+
+
+<div
+  class="row justify-content-end"
+>
+  <button
+    type="button"
+    class="btn btn-primary col-auto pull-right float-end mt-3"
+    (click)="agregarPlantas()"
+    [disabled]="esFormularioSoloLectura"
+  >
+    Agregar plantas
+  </button>
+</div>
+</div>
+<div  class="row mt-5">
+  <div class="col-md-12">
+    <label for="submanufacturerasdisponibles"
+      >Plantas submanufactureras seleccionadas:</label
+    >
+  </div>
+  <div class="col-md-12">
+    <app-tabla-dinamica
+      [tipoSeleccionTabla]="tablaSeleccion"
+      [configuracionTabla]="configuracionTablaPlantas"
+      [datos]="datosPlantasParaSerAgregados"
+      (listaDeFilaSeleccionada)="datosDelSubfabricantePorEliminar($event)"
+     [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+    ></app-tabla-dinamica>
+  </div>
+
+  <div class="row justify-content-end">
+    <button
+      type="button"
+      class="btn btn-danger col-auto pull-right float-end mt-3"
+      (click)="eliminarPlantas()"
+      [disabled]="esFormularioSoloLectura"
+    >
+      Eliminar plantas
+    </button>
+  </div>
+</div>
+
+@if(nuevaNotificacion && !deleteMessageExportacion ){
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion"></lib-notificaciones>
+}
+@if(nuevaNotificacion && deleteMessageExportacion ){
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion" (confirmacionModal)="eliminarPedimentoDatoss($event)"></lib-notificaciones>
+}

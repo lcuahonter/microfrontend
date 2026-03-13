@@ -1,0 +1,269 @@
+<div class="container">
+  <div class="row mt-5">
+    <ng-titulo titulo="Datos mercancía"></ng-titulo>
+  </div>
+  <div class="row mt-5">
+    <form [formGroup]="datosMercancia">
+      <div class="row mb-3">
+        <div class="col-12">
+          <label for="descripcion" class="form-label">Descripción*:</label>
+          <textarea
+            id="descripcion"
+            class="form-control"
+            formControlName="descripcion"
+            rows="3"
+            style="height: 90px"
+            placeholder=""
+            maxlength="1000"
+          ></textarea>
+          <div class="error-message">
+            <small
+              *ngIf="
+                datosMercancia.get('descripcion')?.touched &&
+                datosMercancia.get('descripcion')?.invalid
+              "
+              class="text-danger"
+            >
+              Este campo es obligatorio.
+            </small>            
+          </div>
+        </div>
+      </div>
+
+      <!-- Fracción arancelaria / Descripción de la fracción -->
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <app-catalogo-select
+            formControlName="fraccionArancelaria"
+            [catalogo]="fraccionesCatalogo"
+            [label]="'Fracción arancelaria'"
+            [required]="true"
+            [isDisabled]="esFormularioSoloLectura"
+            (selectionChange)="onFraccionSelected($event.id)"
+          ></app-catalogo-select>
+          <div class="error-message">
+            <small class="text-danger" *ngIf="datosMercancia.get('fraccionArancelaria')?.touched && datosMercancia.get('fraccionArancelaria')?.hasError('required')">
+              Este campo es obligatorio.
+            </small>
+          </div>            
+        </div>
+
+        <div class="col-md-6">
+          <label for="descFraccion" class="form-label">
+            Descripción de la fracción arancelaria*:
+          </label>
+          <span
+          class="bi bi-question-circle-fill fs-4 m-1"
+          tooltip="Ingrese una fracción"
+          ata-bs-toggle="tooltip"
+        >
+        </span>
+          <textarea
+            id="descFraccion"
+            type="text"
+            class="form-control"
+            formControlName="descFraccion"
+            style="height: 90px"
+            readonly
+          ></textarea>
+          <div class="error-message">
+            <small
+              *ngIf="
+                datosMercancia.get('descFraccion')?.touched &&
+                datosMercancia.get('descFraccion')?.invalid
+              "
+              class="text-danger"
+            >
+              Este campo es obligatorio.
+            </small>            
+          </div>
+        </div>
+      </div>
+
+      <!-- Cantidad en UMT, UMT, Valor comercial -->
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label for="cantidadUMT" class="form-label">Cantidad en UMT*:</label>
+          <span
+          class="bi bi-question-circle-fill fs-4 m-1"
+          tooltip="Unidad de medida de la tarifa"
+          ata-bs-toggle="tooltip"
+        >
+        </span>
+          <input
+            id="cantidadUMT"
+            type="text"
+            class="form-control"
+            formControlName="cantidadUMT"
+            (input)="onCantidadUMTInput($event)"
+          />
+          <div class="error-message">
+            <small
+              *ngIf="
+                datosMercancia.get('cantidadUMT')?.touched &&
+                datosMercancia.get('cantidadUMT')?.invalid
+              "
+              class="text-danger"
+            >
+              Este campo es obligatorio.
+            </small>            
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <label for="umt" class="form-label">UMT*:<span class="bi bi-question-circle-fill fs-4 m-1" tooltip="Unidad de medida de la tarifa" ata-bs-toggle="tooltip"></span></label>
+          <input
+            id="umt"
+            type="text"
+            class="form-control"
+            formControlName="umt"
+            placeholder=""
+            readonly
+          />
+          <div class="error-message">
+            <small
+              *ngIf="
+                datosMercancia.get('umt')?.touched &&
+                datosMercancia.get('umt')?.invalid
+              "
+              class="text-danger"
+            >
+              Este campo es obligatorio.
+            </small>            
+          </div>          
+        </div>
+
+        <div class="col-md-4">
+          <label for="valorComercial" class="form-label">
+            Valor comercial*:
+          </label>
+          <input
+            id="valorComercial"
+            type="number"
+            class="form-control"
+            formControlName="valorComercial"
+             (input)="onCantidadvalorComercialInput($event)"
+          />
+          <div class="error-message">
+            <small
+              *ngIf="
+                datosMercancia.get('valorComercial')?.touched &&
+                datosMercancia.get('valorComercial')?.invalid
+              "
+              class="text-danger"
+            >
+              Este campo es obligatorio.
+            </small>            
+          </div>          
+
+        </div>
+      </div>
+
+      <!-- UMC, Tipo moneda -->
+      <div class="row mb-3">
+        @if(visibilidadCampoUMC) {
+          <div class="col-md-4">
+          <app-catalogo-select
+            formControlName="umc"
+            [catalogo]="umcCatalogo"
+            [label]="'UMC'"
+            [required]="true"
+            [tooltipQuestionCircle]="true"
+            [tooltipQuestionCircleText]="'Unidad de medida comercial'"
+            [isDisabled]="esFormularioSoloLectura"
+            [tooltipQuestionCircleText]="'Unidad de medida comercial'"
+            (selectionChange)="datosMercancia.get('umc')?.setValue($event.id)"
+          ></app-catalogo-select>
+          <div class="error-message">
+            <small
+              *ngIf="
+                datosMercancia.get('umc')?.touched &&
+                datosMercancia.get('umc')?.invalid
+              "
+              class="text-danger"
+            >
+              Este campo es obligatorio.
+            </small>            
+          </div>          
+        </div>
+      }
+
+        <div class="col-md-4">
+          <app-catalogo-select
+            formControlName="tipoMoneda"
+            [catalogo]="monedaCatalogo"
+            [label]="'Tipo moneda'"
+            [required]="true"
+            [isDisabled]="esFormularioSoloLectura"
+            (selectionChange)="datosMercancia.get('tipoMoneda')?.setValue($event.id)"
+          ></app-catalogo-select>
+          <div class="error-message">
+            <small
+              *ngIf="
+                datosMercancia.get('tipoMoneda')?.touched &&
+                datosMercancia.get('tipoMoneda')?.invalid
+              "
+              class="text-danger"
+            >
+              Este campo es obligatorio.
+            </small>            
+          </div>          
+        </div>
+      </div>
+
+      @if(!puedeMostrarLaListaCruzada){
+        <div class="row">
+          <ng-titulo titulo="País de origen"></ng-titulo>
+        </div>
+        <div class="row">
+          <crosslist
+            [fechas]="seleccionarOrigenDelPais"
+            [label]="paisDeOriginLabel"
+            [fechasSeleccionadas]="seleccionadasPaisDeOriginDatos"
+            (fechasSeleccionadasChange)="paisDeOriginSeleccionadasChange($event)"
+            [isDisabled]="esFormularioSoloLectura"
+          ></crosslist>
+        </div>
+      }
+
+      <div class="row mt-5 mb-5">
+        <div class="col-md-12">
+          <div class="pull-right">
+            <button
+              type="button"
+              name="modificarMercancias"
+              class="btn btn-default"
+              (click)="cancelar()"
+              [disabled]="esFormularioSoloLectura"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              name="eliminarMercancias"
+              class="btn btn-danger ms-2"
+              (click)="limpiarFormulario()"
+              [disabled]="esFormularioSoloLectura"
+            >
+              Limpiar
+            </button>
+            <button
+              type="button"
+              name="agregarMercancias"
+              class="btn btn-primary ms-2"
+              (click)="guardar()"
+              [disabled]="esFormularioSoloLectura"
+            >
+              Guardar
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+    @if (nuevaNotificacion) {
+  <section>
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion"></lib-notificaciones>
+  </section>
+  }
+</div>

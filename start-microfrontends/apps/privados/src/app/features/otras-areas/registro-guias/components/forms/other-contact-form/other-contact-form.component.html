@@ -1,0 +1,93 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h3>Otro Contacto</h3>
+      <hr class="red" />
+      <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" autocomplete="off">
+        <!-- Fila 1 -->
+        <div class="row">
+          <!-- Person Name -->
+          <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+              <label class="control-label">Person Name:</label>
+              <app-tooltip text="Nombre de Contacto"></app-tooltip>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="personName"
+              />
+            </div>
+          </div>
+
+          <!-- Department Name -->
+          <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+              <label class="control-label">Department Name:</label>
+              <app-tooltip text="Departamento"></app-tooltip>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="departmentName"
+              />
+            </div>
+          </div>
+
+          <!-- Telephone -->
+          <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+              <label class="control-label">Telephone:</label>
+              <app-tooltip text="Número telefónico del contacto"></app-tooltip>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="telephone"
+                integerOnly
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Fila 2 -->
+        <div class="row">
+          <!-- Email Address -->
+          <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+              <label class="control-label">Email Address:</label>
+              <app-tooltip text="Correo electrónico"></app-tooltip>
+              <input
+                type="email"
+                class="form-control"
+                formControlName="emailAddress"
+                [ngClass]="{
+                  'form-control-error': formUtils.isValidField(contactForm, 'emailAddress')
+                }"
+              />
+              <ng-container *ngIf="formUtils.isValidField(contactForm, 'emailAddress')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getFieldError(contactForm, 'emailAddress') }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="row">
+          <div class="col-md-12 text-right">
+            <gob-button
+              type="submit"
+              className="btn-primary mr-1"
+              [label]="isUpdating ? 'Modificar' : 'Agregar'"
+            ></gob-button>
+            <gob-button
+              type="button"
+              className="btn-danger"
+              label="Cancelar"
+              (clicked)="onCancel()"
+            ></gob-button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,165 @@
+<div class="container">
+  <div class="row">
+    <form [formGroup]="cargoTypeForm" (ngSubmit)="onSubmit()" autocomplete="off">
+      <div class="col-md-12">
+        <h3>Tipo de carga</h3>
+        <hr class="red" />
+          <div class="row">
+            <!-- Type Code -->
+            <div class="col-md-4 col-sm-6">
+              <div class="form-group">
+                <label class="control-label">Type Code*:</label>
+                <app-tooltip text="Tipo de carga"></app-tooltip>
+                <select
+                  class="form-control"
+                  formControlName="typeCode"
+                  [ngClass]="{
+                    'form-control-error': formUtils.isValidField(cargoTypeForm, 'typeCode')
+                  }"
+                >
+                  <option [ngValue]="null">Selecciona una opcion</option>
+                  <option *ngFor="let type of typeCodes" [value]="type.clave">
+                    {{ type.valor }}
+                  </option>
+                </select>
+                <ng-container *ngIf="formUtils.isValidField(cargoTypeForm, 'typeCode')">
+                  <small class="form-text form-text-error">
+                    {{ formUtils.getFieldError(cargoTypeForm, 'typeCode') }}
+                  </small>
+                </ng-container>
+              </div>
+            </div>
+
+            <!-- ULD Serial Number -->
+            <div class="col-md-4 col-sm-6">
+              <div class="form-group">
+                <label class="control-label">U L D Serial Number:</label>
+                <app-tooltip text="Número para identificar vuelo"></app-tooltip>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="uldSerialNumber"
+                  [appMaxLength]="12"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Place of transfer / destination -->
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label class="control-label">Place of transfer / destination*:</label>
+                <div>
+                  <label class="radio-inline">
+                    <input type="radio" [value]="locationEnum.IATA" formControlName="locationType" /> IATA
+                  </label>
+
+                  <label class="radio-inline">
+                    <input type="radio" [value]="locationEnum.CONTROLLED_PREMISES" formControlName="locationType" />
+                    Recinto Fiscalizado
+                  </label>
+                </div>
+                <ng-container *ngIf="formUtils.isValidField(cargoTypeForm, 'locationType')">
+                  <small class="form-text form-text-error">
+                    {{ formUtils.getFieldError(cargoTypeForm, 'locationType') }}
+                  </small>
+                </ng-container>
+              </div>
+            </div>
+
+            <!-- ID -->
+            <div class="col-md-4 col-sm-6 mt-1" *ngIf="radioHasValue()">
+              <div class="form-group">
+                <label class="control-label">I D*:</label>
+                <app-tooltip text="Código de ubicación de llegada programada"></app-tooltip>
+                <select
+                  class="form-control"
+                  formControlName="locationId"
+                  [ngClass]="{
+                    'form-control-error': formUtils.isValidField(cargoTypeForm, 'locationId')
+                  }"
+                >
+                  <option [ngValue]="null">Selecciona un valor</option>
+                  <option *ngFor="let id of locationIds" [value]="id.valor">
+                    {{ id.clave }}
+                  </option>
+                </select>
+                <ng-container *ngIf="formUtils.isValidField(cargoTypeForm, 'locationId')">
+                  <small class="form-text form-text-error">
+                    {{ formUtils.getFieldError(cargoTypeForm, 'locationId') }}
+                  </small>
+                </ng-container>
+              </div>
+            </div>
+
+            <!-- Name -->
+            <div class="col-md-4 col-sm-6 mt-1">
+              <div class="form-group">
+                <label class="control-label">Name:</label>
+                <app-tooltip text="Nombre de ubicación de llegada programada"></app-tooltip>
+                <input type="text" class="form-control" formControlName="locationName" readonly/>
+              </div>
+            </div>
+          </div>
+      </div>
+      <div class="col-md-12">
+        <h3>Guías master</h3>
+        <hr class="red" />
+        <div [ngClass]="{ 'table-error': valueMissingMasterGuidesTable }">
+          <app-table
+            [tableData]="tableMasterGuidesData"
+            [borderedStyle]="true"
+            [isLoading]="isLoadingMasterGuidesData"
+            [hiddenData]="hiddenMasterGuidesData"
+            [error]="errorMasterGuidesData"
+            [hasRedirect]="true"
+            [hasPagination]="false"
+            [ableSelectAllTable]="true"
+            [ableSelectRows]="true"
+            [displayHeader]="false"
+            (onRowsSelected)="masterSelected($event)"/>
+        </div>
+        <ng-container *ngIf="valueMissingMasterGuidesTable">
+          <small class="text-error">
+            {{ 'Este campo es obligatorio' }}
+          </small>
+        </ng-container>
+        <div class="text-right">
+          <gob-button
+            type="button"
+            className="btn-primary mr-1"
+            label="Agregar"
+            (clicked)="addMasterGuide()"
+          />
+          <ng-container *ngIf="displayDeleteBtnMaster()">
+            <gob-button
+              type="button"
+              className="btn-danger"
+              label="Eliminar"
+              (clicked)="removeMaster()"
+            />
+          </ng-container>
+        </div>
+      </div>
+        <!-- Botones -->
+      <div class="col-md-12 text-right mt-3">
+        <gob-button
+          type="button"
+          className="btn-primary mr-1"
+          label="Agregar"
+          (clicked)="onSubmit()"
+        ></gob-button>
+        <gob-button
+          type="button"
+          className="btn-danger"
+          label="Cancelar"
+          (clicked)="onCancel()"
+        ></gob-button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<app-dialog [id]="'registerDeletedGuide'" [content]="'El registro seleccionado fue eliminado correctamente'"/>
+

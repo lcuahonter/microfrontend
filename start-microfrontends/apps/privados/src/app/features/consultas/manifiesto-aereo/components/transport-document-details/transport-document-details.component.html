@@ -1,0 +1,110 @@
+<!-- Detalle del documento de transporte -->
+<div class="container-fluid">
+  <h5>Detalle del documento de transporte</h5>
+  <hr class="red" />
+
+  <ng-container *ngIf="!isManifest()">
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label>Documento de Transporte</label>
+          <input type="text" class="form-control" [value]="documentDetails()?.documentoTransporte" disabled />
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label>Documento de guía master de Referencia</label>
+          <input type="text" class="form-control" [value]="documentDetails()?.documentoGuiaMaster" disabled />
+        </div>
+      </div>
+    </div>
+      <!-- Subtítulo -->
+      <h5>Origen y Destino de Documento de Transporte</h5>
+    <div class="row">
+      <div class="col-sm-3">
+        <div class="form-group">
+          <label>Lugar Origen (Código)</label>
+          <input type="text" class="form-control" [value]="documentDetails()?.codigoLugarOrigen" disabled />
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="form-group">
+          <label>Lugar Origen</label>
+          <input type="text" class="form-control" [value]="documentDetails()?.lugarOrigen" disabled />
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="form-group">
+          <label>Lugar Destino (Código)</label>
+          <input type="text" class="form-control" [value]="documentDetails()?.codigoLugarDestino" disabled />
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="form-group">
+          <label>Lugar Destino</label>
+          <input type="text" class="form-control" [value]="documentDetails()?.lugarDestino" disabled />
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+
+  <app-table
+    *ngIf="!isManifest()"
+    [tableData]="tableDataThirdPartyDetails"
+    [hiddenData]="hiddenDataThirdPartyDetail"
+    title="Detalles de Terceros Relacionados"
+    [isLoading]="isLoadingDataThirdPartyDetail"
+    [error]="errorThirdPartyDetailData"
+    [borderedStyle]="true"
+    (onRowClicked)="navigateToContacts($event)"
+    [hasRedirect]="true"
+  ></app-table>
+
+ <app-table
+    [tableData]="tableDataTransportDetails"
+    [isLoading]="isDataTransportDetails"
+    [error]="errorTransportDetailsData"
+    title="Detalles del Medio de Transporte"
+    [borderedStyle]="true"
+  ></app-table>
+
+  <ng-container *ngIf="!isManifest()">
+    <div class="row">
+      <div class="col-sm-6">
+        <app-table
+          [tableData]="tableDataInfoMovements"
+          [isLoading]="isLoadingInfoMovements"
+          [error]="erroInfoMovementsData"
+          title="Información para Maniobras"
+          [borderedStyle]="true"
+        ></app-table>
+      </div>
+      <div class="col-sm-6">
+        <app-table
+          [tableData]="tableAdditionalInfo"
+          [isLoading]="isLoadingAdditionalInfo"
+          [error]="errorAdditionalInfoData"
+          title="Información complementaria"
+          [borderedStyle]="true"
+        ></app-table>
+      </div>
+    </div>
+    <!-- Subtítulo -->
+    <h5>Moneda</h5>
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label><strong>Moneda Origen (Código)</strong></label>
+          <input type="text" class="form-control" [value]="documentDetails()?.monedaOrigen" disabled />
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label><strong>Moneda Destino (Código)</strong></label>
+          <input type="text" class="form-control" [value]="documentDetails()?.monedaDestino" disabled />
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

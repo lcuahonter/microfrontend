@@ -1,0 +1,79 @@
+<!--Datos del representante legal del exportador-->
+<ng-titulo titulo="Datos del representante legal del exportador" />
+<div class="row" [formGroup]="form">
+  @for(campo of campos; track $index) {
+  <div [ngClass]="campo.columna" class="form-group">
+    <label [for]="campo.nombre"
+      >{{ campo.label }}@if (campo.required) {<span
+        for="asterisk"
+        [ngClass]="{
+          'text-danger':
+            form.get(campo.nombre)?.invalid && form.get(campo.nombre)?.touched
+        }"
+        >*</span
+      ><span for="puntos">:</span>} @if (campo.tooltip) {
+      <span [tooltip]="campo.tooltip" placement="top">
+        <i class="bi bi-question-circle-fill mx-2"></i>
+      </span>
+      }
+    </label>
+    @if (campo.tipo === 'text') {
+    <input
+      [type]="campo.tipo"
+      [ngClass]="
+        'form-control' +
+        (form.get(campo.nombre)?.invalid && form.get(campo.nombre)?.touched ? ' is-invalid' : '') +
+        (isValid(form, campo.nombre) && campo.required ? ' required' : '')
+      "
+      [formControlName]="campo.nombre"
+      [id]="campo.nombre"
+      (change)="
+        setValoresStore('form', campo.nombre, campo.storeStateName ?? '')
+      "
+      [maxlength]="campo.maxlength ?? ''"
+    />
+    }
+    @if (campo.tipo === 'dropdown') {
+    <app-catalogo-select
+      [catalogo]="paisDestinoCatalog"
+      [label]="campo.label"
+      [required]="campo.required ?? false"
+      name="campo.nombre"
+      [formControlName]="campo.nombre"
+      (change)="cambioPaisDestino()"
+    ></app-catalogo-select>
+    }
+    @if (form.get(campo.nombre)?.touched && form.get(campo.nombre)?.invalid) {
+      @if (form.get(campo.nombre)?.touched && form.get(campo.nombre)?.invalid &&
+      campo.nombre !== 'correo' && campo.nombre !== 'correoElectronico') {
+        @if (form.get(campo.nombre)?.errors?.['required'] &&
+        !form.get(campo.nombre)?.value) {
+        <div class="mensaje-error">Este campo es obligatorio</div>
+        }
+         @if ((campo.nombre === 'telefono' || campo.nombre === 'fax') && form.get(campo.nombre)?.errors?.['pattern']) {
+          <div class="mensaje-error">Por favor, ingrese solo dígitos.</div>
+        }
+      }
+      @if (campo.nombre === 'correo' || campo.nombre === 'correoElectronico') {
+        @if (form.get(campo.nombre)?.invalid && form.get(campo.nombre)?.touched) {
+        <div class="d-grid">
+          @if (form.get(campo.nombre)?.errors?.['required']) {
+          <span class="mensaje-error">Este campo es obligatorio</span>
+          }
+          @if (form.get(campo.nombre)?.errors?.['email']) {
+          <span class="mensaje-error"
+            >Por favor, escribe una dirección de correo válida.</span
+          >
+          }
+        </div>
+        }
+      }
+    }
+    @if (campo.nombre === 'fax') {
+      @if (!form.get(campo.nombre)?.value && form.get(campo.nombre)?.touched) {
+      <div class="mensaje-error">Este campo es obligatorio</div>
+       }
+    }
+  </div>
+  }
+</div>

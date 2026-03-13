@@ -1,0 +1,583 @@
+<div class="row" [formGroup]="tipoTransporteForma">
+  <div class="col-md-4">
+    <app-catalogo-select
+      [catalogo]="catalogoTransporte"
+      formControlName="tipoTransporte"
+      [label]="'Tipo de transporte'"
+      [required]="false"
+      (change)="onChangeTipoTransporte()"
+      [primerOptionValue]="SIN_VALOR"
+      [hiddenPrimerOption]="false"
+      [disabledPrimerOption]="false"
+      [isDisabled]="!editable"
+    ></app-catalogo-select>
+  </div>
+</div>
+
+@if(tipoTransporteForma.get('tipoTransporte')?.value !== -1) {
+<div class="row mt-4">
+  <div class="col-md-12">
+    <app-tabla-dinamica
+      [tipoSeleccionTabla]="tablaSeleccion.CHECKBOX"
+      [configuracionTabla]="encabezadoDeTablaTransporte"
+      [datos]="bodyTabla"
+      (listaDeFilaSeleccionada)="transporteSeleccionado = $event"
+    >
+    </app-tabla-dinamica>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12 d-flex justify-content-end">
+    <button type="button" class="btn btn-primary me-2" [disabled]="!editable" (click)="abrirModal()">
+      Agregar
+    </button>
+    <button
+      type="button"
+      [disabled]="!editable"
+      class="btn btn-default me-2"
+      *ngIf="bodyTabla.length > 0"
+      (click)="btnModificar()"
+    >
+      Modificar
+    </button>
+    <button
+      type="button"
+      [disabled]="!editable"
+      class="btn btn-danger"
+      (click)="eliminarSeleccionados()"
+      *ngIf="bodyTabla.length > 0"
+    >
+      Eliminar
+    </button>
+  </div>
+</div>
+}
+
+<!-- Modal Agrega transporte -->
+<div
+  class="modal modal-lg fade"
+  #agregarTransporte
+  id="agregarTransporte"
+  tabindex="-1"
+  aria-labelledby="modalAgregarTransporte"
+  aria-hidden="true"
+  data-bs-backdrop="static"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">
+          {{ tituloModalPersonalizado }}
+        </h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            @switch (tipoTransporteForma.get('tipoTransporte')?.value) { @case
+            ('1') {
+            <ng-container *ngTemplateOutlet="carretero"></ng-container>
+            } @case ('2') {
+            <ng-container *ngTemplateOutlet="ferroviario"></ng-container>
+            } @case ('3') {
+            <ng-container *ngTemplateOutlet="aereo"></ng-container>
+            } @case ('4') {
+            <ng-container *ngTemplateOutlet="maritimo"></ng-container>
+            } @case ('5') {
+            <ng-container *ngTemplateOutlet="peatonal"></ng-container>
+            } @default {
+            <ng-container *ngTemplateOutlet="otro"></ng-container>
+            } }
+
+            <div class="form-group">
+              <label class="form-label" for="observaciones"
+                >Observaciones:</label
+              >
+              <textarea
+                class="form-control h-25"
+                rows="5"
+                [formControl]="observaciones"
+                id="observaciones"
+                maxlength="500"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer custom-footer">
+        <button
+          type="button"
+          class="btn btn-danger"
+          data-bs-dismiss="modal"
+          #btnCerrarModal
+          (click)="cerrarModal()"
+        >
+          Cancelar
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-default"
+          (click)="limpiarFormulario()"
+        >
+          Limpiar
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="
+            accionModificar ? modificarTransporte() : agregarTipoTransporte()
+          "
+        >
+          {{ accionModificar ? 'Modificar' : 'Agregar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #carretero>
+  <div class="row" [formGroup]="carreteroForma">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="emp_transportista"
+          >Empresa transportista:</label
+        >
+        <input
+          class="form-control"
+          id="emp_transportista"
+          placeholder=""
+          type="text"
+          formControlName="emp_transportista"
+          maxlength="80"
+        />
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="numero_porte">Número carta porte:</label>
+        <input
+          class="form-control"
+          id="numero_porte"
+          placeholder=""
+          type="text"
+          formControlName="numero_porte"
+          maxlength="50"
+        />
+      </div>
+    </div>
+    <div class="col-md-6">
+      <label for="fecha_porte" class="form-label">Fecha carta porte:</label>
+      <input
+        class="form-control"
+        type="date"
+        name="fecha_porte"
+        id="fecha_porte"
+        formControlName="fecha_porte"
+   
+        (keydown)="$event.preventDefault()"
+      />
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="marca_transporte">Marca:</label>
+        <input
+          class="form-control"
+          id="marca_transporte"
+          placeholder=""
+          type="text"
+          formControlName="marca_transporte"
+          maxlength="70"
+        />
+      </div>
+    </div>
+    <div class="col-md-6">
+      <app-catalogo-select
+        [catalogo]="anios"
+        formControlName="modelo_transporte"
+        id="modelo_transporte"
+        [label]="'Modelo'"
+        [required]="false"
+        name="modelo_transporte"
+      ></app-catalogo-select>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="placas_transporte">Placas:</label>
+        <input
+          class="form-control"
+          id="placas_transporte"
+          placeholder=""
+          type="text"
+          formControlName="placas_transporte"
+          maxlength="150"
+        />
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="form-group">
+        <label class="form-label" for="contenedor_transporte"
+          >Contenedor(es):</label
+        >
+        <textarea
+          class="form-control h-25"
+          id="contenedor_transporte"
+          rows="5"
+          maxlength="600"
+          formControlName="contenedor_transporte"
+        ></textarea>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #ferroviario>
+  <div class="row" [formGroup]="ferroviarioForma">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="numero_bl">Número de BL:</label>
+        <div class="input-group">
+          <input
+            class="form-control"
+            id="numero_bl"
+            placeholder=""
+            type="text"
+            formControlName="numero_bl"
+            maxlength="25"
+          />
+          <button
+            class="btn btn-outline-secondary"
+            type="button"
+            id="button-addon2"
+            (click)="postValidarNumeroBL()"
+          >
+            Buscar
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="tipo_equipo">Tipo de equipo:</label>
+        <select
+          class="form-select form-control"
+          name="tipo_equipo"
+          id="tipo_equipo"
+          formControlName="tipo_equipo"
+        >
+          <option value="-1">Seleccione una opción</option>
+          <option *ngFor="let item of tipoEquipoCatalogo" [value]="item.clave">
+            {{ item.descripcion }}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="iniciales_equipo"
+          >Iniciales de equipo:</label
+        >
+        <input
+          class="form-control"
+          id="iniciales_equipo"
+          placeholder=""
+          type="text"
+          formControlName="iniciales_equipo"
+          maxlength="10"
+        />
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="numero_equipo">Número de equipo:</label>
+        <input
+          class="form-control"
+          id="numero_equipo"
+          placeholder=""
+          type="text"
+          formControlName="numero_equipo"
+          maxlength="15"
+        />
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #peatonal>
+  <div class="row" [formGroup]="peatonalForma">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="rfc_empresa"
+          >RFC empresa responsable:</label
+        >
+        <input
+          class="form-control"
+          id="rfc_empresa"
+          placeholder=""
+          type="text"
+          formControlName="rfc_empresa"
+          maxlength="13"
+        />
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="emp_transportista"
+          >Empresa transportista:</label
+        >
+        <input
+          class="form-control"
+          id="emp_transportista"
+          placeholder=""
+          type="text"
+          formControlName="emp_transportista"
+          maxlength="80"
+        />
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="nombre_transportista"
+          >Nombre transportista:</label
+        >
+        <input
+          class="form-control"
+          id="nombre_transportista"
+          placeholder=""
+          type="text"
+          formControlName="nombre_transportista"
+          maxlength="100"
+        />
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="num_gafete">ID de Gafete:</label>
+        <input
+          class="form-control"
+          id="num_gafete"
+          placeholder=""
+          type="text"
+          formControlName="num_gafete"
+          maxlength="20"
+        />
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #maritimo>
+  <div class="row" [formGroup]="maritimoForma">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="guia_bl_Maritimo">Guía-BL:</label>
+        <input
+          class="form-control"
+          id="guia_bl_Maritimo"
+          placeholder=""
+          type="text"
+          formControlName="guia_bl_Maritimo"
+          maxlength="15"
+        />
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="guia_house_maritimo">Guía house:</label>
+        <input
+          class="form-control"
+          id="guia_house_maritimo"
+          placeholder=""
+          type="text"
+          formControlName="guia_house_maritimo"
+          maxlength="15"
+        />
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="nombre_buque_maritimo"
+          >Nombre del buque:</label
+        >
+        <input
+          class="form-control"
+          id="nombre_buque_maritimo"
+          placeholder=""
+          type="text"
+          formControlName="nombre_buque_maritimo"
+          maxlength="70"
+        />
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <div class="form-group">
+        <label class="form-label" for="contenedor_maritimo"
+          >Contenedor(es):</label
+        >
+        <textarea
+          class="form-control h-25"
+          rows="5"
+          formControlName="contenedor_maritimo"
+          id="contenedor_maritimo"
+          maxlength="600"
+        ></textarea>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #aereo>
+  <div class="row" [formGroup]="aereoForma">
+    <div class="col-md-6 d-flex align-items-end">
+      <lib-input-check
+        [id]="'arribo_pendiente_aereo'"
+        [label]="'Pendiente de arribar'"
+        [required]="false"
+        formControlName="arribo_pendiente_aereo"
+      ></lib-input-check>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="guia_master_aereo">Guía master:</label>
+        <input
+          class="form-control"
+          id="guia_master_aereo"
+          placeholder=""
+          type="text"
+          formControlName="guia_master_aereo"
+          maxlength="12"
+        />
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="guia_house_aereo">Guía house:</label>
+        <input
+          class="form-control"
+          id="guia_house_aereo"
+          placeholder=""
+          type="text"
+          formControlName="guia_house_aereo"
+          maxlength="25"
+        />
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <label for="fecha_arribo_aereo" class="form-label">Fecha llegada:</label>
+      <input
+        class="form-control"
+        type="date"
+        name="fecha_arribo_aereo"
+        id="fecha_arribo_aereo"
+        formControlName="fecha_arribo_aereo"
+        placeholder="dd/mm/yyyy"
+        maxlength="15"
+        (keydown)="$event.preventDefault()"
+      />
+    </div>
+
+    <div class="col-md-6">
+      <input-hora
+        formControlName="hora_arribo_aereo"
+        [label]="LABEL_HORA_ARRIBO"
+        [required]="true"
+        [inputId]="'hora_arribo_aereo'"
+      ></input-hora>
+    </div>
+
+    <div class="col-md-6 d-flex align-items-end">
+      <lib-input-check
+        [id]="'guia_valida'"
+        [label]="'Guía válida'"
+        [required]="false"
+        formControlName="guia_valida"
+        [isDisabled]="true"
+      ></lib-input-check>
+    </div>
+
+    <div class="col-md-12 mt-3 mb-3 d-flex justify-content-end" *ngIf="!limpiarGuiasBandera">
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="postValidarGuiaAerea()"
+      >
+        Validar guía
+      </button>
+    </div>
+    <div class="col-md-12 mt-3 mb-3 d-flex justify-content-end" *ngIf="limpiarGuiasBandera">
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="limpiarGuias()"
+      >
+        Limpiar guias
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #otro>
+  <div class="row" [formGroup]="otroForma">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="tipo_transporte_des"
+          >Tipo de transporte:</label
+        >
+        <input
+          class="form-control"
+          id="tipo_transporte_des"
+          placeholder=""
+          type="text"
+          formControlName="tipo_transporte_des"
+          maxlength="100"
+        />
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="emp_transportista"
+          >Empresa transportista:</label
+        >
+        <input
+          class="form-control"
+          id="emp_transportista"
+          placeholder=""
+          type="text"
+          formControlName="emp_transportista"
+          maxlength="80"
+        />
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="datos_transporte"
+          >Datos del transporte:</label
+        >
+        <input
+          class="form-control"
+          id="datos_transporte"
+          placeholder=""
+          type="text"
+          formControlName="datos_transporte"
+          maxlength="250"
+        />
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones
+    [notificacionInput]="nuevaNotificacion"
+    (confirmacionModal)="confirmacionModal($event)"
+  >
+  </lib-notificaciones>
+</section>
+}

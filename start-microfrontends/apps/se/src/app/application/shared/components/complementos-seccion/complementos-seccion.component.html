@@ -1,0 +1,221 @@
+
+<form [formGroup]="formaComplimentossolicitude">
+  <div class="row mb-3 mt-3">
+    <formas-dinamicas
+      formularioTitulo="Datos de la solicitude"
+      [forma]="formaComplimentossolicitude"
+      [formularioDatos]="formaComplimentossolicitudeFormData"
+      (emitirCambioDeValor)="establecerCambioDeValor($event)"
+      [estado]="importacionstate"
+    ></formas-dinamicas>
+  </div>
+</form>
+<form [formGroup]="formaComplimentosPrograma">
+  <div class="row mb-3 mt-3">
+    <formas-dinamicas
+      formularioTitulo="Programa Pre operativo"
+      [forma]="formaComplimentosPrograma"
+      [formularioDatos]="formaComplimentosProgramaFormData"
+      (emitirCambioDeValor)="establecerCambioDeValor($event)"
+      [estado]="importacionstate"
+    ></formas-dinamicas>
+  </div>
+</form>
+<form [formGroup]="DatosGenerales">
+  <div class="row mb-3 mt-3">
+    <formas-dinamicas
+      formularioTitulo="Datos generales"
+      [forma]="DatosGenerales"
+      [formularioDatos]="DatosGeneralesFormData"
+      (emitirCambioDeValor)="establecerCambioDeValor($event)"
+      [estado]="importacionstate"
+    ></formas-dinamicas>
+  </div>
+</form>
+<form [formGroup]="ObligacionesFiscales">
+  <div class="row mb-3 mt-3">
+    <formas-dinamicas
+      formularioTitulo="Obligaciones Fiscales"
+      [forma]="ObligacionesFiscales"
+      [formularioDatos]="ObligacionesFiscalesFormData"
+      (emitirCambioDeValor)="establecerCambioDeValor($event)"
+      [estado]="importacionstate"
+    ></formas-dinamicas>
+  </div>
+  <div class="alert alert-info content-with-checkbox py-6 mt-5">
+    <input type="checkbox" id="manifiesto" />
+    <span class="fw-bold align-middle"> *</span>
+    <div>{{ manifiestosText }}</div>
+  </div>
+</form>
+<form [formGroup]="formaModificaciones">
+  <div class="row mb-3 mt-3">
+    <formas-dinamicas
+      formularioTitulo="Datos federatario(s) constitución y modificaciones de la sociedad"
+      [forma]="formaModificaciones"
+      [formularioDatos]="formaModificacionesFormData"
+      (emitirCambioDeValor)="establecerCambioDeValor($event)"
+      [estado]="importacionstate"
+    ></formas-dinamicas>
+  </div>
+</form>
+
+<ng-titulo titulo="Datos generales socios accionistas" />
+<form [formGroup]="formaAccionistas">
+
+    <div class="form-group">
+      <div class="col-md-6">
+        <label> Nacionalidad mexicana </label>
+        <app-input-radio
+          [radioOptions]="accionistasRadio"
+          [layout]="'horizontal'"
+          [gap]="'80%'"
+          [isBold]="true"
+          [labelMargin]="'10%'"
+          formControlName="nacionalidadMexicana"
+          (change)="cambiarPestanaActiva()"
+        ></app-input-radio>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-md-6">
+        <label> Tipo de persona </label>
+        <app-input-radio
+          [radioOptions]="tipoPersonaRadio"
+          [layout]="'horizontal'"
+          [gap]="'800px'"
+          [isBold]="true"
+          [labelMargin]="'100px'"
+          formControlName="tipoDePersona"
+          (change)="cambiarPestanaActiva()"
+        ></app-input-radio>
+      </div>
+    </div>
+  
+
+  <div class="row mb-3" *ngIf="activeTab === 'No - Persona moral'">
+    <formas-dinamicas
+      [forma]="formaAccionistas"
+      [formularioDatos]="formaNacionalidadMaxicanaFormData"
+      (emitirCambioDeValor)="establecerCambioDeValor($event)"
+      [estado]="importacionstate"
+    ></formas-dinamicas>
+  </div>
+
+  <div
+    class="row mt-3"
+    *ngIf="
+      activeTab === 'Si - Persona fisica' || activeTab === 'Si - Persona moral'
+    "
+  >
+    <formas-dinamicas
+      [forma]="formaAccionistas"
+      [formularioDatos]="formaNacionalidadMaxicanaSiFormData"
+      (emitirCambioDeValor)="establecerCambioDeValor($event)"
+      [estado]="importacionstate"
+    ></formas-dinamicas>
+  </div>
+
+  <div class="row mt-3" *ngIf="activeTab === 'No - Persona fisica'">
+    <formas-dinamicas
+      [forma]="formaAccionistas"
+      [formularioDatos]="formaPersonaFisicaFormData"
+      (emitirCambioDeValor)="establecerCambioDeValor($event)"
+      [estado]="importacionstate"
+    ></formas-dinamicas>
+  </div>
+  <div class="col-12">
+    <div class="pull-right">
+      <button
+        name="agregar"
+        class="btn btn-primary mx-2"
+        (click)="agregarAccionistaExtranjeros()"
+      >
+        Agregar
+      </button>
+    </div>
+  </div>
+  <div class="col-12 mt-3">
+    <label> Socios y accionistas </label>
+    <label class="my-3 col-12">Datos de los Socios y/o accionistas </label>
+
+    <app-tabla-dinamica
+      [configuracionTabla]="tablaSociaAccionistas"
+      [tipoSeleccionTabla]="tablaSeleccion.CHECKBOX"
+      (listaDeFilaSeleccionada)="empresaAccionistasSeleccionados = $event"
+      [datos]="datosSocioAccionistas"
+    ></app-tabla-dinamica>
+  </div>
+  <div class="col-12 mt-3">
+    <div class="pull-right">
+      <button
+        name="eliminar"
+        class="btn btn-danger mb-3"
+       
+      >
+        Eliminar
+      </button>
+    </div>
+  </div>
+
+  <div class="col-12 mt-3 mb-3">
+    <label> Socios y accionistas Extranjeros </label>
+    <app-tabla-dinamica
+      [configuracionTabla]="tablaSociaAccionistasExtranjeros"
+      [tipoSeleccionTabla]="tablaSeleccion.CHECKBOX"
+      (listaDeFilaSeleccionada)="accionistasExtranjerosSeleccionados = $event"
+      [datos]="datosSocioAccionistasExtrenjeros"
+    ></app-tabla-dinamica>
+  </div>
+  <div class="col-12 mt-3">
+    <div class="pull-right">
+      <button
+        name="eliminar"
+        class="btn btn-danger"
+        (click)="eliminarAccionistasExtrenjeros()"
+      >
+        Eliminar
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <ng-titulo titulo="Datos de la certificación ante el SAT" />
+
+    <div class="row">
+      <div class="col-md-4">
+        <label class="form-label text-start" for="certificion"
+          >Certificada (Si/NO)</label
+        >
+        <input
+          class="form-control"
+          type="text"
+          id="certificion"
+          formControlName="certificada"
+        />
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label text-start" for="certificion"
+          >Fecha inicio de vigencia:</label
+        >
+        <input
+          class="form-control"
+          type="text"
+          id="certificion"
+          formControlName="fechaInicio"
+        />
+      </div>
+      <div class="col-md-4">
+        <label class="form-label text-start" for="certificion"
+          >Fecha fin de vigencia:</label
+        >
+        <input
+          class="form-control"
+          type="text"
+          id="certificion"
+          formControlName="fechaVigencia"
+        />
+      </div>
+    </div>
+  </div>
+</form>

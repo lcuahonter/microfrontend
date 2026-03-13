@@ -1,0 +1,40 @@
+<div class="page">
+    <div class="container">
+        <header>
+            <h2 class="titulo titulo-gold mb-5">Registrar Configuración de Instrumento</h2>
+        </header>
+        <section class="bg-light px-5 py-2">
+            <h5>Tratado/ Acuerdo</h5>
+        </section>
+        <br />
+        <section class="bg-light p-5">
+            <div class="celda-agregar-tratado">
+                <label for="tratadoAcuerdo"><span style="color: red;">*</span> Tratado/ Acuerdo</label>
+                <select name="tratadoAcuerdo" id="tratadoAcuerdo" (change)="obtenerListaPais()">
+                    @if(listaTratados$ | async; as listaTratados){
+                    @for(item of listaTratados; track item.value){
+                    <option value={{item.value}}>{{item.label}}</option>
+                    }
+                    }
+                </select>
+            </div>
+            <app-pick-list [listaDisponibles]="disponibles()" [listaSeleccionados]="seleccionados()"
+                (agregar)="agregar($event)" (agregarTodos)="agregarTodos()" (eliminar)="eliminar($event)"
+                (eliminarTodos)="eliminarTodos()" [trackBy]="trackByPais" [displayWith]="displayPais">
+            </app-pick-list>
+
+            <div class="celda-fecha">
+                <b>
+                    Vigencia de certificado
+                </b>
+                <p><span style="color: red;">*</span> Fecha Inicio</p>
+                <input-fecha [datos]="fechaInicioInput" (valorCambiado)="cambioFechaInicio($event)"></input-fecha>
+            </div>
+            <br />
+            <div>
+                <button class="btn btn-primary me-3">Guardar</button>
+                <button class="btn btn-danger">Cancelar</button>
+            </div>
+        </section>
+    </div>
+</div>

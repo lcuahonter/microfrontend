@@ -1,0 +1,169 @@
+{
+  "name": "tareas",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "app",
+  "sourceRoot": "apps/tareas/src",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/angular:webpack-browser",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/tareas",
+        "index": "apps/tareas/src/index.html",
+        "main": "apps/tareas/src/main.ts",
+        "polyfills": ["zone.js"],
+        "tsConfig": "apps/tareas/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/tareas/src/assets/",
+            "output": "./assets/"
+          },
+          { "glob": "favicon.ico", "input": "./", "output": "./" },
+          {
+            "glob": "**/*",
+            "input": "libs/shared/theme/assets/",
+            "output": "./assets/"
+          }
+        ],
+        "styles": ["node_modules/ngx-toastr/toastr.css"],
+        "scripts": [
+          "libs/shared/theme/assets/js/jsrsasign-4.7.0-all-min_sat-fix.js",
+          "libs/shared/theme/assets/js/FielUtil-1.5.js"
+        ],
+        "customWebpackConfig": {
+          "path": "apps/tareas/webpack.config.ts"
+        },
+        "allowedCommonJsDependencies": ["node-forge", "moment"]
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "5mb",
+              "maximumError": "4mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "5mb",
+              "maximumError": "4mb"
+            }
+          ],
+          "outputHashing": "all",
+          "optimization": true,
+          "sourceMap": false,
+          "namedChunks": false,
+          "aot": true,
+          "extractLicenses": true,
+          "vendorChunk": true,
+          "buildOptimizer": true,
+          "customWebpackConfig": {
+            "path": "apps/tareas/webpack.config.ts"
+          },
+          "fileReplacements": [
+            {
+              "replace": "apps/tareas/src/app/environments/environment.ts",
+              "with": "apps/tareas/src/app/environments/environment.prod.ts"
+            }
+          ]
+        },
+        "qa": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ],
+          "outputHashing": "all",
+          "optimization": true,
+          "sourceMap": false,
+          "namedChunks": false,
+          "aot": true,
+          "extractLicenses": true,
+          "vendorChunk": true,
+          "buildOptimizer": true,
+          "customWebpackConfig": {
+            "path": "apps/tareas/webpack.config.ts"
+          },
+          "fileReplacements": [
+            {
+              "replace": "apps/tareas/src/app/environments/environment.ts",
+              "with": "apps/tareas/src/app/environments/environment.qa.ts"
+            }
+          ]
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "serve": {
+      "executor": "@nx/angular:dev-server",
+      "options": {
+        "port": 4229,
+        "publicHost": "/"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "tareas:build:production"
+        },
+        "development": {
+          "buildTarget": "tareas:build:development"
+        },
+        "qa": {
+          "buildTarget": "tareas:build:qa"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "buildTarget": "tareas:build"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/tareas/jest.config.ts"
+      }
+    },
+    "serve-static": {
+      "executor": "@nx/web:file-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "tareas:build",
+        "port": 4229,
+        "watch": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "tareas:build:development"
+        },
+        "production": {
+          "buildTarget": "tareas:build:production"
+        }
+      }
+    }
+  }
+}

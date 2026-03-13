@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modulefederation-configuracion-microfront-deployment-qa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: modulefederation-configuracion-microfront-qa
+  template:
+    metadata:
+      labels:
+        app: modulefederation-configuracion-microfront-qa
+    spec:
+      containers:
+      - name: front-vucem30-container-qa
+        image: ghcr.io/vucem30/dockerized-modulefederation-configuracion-microfront:1.0.0
+        ports:
+        - containerPort: 80
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: qa
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+      imagePullSecrets:
+      - name: vucem30registrykey

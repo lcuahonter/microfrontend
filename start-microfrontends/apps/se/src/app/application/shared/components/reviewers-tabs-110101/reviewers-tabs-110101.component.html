@@ -1,0 +1,52 @@
+<div class="container">
+    <div class="row">
+        <ul class="nav nav-tabs">
+            @for (item of listaDeTabulaciones; let i=$index; track item.id) {
+        <li [ngClass]="{'active': indice === TAB_INDEX[item.id], 'disabled': item.disabled}" *ngIf="item.visible">
+          <a data-toggle="tab" 
+             (click)="seleccionaTab(TAB_INDEX[item.id], item)" 
+             (keydown.enter)="seleccionaTab(TAB_INDEX[item.id], item)"
+             (keydown.space)="seleccionaTab(TAB_INDEX[item.id], item)" 
+             role="button" tabindex="0">
+            {{item.titulo}}
+          </a>
+        </li>
+      }
+        </ul>
+        <ng-container>
+            @switch (indice) {
+            @case (0) {
+             @if(tramite === 110101){
+              <app-datos (tratadosEmitidos)="onTratadosDesdeDatos($event)" [esDictaminadorBandera]="esDictaminador"></app-datos>
+             } @else {
+              <app-datos-evaluacion (tratadosEmitidos)="onTratadosDesdeDatos($event)" [esDictaminadorBandera]="esDictaminador"></app-datos-evaluacion>
+             }
+            }
+            @case (1) {
+            <lib-documentos [documentos]="documentos"></lib-documentos>
+            }
+            @case (2) {
+            <tab-dictamen [tramite]="tramite" [dictamenes]="dictamenes"></tab-dictamen>
+            }
+            @case(3) {
+            <tab-requerimiento [tramite]="tramite" [requerimientos]="requerimientos"></tab-requerimiento>
+            }
+            @case(4) {
+            <tab-opinion [tramite]="tramite" [opinion]="opinion"></tab-opinion>
+            }
+            @case (5) {
+            <lib-bandeja-acuses [tramite]="tramite" [acusesResolucion]="acusesResolucion"></lib-bandeja-acuses>
+            }
+            @case (6) {
+            <lib-tareas-tramite [tareasSolicitud]="tareasSolicitud"></lib-tareas-tramite>
+            }
+            @case (7) {
+            <lib-envio-digital [envioDigital]="envioDigital"></lib-envio-digital>
+            }
+            @default {
+            <p>tab</p>
+            }
+            }
+        </ng-container>
+    </div>
+</div>

@@ -1,0 +1,217 @@
+<div class="container">
+  <ng-titulo titulo="Información de los equipos Rayos X" />
+  <form [formGroup]="formularioSolicitud">
+    <div class="row mt-5">
+      <div class="contenedor-de-mesa">
+        <app-tabla-dinamica [configuracionTabla]="configuracionTabla" [datos]="datosTablaMercancia"
+          [tipoSeleccionTabla]="tipoSeleccionTabla"
+          [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+          (listaDeFilaSeleccionada)="manejarFilaSeleccionada($event)"></app-tabla-dinamica>
+      </div>
+      <div class="row mt-3" style="padding-bottom: 20px; text-align: right">
+        <div>
+          <button type="button" class="btn btn-primary me-2" [disabled]="esFormularioSoloLectura" (click)="mostrarFormularioMercanciaModal()">
+            Agregar
+          </button>
+          <button type="button" class="btn btn-default me-2" [disabled]="!enableModficarBoton"
+            (click)="modificarItemMercancia()">
+            Modificar
+          </button>
+          <button type="button" class="btn me-2"
+            [ngClass]="{'btn-default': !enableEliminarBoton, 'btn-danger': enableEliminarBoton}"
+            [disabled]="!enableEliminarBoton" (click)="confirmEliminarMercanciaItem()">Eliminar</button>
+            <button type="button" class="btn btn-primary me-2" [disabled]="esFormularioSoloLectura" (click)="mostrarFormularioMercanciaModal()">
+              Ver detalle
+            </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <label for="message" class="form-label">Observaciones:</label>
+            <textarea
+              id="observaciones"
+              formControlName="observaciones"
+              class="form-control"
+              rows="4"
+              (blur)="guardarObservaciones()" 
+            ></textarea>
+      </div>
+    </div>
+
+    <ng-titulo *ngIf="tipoOperacionSeleccionado" titulo="Aduanas de salida" />
+
+   <div *ngIf="tipoOperacionSeleccionado" class="row mt-3">
+      <div class="col-md-12 mt-3">
+        <crosslist [fechas]="listaOriginalMovimientos" [fechasSeleccionadas]="listSeleccionadaMovimientos"
+          [botones]="botonesMovimientos" [isDisabled]="esFormularioSoloLectura"></crosslist>
+      </div>
+    </div>
+
+    <lib-notificaciones 
+      *ngIf="confirmEliminarPopupAbierto"
+      [notificacionInput]="nuevaNotificacion" 
+      (confirmacionModal)="eliminarMercanciaItem()">
+    </lib-notificaciones>
+
+    <lib-notificaciones 
+      *ngIf="multipleSeleccionPopupAbierto"
+      [notificacionInput]="nuevaNotificacion" 
+      (confirmacionModal)="cerrarMultipleSeleccionPopup()">
+    </lib-notificaciones>
+
+    <lib-notificaciones *ngIf="serieAgregadaPopupAbierto" [notificacionInput]="nuevaNotificacion"
+      (confirmacionModal)="cerrarSerieAgregadaPopup()">
+    </lib-notificaciones>
+    
+    <lib-notificaciones *ngIf="mercanciaAgregadaPopupAbierto" [notificacionInput]="nuevaNotificacion"
+      (confirmacionModal)="cerrarMercanciaAgregadaPopup()">
+    </lib-notificaciones>
+  </form>
+
+  @if(mostrarModalDatosMercancia){
+  <app-modal>
+    <div class="datos-mercancia-container">
+      <ng-titulo titulo="Datos de los Equipos Rayos X" />
+      <form [formGroup]="formularioMercancia">
+        <div class="row">
+          <div class="col-md-5">
+            <label class="form-label" for="numEquipos">Número de equipos*:</label>
+          </div>
+          <div class="col-md-5">
+            <div class="form-group">
+              <input id="numEquipos" type="text" class="form-control" formControlName="numEquipos" [required]="true" maxlength="2"
+                [class.is-invalid]="formularioMercancia.get('numEquipos')?.touched && formularioMercancia.get('numEquipos')?.invalid" />
+            </div>
+            <div *ngIf="esControlInvalido('numEquipos')" class="text-danger">
+              <small *ngIf="formularioMercancia.controls['numEquipos'].hasError('required')">Este campo es
+                obligatorio.</small>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-5">
+            <div class="form-group">
+              <label class="form-label" for="marca">Marca*:</label>
+              <input id="marca" type="text" class="form-control" formControlName="marca" [required]="true" maxlength="50"
+                [class.is-invalid]="formularioMercancia.get('marca')?.touched && formularioMercancia.get('marca')?.invalid" />
+            </div>
+            <div *ngIf="esControlInvalido('marca')" class="text-danger">
+              <small *ngIf="formularioMercancia.controls['marca'].hasError('required')">Este campo es
+                obligatorio.</small>
+            </div>
+          </div>
+          <div class="col-md-5">
+            <div class="form-group">
+              <label class="form-label" for="modelo">Modelo*:</label>
+              <input id="modelo" type="text" class="form-control" formControlName="modelo" [required]="true" maxlength="100"
+                [class.is-invalid]="formularioMercancia.get('modelo')?.touched && formularioMercancia.get('modelo')?.invalid" />
+            </div>
+            <div *ngIf="esControlInvalido('modelo')" class="text-danger">
+              <small *ngIf="formularioMercancia.controls['modelo'].hasError('required')">Este campo es
+                obligatorio.</small>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-5">
+            <div class="form-group">
+              <label class="form-label" for="voltaje">Voltaje máximo del tubo de R-X*:</label>
+              <input id="voltaje" type="text" class="form-control" formControlName="voltaje" [required]="true" maxlength="11"
+                [class.is-invalid]="formularioMercancia.get('voltaje')?.touched && formularioMercancia.get('voltaje')?.invalid" />
+            </div>
+            <div *ngIf="esControlInvalido('voltaje')" class="text-danger">
+              <small *ngIf="formularioMercancia.controls['voltaje'].hasError('required')">Este campo es
+                obligatorio.</small>
+            </div>
+          </div>
+          <div class="col-md-5">
+            <app-catalogo-select name="unidadMedidaVoltaje" formControlName="unidadMedidaVoltaje"
+              [catalogo]="autorizacionDeRayosXService.unidadMedidaVoltaje" [label]="'Unidad de medida'"
+              [required]="true"></app-catalogo-select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-5">
+            <div class="form-group">
+              <label class="form-label" for="corriente">Corriente máxima del tubo de R-X*:</label>
+              <input id="corriente" type="text" class="form-control" formControlName="corriente" [required]="true" maxlength="11"
+                [class.is-invalid]="formularioMercancia.get('corriente')?.touched && formularioMercancia.get('corriente')?.invalid" />
+            </div>
+            <div *ngIf="esControlInvalido('corriente')" class="text-danger">
+              <small *ngIf="formularioMercancia.controls['corriente'].hasError('required')">Este campo es
+                obligatorio.</small>
+            </div>
+          </div>
+          <div class="col-md-5">
+            <app-catalogo-select name="unidadMedidaCorriente" formControlName="unidadMedidaCorriente"
+              [catalogo]="autorizacionDeRayosXService.unidadMedidaCorriente" [label]="'Unidad de medida'"
+              [required]="true"></app-catalogo-select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-5">
+            <app-catalogo-select [catalogo]="
+                autorizacionDeRayosXService.fraccionArancelaria
+              " name="fraccionArancelaria" formControlName="fraccionArancelaria"
+              (selectionChange)="manejarCambioFraccionArancelaria($event)" [label]="'Fracción arancelaria'"
+              [required]="true"></app-catalogo-select>
+          </div>
+          <div class="col-md-5">
+            <div class="form-group">
+              <label class="form-label" for="fraccionDescripcion">Descripción de la fracción arancelaria:</label>
+              <input id="fraccionDescripcion" type="text" formControlName="fraccionDescripcion" class="form-control" />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-5">
+            <div class="form-group">
+              <label class="form-label" for="serie">Número de serie*:</label>
+              <input id="serie" type="text" class="form-control" formControlName="serie" [required]="true" maxlength="150"
+                [class.is-invalid]="formularioMercancia.get('serie')?.touched && formularioMercancia.get('serie')?.invalid" />
+            </div>
+            <div *ngIf="esControlInvalido('serie')" class="text-danger">
+              <small *ngIf="formularioMercancia.controls['serie'].hasError('required')">Este campo es
+                obligatorio.</small>
+            </div>
+          </div>
+          <div class="col-md-5 d-flex justify-content-start gap-1">
+            <div class="form-group mt-auto">
+              <button type="button" class="btn btn-primary" [disabled]="esFormularioSoloLectura" (click)="enviarFormularioMercancia(true)">
+                Agregar
+              </button>
+              <button type="button" class="btn btn-default" [disabled]="esFormularioSoloLectura">Limpiar</button>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-8 mt-3">
+            <div class="contenedor-de-mesa">
+              <app-tabla-dinamica [configuracionTabla]="serieTabla" [datos]="datosTablaMercancia"
+                [tipoSeleccionTabla]="tipoSeleccionTabla"
+                (listaDeFilaSeleccionada)="manejarFilaSeleccionada($event)"></app-tabla-dinamica>
+            </div>
+          </div>
+          <div class="col-md-12 mt-3 d-flex justify-content-end gap-1">
+            <button type="button" class="btn btn-danger" [disabled]="esFormularioSoloLectura" (click)="alternarModalMercancia()">
+              Eliminar
+            </button>  
+          </div>
+        </div>
+        <div class="row mt-5">
+          <div class="col-md-12 d-flex justify-content-end gap-1">
+            <button type="button" class="btn btn-primary" [disabled]="esFormularioSoloLectura" (click)="enviarFormularioMercancia(false)">
+              Guardar
+            </button>
+            <button type="button" class="btn btn-danger" [disabled]="esFormularioSoloLectura" (click)="alternarModalMercancia()">
+              Cancelar
+            </button>        
+          </div>
+        </div>
+      </form>
+    </div>
+  </app-modal>
+  }
+</div>

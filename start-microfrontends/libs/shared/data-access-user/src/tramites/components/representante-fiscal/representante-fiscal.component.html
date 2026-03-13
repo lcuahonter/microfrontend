@@ -1,0 +1,90 @@
+<div class="row mb-3">
+  <div class="col-md-4">
+    <div class="form-group">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="" aria-label="RFC" aria-describedby="button-addon2"
+          id="rfcBusqueda" [formControl]="rfcBusqueda" [ngClass]="isValid(rfcBusqueda) ? 'required' : ''" libUppercase>
+        <button class="btn btn-group-primary" title="Buscar" type="button" id="buscarRFC" (click)="buscarRepresentanteFiscal()">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
+      <div>
+      </div>
+      @if (errorRequerido(rfcBusqueda)) {
+      <div class="mensaje-error ">
+        {{ MENSAJE_REQUERIDO}}
+      </div>
+      }
+      @if(
+      errorPattern(rfcBusqueda)) {
+      <div class="mensaje-error ">
+        {{ RFC_INVALIDO }}
+      </div>
+      }
+    </div>
+  </div>
+</div>
+
+<form [formGroup]="representanteLegalForm">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="rfc" class="form-label">RFC</label>
+        <input class="form-control" id="rfc" placeholder="RFC" type="text" formControlName="rfc" libUppercase>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="nombre" class="form-label">Nombre</label>
+        <input class="form-control" id="nombre" placeholder="Nombre" type="text" formControlName="nombre" libUppercase>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="primerApellido" class="form-label">Apellido Paterno</label>
+        <input class="form-control" id="primerApellido" placeholder="Apellido Paterno" type="text" formControlName="primerApellido"
+          libUppercase>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="segundoApellido" class="form-label">Apellido Materno</label>
+        <input class="form-control" id="segundoApellido" placeholder="Apellido Materno" type="text" formControlName="segundoApellido"
+          [ngClass]="isValid( representanteLegalForm ,'segundoApellido') ? 'required' : ''" libUppercase>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="telefono" class="form-label">Teléfono</label>
+        <input class="form-control" id="telefono" placeholder="Teléfono" type="text" formControlName="telefono"
+          appNumeroTelefonico>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="correo" class="form-label">Correo</label>
+        <input class="form-control" id="correo" placeholder="Correo" type="text" formControlName="correo"
+          [ngClass]="isValid( representanteLegalForm ,'correo') ? 'required' : ''">
+      </div>
+      @if(errorRequerido(representanteLegalForm, 'correo')) {
+      <div class="mensaje-error ">
+        {{ MENSAJE_REQUERIDO}}
+      </div>
+      }
+      @if(
+      errorEmail(representanteLegalForm, 'correo')) {
+      <div class="mensaje-error ">
+        {{ CORREO_INVALIDO }}
+      </div>
+      }
+    </div>
+  </div>
+
+</form>

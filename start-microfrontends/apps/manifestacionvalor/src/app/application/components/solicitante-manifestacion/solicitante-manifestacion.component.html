@@ -1,0 +1,359 @@
+<!-- Formulario dinamico de tipo de personas -->
+<form [formGroup]="form">
+  @if (!guardarDatos.create  && mostrarDatosTramite) {
+    <div class="form mt-5" formGroupName="datosTramite">
+      <ng-titulo titulo="Solicitud" />
+      <div class="row">
+        @for (item of datosTramite; track $index) {
+        <div [ngClass]="item.class" [ngStyle]="{ visibility: item.visibility }">
+          <div class="form-group">
+            <label class="form-label" [for]="item.campo">{{ item.labelNombre }}</label>
+            <input class="form-control" [type]="item.tipo_input" title="{{item.labelNombre}}" [id]="item.campo"
+              [placeholder]="item.placeholder" [formControlName]="item.campo" libUppercase>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+    }
+  <div class="form" formGroupName="datosGenerales">
+    <ng-titulo titulo="Datos generales del solicitante" />
+    @if (datosGenerales?.datos?.identificacion?.tipo_persona === 'M') {
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-label" for="rfc">
+                <strong>RFC:</strong>
+                <span class="p-2" tooltip="Registro Federal de Contribuyentes" placement="top">
+                  <i class="bi bi-question-circle-fill"></i>
+                </span>
+              </label>
+              <input type="text" class="form-control" id="rfc" value="{{ datosGenerales?.datos?.rfc_original || '' }}" disabled>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-label" for="razonSocial"><strong>Denominación o razón social:</strong></label>
+              <input type="text" class="form-control" id="razonSocial" value="{{ datosGenerales?.datos?.identificacion?.razon_social || '' }}" disabled>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="form-label" for="actividad"><strong>Actividad económica preponderante:</strong></label>
+              <input type="text" class="form-control" id="actividad" [value]="datosGenerales?.datos?.actividades?.[0]?.d_actividad || ''" disabled>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="form-label" for="correo"><strong>Correo electrónico:</strong></label>
+              <input type="email" class="form-control" id="correo" value="{{ datosGenerales?.datos?.identificacion?.email || '' }}" disabled>
+            </div>
+          </div>
+        </div>
+    }
+    @if (datosGenerales?.datos?.identificacion?.tipo_persona === 'F') {
+    <!-- Primera fila: CURP y RFC -->
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-label d-flex align-items-center">
+                CURP:
+                <span class="p-2" tooltip="Clave Única de Registro de Población" placement="top">
+                  <i class="bi bi-question-circle-fill"></i>
+                </span>
+              </label>
+              <input 
+                type="text" 
+                class="form-control" 
+                id="curp"
+                placeholder="{{ datosGenerales?.datos?.identificacion?.curp || '' }}"
+                maxlength="18"
+                disabled
+                libUppercase
+                value="{{ datosGenerales?.datos?.identificacion?.curp || '' }}"
+              >
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-label d-flex align-items-center">
+                RFC:
+                <span class="p-2" tooltip="Registro Federal de Contribuyentes" placement="top">
+                  <i class="bi bi-question-circle-fill"></i>
+                </span>
+              </label>
+              <input 
+                type="text" 
+                class="form-control" 
+                id="rfc"
+                placeholder="{{ datosGenerales?.datos?.rfc_original }}"
+                maxlength="13"
+                libUppercase
+                disabled
+                value="{{ datosGenerales?.datos?.rfc_original }}"
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Segunda fila: Nombres y apellidos -->
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="nombres">Nombre(s):</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                id="nombres"
+                placeholder="{{ datosGenerales?.datos?.identificacion?.nombre || '' }}"
+                libUppercase
+                disabled
+                value="{{ datosGenerales?.datos?.identificacion?.nombre || '' }}"
+              >
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="primerApellido">Primer apellido:</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                id="primerApellido"
+                placeholder="{{ datosGenerales?.datos?.identificacion?.ap_paterno || '' }}"
+                libUppercase
+                disabled
+                value="{{ datosGenerales?.datos?.identificacion?.ap_paterno || '' }}"
+              >
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="segundoApellido">Segundo apellido:</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                id="segundoApellido"
+                placeholder="{{ datosGenerales?.datos?.identificacion?.ap_materno || '' }}"
+                libUppercase
+                disabled
+                value="{{ datosGenerales?.datos?.identificacion?.ap_materno || '' }}"
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Tercera fila: Actividad económica y Correo electrónico -->
+        <div class="row mb-3">
+          <div class="col-md-8">
+            <div class="form-group">
+              <label class="form-label" for="actividadEconomica">Actividad económica preponderante:</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                id="actividadEconomica"
+                placeholder="{{ datosGenerales?.datos?.identificacion?.d_sit_cont_dom || '' }}"
+                libUppercase
+                disabled
+                [value]="datosGenerales?.datos?.actividades?.[0]?.d_actividad || ''"
+              >
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="correoElectronico">Correo electrónico:</label>
+              <input 
+                type="email" 
+                class="form-control" 
+                id="correoElectronico"
+                placeholder="ejemplo@correo.com"
+                libUppercase
+                disabled
+                value="{{ datosGenerales?.datos?.identificacion?.email || '' }}"
+              >
+            </div>
+          </div>
+        </div>
+      }
+  </div>
+
+  <div class="form" formGroupName="domicilioFiscal">
+    <ng-titulo titulo="Domicilio fiscal del solicitante" />
+    <!-- Primera fila: País, Código postal, Estado -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label" for="calle">Calle:</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="calle"
+            placeholder="{{ datosGenerales?.datos?.ubicacion?.calle || '' }}"
+            libUppercase
+            disabled
+            value="{{ datosGenerales?.datos?.ubicacion?.calle || '' }}"
+          >
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <label class="form-label" for="numeroExterior">Número exterior:</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="numeroExterior"
+            placeholder="{{ datosGenerales?.datos?.ubicacion?.n_exterior || '' }}"
+            libUppercase
+            disabled
+            value="{{ datosGenerales?.datos?.ubicacion?.n_exterior }}"
+          >
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <label class="form-label" for="numeroInterior">Número interior:</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="numeroInterior"
+            placeholder="{{ datosGenerales?.datos?.ubicacion?.n_interior || '' }}"
+            libUppercase
+            disabled
+            value="{{ datosGenerales?.datos?.ubicacion?.n_interior || '' }}"
+          >
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <label class="form-label" for="codigoPostal">Código postal:</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="codigoPostal"
+            placeholder="{{ datosGenerales?.datos?.ubicacion?.cp }}"
+            maxlength="5"
+            libUppercase
+            disabled
+            value="{{ datosGenerales?.datos?.ubicacion?.cp }}"
+          >
+        </div>
+      </div>      
+    </div>    
+
+    <!-- Segunda fila: Municipio o alcaldía, Localidad, Colonia -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label" for="colonia">Colonia:</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="colonia"
+            placeholder="{{ datosGenerales?.datos?.ubicacion?.d_colonia || '' }}"
+            libUppercase
+            disabled
+            value="{{ datosGenerales?.datos?.ubicacion?.d_colonia || '' }}"
+          >
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label" for="pais">País:</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="pais"
+            placeholder="{{ datosGenerales?.datos?.ubicacion?.pais_residencia || '' }}"
+            libUppercase
+            disabled
+            value="{{ datosGenerales?.datos?.ubicacion?.pais_residencia || '' }}"
+          >
+        </div>
+      </div>            
+    </div>   
+
+    <!-- Cuarta fila: Número interior, Lada, Teléfono -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label" for="estado">Estado:</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="estado"
+            placeholder="{{ datosGenerales?.datos?.ubicacion?.d_ent_fed || '' }}"
+            libUppercase
+            disabled
+            value="{{ datosGenerales?.datos?.ubicacion?.d_ent_fed || '' }}"
+          />
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label" for="localidad">Localidad:</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="localidad"
+            placeholder="{{ datosGenerales?.datos?.ubicacion?.d_localidad || '' }}"
+            libUppercase
+            disabled
+            value="{{ datosGenerales?.datos?.ubicacion?.d_localidad || '' }}"
+          >
+        </div>
+      </div>            
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label" for="municipio">Municipio o alcaldía:</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="municipio"
+            placeholder="{{ datosGenerales?.datos?.ubicacion?.d_municipio || '' }}"
+            libUppercase
+            disabled
+            value="{{ datosGenerales?.datos?.ubicacion?.d_municipio || '' }}"
+          >
+        </div>
+      </div>
+      @if (guardarDatos.create  && mostrarDatosTramite) {
+      <div class="col-md-2">
+        <div class="form-group">
+          <label class="form-label" for="lada">Lada:</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="lada"
+            placeholder="{{ datosGenerales?.datos?.ubicacion?.t_tel_1 || '' }}"
+            maxlength="3"
+            libUppercase
+            disabled
+            value="{{ datosGenerales?.datos?.ubicacion?.t_tel_1 || '' }}"
+          >
+        </div>
+      </div>
+      }
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="telefono">Teléfono:</label>
+          <input 
+            type="tel" 
+            class="form-control" 
+            id="telefono"
+            placeholder="{{ datosGenerales?.datos?.ubicacion?.t_tel_2 || '' }}"
+            libUppercase
+            disabled
+            maxlength="8"
+            value="{{ datosGenerales?.datos?.ubicacion?.t_tel_2 || '' }}"
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

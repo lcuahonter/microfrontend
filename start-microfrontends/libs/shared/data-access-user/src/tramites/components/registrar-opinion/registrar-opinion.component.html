@@ -1,0 +1,72 @@
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h5>Sentido de la opinión</h5>
+            <div class="d-flex gap-3">
+                <div class="border px-4 py-2 d-flex align-items-center radio-button">
+                    <input class="form-check-input me-3 seleccion-radio" type="radio" name="cumplimiento" value="SEOP.AC"
+                        id="sentidoDictamenAceptado">
+                    <label class="control-label" for="sentidoDictamenAceptado">Aceptado</label>
+                </div>
+                <div class="border px-4 py-2 d-flex align-items-center radio-button">
+                    <input class="form-check-input me-3 seleccion-radio" type="radio" name="cumplimiento" value="SEOP.RZ"
+                        id="sentidoDictamenRechazado">
+                    <label class="control-label" for="sentidoDictamenRechazado">Rechazado</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <hr>
+            <h5>Fecha de solicitud: {{fechaSolicitud}}</h5>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label for="justificacion" class="form-label">Justificación</label>
+            <textarea class="form-control textarea-height" id="justificacion" rows="3"></textarea>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="opinion" class="form-label">Opinión</label>
+            <textarea class="form-control textarea-height" id="opinion" rows="3"></textarea>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <h5> Documento a anexar</h5>
+        </div>
+        <div class="col-md-6" style="text-align: end !important;">
+            <button class="btn btn-default ms-2" type="button" (click)="mostrarModalDocumentos()">Anexar
+                documentos</button>
+        </div>
+        <div class="col-md-12">
+            <table class="table table-bordered mt-3">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Archivo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let archivo of archivos; index as i">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ archivo.name }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div *ngIf="mostrarBotones" class="col-md-12">
+        <div class="d-flex justify-content-lg-end h1">
+            <button class="btn btn-primary ms-2" type="button" (click)="guardarFormar()">Guardar y firmar</button>
+            <button type="button" class="btn btn-default ms-2">Guardar</button>
+        </div>
+    </div>
+</div>
+@if (abrirModal) {
+<section>
+    <lib-modal-funciones [abrirModal]="abrirModal" [titulo]="'Anexar nuevo documento'" [descripcion]="descripcionModal"
+        [maxSizeMB]="10" [aceptado]="'application/pdf'" (archivoSeleccionado)="agregarArchivo($event)"
+        (cerrar)="abrirModal = false">
+    </lib-modal-funciones>
+</section>
+}

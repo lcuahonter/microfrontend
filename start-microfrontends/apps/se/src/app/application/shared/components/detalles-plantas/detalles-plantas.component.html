@@ -1,0 +1,98 @@
+<form [formGroup]="formularioDatosPlantas">
+  <ng-titulo titulo="Datos de la empresa submanufacturera" />
+  <div class="row">
+    <div class="col-md-6"> 
+      <div class="form-group">
+        <app-catalogo-select
+          [catalogo]="catalogoSiNoId"
+          [label]="'Permanecerá mercancía importada al amparo del Programa'"
+          [required]="true"
+          [isDisabled]="formDisabled"
+          name="permaneceMercancia"
+          formControlName="permaneceMercancia"
+          [placeholder]="'Seleccione una opción'"
+          (change)="setValoresStore(formularioDatosPlantas, 'permaneceMercancia', 'setPermaneceMercancia')"
+        ></app-catalogo-select>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group mt-5">
+        <app-catalogo-select
+          [catalogo]="catalogoSiNoValue"
+          [label]="
+            'Que se trate de personas morales que tributen conforme al Título II o de personas físicas que tributen conforme al Título IV, Capítulo II, Secciones I o II, de la Ley del Impuesto sobre la Renta'
+          "
+          [required]="true"
+          [isDisabled]="formDisabled"
+          placeholder="Seleccione una opción"
+          name="tipoContribuyente"
+          formControlName="tipoContribuyente"
+          (change)="setValoresStore(formularioDatosPlantas, 'tipoContribuyente', 'setTipoContribuyente')"
+        ></app-catalogo-select>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group mt-5">
+        <app-catalogo-select
+          [catalogo]="catalogoSiNo"
+          [label]="
+            'Opinión positiva vigente expedida por el SAT sobre el cumplimiento de obligaciones fiscales del solicitante en términos de lo dispuesto en el artículo 32-D del Código Fiscal de la Federación'
+          "
+          [required]="true"
+          [isDisabled]="true"
+          name="opinionSAT"
+          formControlName="opinionSAT"
+           [placeholder]="'Seleccione una opción'"
+        ></app-catalogo-select>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group mt-5">
+        <label class="form-label text-nowrap" for="fechaOpinion"
+          >Fecha Opinión 32-D<span class="require">*:</span>
+        </label>
+        <input
+          type="text"
+          name="fechaOpinion"
+          id="fechaOpinion"
+          formControlName="fechaOpinion"
+          class="form-control mt-custom"
+        />
+      </div>
+    </div>
+  </div>
+</form>
+
+<div class="row justify-content-end mb-5">
+  <button
+    type="button"
+    class="btn btn-danger col-auto mt-3 me-3 mb-3"
+    (click)="regresarPlantas();"
+  >
+    Regresar a plantas
+  </button>
+
+  <button
+    type="button"
+    class="btn btn-primary col-auto pull-right float-end mt-3 me-3 mb-3"
+    (click)="guardar()"
+  >
+    Guardar
+  </button>
+</div>
+@if (notificacionAgregarServicios) {
+<section>
+  <lib-notificaciones 
+    [notificacionInput]="notificacionAgregarServicios"
+    (confirmacionModal)="confirmacionModal()">
+  </lib-notificaciones>
+</section>
+}

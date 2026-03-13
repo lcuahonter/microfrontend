@@ -1,0 +1,153 @@
+<div class="container">
+    <form [formGroup]="datosExporta">
+        <ng-titulo [titulo]="'Documento de salida del país de exportación'"></ng-titulo>
+        <div class="row align-items-end">
+            <!-- Número de documento* -->
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label" for="numero_documento">
+                        Número de documento<span
+                            [class.label-invalid]="datosExporta.get('numero_documento')?.invalid && datosExporta.get('numero_documento')?.touched">*</span>:
+                    </label>
+                    <input class="form-control" type="text" id="numero_documento" placeholder=""
+                        formControlName="numero_documento" required="true" maxlength="100"
+                        [disabled]="esFormularioSoloLectura"
+                        (change)="setValoresStore(datosExporta, 'numero_documento', 'setNumero_documento')" libUppercase
+                        [ngClass]="{'is-invalid': datosExporta.get('numero_documento')?.touched && datosExporta.get('numero_documento')?.invalid}" />
+                    <div
+                        *ngIf="datosExporta.get('numero_documento')?.touched && datosExporta.get('numero_documento')?.invalid">
+                        <small *ngIf="datosExporta.get('numero_documento')?.errors?.['required']"
+                            class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+                        <small *ngIf="datosExporta.get('numero_documento')?.errors?.['maxlength']"
+                            class="text-danger espaciador-campo-pequeño">No puede exceder 100 caracteres.</small>
+                    </div>
+                </div>
+            </div>
+            <!-- Fecha del documento* -->
+            <div class="col-md-4">
+                <div class="form-group">
+                    <input-fecha [datos]="fechaDocumentoDatos" required="true" [isDisabled]="esFormularioSoloLectura"
+                        [setFecha]="datosExporta.get('fecha_documento')?.value" (valorCambiado)="fechaDocumento($event)"
+                        [marcarError]="(datosExporta.get('fecha_documento')?.touched ?? false) && (datosExporta.get('fecha_documento')?.invalid ?? false)"
+                        [asteriskClass]="datosExporta.get('fecha_documento')?.invalid && (datosExporta.get('fecha_documento')?.touched || datosExporta.get('fecha_documento')?.dirty) ? 'mensaje-error' : ''">
+                    </input-fecha>
+                    <div
+                        *ngIf="datosExporta.get('fecha_documento')?.touched && datosExporta.get('fecha_documento')?.invalid">
+                        <small *ngIf="datosExporta.get('fecha_documento')?.errors?.['required']"
+                            class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row align-items-end espaciador-campo">
+            <!-- Descripción de la mercancía* -->
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label class="form-label">
+                        Descripción de la mercancía<span
+                            [class.label-invalid]="datosExporta.get('descripcionExportacion')?.invalid && datosExporta.get('descripcionExportacion')?.touched">*</span>:
+                    </label>
+                    <textarea class="form-control text_area text_height" formControlName="descripcionExportacion"
+                        rows="3" maxlength="4000" [required]="true" [disabled]="esFormularioSoloLectura"
+                        (change)="setValoresStore(datosExporta, 'descripcionExportacion', 'setDescripcionExportacion')"
+                        [ngClass]="{'is-invalid': datosExporta.get('descripcionExportacion')?.touched && datosExporta.get('descripcionExportacion')?.invalid}"></textarea>
+                    <div
+                        *ngIf="datosExporta.get('descripcionExportacion')?.touched && datosExporta.get('descripcionExportacion')?.invalid">
+                        <small *ngIf="datosExporta.get('descripcionExportacion')?.errors?.['required']"
+                            class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+                        <small *ngIf="datosExporta.get('descripcionExportacion')?.errors?.['maxlength']"
+                            class="text-danger espaciador-campo-pequeño">No puede exceder 4000 caracteres.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row align-items-end espaciador-campo">
+            <!-- Código arancelario* -->
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label label_up" for="codigo_arancelario">
+                        Código arancelario<span
+                            [class.label-invalid]="datosExporta.get('codigo_arancelario')?.invalid && datosExporta.get('codigo_arancelario')?.touched">*</span>:
+                    </label>
+                    <input class="form-control" type="text" id="codigo_arancelario" placeholder=""
+                        formControlName="codigo_arancelario" [required]="true" [disabled]="esFormularioSoloLectura"
+                        maxlength="100" pattern="^[a-zA-Z0-9]*$"
+                        (change)="setValoresStore(datosExporta, 'codigo_arancelario', 'setCodigo_arancelario')"
+                        [ngClass]="{'is-invalid': datosExporta.get('codigo_arancelario')?.touched && datosExporta.get('codigo_arancelario')?.invalid}" />
+                    <div
+                        *ngIf="datosExporta.get('codigo_arancelario')?.touched && datosExporta.get('codigo_arancelario')?.invalid">
+                        <small *ngIf="datosExporta.get('codigo_arancelario')?.errors?.['required']"
+                            class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+                        <small *ngIf="datosExporta.get('codigo_arancelario')?.errors?.['maxlength']"
+                            class="text-danger espaciador-campo-pequeño">No puede exceder 100 caracteres.</small>
+                        <small *ngIf="datosExporta.get('codigo_arancelario')?.errors?.['pattern']"
+                            class="text-danger espaciador-campo-pequeño">Solo caracteres alfanuméricos.</small>
+                    </div>
+                </div>
+            </div>
+            <!-- Cantidad in la unidad de medida señalada en el documento de exportación* -->
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="">
+                        Cantidad en la unidad de medida señalada en el documento de exportación<span
+                            [class.label-invalid]="datosExporta.get('cantidad_umt')?.invalid && datosExporta.get('cantidad_umt')?.touched">*</span>:
+                    </label>
+                    <input class="form-control" type="number" id="cantidad_umt" placeholder=""
+                        formControlName="cantidad_umt" [required]="true" [disabled]="esFormularioSoloLectura"
+                        maxlength="14" pattern="^[0-9]*$"
+                        (change)="setValoresStore(datosExporta, 'cantidad_umt', 'setCantidad_umt')"
+                        [ngClass]="{'is-invalid': datosExporta.get('cantidad_umt')?.touched && datosExporta.get('cantidad_umt')?.invalid}" />
+                    <div *ngIf="datosExporta.get('cantidad_umt')?.touched && datosExporta.get('cantidad_umt')?.invalid">
+                        <small *ngIf="datosExporta.get('cantidad_umt')?.errors?.['required']"
+                            class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+                        <small
+                            *ngIf="datosExporta.get('cantidad_umt')?.errors?.['pattern'] || datosExporta.get('cantidad_umt')?.errors?.['maxlength']"
+                            class="text-danger espaciador-campo-pequeño">El valor capturado no es válido.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row align-items-end espaciador-campo">
+            <!-- Valor en USD de la mercancía a importar* -->
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="" for="valor_usd">
+                        Valor en USD de la mercancía a importar<span
+                            [class.label-invalid]="datosExporta.get('valor_usd')?.invalid && datosExporta.get('valor_usd')?.touched">*</span>:
+                    </label>
+                    <input class="form-control" type="text" id="valor_usd" placeholder="" formControlName="valor_usd"
+                        [disabled]="esFormularioSoloLectura" [required]="true" maxlength="17"
+                        (change)="setValoresStore(datosExporta, 'valor_usd', 'setValor_usd')"
+                        [ngClass]="{'is-invalid': datosExporta.get('valor_usd')?.touched && datosExporta.get('valor_usd')?.invalid}" />
+                    <div *ngIf="datosExporta.get('valor_usd')?.touched && datosExporta.get('valor_usd')?.invalid">
+                        <small *ngIf="datosExporta.get('valor_usd')?.errors?.['required']"
+                            class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+                        <small *ngIf="datosExporta.get('valor_usd')?.errors?.['pattern']"
+                            class="text-danger espaciador-campo-pequeño">El valor capturado no es válido.</small>
+                    </div>
+                </div>
+            </div>
+            <!-- Precio unitario en USD* -->
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label">
+                        Precio unitario en USD<span
+                            [class.label-invalid]="datosExporta.get('precio_unitario_usd')?.invalid && datosExporta.get('precio_unitario_usd')?.touched">*</span>:
+                    </label>
+                    <input class="form-control" type="text" id="precio_unitario_usd" placeholder=""
+                        formControlName="precio_unitario_usd" [disabled]="esFormularioSoloLectura" [required]="true"
+                        maxlength="17"
+                        (change)="setValoresStore(datosExporta, 'precio_unitario_usd', 'setPrecio_unitario_usd')"
+                        [ngClass]="{'is-invalid': datosExporta.get('precio_unitario_usd')?.touched && datosExporta.get('precio_unitario_usd')?.invalid}" />
+                    <div
+                        *ngIf="datosExporta.get('precio_unitario_usd')?.touched && datosExporta.get('precio_unitario_usd')?.invalid">
+                        <small *ngIf="datosExporta.get('precio_unitario_usd')?.errors?.['required']"
+                            class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+                        <small *ngIf="datosExporta.get('precio_unitario_usd')?.errors?.['pattern']"
+                            class="text-danger espaciador-campo-pequeño">El valor capturado no es válido.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

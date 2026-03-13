@@ -1,0 +1,433 @@
+<div class="container mt-5">
+  <form class="container" [formGroup]="formularioEmpresa">
+    <ng-titulo titulo="Capturar certificado Kimberley"></ng-titulo>
+  
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label for="especifique" class="form-label"
+          >Certificado emitidos aprobados:</label
+        >
+        <input
+          type="text"
+          class="form-control"
+          id="especifique"
+          formControlName="especifique"
+          readonly
+          
+        />
+      </div>
+    </div>
+  
+    <div class="row mb-3">
+      <ng-titulo titulo="Datos generales del certificado Kimberley"></ng-titulo>
+      <div class="col-md-6">
+        <label class="form-label" for="numero"
+          >Número del certificado Kimberley<span
+                     [ngClass]="{'text-danger': isInvalid('numero', formularioEmpresa)}"
+                     >*</span>:</label
+        >
+        <input
+          type="text"
+          class="form-control"
+          id="numero"
+          formControlName="numero"
+          [ngClass]="{ 'is-invalid': isInvalid('numero', formularioEmpresa) }"
+          (change)="setValoresStore(formularioEmpresa, 'numero')"
+        />
+        <div *ngIf="isInvalid('numero', formularioEmpresa) && mostrarErroresEmpresa" class="invalid-feedback">
+        <small *ngIf="formularioEmpresa.controls['numero'].errors?.['required']">
+          Este campo es obligatorio.
+        </small>
+        <small *ngIf="formularioEmpresa.controls['numero'].errors?.['maxlength']">
+          El tamaño máximo es de 50 caracteres.
+        </small>
+      </div>
+      </div>
+    </div>
+  
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <app-catalogo-select
+          [catalogo]="paisesEmisores"
+          [label]="'País emisor del certificado Kimberley'"
+          [required]="true"
+          formControlName="tipoEmpresa"
+          [isDisabled]="esFormularioSoloLectura"
+          (change)="setValoresStore(formularioEmpresa, 'tipoEmpresa')"
+        ></app-catalogo-select>
+        <div *ngIf="isInvalid('tipoEmpresa', formularioEmpresa) && mostrarErroresEmpresa" class="invalid-feedback">
+          Debe seleccionar un tipo de empresa.
+        </div>
+      </div>
+    </div>
+  
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <label class="form-label" for="nombre"
+          >Nombre en inglés del país emisor del certificado Kimberley<span
+                     [ngClass]="{'text-danger': isInvalid('nombre', formularioEmpresa)}"
+                     >*</span>:</label
+        >
+        <input
+          type="text"
+          class="form-control"
+          id="nombre"
+          formControlName="nombre"
+          [ngClass]="{ 'is-invalid': isInvalid('nombre', formularioEmpresa) }"
+          (change)="setValoresStore(formularioEmpresa, 'nombre')"
+
+        />
+        <div *ngIf="isInvalid('nombre', formularioEmpresa) && mostrarErroresEmpresa" class="invalid-feedback">
+          Este campo es obligatorio.
+        </div>
+      </div>
+    </div>
+  
+    <!-- Mixed Checkbox -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="lineaCheckbox"
+            formControlName="lineaCheckbox"
+            [ngClass]="{ 'is-invalid': isInvalid('lineaCheckbox', formularioEmpresa) }"
+            (change)="cambioAviso($event)"
+            />
+          <label class="form-check-label" for="lineaCheckbox">
+            <span>Mixed</span>
+          </label>
+          <div *ngIf="isInvalid('lineaCheckbox', formularioEmpresa) && mostrarErroresEmpresa" class="invalid-feedback">
+            Debe seleccionar esta opción.
+          </div>
+        </div>
+      </div>
+  
+      <!-- País de origen -->
+      <div class="col-md-6">
+        <app-catalogo-select
+          [catalogo]="paisesEmisores"
+          [label]="'País de origen'"
+          [required]="true"
+          formControlName="paisOrigen"
+          (change)="setValoresStore(formularioEmpresa, 'paisOrigen')"
+          [markTouched]="formularioEmpresa.get('paisOrigen')?.touched ?? false"
+          [isDisabled]="esFormularioSoloLectura || disabledCatalogoPaisOrigen"
+        ></app-catalogo-select>
+        <div *ngIf="isInvalid('paisOrigen', formularioEmpresa) && mostrarErroresEmpresa" class="invalid-feedback">
+          Debe seleccionar un país de origen.
+        </div>
+      </div>
+    </div>
+  </form>
+  
+  <form [formGroup]="datosDelExportador">
+    <div>
+      <ng-titulo titulo="Datos del exportador"></ng-titulo>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label class="form-label" for="nombreExportador"
+              >Nombre exportador<span
+                     [ngClass]="{'text-danger': isInvalid('nombreExportador', datosDelExportador)}"
+                     >*</span>:</label
+            >
+            <input
+              class="form-control"
+              type="text"
+              id="nombreExportador"
+              formControlName="nombreExportador"
+              libUppercase
+              aria-labelledby="nombreExportador"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label class="form-label" for="direccionExportador"
+              >Dirección exportador<span
+                     [ngClass]="{'text-danger': isInvalid('direccionExportador',datosDelExportador)}"
+                     >*</span>:</label>
+            <textarea
+              class="form-control"
+              type="text"
+              id="direccionExportador"
+              formControlName="direccionExportador"
+              (change) = "setValoresStore(datosDelExportador, 'direccionExportador')"
+              [ngClass]="{'is-invalid': isInvalid('direccionExportador',datosDelExportador)}"
+            ></textarea>
+              <div *ngIf="datosDelExportador.get('direccionExportador')?.invalid && mostrarErroresExportador" class="text-danger">
+                <small *ngIf="datosDelExportador.get('direccionExportador')?.hasError('required')">
+                  Este campo es obligatorio
+                </small>
+                <small *ngIf="datosDelExportador.get('direccionExportador')?.hasError('maxlength')">
+                  El tamaño máximo es de 200 caracteres
+                </small>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <form [formGroup]="datosDelImportador">
+    <div>
+      <ng-titulo titulo="Datos del importador"></ng-titulo>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label class="form-label" for="nombreImportador"
+              >Nombre importador<span
+                     [ngClass]="{'text-danger': isInvalid('nombreImportador',datosDelImportador)}"
+                     >*</span>:</label
+            >
+            <input
+            class="form-control"
+            type="text"
+            id="nombreImportador"
+            formControlName="nombreImportador"
+            libUppercase
+            aria-labelledby="nombreImportador"
+            (change)="setValoresStore(datosDelImportador, 'nombreImportador')"
+            [ngClass]="isValid(datosDelImportador,'nombreImportador') ? 'required' : ''" 
+            />
+              @if (datosDelImportador.get('nombreImportador')?.invalid && mostrarErroresImportador) {
+                <div class="text-danger">
+                  @if (datosDelImportador.get('nombreImportador')?.errors?.['required']) {
+                  <small>Este campo es obligatorio</small>
+                  } @else if (datosDelImportador.get('nombreImportador')?.errors?.['pattern']) {
+                  <small>Por favor, corrige la descripción/dirección</small>
+                  } @else if (datosDelImportador.get('nombreImportador')?.errors?.['maxlength']) {
+                  <small>El tamaño máximo es de 120 caracteres.</small>
+                  }
+                </div>
+              }
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label class="form-label" for="direccionImportador"
+              >Dirección importador<span
+                     [ngClass]="{'text-danger': isInvalid('direccionImportador',datosDelImportador)}"
+                     >*</span>:</label
+            >
+            <input
+              class="form-control"
+              type="text"
+              id="direccionImportador"
+              formControlName="direccionImportador"
+              libUppercase
+              aria-labelledby="direccionImportador"
+              (change)="setValoresStore(datosDelImportador, 'direccionImportador')"
+              [ngClass]="isValid(datosDelImportador,'direccionImportador') ? 'required' : ''" 
+            />
+              @if (datosDelImportador.get('direccionImportador')?.invalid && mostrarErroresImportador) {
+                <div class="text-danger">
+                  @if (datosDelImportador.get('direccionImportador')?.errors?.['required']) {
+                  <small>Este campo es obligatorio</small>
+                  } @else if (datosDelImportador.get('direccionImportador')?.errors?.['pattern']) {
+                  <small>Por favor, corrige la descripción/dirección</small>
+                  } @else if (datosDelImportador.get('direccionImportador')?.errors?.['maxlength']) {
+                  <small>El tamaño máximo es de 200 caracteres.</small>
+                  }
+                </div>
+              }
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <form [formGroup]="datosDeLaRemesa">
+    <div>
+      <ng-titulo titulo="Datos de la remesa"></ng-titulo>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label class="form-label" for="numeroEnLetraDeLosLotes"
+              >Número en letra de los lotes<span
+                     [ngClass]="{'text-danger': isInvalid('numeroEnLetraDeLosLotes', datosDeLaRemesa)}"
+                     >*</span>:</label
+            >
+            <textarea
+              class="form-control"
+              type="text"
+              id="numeroEnLetraDeLosLotes"
+              formControlName="numeroEnLetraDeLosLotes"
+              (change) = "setValoresStore(datosDeLaRemesa, 'numeroEnLetraDeLosLotes')"
+              [ngClass]="{'input-error': isInvalid('numeroEnLetraDeLosLotes', datosDeLaRemesa)}"
+            ></textarea>
+            @if (datosDeLaRemesa.get('numeroEnLetraDeLosLotes')?.invalid && mostrarErroresRemesa) {
+                <div class="text-danger">
+                  @if (datosDeLaRemesa.get('numeroEnLetraDeLosLotes')?.errors?.['required']) {
+                  <small>Este campo es obligatorio</small>
+                  } @else if (datosDeLaRemesa.get('numeroEnLetraDeLosLotes')?.errors?.['pattern']) {
+                  <small>Por favor, corrige la descripción/dirección</small>
+                  } @else if (datosDeLaRemesa.get('numeroEnLetraDeLosLotes')?.errors?.['maxlength']) {
+                  <small>El tamaño máximo es de 200 caracteres.</small>
+                  }
+                </div>
+              }
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label class="form-label" for="numeroEnLetraDeLosLotesEnIngles"
+              >Número en letra de los lotes en ingles<span
+                     [ngClass]="{'text-danger': isInvalid('numeroEnLetraDeLosLotesEnIngles', datosDeLaRemesa)}"
+                     >*</span>:</label
+            >
+            <textarea
+              class="form-control"
+              type="text"
+              id="numeroEnLetraDeLosLotesEnIngles"
+              formControlName="numeroEnLetraDeLosLotesEnIngles"
+              (change) = "setValoresStore(datosDeLaRemesa, 'numeroEnLetraDeLosLotesEnIngles')"
+              [ngClass]="{'input-error': isInvalid('numeroEnLetraDeLosLotesEnIngles', datosDeLaRemesa)}"
+            ></textarea>
+            @if (datosDeLaRemesa.get('numeroEnLetraDeLosLotesEnIngles')?.invalid && mostrarErroresRemesa) {
+                <div class="text-danger">
+                  @if (datosDeLaRemesa.get('numeroEnLetraDeLosLotesEnIngles')?.errors?.['required']) {
+                  <small>Este campo es obligatorio</small>
+                  } @else if (datosDeLaRemesa.get('numeroEnLetraDeLosLotesEnIngles')?.errors?.['pattern']) {
+                  <small>Por favor, corrige la descripción/dirección</small>
+                  } @else if (datosDeLaRemesa.get('numeroEnLetraDeLosLotesEnIngles')?.errors?.['maxlength']) {
+                  <small>El tamaño máximo es de 250 caracteres.</small>
+                  }
+                </div>
+              }
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label" for="numeroDeFactura"
+              >Número de factura<span
+                     [ngClass]="{'text-danger': isInvalid('numeroDeFactura', datosDeLaRemesa)}"
+                     >*</span>:</label
+            >
+            <input
+              class="form-control"
+              type="text"
+              id="numeroDeFactura"
+              formControlName="numeroDeFactura"
+              placeholder=""
+              libUppercase
+              aria-labelledby="numeroDeFactura"
+              (change) = "setValoresStore(datosDeLaRemesa, 'numeroDeFactura')"
+              [ngClass]="{'input-error': isInvalid('numeroDeFactura', datosDeLaRemesa)}"
+            />
+             @if (datosDeLaRemesa.get('numeroDeFactura')?.invalid && mostrarErroresRemesa) {
+                <div class="text-danger">
+                  @if (datosDeLaRemesa.get('numeroDeFactura')?.errors?.['required']) {
+                  <small>Este campo es obligatorio</small>
+                  } @else if (datosDeLaRemesa.get('numeroDeFactura')?.errors?.['maxlength']) {
+                  <small>El tamaño máximo es de 50 caracteres.</small>
+                  }
+                </div>
+              }
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <form [formGroup]="datosDeLosDiamantes">
+    <div>
+      <ng-titulo titulo="Datos de los diamantes"></ng-titulo>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label" for="cantidadEnQuilates"
+              >Cantidad en Quilates<span
+                     [ngClass]="{'text-danger': isInvalid('cantidadEnQuilates', datosDeLosDiamantes)}"
+                     >*</span>:</label
+            >
+            <input
+              class="form-control"
+              type="text"
+              id="cantidadEnQuilates"
+              maxlength="15"
+              formControlName="cantidadEnQuilates"
+              libUppercase
+              aria-labelledby="cantidadEnQuilates"
+              (input)="onNumericKeyUp($event)"
+              (keypress)="onKeyPress($event)"
+              (change) = "setValoresStore(datosDeLosDiamantes, 'cantidadEnQuilates')"
+              [ngClass]="{'is-invalid': isInvalid('cantidadEnQuilates', datosDeLosDiamantes)}"
+            />
+            @if (datosDeLosDiamantes.get('cantidadEnQuilates')?.invalid && mostrarErroresDiamantes) {
+                <div class="text-danger">
+                  @if (datosDeLosDiamantes.get('cantidadEnQuilates')?.errors?.['required']) {
+                  <small>Este campo es obligatorio</small>
+                  } @else if (datosDeLosDiamantes.get('cantidadEnQuilates')?.errors?.['pattern']) {
+                  <small>El número debe tener 3 dígitos decimales</small>
+                  } @else if (datosDeLosDiamantes.get('cantidadEnQuilates')?.errors?.['maxDigits']) {
+                  <small>El número debe tener 11 dígitos enteros</small>
+                  }
+                </div>
+              }
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label" for="valorDeLosDiamantes"
+              >Valor de los diamantes<span
+                     [ngClass]="{'text-danger': isInvalid('valorDeLosDiamantes', datosDeLosDiamantes)}"
+                     >*</span>:</label
+            >
+            <input
+              class="form-control"
+              type="text"
+              id="valorDeLosDiamantes"
+              formControlName="valorDeLosDiamantes"
+              placeholder=""
+              libUppercase
+              aria-labelledby="valorDeLosDiamantes"
+              (change) = "setValoresStore(datosDeLosDiamantes, 'valorDeLosDiamantes')"
+              (input)="onNumericKeyUp($event)"
+              (keypress)="onKeyPress($event)"
+              [ngClass]="{'is-invalid': isInvalid('valorDeLosDiamantes', datosDeLosDiamantes)}"
+            />
+             @if (datosDeLosDiamantes.get('valorDeLosDiamantes')?.invalid && mostrarErroresDiamantes) {
+                <div class="text-danger">
+                  @if (datosDeLosDiamantes.get('valorDeLosDiamantes')?.errors?.['required']) {
+                  <small>Este campo es obligatorio</small>
+                  } @else if (datosDeLosDiamantes.get('valorDeLosDiamantes')?.errors?.['pattern']) {
+                  <small>El número debe tener 3 dígitos decimales</small>
+                  } @else if (datosDeLosDiamantes.get('valorDeLosDiamantes')?.errors?.['maxDigits']) {
+                  <small>El número debe tener 11 dígitos enteros</small>
+                  }
+                </div>
+              }
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-5">
+        <div class="col-md-6 col-sm-6"></div>
+        <div class="col-md-6 col-sm-6 text-end">
+          <div class="btn-group">
+            <button class="btn btn-primary me-2" type="button" [disabled]="esFormularioSoloLectura">
+              VistaPrevia
+            </button>
+            <button class="btn btn-primary me-2" type="button" [disabled]="esFormularioSoloLectura" (click)="guardar()">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,173 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h3>Detalle de tarifa</h3>
+      <hr class="red" />
+      <form [formGroup]="rateForm" (ngSubmit)="onSubmit()" autocomplete="off">
+        <!-- Fila 1 -->
+        <div class="row">
+          <!-- Rate Type -->
+          <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+              <label class="control-label">Rate Type*:</label>
+              <app-tooltip text="Identificador de Tipo de Tarifa"></app-tooltip>
+              <select
+                class="form-control"
+                formControlName="rateType"
+                [ngClass]="{
+                  'form-control-error': formUtils.isValidField(rateForm, 'rateType')
+                }"
+              >
+                <option [ngValue]="null">Selecciona una opción</option>
+                <option *ngFor="let fareClass of fareClasses" [value]="fareClass.clave">{{ fareClass.valor }}</option>
+              </select>
+              <ng-container *ngIf="formUtils.isValidField(rateForm, 'rateType')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getFieldError(rateForm, 'rateType') }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+
+          <!-- Prepaid Indicator -->
+          <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+              <label class="control-label">Prepaid Indicator*:</label>
+              <app-tooltip text="Indicador de Prepago/Por cobrar"></app-tooltip>
+              <select
+                class="form-control"
+                formControlName="prepaidIndicator"
+                [ngClass]="{
+                  'form-control-error': formUtils.isValidField(rateForm, 'prepaidIndicator')
+                }"
+              >
+                <option [ngValue]="null">Selecciona una opción</option>
+                <option *ngFor="let paymentIndicator of paymentIndicators" [value]="paymentIndicator.clave">{{ paymentIndicator.valor }}</option>
+              </select>
+              <ng-container *ngIf="formUtils.isValidField(rateForm, 'prepaidIndicator')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getFieldError(rateForm, 'prepaidIndicator') }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fila 2 -->
+        <div class="row">
+          <!-- Agent Total Due Payable Amount -->
+          <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+              <label class="control-label">Agent Total Due Payable Amount*:</label>
+              <app-tooltip text="Total de otros cargos debidos - Agente"></app-tooltip>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="agentTotalDuePayable"
+                numericDecimal
+                [appMaxLength]="12"
+                [ngClass]="{
+                  'form-control-error': formUtils.isValidField(rateForm, 'agentTotalDuePayable')
+                }"
+              />
+              <ng-container *ngIf="formUtils.isValidField(rateForm, 'agentTotalDuePayable')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getFieldError(rateForm, 'agentTotalDuePayable') }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+
+          <!-- Agent Total Due Payable Amount - currency ID -->
+          <div class="col-md-8 col-sm-6">
+            <div class="form-group">
+              <label class="control-label">Agent Total Due Payable Amount - currency I D*:</label>
+              <app-tooltip text="Moneda (Código)"></app-tooltip>
+              <select
+                class="form-control"
+                formControlName="agentCurrencyId"
+                [ngClass]="{
+                  'form-control-error': formUtils.isValidField(rateForm, 'agentCurrencyId')
+                }"
+              >
+                <option [ngValue]="null">Selecciona una opción</option>
+                <option *ngFor="let currency of currencyCodes" [value]="currency.clave">{{ currency.valor }}</option>
+              </select>
+              <ng-container *ngIf="formUtils.isValidField(rateForm, 'agentCurrencyId')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getFieldError(rateForm, 'agentCurrencyId') }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fila 3 -->
+        <div class="row">
+          <!-- Grand Total Amount -->
+          <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+              <label class="control-label">Grand Total Amount*:</label>
+              <app-tooltip text="Cargos Totales"></app-tooltip>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="grandTotalAmount"
+                numericDecimal
+                [appMaxLength]="12"
+                [ngClass]="{
+                  'form-control-error': formUtils.isValidField(rateForm, 'grandTotalAmount')
+                }"
+              />
+              <ng-container *ngIf="formUtils.isValidField(rateForm, 'grandTotalAmount')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getFieldError(rateForm, 'grandTotalAmount') }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+
+          <!-- Grand Total Amount - currency ID -->
+          <div class="col-md-8 col-sm-6">
+            <div class="form-group">
+              <label class="control-label">Grand Total Amount - currency I D*:</label>
+              <app-tooltip text="Moneda (Código)"></app-tooltip>
+              <select
+                class="form-control"
+                formControlName="grandCurrencyId"
+                [ngClass]="{
+                  'form-control-error': formUtils.isValidField(rateForm, 'grandCurrencyId')
+                }"
+              >
+                <option [ngValue]="null">Selecciona una opción</option>
+                <option *ngFor="let currency of currencyCodes" [value]="currency.clave">{{ currency.valor }}</option>
+              </select>
+              <ng-container *ngIf="formUtils.isValidField(rateForm, 'grandCurrencyId')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getFieldError(rateForm, 'grandCurrencyId') }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="row">
+          <div class="col-md-12 text-right">
+            <gob-button
+              type="submit"
+              className="btn-primary mr-1"
+              label="Agregar"
+            ></gob-button>
+            <gob-button
+              type="button"
+              className="btn-danger"
+              label="Cancelar"
+              (clicked)="onCancel()"
+            ></gob-button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

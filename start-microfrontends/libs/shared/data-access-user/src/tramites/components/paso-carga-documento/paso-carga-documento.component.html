@@ -1,0 +1,30 @@
+<div class="container">
+  @if(saltarTarjetaDeTituloParaConsulta){
+  <ng-container *ngIf="showTituloOpcional">
+    <ng-titulo titulo="Requisitos opcionales" />
+  </ng-container>
+    <ng-container *ngIf="showTituloRequisitosObligatorios">
+      <ng-titulo titulo="Requisitos obligatorios" />
+      <ng-alert [CONTENIDO]="requisitosObligatoriosHtml"></ng-alert>
+    </ng-container>
+  <ng-container *ngIf="showInstrucciones; else showTexto">
+    <ng-alert [CONTENIDO]="TEXTOSINTRUCCIONES.INSTRUCCIONES"></ng-alert>
+  </ng-container>
+  <ng-template #showTexto>
+    <ng-container *ngIf="idSolicitud && idTipoTRamite !== '130301'">
+      <ng-alert [CONTENIDO]="TEXTOS"></ng-alert>
+    </ng-container>
+  </ng-template>
+  }
+  <carga-documento
+      [idTipoTRamite]="idTipoTRamite"
+      [datosUsuario]="datosUsuario"
+      [idSolicitud]="idSolicitud!.toString()"
+      [cargaArchivosEvento]="reenviarEvento"
+      (cargaRealizada)="documentosCargados($event)"
+      (activarBotonCargaArchivos)="manejarEventoCargaDocumento($event)"
+      (cargaEnProgreso)="onCargaEnProgreso($event)"
+      [documentosAdicionales]="documentosAdicionales"
+      (enBlancoObligatoria)="blancoObligatoria($event)"
+    ></carga-documento>
+</div>

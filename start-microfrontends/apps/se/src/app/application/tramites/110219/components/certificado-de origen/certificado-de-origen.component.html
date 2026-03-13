@@ -1,0 +1,154 @@
+<form [formGroup]="cancelacionForm">
+  <ng-container formGroupName="validacionForm">
+    <ng-titulo titulo="Motivo de cancelación del certificado de origen" />
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <div class="col-md-12 align-text-area">
+        <label>Motivo de cancelación<span
+            [ngClass]="cancelacionForm.get('validacionForm.motivoCancelacion')?.invalid &&  cancelacionForm.get('validacionForm.motivoCancelacion')?.touched ? 'text-danger' : ''">*</span>:
+        </label></div>
+        <div class="col-md-12 align-text-area">
+          <textarea cols="60" rows="5" formControlName="motivoCancelacion" 
+            [ngClass]="cancelacionForm.get('validacionForm.motivoCancelacion')?.invalid &&  cancelacionForm.get('validacionForm.motivoCancelacion')?.touched ? 'required' : ''"
+            (change)=" setValoresStore(validacionForm, 'motivoCancelacion', 'setMotivoCancelacion' )"></textarea>
+        
+        <div *ngIf="cancelacionForm.get('validacionForm.motivoCancelacion')?.invalid &&  cancelacionForm.get('validacionForm.motivoCancelacion')?.touched" class="error-msg"> Este campo es
+          obligatorio. </div>
+        <small class="form-text text-muted">
+          {{ cancelacionForm.get('validacionForm.motivoCancelacion')?.value?.length || 0 }}/1500 caracteres
+        </small>
+          </div>
+      </div>
+    </div>
+    <ng-titulo titulo="Datos del certificado" />
+    <div class="row mt-5">
+      <div class="col-md-4">
+        <label>Número de certificado de origen:</label>
+        <input type="number" formControlName="certificadoDeOrigen" class="form-control gris-color" readonly />
+      </div>
+      <div class="col-md-4">
+        <label>Fecha de expedición:</label>
+        <input type="string" formControlName="fechaExpedicion" class="form-control gris-color" readonly />
+      </div>
+      <div class="col-md-4">
+        <label>Fecha de vencimiento:</label>
+        <input type="string" formControlName="fechaVencimiento" class="form-control gris-color" readonly />
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-6">
+        <label>País / Bloque:</label>
+        <input type="text" formControlName="bloque" class="form-control gris-color" readonly />
+      </div>
+      <div class="col-md-6">
+        <label>Tratado / Acuerdo:</label>
+        <input type="text" formControlName="acuerdo" class="form-control gris-color" readonly />
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-6">
+        <label>Observaciones:</label>
+        <div class="row ms-1">
+          <textarea rows="5" formControlName="observaciones" class="gris-color" readonly></textarea>
+        </div>
+      </div>
+    </div>
+    <ng-titulo titulo="Datos del destinatario" />
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label>Nombre(s):</label>
+        <input type="text" formControlName="nombre" class="form-control gris-color" readonly />
+      </div>
+      <div class="col-md-6 mb-3">
+        <label>Primer apellido:</label>
+        <input type="text" formControlName="primerApellido" class="form-control gris-color" readonly />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label>Segundo apellido:</label>
+        <input type="text"formControlName="segundoApellido"  class="form-control gris-color" readonly />
+      </div>
+      <div class="col-md-6 mb-3">
+        <label>Número de registro fiscal:</label>
+        <input type="text"formControlName="registroFiscal"  class="form-control gris-color" readonly />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 mb-3">
+        <label>Razón social:</label>
+        <input type="text" formControlName="razonSocial" class="form-control gris-color" readonly />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label>Calle:</label>
+        <input type="text" formControlName="calle" class="form-control gris-color" readonly />
+      </div>
+      <div class="col-md-3 mb-3">
+        <label>Número y/o letra:</label>
+        <input type="text" formControlName="numeroLetra" class="form-control gris-color" readonly />
+      </div>
+      <div class="col-md-3 mb-3">
+        <label>Teléfono:</label>
+        <input type="text" formControlName="telefono" class="form-control gris-color" readonly/>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label>Ciudad (población, estado o provincia):</label>
+        <input type="text" formControlName="ciudad" class="form-control gris-color" readonly />
+      </div>
+      <div class="col-md-3 mb-3">
+        <label>Fax:</label>
+        <input type="text" formControlName="fax" class="form-control gris-color" readonly />
+      </div>
+      <div class="col-md-3 mb-3">
+        <label>Correo electrónico:</label>
+        <input type="text" formControlName="correoElectronico" class="form-control gris-color" readonly />
+      </div>
+    </div>
+    <div class="row mt-5">
+      <ng-alert class="alert-text" [CONTENIDO]="TEXTO_DE_ALERTA_MERCANCIAS"></ng-alert>
+    </div>
+    <div class="table-container centered-table-wrapper mt-5">
+      <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.UNDEFINED" [configuracionTabla]="encabezadosMercancias"
+        [datos]="mercanciaCertificadoTablaDatos" [disableSeleccionTablaCheckBox]="soloLectura? true : false" ></app-tabla-dinamica>
+    </div>
+
+  <ng-container>
+    <ng-titulo titulo="Representante Legal" />
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Nombre(s):</label>
+        <input type="text" formControlName="nombreRepresentante" class="form-control" />
+      </div>
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Empresa:</label>
+        <input type="text" formControlName="empresaRepresentante" class="form-control" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label class="form-label">Correo electrónico:</label>
+        <input type="text" formControlName="correoElectronicoRepresentante" class="form-control" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label class="form-label">Fax:</label>
+        <input type="text" formControlName="faxRepresentante" class="form-control" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label class="form-label">Teléfono:</label>
+        <input type="text" formControlName="telefonoRepresentante" class="form-control" />
+      </div>
+    </div>
+  </ng-container>
+
+
+    <div class="row mt-5">
+      <ng-alert class="alert-text" [CONTENIDO]="TEXTO_DE_ALERTA_PRODUCTORES"></ng-alert>
+    </div>
+    <div class="table-container centered-table-wrapper mt-5">
+      <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.UNDEFINED"
+        [configuracionTabla]="encabezadosProductores" [datos]="productoresAsociadosTablaDatos" [disableSeleccionTablaCheckBox]="soloLectura? true : false" ></app-tabla-dinamica>
+    </div>
+  </ng-container>
+</form>

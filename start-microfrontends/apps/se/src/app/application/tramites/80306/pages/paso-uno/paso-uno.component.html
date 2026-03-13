@@ -1,0 +1,68 @@
+<div class="container">
+  <div class="row">
+    <ul class="nav nav-tabs">
+      <li [ngClass]="indice === 1 ? 'active' : ''">
+        <a data-toggle="tab" (click)="seleccionaTab(1)" (keydown.enter)="seleccionaTab(1)"
+          (keydown.space)="seleccionaTab(1)" role="button" tabindex="1">Solicitante</a>
+      </li>
+
+      @if(!showTabs){
+
+        <li [ngClass]="indice === 4 ? 'active' : ''">
+          <a (click)="seleccionaTab(4)" (keyup.enter)="seleccionaTab(4)" (keydown.space)="seleccionaTab(4)" tabindex="0" data-toggle="tab">Complementaria</a>
+        </li>
+        <li [ngClass]="indice === 6 ? 'active' : ''">
+          <a (click)="seleccionaTab(6)" (keyup.enter)="seleccionaTab(6)" (keydown.space)="seleccionaTab(6)" tabindex="2" data-toggle="tab">Monto y factor</a>
+        </li>
+        <li [ngClass]="indice === 5 ? 'active' : ''">
+          <a (click)="seleccionaTab(5)" (keyup.enter)="seleccionaTab(5)" (keydown.space)="seleccionaTab(5)" tabindex="1" data-toggle="tab">Anexo II y III</a>
+        </li>
+        <li [ngClass]="indice === 2 ? 'active' : ''">
+            <a data-toggle="tab" (click)="seleccionaTab(2)" (keydown.enter)="seleccionaTab(2)"
+              (keydown.space)="seleccionaTab(2)" role="button" tabindex="2">Modificación</a>
+          </li>
+      }
+
+      @if(showTabs){
+        <li [ngClass]="indice === 2 ? 'active' : ''">
+          <a data-toggle="tab" (click)="seleccionaTab(2)" (keydown.enter)="seleccionaTab(2)"
+            (keydown.space)="seleccionaTab(2)" role="button" tabindex="2">Modificación</a>
+        </li>
+        <li [ngClass]="indice === 3 ? 'active' : ''">
+          <a data-toggle="tab" (click)="seleccionaTab(3)" (keydown.enter)="seleccionaTab(3)"
+            (keydown.space)="seleccionaTab(3)" role="button" tabindex="3">Bitácora</a>
+        </li>
+      }
+    </ul>
+
+    <ng-container>
+      @switch (indice) { @case (1) {
+      <solicitante #Solicitante (continuarEvento)="continuar()"></solicitante>
+      
+      } 
+      @case (2) {
+      <app-modificacion (continuarEvento)="continuar()" [showTabs]="!showTabs"></app-modificacion>
+      <!-- <app-alta-planta (continuarEvento)="continuar()"></app-alta-planta> -->
+      } @case (3) {
+      <app-bitacora></app-bitacora>
+      } 
+      @case (4)
+      {
+        <app-datos-complimentaria [showTabs]="false"></app-datos-complimentaria>
+      } @case (5) {
+        <app-datos-anexos [showTabs]="false"></app-datos-anexos>
+      } @case (6) {
+      <app-monto-factor></app-monto-factor>
+      }
+    
+    }
+      @if(showTabs){
+        <div class="altaPlant col-md-12">
+          <div class="row mt-5">
+            <app-complementaria-immex></app-complementaria-immex>
+          </div>
+        </div>
+      }
+    </ng-container>
+  </div>
+</div>

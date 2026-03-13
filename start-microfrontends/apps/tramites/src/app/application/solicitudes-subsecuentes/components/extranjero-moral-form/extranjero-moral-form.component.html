@@ -1,0 +1,62 @@
+<div class="card border-0 shadow-sm mt-3">
+  <div class="card-header py-2">
+    <h5 class="mb-0 fs-3 fw-bold">Buscar Solicitante</h5>
+  </div>
+  <div class="card-body">
+    <form [formGroup]="form" (ngSubmit)="onBuscar()">
+      <div class="row g-4 align-items-start">
+        <div class="col-md-6">
+          <div class="mb-3 row align-items-center">
+            <label class="col-sm-4 col-form-label fw-bold">Denominación o Razón Social</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control form-control-sm border-dark" formControlName="denominacionRazonSocial">
+            </div>
+          </div>
+          <div class="mb-3 row align-items-center">
+            <label class="col-sm-4 col-form-label fw-bold">Código postal</label>
+            <div class="col-sm-8">
+              <input 
+                type="text" 
+                class="form-control form-control-sm border-dark" 
+                formControlName="codigoPostal" 
+                [class.is-invalid]="isInvalid('codigoPostal')"
+              >
+              <div *ngIf="isInvalid('codigoPostal')" class="invalid-feedback">
+                El código postal debe ser de 9 dígitos.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-4">
+            <label class="fw-bold">País</label>
+            <select class="form-control" formControlName="idPais">
+              <option *ngFor="let pais of paises" [value]="pais.clave">{{ pais.descripcion }}</option>
+            </select>
+          </div>
+          <div class="text-end mt-4">
+            <button type="submit" class="btn btn-primary px-5 py-1 rounded-pill shadow-sm" [disabled]="loading">
+              <span *ngIf="!loading">Buscar</span>
+              <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="table-section mt-4" *ngIf="searched && results.length > 0">
+  <div class="p-2 rounded-top mb-0">
+    <h6 class="mb-0 fw-bold">Extranjeros Morales</h6>
+  </div>
+  <app-tabla-dinamica
+    [configuracionTabla]="configuracionTabla"
+    [datos]="results"
+    (filaClic)="onFilaClic($event)"
+  ></app-tabla-dinamica>
+  <app-table-pagination
+    [totalItems]="results.length"
+    [itemsPerPage]="10"
+    [currentPage]="1"
+  ></app-table-pagination>
+</div>

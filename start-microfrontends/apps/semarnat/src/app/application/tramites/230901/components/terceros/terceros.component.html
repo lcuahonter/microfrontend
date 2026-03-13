@@ -1,0 +1,63 @@
+<div class="container">
+  <ng-titulo titulo="Destinatario" />
+  <form [formGroup]="formularioDestinatario">
+    @if(!esFormularioSoloLectura()){
+    <div class="row">
+      <app-catalogo-select [catalogo]="destinatariosRecinto" formControlName="entidadFederativa" class="col-md-4"
+        [label]="lblDestinatario()" (change)="manejarCambioEntidadFederativa($event)"></app-catalogo-select>
+    </div>
+    }
+    <label class="row mt-5">Destinatarios*:</label>
+    <div class="row mt-4">
+      <app-tabla-dinamica [configuracionTabla]="configuracionColumnas" [datos]="this.solicitudState().destinatario"
+        [tipoSeleccionTabla]="tipoSeleccionTabla" (listaDeFilaSeleccionada)="manejarFilaSeleccionada($event)"
+        [disableSeleccionTablaCheckBox]="esDatosDestinatario() || esFormularioSoloLectura()"
+        [isInvalida]="destinatario.touched && destinatario.invalid"></app-tabla-dinamica>
+    </div>
+    @if(!esFormularioSoloLectura()){
+    <div class="row" style="padding-bottom: 20px; text-align: right" *ngIf="!esDatosDestinatario()">
+      <div>
+        <button type="button" class="btn btn-default me-2" (click)="eliminarSeleccionados()"
+          [disabled]="!botonModificarHabilitado()">
+          Eliminar Seleccionados
+        </button>
+        <button type="button" class="btn btn-danger me-2" (click)="eliminarSeleccionados()">
+          Eliminar no seleccionados
+        </button>
+        <button type="button" class="btn btn-primary me-2" (click)="abrirMOdal()"
+          [disabled]="!botonModificarHabilitado()">
+          Modificar
+        </button>
+      </div>
+    </div>
+
+    <div class="row justify-content-end" style="padding-bottom: 20px; text-align: right" *ngIf="esDatosDestinatario()">
+      <div class="col-md-6">
+        <button type="button" class="btn btn-primary" (click)="abrirMOdal()">Agregar</button>
+      </div>
+    </div>
+    }
+    <div class="modal" tabindex="-1" role="dialog" [ngClass]="{ show: popupAbierto }"
+      [ngStyle]="{ display: popupAbierto ? 'block' : 'none' }">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content" style="width: fit-content; margin-left: 115px">
+          <div style="background-color: black; height: 55px"></div>
+          <div class="modal-body">
+            <p>No se pueden modificar los datos agregados por el sistema</p>
+          </div>
+          <div class="modal-footer" style="justify-content: center">
+            <button type="button" class="btn btn-primary">
+              Aceptar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-backdrop fade show" *ngIf="popupAbierto"></div>
+  </form>
+</div>
+
+<ng-template #modalAgregarNacionalidad>
+  <destinatario (cancelEvent)="cancelarModal()" (onClose)="obtieneDatosNacionalidad()"
+    [listaFilaSeleccionada]="listaFilaSeleccionada()"></destinatario>
+</ng-template>

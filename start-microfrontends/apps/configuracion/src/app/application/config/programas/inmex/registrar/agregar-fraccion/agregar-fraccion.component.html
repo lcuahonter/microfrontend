@@ -1,0 +1,34 @@
+<div class="container" id="fracciones">
+    @if(fracciones.length > 0) {
+        @for(item of fracciones; track item.id; let i = $index) {
+            <ng-container 
+                *ngTemplateOutlet="fraccionItem; context: {$implicit: item, level: 0, parentIndex: i}"
+            ></ng-container>
+        }
+    }
+</div>
+
+<!-- Template recursivo para los items -->
+<ng-template #fraccionItem let-item let-level="level" let-parentIndex="parentIndex">
+    <div class="item" [class.odd]="parentIndex % 2 === 1" [style.padding-left.rem]="level * 1.5">
+        <div class="item-container">
+            <input 
+                type="checkbox"
+                [id]="item.id"
+                [attr.data-item-id]="item.id"
+                (change)="selectFraccion($event, item)"
+            />
+            <label [for]="item.id">{{ item.id }}</label>
+        </div>
+
+        @if(item.children && item.children.length > 0) {
+            <div class="subItems" [id]="'sub-' + item.id">
+                @for(sub of item.children; track sub.id; let j = $index) {
+                    <ng-container 
+                        *ngTemplateOutlet="fraccionItem; context: {$implicit: sub, level: level + 1, parentIndex: parentIndex}"
+                    ></ng-container>
+                }
+            </div>
+        }
+    </div>
+</ng-template>

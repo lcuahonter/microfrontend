@@ -1,0 +1,151 @@
+<form [formGroup]="detalleForm">
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="estatus" class="form-label">Estatus</label>
+                <input class="form-control" id="estatus" placeholder="Estatus" type="text" formControlName="estatus"
+                    libUppercase>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="fechaCreacion" class="form-label">Fecha de creación</label>
+                <input class="form-control" id="fechaCreacion" placeholder="Fecha Creacion" type="text"
+                    formControlName="fechaCreacion" libUppercase>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="dictaminadoPor" class="form-label">Dictaminado por</label>
+                <input class="form-control" id="dictaminadoPor" placeholder="Dictaminado por" type="text"
+                    formControlName="dictaminadoPor" libUppercase>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="fechaGeneracion" class="form-label">Fecha de generación</label>
+                <input class="form-control" id="fechaGeneracion" type="text"
+                    formControlName="fechaGeneracion" libUppercase>
+            </div>
+        </div>
+    </div>
+
+     <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="verificadoPor" class="form-label">Verificado por</label>
+                <input class="form-control" id="verificadoPor" type="text"
+                    formControlName="verificadoPor" libUppercase>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="fechaverificación" class="form-label">Fecha de verificación</label>
+                <input class="form-control" id="fechaverificación"type="text"
+                    formControlName="fechaverificación" libUppercase>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="autorizadoPor" class="form-label">Autorizado por</label>
+                <input class="form-control" id="autorizadoPor" type="text"
+                    formControlName="autorizadoPor" libUppercase>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="fechaAutorizacion" class="form-label">Fecha de autorización</label>
+                <input class="form-control" id="fechaAutorizacion" type="text"
+                    formControlName="fechaAutorizacion" libUppercase>
+            </div>
+        </div>
+    </div>
+
+     <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="fechaAtencion" class="form-label">Fecha de atención</label>
+                <input class="form-control" id="fechaAtencion" type="text"
+                    formControlName="fechaAtencion" libUppercase>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="justificacionRequerimiento" class="form-label">Justificación del Requerimiento</label>
+                <textarea id="justificacionRequerimiento" class="form-control" formControlName="justificacionRequerimiento"
+                    libUppercase></textarea>
+            </div>
+        </div>
+    </div>
+
+    @if(config.atencionRequerimiento && detalleForm.get('atencionRequerimiento')?.value) {
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="atencionRequerimiento" class="form-label">Atención de Requerimiento</label>
+                <textarea id="atencionRequerimiento" class="form-control" formControlName="atencionRequerimiento"
+                    libUppercase></textarea>
+            </div>
+        </div>
+    </div>
+    }
+    
+     <!-- Documentos-->
+     @if (config.detalleTableRequerimiento && listadoDocumentos && listadoDocumentos.length > 0) {
+        <div class="row mt-4">
+        <div class="col-md-12">
+            <app-tabla-dinamica
+                [configuracionTabla]="encabezadoDeTablaDocumentos"
+                [datos]="listadoDocumentos"
+                [acciones]="accionesDetalle"
+                (alternarValor)="detalleAlternarValor($event)"
+            >
+            </app-tabla-dinamica>
+        </div>
+     </div>
+     }
+
+    @if(requerimientoDetalle && requerimientoDetalle.documentos && requerimientoDetalle.documentos.length > 0) {
+    <div class="col-md-12 mt-3">
+        <div class="row">
+            <table class="table table-bordered text-center">
+                <thead class="table-light">
+                    <tr>
+                        <th class="text-center">Tipo de documento</th>
+                        <th class="text-center">Nombre del archivo</th>
+                        <th class="text-center"></th>
+                    </tr>
+                </thead>
+                <tbody *ngIf="requerimientoDetalle.documentos.length">
+                    <tr *ngFor="let documento of requerimientoDetalle.documentos">
+                       
+                        <td class="text-center">{{documento.tipo_documento}}</td>
+                        <td class="text-center">{{documento.nombre}}</td>
+                        <td>
+                            @if(documento.documento_uuid){
+                            <div class="icono">
+                                <span class="d-flex justify-content-center">
+                                    <i class="bi bi-download bi-c text-gray"
+                                        (click)="verDetalleAcuse(documento.documento_uuid, documento.nombre!)">
+                                    </i>
+                                </span>
+                            </div>
+                            }
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    }
+    </form>

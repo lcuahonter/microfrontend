@@ -1,0 +1,39 @@
+<div class="row mt-4 mb-4">
+  <div class="col-md 12">
+    <table class="table table-container ">
+      <thead>
+        <tr class="table-header">
+          @for (item of encabezadoTablaDocumentos; track $index) {
+            <th class="text-center">{{ item.valor }}</th>
+            }
+          <th class="text-center">Ver</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of datosTablaDocumentos; track $index) {
+        <tr class="table-row" >
+          @for (item of encabezadoTablaDocumentos;  let i = $index; track $index) {                  
+              <td *ngIf="item.key === 'estatus'" class="text-center">
+              <span *ngIf="row[item.key] === 'Aprobado'" class="text-success">
+                <i class="bi bi-check-circle-fill"></i> {{ 'Correcto' }}
+              </span>
+              <span *ngIf="row[item.key] !== 'Aprobado'" class="text-danger">
+                <i class="bi bi-x-circle-fill"></i> {{ row[item.key] }}
+              </span>
+              </td>
+              <td *ngIf="item.key !== 'estatus'" class="text-center">
+              {{ row[item.key] }}
+              </td>
+          }
+          <td class="acciones">
+            <button type="button" class="btn btn-link me-2" id="verPdf" data-bs-toggle="button"
+              data-bs-placement="top" title="Ver Documento" (click)="verDetalleAcuse(row.urlPdf ?? '', row.nombreArchivo)">
+              <i class="bi bi-eye bi-c text-gold"></i>
+            </button>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

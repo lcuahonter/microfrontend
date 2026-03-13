@@ -1,0 +1,33 @@
+<div class="table-responsive" [ngClass]="{'enable-scrollbar': enableScrollbar, 'table-invalid': isInvalida}">
+    <table class="table table-bordered table-striped mb-2">
+        <thead>
+            <tr>
+                <th scope="col">
+                    <input type="checkbox"  [checked]="todasSeleccionadas()" (change)="alternarSeleccionTodo($event)" [disabled]="disableSeleccionTablaCheckBox" aria-label="Select All">
+                </th>
+                @for (item of tableData.tableHeader; track $index) {
+                    <th scope="col">{{item}}</th>
+    
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @for (data of tableData.tableBody; let index = $index; track index) {
+                <tr>
+                    <td><input type="checkbox" [(ngModel)]="data.selected" (change)="onRowSelectionChange(data, index)" [disabled]="disableSeleccionTablaCheckBox" aria-label="Select Row"></td>
+                    @for (element of data.tbodyData; track $index) {
+                        <td>{{element}}</td>
+    
+                    }
+                </tr>
+
+            }
+        </tbody>
+    </table>
+</div>
+
+@if (isInvalida) {
+    <div class="mensaje-error mt-2">
+        Este campo es obligatorio
+    </div>
+}

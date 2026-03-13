@@ -1,0 +1,543 @@
+<div class="container" [formGroup]="formularioEmpresa">
+  <ng-titulo titulo="Representación federal"></ng-titulo>
+  <div class="row">
+    <div class="col-md-3">
+      <app-catalogo-select
+        [catalogo]="estadoData.catalogos"
+        [label]="'Estado'"
+        [required]="false"
+        name="Estado"
+        formControlName="estado"
+        (change)="setValoresStore(formularioEmpresa, 'estado', 'setEstado');"
+        [isDisabled]="esFormularioSoloLectura ? true : false"
+        [placeholder]="estadoData.primerOpcion"
+        [markTouched]="formularioEmpresa.get('estado')?.touched??false">
+      </app-catalogo-select>
+    </div>
+    <div class="col-md-3">
+      <app-catalogo-select
+        [catalogo]="representacionFederalData.catalogos"
+        [label]="'Representación federal'"
+        [required]="true"
+        name="Representación federal"
+        formControlName="representacionFederal"
+        (change)="setValoresStore(formularioEmpresa, 'representacionFederal', 'setRepresentacionFederal')"
+        [isDisabled]="esFormularioSoloLectura ? true : false"
+        [placeholder]="representacionFederalData.primerOpcion"
+        [markTouched]="formularioEmpresa.get('representacionFederal')?.touched??false">
+      </app-catalogo-select>
+    </div>
+  </div>
+
+
+  <h6 class="gap">Selección de sucursal</h6>
+
+  <app-tabla-dinamica [configuracionTabla]="sucursalData" [tipoSeleccionTabla]="tipoSeleccionTabla.UNDEFINED"(filaClic)="getDomicilioData($event)"
+    [datos]="sucursalDeData" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"></app-tabla-dinamica>
+
+  <ng-titulo titulo="Datos de la solicitud"></ng-titulo>
+
+  <div class="row">
+    <div class="col-md-4">
+      <app-catalogo-select
+        [catalogo]="tipoEmpresaData.catalogos"
+        [label]="'Tipo de empresa'"
+        [required]="true"
+        formControlName="tipoEmpresa"
+        (change)="setValoresStore(formularioEmpresa, 'tipoEmpresa', 'setTipoEmpresa')"
+        [isDisabled]="esFormularioSoloLectura ? true : false"
+        [placeholder]="tipoEmpresaData.primerOpcion"
+        [markTouched]="formularioEmpresa.get('tipoEmpresa')?.touched??false">
+      </app-catalogo-select>
+    </div>
+    <div class="col-md-8">
+      <label for="especifique" class="form-label">Especifique:</label>
+      <input type="text" class="form-control" id="especifique" formControlName="especifique" readonly
+        [disabled]="true" maxlength="20" />
+    </div>
+    <div class="col-md-12">
+      <label for="actividad-economica-preponderante" class="form-label">
+        Clasificación del Catálogo de Actividades Económicas del SAT conforme a la Actividad Económica Preponderante
+        <span [ngClass]="{'text-danger': formularioEmpresa.get('actividadEconomicaPreponderante')?.invalid && (formularioEmpresa.get('actividadEconomicaPreponderante')?.touched || formularioEmpresa.get('actividadEconomicaPreponderante')?.dirty)}">*</span>:
+      </label>
+      <input type="text" id="actividad-economica-preponderante" maxlength="4" class="form-control"
+        name="actividadEconomicaPreponderante" formControlName="actividadEconomicaPreponderante" (change)="
+          setValoresStore(
+            formularioEmpresa,
+            'actividadEconomicaPreponderante',
+            'setActividadEconomicaPreponderante'
+          );
+          setActividadEconomicaClave();
+        " [disabled]="esFormularioSoloLectura" />
+        @if (formularioEmpresa.get('actividadEconomicaPreponderante')?.invalid && formularioEmpresa.get('actividadEconomicaPreponderante')?.touched) {
+          <div class="text-danger mt-1">
+            @if (formularioEmpresa.get('actividadEconomicaPreponderante')?.errors?.['required']) {
+              <small>Este campo es obligatorio</small>
+            } @else if (formularioEmpresa.get('actividadEconomicaPreponderante')?.errors?.['invalidCatalog']) {
+              <small>La actividad económica ingresada no es válida. Seleccione un código correcto.</small>
+            }
+          </div>
+        }
+    </div>
+    <div class="col-md-12">
+      <label for="descripcion" class="form-label">Descripción de la Actividad Económica del SAT:</label>
+      <textarea id="descripcion" class="form-control" formControlName="descripcion" [readonly]="true" (change)="
+          setValoresStore(formularioEmpresa, 'descripcion', 'setDescripcion')
+        " [disabled]="esFormularioSoloLectura" maxlength="255"></textarea>
+    </div>
+  </div>
+
+  <div class="row">
+    <ng-titulo titulo="Domicilio donde se almacenarán las mercancías a importar"></ng-titulo>
+
+    <div class="col-md-4">
+      <label for="País" class="form-label">País:</label>
+      <input type="text" id="País" class="form-control" formControlName="pais" readonly [disabled]="true" maxlength="100" />
+    </div>
+    <div class="col-md-4">
+      <label for="Código postal" class="form-label">Código postal: </label>
+      <input type="text" id="Código postal" class="form-control" formControlName="codigoPostal" readonly [disabled]="true" maxlength="12" />
+    </div>
+    <div class="col-md-4">
+      <label for="EstadoDomicilio" class="form-label">Estado:</label>
+      <input type="text" id="estadoDomicilio" class="form-control" formControlName="estadoDomicilio" readonly [disabled]="true" maxlength="100" />
+    </div>
+    <div class="col-md-4">
+      <label for="alcaldía:" class="form-label">Municipio o alcaldía:</label>
+      <input type="text" id="alcaldía:" class="form-control" formControlName="municipioAlcaldia" readonly [disabled]="true" maxlength="100" />
+    </div>
+    <div class="col-md-4">
+      <label for="Localidad" class="form-label">Localidad:</label>
+      <input type="text" id="Localidad" class="form-control" formControlName="localidad" readonly [disabled]="true" maxlength="100" />
+    </div>
+    <div class="col-md-4">
+      <label for="Colonia" class="form-label">Colonia:</label>
+      <input type="text" id="Colonia" class="form-control" formControlName="colonia" readonly [disabled]="true" maxlength="100" />
+    </div>
+    <div class="col-md-8">
+      <label for="Calle" class="form-label">Calle:</label>
+      <input type="text" id="Calle" class="form-control" formControlName="calle" readonly [disabled]="true" maxlength="100" />
+    </div>
+    <div class="col-md-4">
+      <label for="exterior" class="form-label">Número exterior:</label>
+      <input type="text" id="exterior" class="form-control" formControlName="numeroExterior" readonly [disabled]="true" maxlength="10" />
+      @if (formularioEmpresa.get('numeroExterior')?.errors?.['pattern'] && formularioEmpresa.get('numeroExterior')?.touched) {
+        <small class="text-danger">Por favor, escribe un número válido</small>
+      }
+    </div>
+    <div class="col-md-4">
+      <label for="interior" class="form-label">Número interior:</label>
+      <input type="text" id="interior" class="form-control" formControlName="numeroInterior" readonly [disabled]="true" maxlength="10" />
+      @if (formularioEmpresa.get('numeroInterior')?.errors?.['pattern'] && formularioEmpresa.get('numeroInterior')?.touched) {
+        <small class="text-danger">Por favor, escribe un número válido</small>
+      }
+    </div>
+    <div class="col-md-2">
+      <label for="Lada" class="form-label">Lada:</label>
+      <input type="text" id="Lada" class="form-control" formControlName="lada" readonly [disabled]="true" maxlength="5" />
+      @if (formularioEmpresa.get('lada')?.errors?.['pattern'] && formularioEmpresa.get('lada')?.touched) {
+        <small class="text-danger">Por favor, escribe un número válido</small>
+      }
+    </div>
+    <div class="col-md-3">
+      <label for="Teléfono" class="form-label">Teléfono:</label>
+      <input type="text" id="Teléfono" class="form-control" formControlName="telefono" readonly [disabled]="true" [disabled]="esFormularioSoloLectura" maxlength="320" />
+      @if (formularioEmpresa.get('telefono')?.errors?.['pattern'] && formularioEmpresa.get('telefono')?.touched) {
+        <small class="text-danger">Por favor, escribe un número válido</small>
+      }
+    </div>
+  </div>
+
+  <div class="row">
+    <ng-titulo titulo="Datos generales socios accionistas"></ng-titulo>
+    <div class="col-md-6">
+      <label class="form-label">Nacionalidad mexicana:</label>
+      <app-input-radio [radioOptions]="opcionSeleccionMexicana" [selectedValue]="selectedNacionalidad"
+        [isRequired]="false" [layout]="'horizontal'" formControlName="nacionalidad"
+        (valueChange)="setSelectedNacionalidad($event.toString())" (change)="
+          setValoresStore(formularioEmpresa, 'nacionalidad', 'setNacionalidad')
+        " [disabled]="esFormularioSoloLectura">
+      </app-input-radio>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Tipo de persona:</label>
+      <app-input-radio [radioOptions]="opcionSeleccionPersona" [selectedValue]="selectedTipoPersona"
+        [isRequired]="false" [layout]="'horizontal'" formControlName="tipoDePersona"
+        (valueChange)="setSelectedTipoDePersona($event.toString())" (change)="
+          setValoresStore(
+            formularioEmpresa,
+            'tipoDePersona',
+            'setTipoDePersona'
+          )
+        " [disabled]="esFormularioSoloLectura">
+      </app-input-radio>
+    </div>
+  </div>
+
+<ng-container >
+    @if (selectedNacionalidad === nacionalidadMexicanaSi) {
+
+  <div class="row">
+    <div class="col-md-6">
+      <label class="form-label">
+        Registro federal de contribuyentes<span [ngClass]="{'text-danger': formularioEmpresa.get('registroFederal')?.invalid && (formularioEmpresa.get('registroFederal')?.touched || formularioEmpresa.get('registroFederal')?.dirty)}">*</span>:
+      </label>
+      <input type="text" class="form-control" maxlength="13" formControlName="registroFederal" />
+      @if (formularioEmpresa.get('registroFederal')?.invalid && formularioEmpresa.get('registroFederal')?.touched) {
+        <div class="text-danger">
+          @if (formularioEmpresa.get('registroFederal')?.errors?.['required']) {
+            <small>Este campo es obligatorio</small>
+          } @else if (formularioEmpresa.get('registroFederal')?.errors?.['pattern']) {
+            <small>Por favor, escribe un RFC válido</small>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  }
+
+  @if (selectedNacionalidad === nacionalidadMexicanaNo
+  && selectedTipoPersona === tipoPersonaMoral) {
+
+  <!-- all fields here -->
+  <div class="row">
+    <!-- TAX ID -->
+    <div class="col-md-8">
+      <label class="form-label">
+        TAX ID<span [ngClass]="{'text-danger': formularioEmpresa.get('taxId')?.invalid && (formularioEmpresa.get('taxId')?.touched || formularioEmpresa.get('taxId')?.dirty)}">*</span>:
+      </label>
+      <input type="text" maxlength="12" class="form-control" formControlName="taxId" />
+      @if (formularioEmpresa.get('taxId')?.invalid && formularioEmpresa.get('taxId')?.touched) {
+        <div class="text-danger">
+          @if (formularioEmpresa.get('taxId')?.errors?.['required']) {
+            <small>Este campo es obligatorio</small>
+          } @else if (formularioEmpresa.get('taxId')?.errors?.['pattern']) {
+            <small>Por favor, escribe un valor válido</small>
+          } @else if (formularioEmpresa.get('taxId')?.errors?.['maxlength']) {
+            <small>Por favor, no escribas más de 12 caracteres</small>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- RAZÓN SOCIAL -->
+    <div class="col-md-6">
+      <label class="form-label">
+        Denominación o razón social<span [ngClass]="{'text-danger': formularioEmpresa.get('razonSocial')?.invalid && (formularioEmpresa.get('razonSocial')?.touched || formularioEmpresa.get('razonSocial')?.dirty)}">*</span>:
+      </label>
+      <input type="text" class="form-control" formControlName="razonSocial" />
+      @if (formularioEmpresa.get('razonSocial')?.invalid && formularioEmpresa.get('razonSocial')?.touched) {
+        <div class="text-danger">
+          @if (formularioEmpresa.get('razonSocial')?.errors?.['required']) {
+            <small>Este campo es obligatorio</small>
+          } @else if (formularioEmpresa.get('razonSocial')?.errors?.['pattern']) {
+            <small>Por favor, escribe un valor válido</small>
+          } @else if (formularioEmpresa.get('razonSocial')?.errors?.['maxlength']) {
+            <small>Por favor, no escribas más de 254 caracteres</small>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- PAÍS -->
+    <div class="col-md-6">
+        <app-catalogo-select 
+          [catalogo]="paisData.catalogos" 
+          [label]="'País'" 
+          [required]="true" 
+          formControlName="datosPais" 
+          [placeholder]="paisData.primerOpcion"
+          [markTouched]="formularioEmpresa.get('datosPais')?.touched??false">
+        </app-catalogo-select>
+    </div>
+
+    <!-- CP -->
+    <div class="col-md-6">
+      <label class="form-label">
+        Código postal<span [ngClass]="{'text-danger': formularioEmpresa.get('datosCodigoPostal')?.invalid && (formularioEmpresa.get('datosCodigoPostal')?.touched || formularioEmpresa.get('datosCodigoPostal')?.dirty)}">*</span>:
+      </label>
+      <input type="text" class="form-control" formControlName="datosCodigoPostal" />
+        @if (formularioEmpresa.get('datosCodigoPostal')?.invalid && formularioEmpresa.get('datosCodigoPostal')?.touched) {
+          <div class="text-danger">
+            @if (formularioEmpresa.get('datosCodigoPostal')?.errors?.['required']) {
+              <small>Este campo es obligatorio</small>
+            } @else if (formularioEmpresa.get('datosCodigoPostal')?.errors?.['pattern']) {
+              <small>Por favor, escribe un valor válido</small>
+            } @else if (formularioEmpresa.get('datosCodigoPostal')?.errors?.['maxlength']) {
+              <small>Por favor, no escribas más de 12 caracteres</small>
+            }
+          </div>
+        }
+    </div>
+
+    <!-- ESTADO -->
+    <div class="col-md-6">
+      <label class="form-label">
+        Estado<span [ngClass]="{'text-danger': formularioEmpresa.get('datosEstado')?.invalid && (formularioEmpresa.get('datosEstado')?.touched || formularioEmpresa.get('datosEstado')?.dirty)}">*</span>:
+      </label>
+      <input type="text" class="form-control" formControlName="datosEstado" />
+      @if (formularioEmpresa.get('datosEstado')?.invalid && formularioEmpresa.get('datosEstado')?.touched) {
+        <div class="text-danger">
+          @if (formularioEmpresa.get('datosEstado')?.errors?.['required']) {
+            <small>Este campo es obligatorio</small>
+          } @else if (formularioEmpresa.get('datosEstado')?.errors?.['pattern']) {
+            <small>Por favor, escribe un valor válido</small>
+          } @else if (formularioEmpresa.get('datosEstado')?.errors?.['maxlength']) {
+            <small>Por favor, no escribas más de 255 caracteres</small>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- CORREO -->
+    <div class="col-md-6">
+      <label class="form-label">
+        Correo electrónico<span [ngClass]="{'text-danger': formularioEmpresa.get('correoElectronico')?.invalid && (formularioEmpresa.get('correoElectronico')?.touched || formularioEmpresa.get('correoElectronico')?.dirty)}">*</span>:
+      </label>
+      <input type="email" class="form-control" formControlName="correoElectronico" />
+        @if (formularioEmpresa.get('correoElectronico')?.invalid && formularioEmpresa.get('correoElectronico')?.touched) {
+          <div class="text-danger">
+            @if (formularioEmpresa.get('correoElectronico')?.errors?.['required']) {
+              <small>Este campo es obligatorio</small>
+            } @else if (formularioEmpresa.get('correoElectronico')?.errors?.['pattern']) {
+              <small>Por favor, escribe un correo electrónico válido</small>
+            } @else if (formularioEmpresa.get('correoElectronico')?.errors?.['maxlength']) {
+              <small>Por favor, no escribas más de 200 caracteres</small>
+            }
+          </div>
+        }
+    </div>
+  </div>
+
+  }
+
+  @if (selectedNacionalidad === nacionalidadMexicanaNo
+  && selectedTipoPersona === tipoPersonaFisica) {
+
+  <div class="row">
+
+    <!-- NOMBRE -->
+    <div class="col-md-6">
+      <label class="form-label">Nombre<span [ngClass]="{'text-danger': formularioEmpresa.get('nombre')?.invalid && (formularioEmpresa.get('nombre')?.touched || formularioEmpresa.get('nombre')?.dirty)}">*</span>:</label>
+      <input type="text" maxlength="200" class="form-control" formControlName="nombre" />
+    </div>
+
+    <!-- APELLIDO -->
+    <div class="col-md-6">
+      <label class="form-label">Apellido paterno<span [ngClass]="{'text-danger': formularioEmpresa.get('apellidoPaterno')?.invalid && (formularioEmpresa.get('apellidoPaterno')?.touched || formularioEmpresa.get('apellidoPaterno')?.dirty)}">*</span>:</label>
+      <input type="text" maxlength="200" class="form-control" formControlName="apellidoPaterno" />
+    </div>
+
+    <!-- PAÍS -->
+    <div class="col-md-8">
+        <app-catalogo-select [catalogo]="paisData.catalogos" [label]="'País'" [required]="true" formControlName="datosPais" [placeholder]="paisData.primerOpcion" [markTouched]="formularioEmpresa.get('datosPais')?.touched??false">
+        </app-catalogo-select>
+    </div>
+
+    <!-- CP -->
+    <div class="col-md-6">
+      <label class="form-label">
+        Código postal<span [ngClass]="{'text-danger': formularioEmpresa.get('datosCodigoPostal')?.invalid && (formularioEmpresa.get('datosCodigoPostal')?.touched || formularioEmpresa.get('datosCodigoPostal')?.dirty)}">*</span>:
+      </label>
+      <input type="text" maxlength="12" class="form-control" formControlName="datosCodigoPostal" />
+        @if (formularioEmpresa.get('datosCodigoPostal')?.invalid && formularioEmpresa.get('datosCodigoPostal')?.touched) {
+          <div class="text-danger">
+            @if (formularioEmpresa.get('datosCodigoPostal')?.errors?.['required']) {
+              <small>Este campo es obligatorio</small>
+            } @else if (formularioEmpresa.get('datosCodigoPostal')?.errors?.['pattern']) {
+              <small>Por favor, escribe un valor válido</small>
+            } @else if (formularioEmpresa.get('datosCodigoPostal')?.errors?.['maxlength']) {
+              <small>Por favor, no escribas más de 12 caracteres</small>
+            }
+          </div>
+        }
+    </div>
+
+    <!-- ESTADO -->
+    <div class="col-md-6">
+      <label class="form-label">
+        Estado<span [ngClass]="{'text-danger': formularioEmpresa.get('datosEstado')?.invalid && (formularioEmpresa.get('datosEstado')?.touched || formularioEmpresa.get('datosEstado')?.dirty)}">*</span>:
+      </label>
+      <input type="text" maxlength="255" class="form-control" formControlName="datosEstado" />
+        @if (formularioEmpresa.get('datosEstado')?.invalid && formularioEmpresa.get('datosEstado')?.touched) {
+          <div class="text-danger">
+            @if (formularioEmpresa.get('datosEstado')?.errors?.['required']) {
+              <small>Este campo es obligatorio</small>
+            } @else if (formularioEmpresa.get('datosEstado')?.errors?.['pattern']) {
+              <small>Por favor, escribe un valor válido</small>
+            } @else if (formularioEmpresa.get('datosEstado')?.errors?.['maxlength']) {
+              <small>Por favor, no escribas más de 255 caracteres</small>
+            }
+          </div>
+        }
+    </div>
+
+    <!-- CORREO -->
+    <div class="col-md-6">
+      <label class="form-label">
+        Correo electrónico<span [ngClass]="{'text-danger': formularioEmpresa.get('correoElectronico')?.invalid && (formularioEmpresa.get('correoElectronico')?.touched || formularioEmpresa.get('correoElectronico')?.dirty)}">*</span>:
+      </label>
+      <input type="email" maxlength="200" class="form-control" formControlName="correoElectronico" />
+        @if (formularioEmpresa.get('correoElectronico')?.invalid && formularioEmpresa.get('correoElectronico')?.touched) {
+          <div class="text-danger">
+            @if (formularioEmpresa.get('correoElectronico')?.errors?.['required']) {
+              <small>Este campo es obligatorio</small>
+            } @else if (formularioEmpresa.get('correoElectronico')?.errors?.['pattern']) {
+              <small>Por favor, escribe un correo electrónico válido</small>
+            } @else if (formularioEmpresa.get('correoElectronico')?.errors?.['maxlength']) {
+              <small>Por favor, no escribas más de 200 caracteres</small>
+            }
+          </div>
+        }
+    </div>
+    <!-- TAX ID -->
+    <div class="col-md-6">
+      <label class="form-label">
+        TAX ID<span [ngClass]="{'text-danger': formularioEmpresa.get('taxId')?.invalid && (formularioEmpresa.get('taxId')?.touched || formularioEmpresa.get('taxId')?.dirty)}">*</span>:
+      </label>
+      <input type="text" maxlength="12" class="form-control" formControlName="taxId" />
+        <div class="text-danger">
+          @if (formularioEmpresa.get('taxId')?.errors?.['required'] && formularioEmpresa.get('taxId')?.touched) {
+              <small>Este campo es obligatorio</small>
+            }
+       </div>
+    </div>
+  </div>
+
+  }
+  @if (!selectedNacionalidad && !selectedTipoPersona) {
+
+  <div class="row">
+    <!-- TAX ID -->
+    <div class="col-md-8">
+      <label class="form-label">
+        TAX ID<span [ngClass]="{'text-danger': formularioEmpresa.get('taxId')?.invalid && (formularioEmpresa.get('taxId')?.touched || formularioEmpresa.get('taxId')?.dirty)}">*</span>:
+      </label>
+      <input type="text" maxlength="12" class="form-control" formControlName="taxId" />
+      <div class="text-danger">
+        @if (formularioEmpresa.get('taxId')?.errors?.['required'] && formularioEmpresa.get('taxId')?.touched) {
+          <small>Este campo es obligatorio</small>
+        }
+      </div>
+    </div>
+
+    <!-- RAZÓN SOCIAL -->
+    <div class="col-md-6">
+      <label class="form-label">Denominación o razón social<span [ngClass]="{'text-danger': formularioEmpresa.get('razonSocial')?.invalid && (formularioEmpresa.get('razonSocial')?.touched || formularioEmpresa.get('razonSocial')?.dirty)}">*</span>:
+      </label>
+      <input type="text" maxlength="254" class="form-control" formControlName="razonSocial" />
+      <div class="text-danger">
+        @if (formularioEmpresa.get('razonSocial')?.errors?.['required'] && formularioEmpresa.get('razonSocial')?.touched) {
+          <small>Este campo es obligatorio</small>
+        }
+      </div>
+    </div>
+
+    <!-- PAÍS -->
+    <div class="col-md-6">
+        <app-catalogo-select [catalogo]="paisData.catalogos" [label]="'País'" [required]="true" formControlName="datosPais" [placeholder]="paisData.primerOpcion" [markTouched]="formularioEmpresa.get('datosPais')?.touched??false">
+        </app-catalogo-select>
+    </div>
+
+    <!-- CP -->
+    <div class="col-md-6">
+      <label class="form-label">
+        Código postal<span [ngClass]="{'text-danger': formularioEmpresa.get('datosCodigoPostal')?.invalid && (formularioEmpresa.get('datosCodigoPostal')?.touched || formularioEmpresa.get('datosCodigoPostal')?.dirty)}">*</span>:
+      </label>
+      <input type="text" class="form-control" formControlName="datosCodigoPostal" />
+        @if (formularioEmpresa.get('datosCodigoPostal')?.invalid && formularioEmpresa.get('datosCodigoPostal')?.touched) {
+          <div class="text-danger">
+            @if (formularioEmpresa.get('datosCodigoPostal')?.errors?.['required']) {
+              <small>Este campo es obligatorio</small>
+            } @else if (formularioEmpresa.get('datosCodigoPostal')?.errors?.['pattern']) {
+              <small>Por favor, escribe un valor válido</small>
+            } @else if (formularioEmpresa.get('datosCodigoPostal')?.errors?.['maxlength']) {
+              <small>Por favor, no escribas más de 12 caracteres</small>
+            }
+          </div>
+        }
+    </div>
+
+    <!-- ESTADO -->
+    <div class="col-md-6">
+      <label class="form-label">
+        Estado<span [ngClass]="{'text-danger': formularioEmpresa.get('datosEstado')?.invalid && (formularioEmpresa.get('datosEstado')?.touched || formularioEmpresa.get('datosEstado')?.dirty)}">*</span>:
+      </label>
+      <input type="text" class="form-control" formControlName="datosEstado" />
+        @if (formularioEmpresa.get('datosEstado')?.invalid && formularioEmpresa.get('datosEstado')?.touched) {
+          <div class="text-danger">
+            @if (formularioEmpresa.get('datosEstado')?.errors?.['required']) {
+              <small>Este campo es obligatorio</small>
+            } @else if (formularioEmpresa.get('datosEstado')?.errors?.['pattern']) {
+              <small>Por favor, escribe un valor válido</small>
+            } @else if (formularioEmpresa.get('datosEstado')?.errors?.['maxlength']) {
+              <small>Por favor, no escribas más de 255 caracteres</small>
+            }
+          </div>
+        }
+    </div>
+
+    <!-- CORREO -->
+    <div class="col-md-6">
+      <label class="form-label">
+        Correo electrónico<span [ngClass]="{'text-danger': formularioEmpresa.get('correoElectronico')?.invalid && (formularioEmpresa.get('correoElectronico')?.touched || formularioEmpresa.get('correoElectronico')?.dirty)}">*</span>:
+      </label>
+      <input type="email" class="form-control" formControlName="correoElectronico" />
+        @if (formularioEmpresa.get('correoElectronico')?.invalid && formularioEmpresa.get('correoElectronico')?.touched) {
+          <div class="text-danger">
+            @if (formularioEmpresa.get('correoElectronico')?.errors?.['required']) {
+              <small>Este campo es obligatorio</small>
+            } @else if (formularioEmpresa.get('correoElectronico')?.errors?.['pattern']) {
+              <small>Por favor, escribe un correo electrónico válido</small>
+            } @else if (formularioEmpresa.get('correoElectronico')?.errors?.['maxlength']) {
+              <small>Por favor, no escribas más de 200 caracteres</small>
+            }
+          </div>
+        }
+    </div>
+  </div>
+
+  <div class="col-md-12 d-flex justify-content-end mt-2 mb-4">
+    <button type="button" class="btn btn-primary" (click)="guardarTodo()" [disabled]="esFormularioSoloLectura || formularioEmpresa.invalid">
+      Agregar
+    </button>
+  </div>
+  }
+</ng-container>
+
+  <h6 class="margin-header">Socios y Accionistas</h6>
+  <h6>Datos de los socios y/o accionistas:</h6>
+
+  <app-tabla-dinamica [tipoSeleccionTabla]="tipoSeleccionTabla.CHECKBOX" [configuracionTabla]="sociosYAccionistasData"
+    [datos]="datosGenerales" (filaSeleccionada)="onSelectedRowsChange($event)">
+  </app-tabla-dinamica>
+
+  <div class="text-end">
+    <button type="button" class="btn btn-primary" (click)="onDelete()" [disabled]="esFormularioSoloLectura">
+      Eliminar
+    </button>
+  </div>
+
+  <h6 class="margin-header">Socios y Accionistas Extranjeros</h6>
+  <h6>Datos de los socios y/o accionistas:</h6>
+
+  <app-tabla-dinamica [tipoSeleccionTabla]="tipoSeleccionTabla.CHECKBOX" [configuracionTabla]="socioYAccionistasExtranjerosData"
+    [datos]="datosTablaExtranjeros" (listaDeFilaSeleccionada)="onSelectedRowsChangeExtranjeros($event)">
+    ></app-tabla-dinamica>
+
+  <div class="text-end mt-5">
+    <button type="button" class="btn btn-primary" (click)="onEliminar()" [disabled]="esFormularioSoloLectura">
+      Eliminar
+    </button>
+  </div>
+</div>
+
+@if(nuevaNotificacion){
+<lib-notificaciones [notificacionInput]="nuevaNotificacion"
+ ></lib-notificaciones>
+}
+
+@if(nuevaNotificacionEliminar){
+<lib-notificaciones [notificacionInput]="nuevaNotificacionEliminar" (confirmacionModal)="onNotificacionAccion($event)" [invertirBotones]="false"></lib-notificaciones>
+}

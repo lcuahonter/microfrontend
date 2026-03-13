@@ -1,0 +1,206 @@
+<div class="page">
+    <div class="container">
+        <h1>Pagina de inicio</h1>
+        <section>
+            <div (click)="colapsarAcordion()" class="header-collapse bg-light px-3 py-4">
+                <b>LDA Criterios busqueda: </b>
+                <span>[+]</span>
+            </div>
+            <section [class.collapsed]="collapsed" class="body-colapse">
+                <div class="p-5">
+                    <div class="btn-accion-form container my-3">
+                        <button class="btn btn-primary">Buscar</button>
+                        <button class="btn btn-primary">Exportar Excel</button>
+                    </div>
+                    <form class="form-container consultar-detalle-autorizacion" action="" [formGroup]="FormConsulta">
+                        <div class="row-1-3">
+                            <label class="form-label" for="">RFC Solicitante :</label>
+                            <input class="form-control" formControlName="rfc_solicitante" type="text"
+                                [class.is-invalid]="rfcSolicitante?.invalid && (rfcSolicitante?.dirty || rfcSolicitante?.touched)">
+                            @if (rfcSolicitante?.invalid && (rfcSolicitante?.dirty || rfcSolicitante?.touched)) {
+                            <div class="invalid-feedback">
+                                @if (rfcSolicitante?.hasError('pattern')) {
+                                <div>Patron RFC incorrecto.</div>
+                                }
+                                @if(rfcSolicitante?.hasError('maxLength')){
+                                <div>Máximo 13 caracteres.</div>
+                                }
+                            </div>
+                            }
+                        </div>
+                        <div class="row-1-3">
+                            <label class="form-label" for="">Aduana :</label>
+                            <select class="form-control form-select" name="" id="" formControlName="aduana">
+                                <option value="">Seleccione un valor</option>
+                            </select>
+                        </div>
+                        <div class="row-1-3">
+                            <label class="form-label" for="">Seccion Aduanera :</label>
+                            <select class="form-control form-select" name="" id="" formControlName="seccion_aduanera">
+                                <option value="">Seleccione un valor</option>
+                            </select>
+                        </div>
+                        <div class="row-full">
+                            <label for="">LDA : </label>
+                            <div>
+                                <label>
+                                    <input type="checkbox" class="form-check-input" [checked]="lda === 'UBICACION'"
+                                        (change)="cambiarLDA('UBICACION', $event)" />
+                                    Ubicación
+                                </label>
+
+                                <label>
+                                    <input type="checkbox" class="form-check-input" [checked]="lda === 'DOMICILIO'"
+                                        (change)="cambiarLDA('DOMICILIO', $event)" />
+                                    Domicilio
+                                </label>
+
+                            </div>
+                        </div>
+                        <div [class.domicilio-activo]="domicilioActivo" class="row-full direccion-container">
+                            <div class="row-1-3">
+                                <label class="form-label">Calle :</label>
+                                <input class="form-control" formControlName="calle" type="text"
+                                    [class.is-invalid]="calle?.invalid && (calle?.dirty || calle?.touched)" />
+                                @if (calle?.invalid && (calle?.dirty || calle?.touched)) {
+                                <div class="invalid-feedback">
+                                    @if (calle?.hasError('pattern')) {
+                                    <div>Solo se permiten números y letras.</div>
+                                    }
+                                    @if (calle?.hasError('maxlength')) {
+                                    <div>Máximo 100 caracteres.</div>
+                                    }
+                                </div>
+                                }
+                            </div>
+
+                            <div class="row-1-3">
+                                <label class="form-label">Número exterior :</label>
+                                <input class="form-control" formControlName="numero_exterior" type="text"
+                                    [class.is-invalid]="numeroExterior?.invalid && (numeroExterior?.dirty || numeroExterior?.touched)" />
+
+                                @if (numeroExterior?.invalid && (numeroExterior?.dirty || numeroExterior?.touched)) {
+                                <div class="invalid-feedback">
+                                    @if (numeroExterior?.hasError('pattern')) {
+                                    <div>Solo se permiten números y letras.</div>
+                                    }
+                                    @if (numeroExterior?.hasError('maxlength')) {
+                                    <div>Máximo 55 caracteres.</div>
+                                    }
+                                </div>
+                                }
+                            </div>
+
+                            <div class="row-1-3">
+                                <label class="form-label">Número interior :</label>
+                                <input class="form-control" formControlName="numero_interior" type="text"
+                                    [class.is-invalid]="numeroInterior?.invalid && (numeroInterior?.dirty || numeroInterior?.touched)" />
+
+                                @if (numeroInterior?.invalid && (numeroInterior?.dirty || numeroInterior?.touched)) {
+                                <div class="invalid-feedback">
+                                    @if (numeroInterior?.hasError('pattern')) {
+                                    <div>Solo se permiten números y letras.</div>
+                                    }
+                                    @if (numeroInterior?.hasError('maxlength')) {
+                                    <div>Máximo 55 caracteres.</div>
+                                    }
+                                </div>
+                                }
+                            </div>
+
+                            <div class="row-1-3">
+                                <label class="form-label">Código postal :</label>
+                                <input class="form-control" formControlName="codigo_postal" type="text"
+                                    [class.is-invalid]="codigoPostal?.invalid && (codigoPostal?.dirty || codigoPostal?.touched)" />
+
+                                @if (codigoPostal?.invalid && (codigoPostal?.dirty || codigoPostal?.touched)) {
+                                <div class="invalid-feedback">
+                                    @if (codigoPostal?.hasError('pattern')) {
+                                    <div>Solo se permiten números y letras.</div>
+                                    }
+                                    @if (codigoPostal?.hasError('maxlength')) {
+                                    <div>Máximo 12 caracteres.</div>
+                                    }
+                                </div>
+                                }
+                            </div>
+
+                            <div class="row-1-3">
+                                <label class="form-label">Colonia :</label>
+                                <input class="form-control" formControlName="colonia" type="text"
+                                    [class.is-invalid]="colonia?.invalid && (colonia?.dirty || colonia?.touched)" />
+
+                                @if (colonia?.invalid && (colonia?.dirty || colonia?.touched)) {
+                                <div class="invalid-feedback">
+                                    @if (colonia?.hasError('pattern')) {
+                                    <div>Solo se permiten números y letras.</div>
+                                    }
+                                    @if (colonia?.hasError('maxlength')) {
+                                    <div>Máximo 120 caracteres.</div>
+                                    }
+                                </div>
+                                }
+                            </div>
+
+                            <div class="row-1-3">
+                                <label class="form-label" for="">País :</label>
+                                <select class="form-control form-select" name="" id="" formControlName="pais">
+                                    <option value="">Seleccione un valor</option>
+                                </select>
+                            </div>
+                            <div class="row-1-3">
+                                <label class="form-label" for="">Entidad Federativa :</label>
+                                <select class="form-control form-select" name="" id="" formControlName="enitidad">
+                                    <option value="">Seleccione un valor</option>
+                                </select>
+                            </div>
+                            <div class="row-1-3">
+                                <label class="form-label" for="">Municipio o alcaldía :</label>
+                                <select class="form-control form-select" name="" id="" formControlName="municipio">
+                                    <option value="">Seleccione un valor</option>
+                                </select>
+                            </div>
+                            <div class="row-1-3">
+                                <label class="form-label" for="">Localidad :</label>
+                                <select class="form-control form-select" name="" id="" formControlName="localidad">
+                                    <option value="">Seleccione un valor</option>
+                                </select>
+                            </div>
+                            <div class="row-1-3">
+                                <label class="form-label">Teléfono :</label>
+                                <input class="form-control" formControlName="telefono" type="text"
+                                    [class.is-invalid]="telefono?.invalid && (telefono?.dirty || telefono?.touched)" />
+                                @if (telefono?.invalid && (telefono?.dirty || telefono?.touched)) {
+                                <div class="invalid-feedback">
+                                    @if (telefono?.hasError('pattern')) {
+                                    <div>Solo se permiten números.</div>
+                                    }
+                                    @if (telefono?.hasError('maxlength')) {
+                                    <div>Máximo 30 caracteres.</div>
+                                    }
+                                </div>
+                                }
+                            </div>
+
+                        </div>
+                        <div [class.ubicacion-activo]="ubicacionActivo" class="row-full ubicacion-container">
+                            <label class="form-label text-left" for="">Ubicación :</label>
+                            <textarea class="form-control" formControlName="" name="" id=""
+                                formControlName="ubicacion"></textarea>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </section>
+        <br />
+        <section>
+            <b>Ubicación :</b>
+            <br />
+            <br />
+            <br />
+            <app-tabla-dinamica (filaSeleccionada)="filaSeleccionada($event)" [configuracionTabla]="configuracionTabla" [mode]="'client'">
+            </app-tabla-dinamica>
+        </section>
+    </div>
+    <br/>
+</div>

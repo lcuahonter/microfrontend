@@ -1,0 +1,209 @@
+<div class="container">
+  <form [formGroup]="importadorForm">
+    <div class="col-md-12">
+      <ng-titulo titulo="Importador en destino" />
+    </div>
+    <div class="row mt-5">
+      @if(visualizarTipoIOR){
+      <div class="col-md-6">
+        <label class="form-label" for="tipo">
+          Tipo I O R (Importer of Record)
+          <span [class.label-invalid]="
+        importadorForm.get('tipo')?.invalid &&
+        importadorForm.get('tipo')?.touched
+      ">*</span>:
+        </label>
+        <select id="tipo" name="tipo" class="form-select form-control" formControlName="tipo"
+          [disabled]="formularioDeshabilitado" [class.is-invalid]="
+      importadorForm.get('tipo')?.invalid &&
+      importadorForm.get('tipo')?.touched
+    " [class.form-select]="true" (change)="setValoresStore(importadorForm, 'tipo', 'setTipo')">
+          <option value="">Seleccione...</option>
+          <option *ngFor="let item of tipoData" [value]="item.clave">
+            {{ item.descripcion }}
+          </option>
+        </select>
+        <div *ngIf="
+      importadorForm.get('tipo')?.invalid &&
+      (importadorForm.get('tipo')?.touched || importadorForm.get('tipo')?.dirty)
+    " class="mensaje-error mt-1">
+          <small *ngIf="importadorForm.get('tipo')?.errors?.['required']" style="font-size: 1.5rem;">
+            Este campo es obligatorio.
+          </small>
+        </div>
+      </div>
+      }
+      @if(!visualizarTipoIOR){
+      <div class="col-md-6">
+        <label class="form-label" for="tipoIOR">Tipo I O R(Importer of Record)<span
+            [class.label-invalid]="importadorForm.get('tipoIOR')?.invalid && importadorForm.get('tipoIOR')?.touched">*</span>:</label>
+        <input class="form-control"
+          [class.is-invalid]="importadorForm.get('tipoIOR')?.invalid && importadorForm.get('tipoIOR')?.touched"
+          name="tipoIOR" id="tipoIOR" placeholder="" type="text" libUppercase formControlName="tipoIOR" />
+        <span class="mensaje-error"
+          *ngIf="importadorForm.get('tipoIOR')?.invalid && (importadorForm.get('tipoIOR')?.touched || importadorForm.get('tipoIOR')?.dirty)">
+        </span>
+      </div>
+      }
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label" for="cantidadTotalImportador">Valor (sin espacios, sin guiones)<span
+              [class.label-invalid]="importadorForm.get('cantidadTotalImportador')?.invalid && importadorForm.get('cantidadTotalImportador')?.touched">*</span>:</label>
+          <input class="form-control"
+            [class.is-invalid]="importadorForm.get('cantidadTotalImportador')?.invalid && importadorForm.get('cantidadTotalImportador')?.touched"
+            id="cantidadTotalImportador" placeholder="" type="text" libUppercase name="cantidadTotalImportador"
+            formControlName="cantidadTotalImportador" (change)="
+        setValoresStore(
+          importadorForm,
+          'cantidadTotalImportador',
+          'setCantidadTotalImportador'
+        )
+      " />
+          <!-- 🔹 Mensajes de error -->
+          <div *ngIf="
+        importadorForm.get('cantidadTotalImportador')?.invalid &&
+        (importadorForm.get('cantidadTotalImportador')?.touched ||
+          importadorForm.get('cantidadTotalImportador')?.dirty)
+      " class="mensaje-error mt-1">
+            <small *ngIf="importadorForm.get('cantidadTotalImportador')?.errors?.['required']" style="font-size: 1.5rem;">
+              Este campo es obligatorio.
+            </small>
+
+            <small style="font-size: 1.5rem;" *ngIf="
+          importadorForm.get('cantidadTotalImportador')?.errors?.['pattern'] &&
+          importadorForm.get('tipo')?.value === 'IOR.IRS'
+        ">
+              Favor de capturar el formato correcto.
+            </small>
+
+            <small style="font-size: 1.5rem;" *ngIf="
+          importadorForm.get('cantidadTotalImportador')?.errors?.['pattern'] &&
+          importadorForm.get('tipo')?.value === 'IOR.CBP'
+        ">
+              Favor de capturar el formato correcto.
+            </small>
+
+            <small style="font-size: 1.5rem;" *ngIf="
+          importadorForm.get('cantidadTotalImportador')?.errors?.['pattern'] &&
+          importadorForm.get('tipo')?.value === 'IOR.SSS'
+        ">
+              Favor de capturar el formato correcto.
+            </small>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label" for="razonSocialImportador">Razón social<span
+              [class.label-invalid]="importadorForm.get('razonSocialImportador')?.invalid && importadorForm.get('razonSocialImportador')?.touched">*</span>:</label>
+          <input class="form-control"
+            [class.is-invalid]="importadorForm.get('razonSocialImportador')?.invalid && importadorForm.get('razonSocialImportador')?.touched"
+            value="" id="razonSocialImportador" placeholder="" type="text" libUppercase name="razonSocialImportador"
+            formControlName="razonSocialImportador" (change)="
+              setValoresStore(
+                importadorForm,
+                'razonSocialImportador',
+                'setRazonSocialImportador'
+              )
+            " />
+          <span class="mensaje-error"
+            *ngIf="importadorForm.get('razonSocialImportador')?.invalid && (importadorForm.get('razonSocialImportador')?.touched || importadorForm.get('razonSocialImportador')?.dirty)">
+            <small *ngIf="importadorForm.get('razonSocialImportador')?.errors?.['required']" style="font-size: 1.5rem;">
+              Este campo es obligatorio.
+            </small>
+            <small *ngIf="importadorForm.get('razonSocialImportador')?.errors?.['maxlength']">
+              La razón social no puede exceder 70 caracteres.
+            </small>
+          </span>
+        </div>
+      </div>
+      <div class="col-md-6"></div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label" for="domicilio">Domicilio<span
+              [class.label-invalid]="importadorForm.get('domicilio')?.invalid && importadorForm.get('domicilio')?.touched">*</span>:</label>
+          <input class="form-control"
+            [class.is-invalid]="importadorForm.get('domicilio')?.invalid && importadorForm.get('domicilio')?.touched"
+            value="" id="domicilio" placeholder="" type="text" libUppercase name="domicilio" formControlName="domicilio"
+            (change)="
+              setValoresStore(importadorForm, 'domicilio', 'setDomicilio')
+            " />
+          <span class="mensaje-error"
+            *ngIf="importadorForm.get('domicilio')?.invalid && (importadorForm.get('domicilio')?.touched || importadorForm.get('domicilio')?.dirty)">
+            <small *ngIf="importadorForm.get('domicilio')?.errors?.['required']" style="font-size: 1.5rem;">
+              Este campo es obligatorio.
+            </small>
+            <small *ngIf="importadorForm.get('domicilio')?.errors?.['maxlength']">
+              El domicilio no puede exceder 70 caracteres.
+            </small>
+          </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label" for="ciudadImportador">Ciudad (población, estado o provincia)<span
+              [class.label-invalid]="importadorForm.get('ciudadImportador')?.invalid && importadorForm.get('ciudadImportador')?.touched">*</span>:</label>
+          <input class="form-control"
+            [class.is-invalid]="importadorForm.get('ciudadImportador')?.invalid && importadorForm.get('ciudadImportador')?.touched"
+            value="" id="ciudadImportador" placeholder="" type="text" libUppercase name="ciudadImportador"
+            formControlName="ciudadImportador" (change)="
+              setValoresStore(
+                importadorForm,
+                'ciudadImportador',
+                'setCiudadImportador'
+              )
+            " />
+          <span class="mensaje-error"
+            *ngIf="importadorForm.get('ciudadImportador')?.invalid && (importadorForm.get('ciudadImportador')?.touched || importadorForm.get('ciudadImportador')?.dirty)">
+            <small *ngIf="importadorForm.get('ciudadImportador')?.errors?.['required']" style="font-size: 1.5rem;">
+              Este campo es obligatorio.
+            </small>
+            <small *ngIf="importadorForm.get('ciudadImportador')?.errors?.['maxlength']">
+              La ciudad no puede exceder 70 caracteres.
+            </small>
+          </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label" for="cpImportador">C P<span
+              [class.label-invalid]="importadorForm.get('cpImportador')?.invalid && importadorForm.get('cpImportador')?.touched">*</span>:</label>
+          <input class="form-control"
+            [class.is-invalid]="importadorForm.get('cpImportador')?.invalid && importadorForm.get('cpImportador')?.touched"
+            value="" id="cpImportador" placeholder="" type="text" libUppercase name="cpImportador"
+            formControlName="cpImportador" (change)="
+              setValoresStore(importadorForm, 'cpImportador', 'setCpImportador')
+            " />
+          <span class="mensaje-error"
+            *ngIf="importadorForm.get('cpImportador')?.invalid && (importadorForm.get('cpImportador')?.touched || importadorForm.get('cpImportador')?.dirty)">
+            <small *ngIf="importadorForm.get('cpImportador')?.errors?.['required']" style="font-size: 1.5rem;">
+              Este campo es obligatorio.
+            </small>
+            <small *ngIf="importadorForm.get('cpImportador')?.errors?.['pattern']">
+              El C P debe contener entre 5 y 9 dígitos.
+            </small>
+            <small *ngIf="importadorForm.get('cpImportador')?.errors?.['maxLength']">
+              El C P no puede exceder 9 caracteres.
+            </small>
+          </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label" for="PaisImportador">País<span
+              [class.label-invalid]="importadorForm.get('PaisImportador')?.invalid && importadorForm.get('PaisImportador')?.touched">*</span>:</label>
+          <input class="form-control"
+            [class.is-invalid]="importadorForm.get('PaisImportador')?.invalid && importadorForm.get('PaisImportador')?.touched"
+            value="" id="PaisImportador" placeholder="" type="text" libUppercase name="PaisImportador"
+            formControlName="PaisImportador" (change)="
+              setValoresStore(
+                importadorForm,
+                'PaisImportador',
+                'setPaisImportador'
+              )
+            " />
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

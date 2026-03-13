@@ -1,0 +1,35 @@
+<div class="container">
+  <form [formGroup]="form">
+    <ng-titulo titulo="Datos del trámite a realizar"></ng-titulo>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="solicitud">Solicitud*:</label>
+          <app-input-radio
+            [radioOptions]="solicitudOpciones"
+            formControlName="solicitud"
+            [isRequired]="true"
+            (change)="setValoresStore(form, 'solicitud')"
+            [layout]="'vertical'"
+          ></app-input-radio>
+        </div> 
+      </div>
+      <div class="col-md-8">
+        <div *ngFor="let catalogo of catalogosArray; let i = index">
+          <app-catalogo-select
+            [catalogo]="catalogosArray[i]" 
+            [label]="inputFields[i].label"
+            [formControlName]="inputFields[i].controlName"
+            (selectionChange)="setValoresStore(form, inputFields[i].controlName)"
+            [isDisabled]="esFormularioSoloLectura"
+            [placeholder]="'Seleccione una opción'"
+            [required]="true"
+            [hiddenPrimerOption]="hiddenPrimerOption"
+            [disabledPrimerOption]="disabledPrimerOption"
+            [markTouched]="(form.get(inputFields[i].controlName)?.touched ?? false) && (inputFields[i].controlName !== 'clasificacion' || mostrarErrorClasificacion)"
+          ></app-catalogo-select>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

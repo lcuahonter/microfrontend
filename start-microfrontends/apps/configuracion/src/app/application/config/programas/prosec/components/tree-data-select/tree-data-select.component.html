@@ -1,0 +1,40 @@
+<div class="modal-body">
+  <div class="tree-container">
+    @if (isLoading && nodes.length === 0) {
+      <div class="d-flex justify-content-center my-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+      </div>
+    } @else {
+      <div class="tree-view-wrapper">
+        <form [formGroup]="treeForm">
+          <div class="tree-root">
+            @for (node of nodes; track node.id) {
+              <app-tree-node-item
+                [node]="node"
+                [level]="0"
+                [selectedNodes]="selectedNodes"
+                (nodeToggled)="toggleExpand($event)"
+                (nodeSelected)="onSelectNode($event)"
+              >
+              </app-tree-node-item>
+            }
+          </div>
+        </form>
+      </div>
+    }
+  </div>
+</div>
+
+<div class="modal-footer border-top-0 pt-0">
+  <button type="button" class="btn btn-default me-2" (click)="onCancel()">
+    Cancelar
+  </button>
+  <button type="button" 
+          class="btn btn-primary" 
+          [disabled]="selectedNodes.size === 0"
+          (click)="agregarFracciones()">
+    Agregar
+  </button>
+</div>

@@ -1,0 +1,462 @@
+<div class="container">
+  <form [formGroup]="FormSolicitud">
+    <!--Datos Regimen-->
+    <ng-titulo titulo="Datos del trámite a realizar" />
+    <ng-container formGroupName="datosRegimen">
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="">Régimen al que se destinará la mercancía
+              <span [ngClass]="datosRegimen.get('regimenMercancia')?.errors?.['required'] && datosRegimen.get('regimenMercancia')?.touched ? 'text-danger' : ''">*</span>:
+              <span class="p-2" tooltip="Régimen al que se destinará la mercancía" placement="top">
+                  <i class="bi bi-question-circle-fill"></i>
+              </span>
+            </label>
+            <select class="form-control form-select" formControlName="regimenMercancia" (change)="changeRegimen()">
+              <option [ngValue]="null">Selecciona una opción</option>
+              <option *ngFor="let regimen of regimenMercancia" [title]="regimen.descripcion" [value]="regimen.clave">
+                {{ regimen.descripcion }}
+              </option>
+            </select>
+            <div
+              *ngIf="datosRegimen.get('regimenMercancia')?.errors?.['required'] && datosRegimen.get('regimenMercancia')?.touched"
+              class="mensaje-error">
+              Este campo es obligatorio.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group clasifi-regimen-catalogo">
+
+            <label class="form-label" for="">Clasificación de régimen
+              <span [ngClass]="datosRegimen.get('clasifiRegimen')?.errors?.['required'] && datosRegimen.get('clasifiRegimen')?.touched ? 'text-danger' : ''">*</span>:
+            </label>
+            <select class="form-control form-select" formControlName="clasifiRegimen"
+              (change)="clasifiRegimenSeleccion()">
+              <option [ngValue]="null">Selecciona una opción</option>
+              <option *ngFor="let clasificacion of clasifiRegimen" [title]="clasificacion.descripcion"
+                [value]="clasificacion.clave">
+                {{ clasificacion.descripcion }}
+              </option>
+            </select>
+            <div
+              *ngIf="datosRegimen.get('clasifiRegimen')?.errors?.['required'] && datosRegimen.get('clasifiRegimen')?.touched"
+              class="mensaje-error">
+              Este campo es obligatorio.
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <!--Datos Mercancia-->
+    <ng-titulo titulo="Datos de la mercancía" />
+    <ng-container formGroupName="datosMercancia">
+      <div class="row mb-3">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label for="descripcion" class="form-label">Descripción de la mercancía
+              <span [ngClass]="datosMercancia.get('valueTA')?.errors?.['required'] && datosMercancia.get('valueTA')?.touched ? 'text-danger' : ''">*</span>:
+            </label>
+            <textarea class="form-control" cols="60" rows="10" id="valueTA" formControlName="valueTA" maxlength="4000"
+              (change)="setValoresStore(datosMercancia,'valueTA', 'setValueTA')"
+              [ngClass]="isValid(datosMercancia, 'valueTA') ? 'required' : ''"></textarea>
+            <input type="hidden" id="valueHidden" name="descripcionMerc" />
+            @if(datosMercancia.controls['valueTA'].invalid && datosMercancia.controls['valueTA'].touched) { <div
+              class="d-grid"> @if(datosMercancia.controls['valueTA'].errors?.['required']) { <span
+                class="mensaje-error">Este campo es obligatorio.</span> }
+              @if(datosMercancia.controls['valueTA'].errors?.['pattern']) { <span class="mensaje-error">Por favor,
+                corrige la descripción/dirección</span> } </div> } @if
+            (FormSolicitud.get('datosMercancia.valueTA')?.hasError('maxlength')){ <div class="text-danger"> Por favor,
+              no escriba más de 4,000 caracteres. </div> } 
+          </div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-8">
+
+            <label class="form-label" for="">Fracción arancelaria
+            <span [ngClass]="datosMercancia.get('fraccionArancelaria')?.errors?.['required'] && datosMercancia.get('fraccionArancelaria')?.touched ? 'text-danger' : ''">*</span>:
+          </label>
+          <select class="form-control form-select" formControlName="fraccionArancelaria"
+            (change)="fraccionArancelariaChange()">
+            <option [ngValue]="null">Selecciona una opción</option>
+            <option *ngFor="let fraccion of fraccionArancelaria" [title]="fraccion.descripcion"
+              [value]="fraccion.clave">
+              {{ fraccion.clave + ' - ' + fraccion.descripcion | slice:0:70}}
+            </option>
+          </select>
+          <div
+            *ngIf="datosMercancia.get('fraccionArancelaria')?.errors?.['required'] && datosMercancia.get('fraccionArancelaria')?.touched"
+            class="mensaje-error">
+            Este campo es obligatorio.
+          </div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-8">
+
+
+          <label class="form-label" for="">NICO
+            <span [ngClass]="datosMercancia.get('nico')?.errors?.['required'] && datosMercancia.get('nico')?.touched ? 'text-danger' : ''">*</span>:
+          </label>
+          <select class="form-control form-select" formControlName="nico" (change)="nicoSeleccion()">
+            <option [ngValue]="null">Selecciona una opción</option>
+            <option *ngFor="let n of nico" [title]="n.descripcion" [value]="n.clave">
+              {{ n.descripcion }}
+            </option>
+          </select>
+          <div *ngIf="datosMercancia.get('nico')?.errors?.['required'] && datosMercancia.get('nico')?.touched"
+            class="mensaje-error">
+            Este campo es obligatorio.
+          </div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-8">
+
+
+          <label class="form-label" for="">Unidad de medida de la tarifa (UMT)
+            <span [ngClass]="datosMercancia.get('unidadMedidaTarifaria')?.errors?.['required'] && datosMercancia.get('unidadMedidaTarifaria')?.touched ? 'text-danger' : ''">*</span>:
+            <span class="p-2" tooltip="Unidad de medida de la tarifa (UTM)" placement="top">
+                  <i class="bi bi-question-circle-fill"></i>
+              </span>
+          </label>
+          <select class="form-control form-select" formControlName="unidadMedidaTarifaria"
+            (change)="unidadMedidaTarifariaSeleccion()">
+            <option [ngValue]="null">Selecciona una opción</option>
+            <option *ngFor="let unidad of unidadMedidaTarifaria" [title]="unidad.descripcion" [ngValue]="unidad.clave">
+              {{ unidad.descripcion }}
+            </option>
+          </select>
+          <div
+            *ngIf="datosMercancia.get('unidadMedidaTarifaria')?.errors?.['required'] && datosMercancia.get('unidadMedidaTarifaria')?.touched"
+            class="mensaje-error">
+            Este campo es obligatorio.
+          </div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-8">
+          <label for="cantidadTarifaria" class="form-label">Cantidad
+            <span [ngClass]="datosMercancia.get('cantidadTarifaria')?.errors?.['required'] && datosMercancia.get('cantidadTarifaria')?.touched ? 'text-danger' : ''">*</span>:
+          </label>
+          <input class="form-control onceEnterosDosdecimals"
+            [ngClass]="isValid(datosMercancia, 'cantidadTarifaria') ? 'required' : ''" type="number"
+            formControlName="cantidadTarifaria" min="0" max="99999999999.99"
+            (change)="setValoresStore(datosMercancia,'cantidadTarifaria', 'setCantidadTarifaria')"
+            name="cantidadTarifaria" id="solicitud.mercancia.cantidadTarifaria"
+            (change)="calcularUmtPrecioUnitario()" /> @if(datosMercancia.controls['cantidadTarifaria'].invalid &&
+          datosMercancia.controls['cantidadTarifaria'].touched) { <div class="d-grid">
+            @if(datosMercancia.controls['cantidadTarifaria'].errors?.['required']) { <span class="mensaje-error">Este
+              campo es obligatorio.</span> } @if (datosMercancia.controls['cantidadTarifaria'].errors?.['pattern']) {
+            <span class="mensaje-error">Este campo permite 11 enteros y 2 decimales.</span> }
+          </div> }
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-8">
+          <label for="valorFacturaUSD" class="form-label">Valor factura USD
+            <span [ngClass]="datosMercancia.get('valorFacturaUSD')?.errors?.['required'] && datosMercancia.get('valorFacturaUSD')?.touched ? 'text-danger' : ''">*</span>:
+            <span class="p-2" tooltip="En caso de no contar con valor factura proporciona el valor estimado" placement="top">
+                  <i class="bi bi-question-circle-fill"></i>
+            </span>
+          </label>
+          <input class="form-control" [ngClass]="isValid(datosMercancia, 'valorFacturaUSD') ? 'required' : ''"
+            type="number" formControlName="valorFacturaUSD" min="0" max="99999999999.999"
+            (change)="setValoresStore(datosMercancia,'valorFacturaUSD', 'setValorFacturaUSD')" name="valorFacturaUSD"
+            id="valorFacturaUSD" (change)="calcularUmtPrecioUnitario()" />
+          @if(datosMercancia.controls['valorFacturaUSD'].invalid && datosMercancia.controls['valorFacturaUSD'].touched)
+          { <div class="d-grid">
+            @if(datosMercancia.controls['valorFacturaUSD'].errors?.['required']) { <span class="mensaje-error">Este
+              campo es obligatorio.</span> }
+            @if (datosMercancia.controls['valorFacturaUSD'].errors?.['pattern']) { <span class="mensaje-error">Este
+              campo permite 11 enteros y 3 decimales.</span> }
+          </div> }
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-8">
+          <label for="precioUnitarioUSD" class="form-label">Precio unitario en USD
+            <span [ngClass]="datosMercancia.get('precioUnitarioUSD')?.errors?.['required'] && datosMercancia.get('precioUnitarioUSD')?.touched ? 'text-danger' : ''">*</span>:
+          </label>
+          <input class="form-control" [ngClass]="isValid(datosMercancia, 'precioUnitarioUSD') ? 'required' : ''"
+            type="text" formControlName="precioUnitarioUSD"
+            (change)="setValoresStore(datosMercancia,'precioUnitarioUSD', 'setPrecioUnitarioUSD')"
+            name="precioUnitarioUSD" id="precioUnitarioUSD" />
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-8">
+
+          <label class="form-label" for="">País origen del acero/País origen de la mercancía
+            <span [ngClass]="datosMercancia.get('paisOrigen')?.errors?.['required'] && datosMercancia.get('paisOrigen')?.touched ? 'text-danger' : ''">*</span>:
+          </label>
+          <select class="form-control form-select" formControlName="paisOrigen" (change)="paisOrigenSeleccion()">
+            <option [ngValue]="null">Selecciona una opción</option>
+            <option *ngFor="let pais of paisDestino" [title]="pais.descripcion" [value]="pais.clave">
+              {{ pais.descripcion }}
+            </option>
+          </select>
+          <div
+            *ngIf="datosMercancia.get('paisOrigen')?.errors?.['required'] && datosMercancia.get('paisOrigen')?.touched"
+            class="mensaje-error">
+            Este campo es obligatorio.
+          </div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-8">
+
+          <label class="form-label" for="">País exportador
+            <span [ngClass]="datosMercancia.get('paisDestino')?.errors?.['required'] && datosMercancia.get('paisDestino')?.touched ? 'text-danger' : ''">*</span>:
+          </label>
+          <select class="form-control form-select" formControlName="paisDestino" (change)="paisDestinoSeleccion()">
+            <option [ngValue]="null">Selecciona una opción</option>
+            <option *ngFor="let pais of paisDestino" [title]="pais.descripcion" [value]="pais.clave">
+              {{ pais.descripcion }}
+            </option>
+          </select>
+          <div
+            *ngIf="datosMercancia.get('paisDestino')?.errors?.['required'] && datosMercancia.get('paisDestino')?.touched"
+            class="mensaje-error">
+            Este campo es obligatorio.
+          </div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label for="lote" class="form-label">Número de certificado de molino o de calidad
+            <span [ngClass]="datosMercancia.get('lote')?.errors?.['required'] && datosMercancia.get('lote')?.touched ? 'text-danger' : ''">*</span>:
+            <span class="p-2" tooltip="Número de certificado de molino o de calidad" placement="top">
+                  <i class="bi bi-question-circle-fill"></i>
+            </span>
+          </label>
+          <input type="text" [ngClass]="isValid(datosMercancia, 'lote') ? 'required' : ''" class="form-control"
+            id="lote" formControlName="lote" maxlength="60"
+            (change)="setValoresStore(datosMercancia,'lote', 'setLote')" /> @if(datosMercancia.controls['lote'].invalid
+          && datosMercancia.controls['lote'].touched) { <div class="d-grid">
+            @if(datosMercancia.controls['lote'].errors?.['required']) { <span class="mensaje-error">Este campo es
+              obligatorio.</span> } </div> }
+        </div>
+        <div class="col-md-4">
+          <div class="input-group">
+            <input-fecha [isDisabled]="ocultarForm" [setFecha]="datosMercancia.get('fechaSalida')?.value" [datos]="fechaFinalInput"
+              [tooltipQuestionCircle]="true" [deshabilitarFuturas]="true"
+              [marcarError]="(datosMercancia.get('fechaSalida')?.touched ?? false) && (datosMercancia.get('fechaSalida')?.invalid ?? false)"
+              [asteriskClass]="datosMercancia.get('fechaSalida')?.errors?.['required'] &&
+                   datosMercancia.get('fechaSalida')?.touched 
+                   ? 'text-danger' 
+                   : ''"
+              (valorCambiado)="cambioFechaFinal($event)"
+              ></input-fecha>
+          </div>
+          <div *ngIf="datosMercancia.get('fechaSalida')?.touched && datosMercancia.get('fechaSalida')?.invalid"
+            class="text-danger mt-1">
+            <small *ngIf="datosMercancia.get('fechaSalida')?.errors?.['required']">
+              Este campo es obligatorio.
+            </small>
+          </div>
+          </div>
+          </div>
+      <div class="row mb-4">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label for="observaciones" class="form-label">Observaciones:</label>
+            <textarea cols="60" rows="5" class="form-control" formControlName="observaciones"
+              (change)="setValoresStore(datosMercancia,'observaciones', 'setObservaciones')" id="valueTAObs"
+              maxlength="4000"></textarea>
+            <input type="hidden" id="valueHiddenObsv" name="observacionMerc" formControlName="observacionMerc"
+              (change)="setValoresStore(datosMercancia,'observacionMerc', 'setObservacionMerc')"
+              [value]="escapeHtmlQuotes(FormSolicitud.get('datosMercancia.observaciones')?.value)">
+              @if (FormSolicitud.get('datosMercancia.observaciones')?.hasError('maxlength')){ <div class="text-danger"> Por favor,
+              no escriba más de 4000 caracteres. </div> }
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <!--Datos Productor-->
+    <ng-titulo titulo="Datos del productor" />
+    <ng-container formGroupName="datosProducto">
+      <div class="row mb-3" id="tipoPer" *ngIf="!mostrarComboMolinos">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="tipoPersona" class="form-label">Tipo de persona
+              <span [ngClass]="datosProducto.get('tipoPersona')?.errors?.['required'] && datosProducto.get('tipoPersona')?.touched ? 'text-danger' : ''">*</span>:
+            </label>
+            <div class="form-check">
+              <input type="radio" value="pfisica" id="pfisica" class="form-check-input" formControlName="tipoPersona"
+                (change)="setValoresStore(datosProducto,'tipoPersona', 'setTipoPersona');personaFisica()">
+              <label for="pfisica" class="form-check-label">Física</label>
+            </div>
+            <div class="form-check">
+              <input type="radio" value="pmoral" id="pmoral" class="form-check-input" formControlName="tipoPersona"
+                (change)="setValoresStore(datosProducto,'tipoPersona', 'setTipoPersona');personaMoral()">
+              <label for="pmoral" class="form-check-label">Moral</label>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <span id="errorTipoPersona" name="errorTipoPersona"></span>
+              </div>
+            </div>
+            <div *ngIf="datosProducto.get('tipoPersona')?.errors?.['required'] && datosProducto.get('tipoPersona')?.touched"
+              class="mensaje-error">
+              Este campo es obligatorio.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mb-3" *ngIf="mostrarComboMolinos">
+        <div class="col-md-8">
+          <label for="molino" class="form-label">Molino
+            <span [ngClass]="datosProducto.get('razonSocial')?.errors?.['required'] && datosProducto.get('razonSocial')?.touched ? 'text-danger' : ''">*</span>:
+          </label>
+          <select class="form-control form-select" formControlName="razonSocial" (change)="setValoresStore(datosProducto,'razonSocial', 'setRazonSocial')">
+            <option [ngValue]="null">Selecciona una opción</option>
+            <option *ngFor="let molino of molinos" [value]="molino.descripcion">
+              {{ molino.descripcion }}
+            </option>
+          </select>
+           <div *ngIf="datosProducto.get('razonSocial')?.errors?.['required'] && datosProducto.get('razonSocial')?.touched"
+              class="mensaje-error">
+              Este campo es obligatorio.
+            </div>
+        </div>
+      </div>
+
+     
+      <div class="row mb-3">
+        <br>
+      </div> @if(isVisibleFisica){ <div class="row mb-3">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="nombre" class="form-label">Nombre(s)
+              <span [ngClass]="datosProducto.get('nombre')?.errors?.['required'] && datosProducto.get('nombre')?.touched ? 'text-danger' : ''">*</span>:
+            </label>
+            <input class="form-control" [ngClass]="isValid(datosProducto, 'nombre') ? 'required' : ''" type="text"
+              name="nombre" id="nombre" formControlName="nombre" maxlength="201"
+              (change)="setValoresStore(datosProducto,'nombre', 'setNombre')" />
+            @if(datosProducto.controls['nombre'].invalid && datosProducto.controls['nombre'].touched) { <div
+              class="d-grid"> @if(datosProducto.controls['nombre'].errors?.['required']) { <span
+                class="mensaje-error">Este campo es obligatorio.</span> } </div> } 
+              @if (FormSolicitud.get('datosProducto.nombre')?.hasError('maxlength')){ <div class="text-danger"> Por favor,
+              no escriba más de 200 caracteres. </div> }
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="apellidoPaterno" class="form-label">Primer apellido
+              <span [ngClass]="datosProducto.get('apellidoPaterno')?.errors?.['required'] && datosProducto.get('apellidoPaterno')?.touched ? 'text-danger' : ''">*</span>:
+            </label>
+            <input class="form-control" [ngClass]="isValid(datosProducto, 'apellidoPaterno') ? 'required' : ''"
+              type="text" name="apellidoPaterno" id="apellidoPaterno" formControlName="apellidoPaterno" maxlength="201"
+              (change)="setValoresStore(datosProducto,'apellidoPaterno', 'setApellidoPaterno')" />
+            @if(datosProducto.controls['apellidoPaterno'].invalid && datosProducto.controls['apellidoPaterno'].touched)
+            { <div class="d-grid"> @if(datosProducto.controls['apellidoPaterno'].errors?.['required']) { <span
+                class="mensaje-error">Este campo es obligatorio.</span> } </div> } 
+              @if (FormSolicitud.get('datosProducto.apellidoPaterno')?.hasError('maxlength')){ <div class="text-danger"> Por favor,
+              no escriba más de 200 caracteres. </div> }
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="apellidoMaterno" class="form-label">Segundo apellido:</label>
+            <input class="form-control" type="text" name="apellidoMaterno" id="apellidoMaterno"
+              formControlName="apellidoMaterno" maxlength="201"
+              (change)="setValoresStore(datosProducto,'apellidoMaterno', 'setApellidoMaterno')" />
+              @if (FormSolicitud.get('datosProducto.apellidoMaterno')?.hasError('maxlength')){ <div class="text-danger"> Por favor,
+              no escriba más de 200 caracteres. </div> }
+          </div>
+        </div>
+      </div> } @if(isVisibleMoral){ <div class="row mb-3 pm">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label for="razonSocial" class="form-label">Denominación o razón social
+              <span [ngClass]="datosProducto.get('razonSocial')?.errors?.['required'] && datosProducto.get('razonSocial')?.touched ? 'text-danger' : ''">*</span>:
+            </label>
+            <input type="text" class="form-control" [ngClass]="isValid(datosProducto, 'razonSocial') ? 'required' : ''"
+              name="razonSocial" id="razonSocial" formControlName="razonSocial" maxlength="255"
+              (change)="setValoresStore(datosProducto,'razonSocial', 'setRazonSocial')" />
+            @if(datosProducto.controls['razonSocial'].invalid && datosProducto.controls['razonSocial'].touched) { <div
+              class="d-grid"> @if(datosProducto.controls['razonSocial'].errors?.['required']) { <span
+                class="mensaje-error">Este campo es obligatorio.</span> } </div> }
+              @if (FormSolicitud.get('datosProducto.razonSocial')?.hasError('maxlength')){ <div class="text-danger"> Por favor,
+              no escriba más de 254 caracteres. </div> }
+          </div>
+        </div>
+      </div> } <div class="row mb-3">
+        <br>
+      </div>
+      <div class="row mb-3" style="margin-bottom:51px ">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label for="domicilio" class="form-label">Domicilio
+              <span [ngClass]="datosProducto.get('domicilio')?.errors?.['required'] && datosProducto.get('domicilio')?.touched ? 'text-danger' : ''">*</span>:
+            </label>
+            <textarea class="form-control" [ngClass]="isValid(datosProducto, 'domicilio') ? 'required' : ''"
+              id="domicilio" name="domicilio" cols="50" rows="7" formControlName="domicilio" maxlength="4000"
+              (change)="setValoresStore(datosProducto,'domicilio', 'setDomicilio')"></textarea>
+            @if(datosProducto.controls['domicilio'].invalid && datosProducto.controls['domicilio'].touched) { <div
+              class="d-grid"> @if(datosProducto.controls['domicilio'].errors?.['required']) { <span
+                class="mensaje-error">Este campo es obligatorio.</span> } </div> } @if
+            (FormSolicitud.get('datosProducto.domicilio')?.hasError('maxlength')){ <div class="text-danger"> Por favor,
+              no escriba más de 4000 caracteres. </div> }
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <!--Registro Federal-->
+    <ng-titulo titulo="Representación federal" />
+    <ng-container formGroupName="registroFederal">
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <div class="form-group">
+
+
+            <label class="form-label" for="">Estado
+              <span [ngClass]="registroFederal.get('estado')?.errors?.['required'] && registroFederal.get('estado')?.touched ? 'text-danger' : ''">*</span>:
+            </label>
+            <select class="form-control form-select" formControlName="estado" (change)="changeEntidad()">
+              <option [ngValue]="null">Selecciona una opción</option>
+              <option *ngFor="let estado of estado" [title]="estado.descripcion" [value]="estado.clave">
+                {{ estado.descripcion }}
+              </option>
+            </select>
+            <div *ngIf="registroFederal.get('estado')?.errors?.['required'] && registroFederal.get('estado')?.touched"
+              class="mensaje-error">
+              Este campo es obligatorio.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+
+            <label class="form-label" for="">Representación federal
+              <span [ngClass]="registroFederal.get('representacionFederal')?.errors?.['required'] && registroFederal.get('representacionFederal')?.touched ? 'text-danger' : ''">*</span>:
+            </label>
+            <select class="form-control form-select" formControlName="representacionFederal"
+              (change)="representacionFederalSeleccion()">
+              <option [ngValue]="null">Selecciona una opción</option>
+              <option *ngFor="let federal of representacionFederal" [title]="federal.descripcion"
+                [value]="federal.clave">
+                {{ federal.descripcion }}
+              </option>
+            </select>
+            <div
+              *ngIf="registroFederal.get('representacionFederal')?.errors?.['required'] && registroFederal.get('representacionFederal')?.touched"
+              class="mensaje-error">
+              Este campo es obligatorio.
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </form>
+</div>
+
+@if(nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+  </lib-notificaciones>
+</section>
+}

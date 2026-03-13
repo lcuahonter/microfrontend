@@ -1,0 +1,65 @@
+@if (notificacionInput.tipoNotificacion === eTipoNoficacionEnum.ALERTA) {
+<div *ngIf="mostrarModal" [config]="{ show: true, backdrop: 'static' }" (onHidden)="onHidden()" bsModal
+  #modal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-auto-name">
+  <div class="modal-dialog" [ngClass]="
+      notificacionInput.tamanioModal
+        ? notificacionInput.tamanioModal
+        : 'modal-md'
+    " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-auto-name" class="modal-title pull-left">
+          {{ notificacionInput.titulo }}
+        </h4>
+      </div>
+      <div class="modal-body texto-bien-formateado texto-reducida">
+        @if(notificacionInput.modo) {
+        <div [innerHTML]="notificacionInput.mensaje" [ngClass]="
+            notificacionInput.alineacionTexto
+              ? notificacionInput.alineacionTexto
+              : 'text-left-formatted'
+          " class="contenido-mensaje"></div>
+        }@else {
+        <p class="text-left-formatted contenido-mensaje">{{ notificacionInput.mensaje }}</p>
+        }
+      </div>
+      <div class="modal-footer" [ngClass]="
+          notificacionInput.alineacionBtonoCerrar
+            ? notificacionInput.alineacionBtonoCerrar
+            : 'center'
+        ">
+        <ng-container *ngIf="invertirBotones; else ordenNormal">
+          @if (notificacionInput.txtBtnCancelar !== '') {
+          <button type="button" class="btn btn-default text-right" (click)="declinarAccion()">
+            {{ notificacionInput.txtBtnCancelar }}
+          </button>
+          }
+          <button type="button" class="btn btn-primary text-left" (click)="confirmarAccion()">
+            {{ notificacionInput.txtBtnAceptar }}
+          </button>
+        </ng-container>
+
+        <ng-template #ordenNormal>
+          <button type="button" class="btn btn-primary text-left" (click)="confirmarAccion()">
+            {{ notificacionInput.txtBtnAceptar }}
+          </button>
+          @if (notificacionInput.txtBtnCancelar !== '') {
+          <button type="button" class="btn btn-default text-right" (click)="declinarAccion()">
+            {{ notificacionInput.txtBtnCancelar }}
+          </button>
+          }
+        </ng-template>
+
+      </div>
+    </div>
+  </div>
+</div>
+} @else if (notificacionInput.tipoNotificacion === eTipoNoficacionEnum.BANNER) {
+<div class="row">
+  <div class="col-md-12 hidden-xs">
+    <alert type="info" [dismissible]="false" class="custom-banner-azul" (onClose)="verBanner = false">
+      <span [innerHTML]="notificacionInput.mensaje" class="contenido-mensaje"></span>
+    </alert>
+  </div>
+</div>
+}

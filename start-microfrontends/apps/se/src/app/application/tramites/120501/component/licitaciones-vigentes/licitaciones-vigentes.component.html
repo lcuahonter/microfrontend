@@ -1,0 +1,171 @@
+<div class="container">
+  <div>
+    <h6>Licitaciones disponibles</h6>
+    <app-tabla-dinamica [configuracionTabla]="configTableArray" [datos]="licitacionTablaDatos"
+      (filaClic)="abrirModificarModal($event)"></app-tabla-dinamica>
+
+    <div class="container" *ngIf="showRepresentacionFederal || esFormularioSoloLectura">
+      <!-- Representación federal  -->
+      <div>
+        <ng-titulo titulo="Representación federal" />
+        <form [formGroup]="formulario">
+          <div class="row">
+            <div class="col-md-4">
+              <app-catalogo-select [catalogo]="entidadFederativaOptions" formControlName="entidadFederativa"
+                [label]="'Entidad federativa'" [required]="true" [markTouched]="formulario.get('entidadFederativa')?.touched??false" [isDisabled]="esFormularioSoloLectura"
+                name="federalent" (change)="setValoresStore(formulario, 'entidadFederativa')"></app-catalogo-select>
+            </div>
+            <div class="col-md-4">
+              <app-catalogo-select [catalogo]="representacionFederalOptions" formControlName="representacionFederal"
+                [label]="'Representación federal'" [required]="true" [markTouched]="formulario.get('representacionFederal')?.touched??false" [isDisabled]="esFormularioSoloLectura"
+                name="representfederal"
+                (change)="setValoresStore(formulario, 'representacionFederal')"></app-catalogo-select>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Detalle de la licitación y monto adjudicado  -->
+      <div>
+        <ng-titulo titulo="Detalle de la licitación y monto adjudicado" />
+        <form [formGroup]="detalledelaLicitacionForm">
+          <div class="row">
+            <div class="col-md-4">
+              <label class="form-label" for="numeraDelicitacion">Número de licitación:</label>
+              <input type="text" class="form-control" id="numeraDelicitacion" formControlName="numeraDelicitacion"
+                size="30">
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label" for="fechaDelEventoDelicitacion">Fecha de evento de licitación pública: </label>
+              <input type="text" class="form-control" id="fechaDelEventoDelicitacion"
+                formControlName="fechaDelEventoDelicitacion" size="30" readonly>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="descripcionDelProducto">Descripción del producto:</label>
+              <input type="text" class="form-control" id="descripcionDelProducto"
+                formControlName="descripcionDelProducto" size="30" readonly>
+            </div>
+            <div class="col-md-8">
+              <label class="form-label" for="unidadTarifaria">Unidad de medida tarifaria o comercialización:</label>
+              <input type="text" class="form-control" id="unidadTarifaria" formControlName="unidadTarifaria" size="30"
+                readonly>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="regimenAduanero">Régimen aduanero:</label>
+              <input type="text" class="form-control" id="regimenAduanero" formControlName="regimenAduanero" size="30"
+                readonly>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <label class="form-label" for="fraccionArancelaria">Fracción o fracciones arancelarias: </label>
+              <input type="text" class="form-control" id="fraccionArancelaria" formControlName="fraccionArancelaria"
+                size="30" readonly>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <label class="form-label" for="fechaDeiniciodeVigenciadelCupo">Fecha de inicio de vigencia del cupo
+              </label>
+              <input type="text" class="form-control" id="fechaDeiniciodeVigenciadelCupo"
+                formControlName="fechaDeiniciodeVigenciadelCupo" size="30" readonly>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="fechaDefindeVigenciadelCupo">Fecha de fin de vigencia del cupo: </label>
+              <input type="text" class="form-control" id="fechaDefindeVigenciadelCupo"
+                formControlName="fechaDefindeVigenciadelCupo" size="30" readonly>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <label class="form-label" for="obserVaciones">Observaciones: </label>
+              <textarea type="text" class="form-control obserVaciones" rows="3" id="obserVaciones"
+                formControlName="obserVaciones" readonly></textarea>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label" for="bloqueComercial">Bloque comercial: </label>
+              <input type="text" class="form-control" id="bloqueComercial" formControlName="bloqueComercial" readonly>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label" for="paises">Países: </label>
+              <textarea type="text" class="form-control observaciones" id="paises" formControlName="paises"
+                readonly></textarea>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="montoadJudicado">Monto adjudicado: </label>
+              <input type="text" class="form-control" id="montoadJudicado" formControlName="montoadJudicado" readonly>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="montoDisponible">Monto disponible: </label>
+              <input type="text" class="form-control" id="montoDisponible" formControlName="montoDisponible" readonly>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="montoMaximo">Monto máximo: </label>
+              <input type="text" class="form-control" id="montoMaximo" formControlName="montoMaximo" readonly>
+            </div>
+          </div>
+        </form>
+
+      </div>
+      <!-- Adquiriente  -->
+      <div>
+        <ng-titulo titulo="Adquiriente" />
+        <form [formGroup]="adquiriente">
+          <div class="row">
+            <div class="col-md-4">
+              <label class="form-label" for="rfc">RFC<span [ngClass]="{'text-danger': isInvalid('rfc')}">*</span>:</label>
+              <input type="text" class="form-control disabled-look" id="rfc" [readonly]="true" formControlName="rfc">
+              <div *ngIf="isInvalid('rfc')" class="text-danger fs-12">
+                Este campo es obligatorio
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="adquirienteMontoDisponible">Monto disponible:</label>
+              <input type="text" class="form-control" id="adquirienteMontoDisponible"
+                formControlName="adquirienteMontoDisponible">
+            </div>
+            <div class="col-md-4">
+              <button type="button" [disabled]="esFormularioSoloLectura"
+                class="btn btn-primary col-auto pull-right float-end mt-3" (click)="seleccionarParticipante()">
+                Seleccionar participante
+              </button>
+            </div>
+            <div class="row rfc1" *ngIf="showSeleccionarParticipante">
+              <div class="col-md-4">
+                <label class="form-label" for="rfc1">RFC:</label>
+                <input type="text" class="form-control" id="rfc1" formControlName="rfc1">
+              </div>
+              <div class="col-md-4 mt-5">
+                <button type="button" [disabled]="esFormularioSoloLectura" class="btn btn-primary ms-3"
+                  (click)="agregarRFC1()">Agregar</button>
+              </div>
+              <div class="row d-flex justify-content-center mt-5">
+                <div class="col-md-4">
+                  <label class="form-label" for="participantes">Participantes</label>
+                  <app-tabla-dinamica [configuracionTabla]="configParticipantesTable" [datos]="datosParticipantes"
+                    (filaClic)="seleccionarUnoParticipante($event)"></app-tabla-dinamica>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label" for="montoRecibir">Monto a recibir<span [ngClass]="{'text-danger': isInvalid('montoRecibir')}">*</span>:</label>
+              <input type="text" class="form-control" id="montoRecibir" formControlName="montoRecibir"
+                [ngClass]="isInvalid('montoRecibir') ? 'required' : ''"
+                (change)="setValoresStore(adquiriente, 'montoRecibir')">
+              <div *ngIf="isInvalid('montoRecibir')" class="text-danger fs-12">
+                Este campo es obligatorio
+              </div>
+            </div>
+          </div>
+        </form>
+
+      </div>
+
+      <div class="row mt-5">
+        <ng-alert [CONTENIDO]="texto"></ng-alert>
+      </div>
+    </div>
+
+  </div>

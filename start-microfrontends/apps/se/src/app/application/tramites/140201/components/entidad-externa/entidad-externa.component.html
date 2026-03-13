@@ -1,0 +1,93 @@
+<div class="container form-container">
+    <div>
+        <form [formGroup]="entidadForm">
+            <label class="datos-label">*Datos requeridos</label>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="entidadExterna" class="required-label">Nombre de la entidad externa.</label>
+                    <input type="text" id="entidadExterna" class="form-control"
+                        formControlName="entidadExterna" maxlength="255" (input)="updateEntidadExterna()">
+                    <div class="mensaje-error"
+                        *ngIf="entidadForm.get('entidadExterna')?.touched && entidadForm.get('entidadExterna')?.invalid">
+                        <span *ngIf="entidadForm.get('entidadExterna')?.errors?.['required']">
+                            Este campo es obligatorio.
+                        </span>
+                        <span *ngIf="entidadForm.get('entidadExterna')?.errors?.['maxlength']">
+                            El nombre no debe exceder 255 caracteres.
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="nombreSolicitanteIPC" class="required-label">Nombre de quien solicita IPC</label>
+                    <input type="text" id="nombreSolicitanteIPC" class="form-control"
+                        formControlName="nombreSolicitanteIPC" maxlength="255" (input)="updateNombreSolicitanteIPC()">
+                    <div class="mensaje-error"
+                        *ngIf="entidadForm.get('nombreSolicitanteIPC')?.touched && entidadForm.get('nombreSolicitanteIPC')?.invalid">
+                        <span *ngIf="entidadForm.get('nombreSolicitanteIPC')?.errors?.['required']">
+                            Este campo es obligatorio.
+                        </span>
+                        <span *ngIf="entidadForm.get('nombreSolicitanteIPC')?.errors?.['maxlength']">
+                            El nombre no debe exceder 255 caracteres.
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="cargoSolicitanteIPC" class="form-label">Cargo de quien solicita IPC</label>
+                    <input type="text" id="cargoSolicitanteIPC" class="form-control" 
+                        formControlName="cargoSolicitanteIPC" maxlength="255" (input)="updateCargoSolicitanteIPC()">
+                    <div class="mensaje-error"
+                        *ngIf="entidadForm.get('cargoSolicitanteIPC')?.touched && entidadForm.get('cargoSolicitanteIPC')?.invalid">
+                        <span *ngIf="entidadForm.get('cargoSolicitanteIPC')?.errors?.['maxlength']">
+                            El cargo no debe exceder 255 caracteres.
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="folioOficioSolicitudIPC" class="required-label">Folio del oficio de la solicitud
+                        IPC</label>
+                    <input type="text" id="folioOficioSolicitudIPC" class="form-control" 
+                        formControlName="folioOficioSolicitudIPC" maxlength="30"
+                        (input)="updateFolioOficioSolicitudIPC()">
+                    <div class="mensaje-error"
+                        *ngIf="entidadForm.get('folioOficioSolicitudIPC')?.touched && entidadForm.get('folioOficioSolicitudIPC')?.invalid">
+                        <span *ngIf="entidadForm.get('folioOficioSolicitudIPC')?.errors?.['required']">
+                            Este campo es obligatorio.
+                        </span>
+                        <span *ngIf="entidadForm.get('folioOficioSolicitudIPC')?.errors?.['maxlength']">
+                            El folio no debe exceder 30 caracteres.
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input-fecha [datos]="fechaInicioInput" [setFecha]="entidadForm.get('fechaPago')?.value" (valorCambiado)="cambioFechaPago($event)"
+                        [isDisabled]="esFormularioSoloLectura ? true : false"></input-fecha>
+                    </div>
+                    @if (entidadForm.get('datosImportadorExportador.fechaPago')?.touched &&
+                    entidadForm.get('datosImportadorExportador.fechaPago')?.invalid) {
+                    <div class="mensaje-error">
+                        @if (entidadForm.get('datosImportadorExportador.fechaPago')?.errors?.['required']) {
+                        <span>Todos los campos de pago son requeridos</span>
+                        } @else if
+                        (entidadForm.get('datosImportadorExportador.fechaPago')?.errors?.['fechaFuturaInvalida']) {
+                        <span>La fecha de pago debe ser menor o igual a la fecha actual.</span>
+                        }
+                    </div>
+                    }
+                </div>
+                <div class="col-md-6">
+                    <label for="correoSolicitanteIPC" class="form-label">Correo electrónico de quien solicita
+                        IPC</label>
+                    <input type="text" id="correoSolicitanteIPC" class="form-control"
+                        formControlName="correoSolicitanteIPC" maxlength="255" (input)="updateCorreoSolicitanteIPC()">
+                    <div class="mensaje-error"
+                        *ngIf="entidadForm.get('correoSolicitanteIPC')?.touched && entidadForm.get('correoSolicitanteIPC')?.invalid">
+                        <span *ngIf="entidadForm.get('correoSolicitanteIPC')?.errors?.['maxlength']">
+                            El correo no debe exceder 255 caracteres.
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

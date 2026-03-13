@@ -1,0 +1,109 @@
+@if(slectTramite) {
+<div class="container">
+    <div class="row">
+        <div class="col-md-3 p-0" style="max-width: 150px;">
+            <app-menu-funcionario></app-menu-funcionario>
+        </div>
+        <div class="col-md-9 p-0" style="flex: 1;">
+            <div>
+                <div *ngIf="!firmar">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2 class="titulo mt-5 mb-5">Evaluar</h2>
+                            <p class="titulo mt-5 mb-5">Por favor seleccione que tipo de evaluación requiere generar.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mt-3 mb-3">
+                            <lib-encabezado-requerimiento [numFolioTramite]="guardarDatos.folioTramite"
+                                [tipoTramite]="guardarDatos.tipoDeTramite"></lib-encabezado-requerimiento>
+                        </div>
+                    </div>
+                    <div class="row margin-top">
+                        <ul class="nav nav-tabs justify-content-center">
+                            <li [ngClass]="indice === 1 ? 'active' : ''">
+                                <a data-toggle="tab" (click)="seleccionaTab(1)" (keydown.enter)="seleccionaTab(1)"
+                                    (keydown.space)="seleccionaTab(1)" role="button" tabindex="0">Dictamen</a>
+                            </li>
+                            <li [ngClass]="indice === 2 ? 'active' : ''">
+                                <a data-toggle="tab" (click)="seleccionaTab(2)" (keydown.enter)="seleccionaTab(2)"
+                                    (keydown.space)="seleccionaTab(2)" role="button" tabindex="2">Requerimiento de
+                                    información</a>
+                            </li>
+                            <li [ngClass]="indice === 3 ? 'active' : ''">
+                                <a data-toggle="tab" (click)="seleccionaTab(3)" (keydown.enter)="seleccionaTab(3)"
+                                    (keydown.space)="seleccionaTab(3)" role="button" tabindex="3">Solicitar opinión</a>
+                            </li>
+                        </ul>
+                        <ng-container>
+                            @switch (indice) {
+                            @case (1) {
+                            <app-generar-dictamen botonDeCancelar="Cancelar" botonGuardar="Guardar y Firmar"
+                                (enviarEvento)="enviarEvento($event)"></app-generar-dictamen>
+                            }
+                            @case (2) {
+                            <br>
+                            <ul class="nav nav-tabs">
+                                <li [ngClass]="indiceDictamen === 1 ? 'active' : ''">
+                                    <a data-toggle="tab" (click)="seleccionaTabRequerimiento(1)"
+                                        (keydown.enter)="seleccionaTabRequerimiento(1)"
+                                        (keydown.space)="seleccionaTabRequerimiento(1)" role="button"
+                                        tabindex="0">Capturar
+                                        requerimiento</a>
+                                </li>
+                                <li [ngClass]="indiceDictamen === 2 ? 'active' : ''">
+                                    <a data-toggle="tab" (click)="seleccionaTabRequerimiento(2)"
+                                        (keydown.enter)="seleccionaTabRequerimiento(2)"
+                                        (keydown.space)="seleccionaTabRequerimiento(2)" role="button"
+                                        tabindex="2">Seleccionar
+                                        documentos</a>
+                                </li>
+                            </ul>
+                            <ng-container>
+                                @switch (indiceDictamen) {
+                                @case (1) {
+                                <app-capturar-requerimiento></app-capturar-requerimiento>
+                                }
+                                @case (2) {
+                                <app-solicitar-documentos></app-solicitar-documentos>
+                                }
+                                }
+                            </ng-container>
+                            <div class="d-flex justify-content-lg-end h3">
+                                <button type="button" class="btn btn-default ms-2"
+                                    (click)="cancelar()">Cancelar</button>
+                                <button class="btn  btn-primary ms-2" type="button"
+                                    (click)="continuar()">Continuar</button>
+                            </div>
+                            }
+                            @case (3) {
+                            <app-solicitar-opinion></app-solicitar-opinion>
+                            }
+                            }
+                        </ng-container>
+                    </div>
+
+                </div>
+                <div *ngIf="firmar">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2 class="titulo mt-5 mb-5">Firmar</h2>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col-md-6">
+                            <firma-electronica tipo="" (firma)="obtieneFirma($event)"></firma-electronica>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-5 mt-5">
+                    <app-reviewers-tabs [viewChild]="viewChild" [tramite]="tramite"
+                        (viewChildcambioDePestana)="viewChildcambioDePestana($event)"></app-reviewers-tabs>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}

@@ -1,0 +1,81 @@
+@if(slectTramite) {
+
+<div class="page">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h1>Atender requerimiento</h1>
+      </div>
+      <app-wizard [listaPasos]="pasos"></app-wizard>
+    </div>
+    <div class="mb-5">
+        <lib-encabezado-requerimiento
+        [numFolioTramite]="guardarDatos.folioTramite"
+        [tipoTramite]="guardarDatos.tipoDeTramite"
+        ></lib-encabezado-requerimiento>
+    </div>
+
+    @if(esAcuse) {
+        <lib-component-acuse
+      titulo="Acuse de recibo"
+      [txtAlerta]="txtAlerta"
+      [subtitulo]="subtitulo"
+      [folio]="folio"
+      [url]="url"
+    ></lib-component-acuse>
+    }
+
+    @if(indice === 1 && fechaRequerimiento && justificacionRequerimiento) {
+    <lib-requerimiento-informacion
+      [fechaRequerimiento]="fechaRequerimiento"
+      [justificacionRequerimiento]="justificacionRequerimiento"
+    ></lib-requerimiento-informacion>
+    }
+
+    @if(indice === 3) {
+    <anexar-documentos
+    [catalogoDocumentos]="catalogoDocumentos"
+    ></anexar-documentos>
+    }
+
+    @if(indice === 4 && esAcuse === false) {
+      <div class="row">
+                <div class="col-md-12">
+                    <h2 class="titulo mt-5 mb-5">Firmar solicitud</h2>
+                </div>
+            </div>
+      <div class="row justify-content-center">
+          <div class="col-md-6">
+            <firma-electronica
+            [tipo]="''"
+            (firma)="obtieneFirma($event)"
+          ></firma-electronica>
+        </div>
+      </div>
+    }
+
+    @if(indice !== 2 && esAcuse === false) {
+        <btn-continuar
+        [datos]="datosPasos"
+        (continuarEvento)="getValorIndice($event)"
+      ></btn-continuar>
+        }
+
+    <div class="row mt-5 mb-5" *ngIf="esAcuse === false">
+      <app-reviewers-tabs
+        [viewChild]="viewChild"
+        [tramite]="tramite"
+        (viewChildcambioDePestana)="viewChildcambioDePestana($event)"
+      ></app-reviewers-tabs>
+    </div>
+
+    @if(indice === 2) {
+    <btn-continuar
+    [datos]="datosPasos"
+    (continuarEvento)="getValorIndice($event)"
+  ></btn-continuar>
+    }
+
+  </div>
+</div>
+}

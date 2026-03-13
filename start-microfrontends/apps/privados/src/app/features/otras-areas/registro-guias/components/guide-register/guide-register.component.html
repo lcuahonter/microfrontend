@@ -1,0 +1,126 @@
+<div class="row mt-5">
+  <ng-container *ngIf="displayInvalidFormAlert">
+    <div class="col-md-12">
+      <div class="alert alert-danger">
+        <strong>¡Error de registro!</strong>
+        Faltan campos Por capturar
+      </div>
+    </div>
+  </ng-container>
+
+  <div class="col-md-4 col-sm-4 col-xs-12">
+    <div class="radio">
+      <label>
+        <input type="radio" [(ngModel)]="searchType" [value]="searchTypeEnum.MANIFEST" [disabled]="purposeCodeIsCreation()" (ngModelChange)="onSearchTypeChange()"/>
+        MANIFIESTO
+      </label>
+    </div>
+  </div>
+
+   <div class="col-md-4 col-sm-4 col-xs-12">
+    <div class="radio">
+      <label>
+        <input type="radio" [(ngModel)]="searchType" [value]="searchTypeEnum.MASTER" [disabled]="purposeCodeIsCreation() || (purposeCodeIsUpdating() && isUpdating())" (ngModelChange)="onSearchTypeChange()"/>
+        MASTER
+      </label>
+    </div>
+  </div>
+
+   <div class="col-md-4 col-sm-4 col-xs-12">
+    <div class="radio">
+      <label>
+        <input type="radio" [(ngModel)]="searchType" [value]="searchTypeEnum.HOUSE" [disabled]="purposeCodeIsCreation() || (purposeCodeIsUpdating() && isUpdating())" (ngModelChange)="onSearchTypeChange()"/>
+        HOUSE
+      </label>
+    </div>
+  </div>
+  <ng-container *ngIf="(!!searchType && !purposeCodeIsCreation() && !isUpdating())">
+    <form [formGroup]="searchTypeForm" (ngSubmit)="submitForm()" autocomplete="off">
+      <div class="row">
+        <div class="mt-3 col-md-4 col-sm-12 col-xs-12">
+          <div class="form-group">
+            <label>Purpuse Code<span class="form-text mr">*</span>:</label>
+            <app-tooltip [text]="'Función del Mensaje'"></app-tooltip>
+            <select class="form-control" formControlName="purpuseCode" name="purpuseCode">
+              <option [ngValue]="null">Seleccione una opción</option>
+                @for(purpuse of purpuses; track $index) {
+                  <option [value]="purpuse.clave">
+                    {{ purpuse.valor }}
+                  </option>
+                }
+            </select>
+          </div>
+        </div>
+      </div>
+      <ng-container *ngIf="isUpdatingOrDeletion()">
+        <div class="row">
+          <div class="col-md-4 col-sm-12 col-xs-12">
+            <div class="form-group">
+              <label>Manifiesto guía<span class="form-text mr">*</span>:</label>
+              <app-tooltip text="Transmisor ID"></app-tooltip>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="guideManifest"
+                name="guideManifest"
+                [ngClass]="{
+                  'form-control-error': formUtils.formHasError(searchTypeForm, 'guideManifestRequired', 'guideManifest')
+                }"
+              />
+              <ng-container *ngIf="formUtils.formHasError(searchTypeForm, 'guideManifestRequired', 'guideManifest')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getTextError(searchTypeForm.errors) }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="isUpdatingOrDeletion() && purposeCodeIsNotNull()">
+        <div class="row">
+          <div class="col-md-4 col-sm-4 col-xs-12">
+            <gob-button className="btn-primary" label="Buscar" (clicked)="searchGuideManifest()"></gob-button>
+          </div>
+        </div>
+      </ng-container>
+    </form>
+  </ng-container>
+
+  <ng-container *ngIf="purposeCodeIsCreation() || (purposeCodeIsUpdating() && isUpdating())">
+    <app-tabs-guide-register
+      (onDisplayAlert)="displayAlert($event)"
+      (onSaveDocumentSuccess)="onSaveDocumentSuccess($event)"
+      (onSaveDocumentFail)="onSaveDocumentFail()"
+      />
+  </ng-container>
+
+  <ng-container *ngIf="readyToDelete">
+    <div class="col-md-12 mt-3 text-right">
+      <button type="button" class="btn btn-danger mr-1" data-toggle="modal" data-target="#cancelModal">Cancelar</button>
+      <gob-button type="button" className="btn-primary" label="Continuar" (clicked)="deleteGuide()"></gob-button>
+    </div>
+  </ng-container>
+</div>
+
+<div class="modal fade" id="cancelModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Cancelar</h4>
+      </div>
+      <div class="modal-body">
+        <p>¿Está seguro que desea cancelar. Se borrarán los datos capturados.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="cancel()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-dialog [id]="'documentSaved'" [content]="documentSavedMsg"/>
+<app-dialog [id]="'documentSaveFailed'" [content]="'Sucedió un error'"/>
+<app-dialog [id]="'documentDeleted'" [content]="documentDeletedIdMsg"/>
+<app-dialog [id]="'notResults'" [content]="'No se encuentran datos relacionados'"/>

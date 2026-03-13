@@ -1,0 +1,72 @@
+<form [formGroup]="caatForm" autocomplete="off">
+  <div class="row mt-5">
+    <!-- First column -->
+    <div class="col-md-4 col-sm-4 col-xs-6">
+      <div class="form-group">
+        <date-picker
+          label="Fecha Inicio:"
+          formControlName="startDate"
+          [hasError]="formUtils.formHasError(caatForm, 'startDateRequired', 'startDate')">
+        </date-picker>
+        <small class="form-text form-text-error" *ngIf="formUtils.formHasError(caatForm, 'startDateRequired', 'startDate')">
+          {{ formUtils.getTextError(caatForm.errors) }}
+        </small>
+      </div>
+      <div class="form-group">
+        <label>Aduana/sección aduanera:</label>
+        <select
+          formControlName="custom"
+          class="form-control"
+          [ngClass]="{
+            'form-control-error': formUtils.formHasError(caatForm, 'customRequired', 'custom')
+          }"
+        >
+          <option value="">Seleccione un valor</option>
+          <option *ngFor="let custom of customs; let i = index" [value]="custom.idClave">
+            {{ custom.aduanaNombre }}
+          </option>
+        </select>
+        <small class="form-text form-text-error" *ngIf="formUtils.formHasError(caatForm, 'customRequired', 'custom')">
+          {{ formUtils.getTextError(caatForm.errors) }}
+        </small>
+      </div>
+    </div>
+
+    <!-- Second column -->
+    <div class="col-md-4 col-sm-4 col-xs-6">
+      <div class="form-group">
+        <date-picker
+          label="Fecha Fin:"
+          formControlName="endDate"
+          [minDate]="minEndDate()"
+          [maxDate]="maxEndDate()"
+          [isDisable]="isEndDateDisabled"
+          [hasError]="formUtils.formHasError(caatForm, 'endDateRequired', 'endDate')">
+        </date-picker>
+        <small class="form-text form-text-error" *ngIf="formUtils.formHasError(caatForm, 'endDateRequired', 'endDate')">
+          {{ formUtils.getTextError(caatForm.errors) }}
+        </small>
+      </div>
+    </div>
+
+    <!-- Third column -->
+    <div class="col-md-4 col-sm-4 col-xs-6">
+      <div class="form-group">
+        <label
+          >CAAT:
+        </label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="caat"
+          [ngClass]="{
+            'form-control-error': formUtils.formHasError(caatForm, 'caatRequired', 'caat')
+          }"
+        />
+        <small class="form-text form-text-error" *ngIf="formUtils.formHasError(caatForm, 'caatRequired', 'caat')">
+          {{ formUtils.getTextError(caatForm.errors) }}
+        </small>
+      </div>
+    </div>
+  </div>
+</form>

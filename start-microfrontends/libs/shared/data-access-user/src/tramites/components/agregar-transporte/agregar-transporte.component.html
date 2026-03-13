@@ -1,0 +1,565 @@
+<div class="row mt-4">
+  <div class="col-md-12">
+    <div class="main-table">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>
+              <div class="form-check">
+                <input
+                  class="form-check"
+                  type="checkbox"
+                  (change)="seleccionarTodos($event)"
+                />
+              </div>
+            </th>
+            @for (item of headerTabla; track $index) {
+            <th>{{ item.valor }}</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of bodyTabla; let i= $index; track i) {
+          <tr>
+            <td>
+              <div class="form-check">
+                <input
+                  class="form-check"
+                  type="checkbox"
+                  title="Seleccionar todos"
+                  (change)="seleccionarTodos($event)"
+                />
+              </div>
+            </td>
+            @for (item of headerTabla; track $index) { @if (
+            esBooleano(row[item.llave]) ) {
+            <td>{{ row[item.llave] | booleanoSiNo }}</td>
+            } @else {
+            <td>{{ row[item.llave] }}</td>
+            } }
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<app-tabla-dinamica
+  [tipoSeleccionTabla]="tablaSeleccion.CHECKBOX"
+  [configuracionTabla]="encabezadoDeTablaTransporte"
+  [datos]="bodyTabla"
+>
+</app-tabla-dinamica>
+
+<div class="row">
+  <div class="col-md-12 d-flex justify-content-end">
+    <button type="button" class="btn btn-primary me-2" (click)="abrirModal()">
+      Agregar
+    </button>
+    <button
+      type="button"
+      class="btn btn-default me-2"
+      *ngIf="bodyTabla.length > 0"
+      (click)="limpiarFormulario()"
+    >
+      Modificar
+    </button>
+    <button
+      type="button"
+      class="btn btn-danger"
+      *ngIf="bodyTabla.length > 0"
+    >
+      Eliminar
+    </button>
+  </div>
+</div>
+
+<!-- Modal Agrega transporte -->
+<div
+  class="modal modal-lg fade"
+  #agregarTransporte
+  id="agregarTransporte"
+  tabindex="-1"
+  tabindex="-1"
+  aria-labelledby="modalAgregarTransporte"
+  aria-hidden="true"
+  data-bs-backdrop="static"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">
+          Datos del transporte de arribo/salida (al/del) país
+        </h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            @switch (tipo) { @case ('1') {
+            <ng-container *ngTemplateOutlet="carretero"></ng-container>
+            } @case ('2') {
+            <ng-container *ngTemplateOutlet="ferroviario"></ng-container>
+            } @case ('3') {
+            <ng-container *ngTemplateOutlet="aereo"></ng-container>
+            } @case ('4') {
+            <ng-container *ngTemplateOutlet="maritimo"></ng-container>
+            } @case ('5') {
+            <ng-container *ngTemplateOutlet="peatonal"></ng-container>
+            } @default {
+            <ng-container *ngTemplateOutlet="otro"></ng-container>
+            } }
+
+            <div class="form-group">
+              <label class="form-label" for="observaciones"
+                >Observaciones:</label
+              >
+              <textarea
+                class="form-control h-25"
+                rows="3"
+                [formControl]="observaciones"
+                id="observaciones"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer custom-footer">
+        <button
+          type="button"
+          class="btn btn-danger"
+          data-bs-dismiss="modal"
+          #btnCerrarModal
+          (click)="cerrarModal()"
+        >
+          Cancelar
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-default"
+          (click)="limpiarFormulario()"
+        >
+          Limpiar
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="agregarTipoTransporte()"
+        >
+          Agregar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #carretero>
+  <div class="row" [formGroup]="carreteroForma">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="empTransportista"
+          >Empresa transportista:</label
+        >
+        <input
+          class="form-control"
+          id="empTransportista"
+          placeholder=""
+          type="text"
+          formControlName="empTransportista"
+        />
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="numeroPorte">Número carta porte:</label>
+        <input
+          class="form-control"
+          id="numeroPorte"
+          placeholder=""
+          type="text"
+          formControlName="numeroPorte"
+        />
+      </div>
+    </div>
+    <div class="col-md-6">
+      <label for="fechaPorte" class="form-label">Fecha carta porte:</label>
+      <input
+        class="form-control"
+        type="date"
+        name="fechaPorte"
+        id="fechaPorte"
+        formControlName="fechaPorte"
+      />
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="marcaTransporte">Marca:</label>
+        <input
+          class="form-control"
+          id="marcaTransporte"
+          placeholder=""
+          type="text"
+          formControlName="marcaTransporte"
+        />
+      </div>
+    </div>
+    <div class="col-md-6">
+      <app-catalogo-select
+        [catalogo]="anios"
+        formControlName="modeloTransporte"
+        [label]="'Modelo'"
+        [required]="false"
+        name="modeloTransporte"
+      ></app-catalogo-select>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="placasTransporte">Placas:</label>
+        <input
+          class="form-control"
+          id="placasTransporte"
+          placeholder=""
+          type="text"
+          formControlName="placasTransporte"
+        />
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="form-group">
+        <label class="form-label" for="contenedorTransporte"
+          >Contenedor(es):</label
+        >
+        <textarea
+          class="form-control h-25"
+          id="contenedorTransporte"
+          rows="3"
+          formControlName="contenedorTransporte"
+        ></textarea>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #ferroviario>
+  <div class="row" [formGroup]="ferroviarioForma">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="numeroBL">Número de BL:</label>
+        <div class="input-group">
+          <input
+            class="form-control"
+            id="numeroBL"
+            placeholder=""
+            type="text"
+            formControlName="numeroBL"
+          />
+          <button
+            class="btn btn-outline-secondary"
+            type="button"
+            id="button-addon2"
+            (click)="postValidarNumeroBL()"
+          >
+            Buscar
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="tipoEquipo">Tipo de equipo:</label>
+        <select
+          class="form-select form-control"
+          name="tipoEquipo"
+          id="tipoEquipo"
+          formControlName="tipoEquipo"
+        >
+          <option value="-1">Seleccione una opción</option>
+          <option *ngFor="let item of tipoEquipoCatalogo" [value]="item.clave">
+            {{ item.descripcion }}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="inicialesEquipo"
+          >Iniciales de equipo:</label
+        >
+        <input
+          class="form-control"
+          id="inicialesEquipo"
+          placeholder=""
+          type="text"
+          formControlName="inicialesEquipo"
+        />
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="numeroEquipo">Número de equipo:</label>
+        <input
+          class="form-control"
+          id="numeroEquipo"
+          placeholder=""
+          type="text"
+          formControlName="numeroEquipo"
+        />
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #peatonal>
+  <div class="row" [formGroup]="peatonalForma">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="rfcEmpresa"
+          >RFC empresa responsable:</label
+        >
+        <input
+          class="form-control"
+          id="rfcEmpresa"
+          placeholder=""
+          type="text"
+          formControlName="rfcEmpresa"
+        />
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="empTransportista"
+          >Empresa transportista:</label
+        >
+        <input
+          class="form-control"
+          id="empTransportista"
+          placeholder=""
+          type="text"
+          formControlName="empTransportista"
+        />
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="nombreTransportista"
+          >Nombre transportista:</label
+        >
+        <input
+          class="form-control"
+          id="nombreTransportista"
+          placeholder=""
+          type="text"
+          formControlName="nombreTransportista"
+        />
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="numGafete">ID de Gafete:</label>
+        <input
+          class="form-control"
+          id="numGafete"
+          placeholder=""
+          type="text"
+          formControlName="numGafete"
+        />
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #maritimo>
+  <div class="row" [formGroup]="maritimoForma">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="guiaBLMaritimo">Guía-BL:</label>
+        <input
+          class="form-control"
+          id="guiaBLMaritimo"
+          placeholder=""
+          type="text"
+          formControlName="guiaBLMaritimo"
+        />
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="guiaHouseMaritimo">Guía house:</label>
+        <input
+          class="form-control"
+          id="guiaHouseMaritimo"
+          placeholder=""
+          type="text"
+          formControlName="guiaHouseMaritimo"
+        />
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="nombreBuqueMaritimo"
+          >Nombre del buque:</label
+        >
+        <input
+          class="form-control"
+          id="nombreBuqueMaritimo"
+          placeholder=""
+          type="text"
+          formControlName="nombreBuqueMaritimo"
+        />
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <div class="form-group">
+        <label class="form-label" for="contenedorMaritimo"
+          >Contenedor(es):</label
+        >
+        <textarea
+          class="form-control h-25"
+          id="contenedorMaritimo"
+          rows="3"
+          formControlName="observaciones"
+          id="contenedorMaritimo"
+        ></textarea>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #aereo>
+  <div class="row" [formGroup]="aereoForma">
+    <div class="col-md-6 d-flex align-items-end">
+      <lib-input-check
+        [id]="'arriboPendienteAereo'"
+        [label]="'Pendiente de arribar'"
+        [required]="false"
+        formControlName="arriboPendienteAereo"
+      ></lib-input-check>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="guiaMasterAereo">Guía master:</label>
+        <input
+          class="form-control"
+          id="guiaMasterAereo"
+          placeholder=""
+          type="text"
+          formControlName="guiaMasterAereo"
+        />
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="guiaHouseAereo">Guía house:</label>
+        <input
+          class="form-control"
+          id="guiaHouseAereo"
+          placeholder=""
+          type="text"
+          formControlName="guiaHouseAereo"
+        />
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <label for="fechaArriboAereo" class="form-label"
+        >Fecha carta porte:</label
+      >
+      <input
+        class="form-control"
+        type="date"
+        name="fechaArriboAereo"
+        id="fechaArriboAereo"
+        formControlName="fechaArriboAereo"
+      />
+    </div>
+
+    <div class="col-md-6">
+      <input-hora
+        formControlName="horaArriboAereo"
+        [label]="LABEL_HORA_ARRIBO"
+        [required]="true"
+        [inputId]="'horaArriboAereo'"
+      ></input-hora>
+    </div>
+
+    <div class="col-md-6 d-flex align-items-end">
+      <lib-input-check
+        [id]="'guiaValida'"
+        [label]="'Guía válida'"
+        [required]="false"
+        formControlName="guiaValida"
+        [isDisabled]="true"
+      ></lib-input-check>
+    </div>
+
+    <div class="col-md-12 mt-3 mb-3 d-flex justify-content-end">
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="postValidarGuiaAerea()"
+      >
+        Validar guía
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #otro>
+  <div class="row" [formGroup]="otroForma">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="tipoTransporteDes"
+          >Tipo de transporte:</label
+        >
+        <input
+          class="form-control"
+          id="tipoTransporteDes"
+          placeholder=""
+          type="text"
+          formControlName="tipoTransporteDes"
+        />
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="empTransportista"
+          >Empresa transportista:</label
+        >
+        <input
+          class="form-control"
+          id="empTransportista"
+          placeholder=""
+          type="text"
+          formControlName="empTransportista"
+        />
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="datosTransporte"
+          >Datos del transporte:</label
+        >
+        <input
+          class="form-control"
+          id="datosTransporte"
+          placeholder=""
+          type="text"
+          formControlName="datosTransporte"
+        />
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+  </lib-notificaciones>
+</section>
+}

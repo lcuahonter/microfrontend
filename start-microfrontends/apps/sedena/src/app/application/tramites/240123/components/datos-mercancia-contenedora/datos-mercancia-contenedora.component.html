@@ -1,0 +1,194 @@
+<div class="container">
+  <div class="row mt-5">
+    <ng-titulo titulo="Datos mercancía"></ng-titulo>
+  </div>
+  <div class="row mt-5">
+    <form [formGroup]="datosMercancia">
+      <!-- Descripción as a textarea -->
+      <div class="row mb-3">
+        <div class="col-12">
+          <label for="descripcion" class="form-label"> Descripción* </label>
+          <textarea
+            id="descripcion"
+            class="form-control"
+            formControlName="descripcion"
+            rows="3"
+            style="height: 90px"
+            placeholder="Ingrese la descripción"
+          ></textarea>
+          <div
+            *ngIf="
+              datosMercancia.get('descripcion')?.touched &&
+              datosMercancia.get('descripcion')?.invalid
+            "
+            class="text-danger"
+          >
+            ¡La descripción es requerida!
+          </div>
+        </div>
+      </div>
+
+      <!-- Fracción arancelaria / Descripción de la fracción -->
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <app-catalogo-select
+            formControlName="fraccionArancelaria"
+            [catalogo]="fraccionesCatalogo"
+            [label]="'Fracción arancelaria'"
+            [required]="true"
+          ></app-catalogo-select>
+          <div
+            *ngIf="
+              datosMercancia.get('fraccionArancelaria')?.touched &&
+              datosMercancia.get('fraccionArancelaria')?.invalid
+            "
+            class="text-danger"
+          >
+            ¡Seleccione una fracción arancelaria!
+          </div>
+        </div>
+
+        <div class="col-md-8">
+          <label for="descFraccion" class="form-label">
+            Descripción de la fracción arancelaria*:
+            <span class="bi bi-question-circle-fill fs-4 m-1" title="Ingrese una fracción" ata-bs-toggle="tooltip"></span>
+          </label>
+          <textarea
+            id="descFraccion"
+            type="text"
+            class="form-control"
+            formControlName="descFraccion"
+            style="height: 90px"
+            readonly
+          ></textarea>
+          <div
+            *ngIf="
+              datosMercancia.get('descFraccion')?.touched &&
+              datosMercancia.get('descFraccion')?.invalid
+            "
+            class="text-danger"
+          >
+            ¡La descripción de la fracción es requerida!
+          </div>
+        </div>
+      </div>
+
+      <!-- Cantidad en UMT, UMT, Valor comercial -->
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label for="cantidadUMT" class="form-label"> Cantidad en UMT* </label>
+          <input
+            id="cantidadUMT"
+            type="number"
+            class="form-control"
+            formControlName="cantidadUMT"
+          />
+          <div
+            *ngIf="
+              datosMercancia.get('cantidadUMT')?.touched &&
+              datosMercancia.get('cantidadUMT')?.invalid
+            "
+            class="text-danger"
+          >
+            ¡La cantidad en UMT es requerida!
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <label for="umt" class="form-label"> UMT*:<span class="bi bi-question-circle-fill fs-4 m-1" title="Unidad de medida de la tarifa" ata-bs-toggle="tooltip"></span> </label>
+          <input
+            id="umt"
+            type="text"
+            class="form-control"
+            formControlName="umt"
+            placeholder="Kilogramo"
+            readonly
+          />
+          <div
+            *ngIf="
+              datosMercancia.get('umt')?.touched &&
+              datosMercancia.get('umt')?.invalid
+            "
+            class="text-danger"
+          >
+            ¡La UMT es requerida!
+          </div>
+        </div>
+      </div>
+
+      <!-- Tipo moneda -->
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <app-catalogo-select
+            formControlName="tipoMoneda"
+            [catalogo]="monedaCatalogo"
+            [label]="'Tipo moneda'"
+            [required]="true"
+          ></app-catalogo-select>
+          <div
+            *ngIf="
+              datosMercancia.get('tipoMoneda')?.touched &&
+              datosMercancia.get('tipoMoneda')?.invalid
+            "
+            class="text-danger"
+          >
+            ¡Seleccione un tipo de moneda!
+          </div>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label for="valorComercial" class="form-label"> *Valor comercial: </label>
+          <input
+            id="valorComercial"
+            type="number"
+            class="form-control"
+            formControlName="valorComercial"
+          />
+          <div
+            *ngIf="
+              datosMercancia.get('valorComercial')?.touched &&
+              datosMercancia.get('valorComercial')?.invalid
+            "
+            class="text-danger"
+          >
+            ¡El valor comercial es requerido!
+          </div>
+        </div>
+
+      </div>     
+
+      <div class="row mt-5">
+        <div class="col-md-12">
+          <div class="pull-right">
+            <button
+              type="button"
+              name="modificarMercancias"
+              class="btn btn-default"
+              (click)="cancelar()"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              name="eliminarMercancias"
+              class="btn btn-danger ms-2"
+              (click)="limpiarFormulario()"
+            >
+              Limpar
+            </button>
+            <button
+              type="button"
+              name="agregarMercancias"
+              class="btn btn-primary ms-2"
+              (click)="guardar()"
+            >
+              Agregar
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

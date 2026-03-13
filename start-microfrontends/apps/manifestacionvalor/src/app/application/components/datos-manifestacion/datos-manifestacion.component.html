@@ -1,0 +1,107 @@
+<div class="container">
+  <div class="row">
+    <ng-titulo [titulo]="'Medio de transporte'"></ng-titulo>
+  </div>
+  <div class="row">
+    <form [formGroup]="formularioBusquedaRfcImportador">
+        <div class="row">
+            <div class="col-md-4 form-group">
+                <label class="form-label" for="rfcBusqueda">RFC del Importador</label          >
+                <input
+                    class="form-control"
+                    id="rfcBusqueda"
+                    formControlName="rfcBusqueda"
+                    placeholder=""
+                    name="rfcBusqueda"
+                    type="text"
+                    (change)="setValoresStore()" 
+                    [maxlength]="30"
+                />
+            </div>
+            <div class="col-md-4" style="margin-top: 30px;">
+                <div>
+                    <button class="btn btn-primary  me-2" type="button" (click)="buscarRFC()">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form [formGroup]="formularioDatosManifestacion">     
+         
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-label" for="rfc">
+                <strong>Registro Federal de Contribuyentes*:</strong>                
+              </label>
+              <input type="text" class="form-control" formControlName="rfc" id="rfc" >
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-label" for="nombreRazonSocial"><strong>Nombre o razón social*:</strong></label>
+              <input type="text" class="form-control" formControlName="nombreRazonSocial" id="nombreRazonSocial" >
+            </div>
+          </div>
+        </div>
+    </form>
+  </div>
+  <div class="row">
+    <ng-titulo [titulo]="'RFC\'s de consulta'"></ng-titulo>
+  </div>
+
+  <form [formGroup]="formularioRfcConsulta">
+      <div class="row" >
+      <div class="col-md-6">
+        <label class="form-label" for="rfc">R F C:</label>
+        <input
+          class="form-control"
+          id="rfc"
+          formControlName="rfc"
+          placeholder=""
+          name="rfc"
+          type="text"
+          [maxlength]="40"            
+        />
+      </div>
+      <div class="col-md-6">
+        <app-catalogo-select [catalogo]="tipoFiguraList" formControlName="tipoFigura" [label]="'Tipo de figura'"
+          [required]="true" name="tipoFigura">
+        </app-catalogo-select>
+      </div>
+    </div>
+    <div class="row">
+    <div class="col-md-2" style="margin-top: 10px;">
+      <div>
+        <button class="btn btn-primary" type="button" (click)="agregarFilaRfcConsulta()">Aceptar</button>
+      </div>
+      </div>
+      </div>
+      <div class="row">
+      <div class="col-md-12">
+        <label class="form-label" for="especie">Detalle:</label>
+      </div>
+      <div class="col-md-12">
+        <app-tabla-dinamica
+          [tipoSeleccionTabla]="tipoSeleccion"
+          [configuracionTabla]="configuracionColumnas"
+          [datos]="cuerpoTablaRfcConsulta"
+          (listaDeFilaSeleccionada)="seleccionTabla($event)"
+        ></app-tabla-dinamica>
+      </div>
+      <div class="col-md-12 mt-2 d-flex justify-content-end">
+        <div>
+          <button class="btn btn-danger me-2" type="button" (click)="eliminarFilaDetalle()">
+            Eliminar
+          </button>
+        </div>
+        
+      </div>
+    </div>
+    </form> 
+</div>
+
+@if(nuevaNotificacion) {
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+      (confirmacionModal)="eliminarRfcConsulta($event)"></lib-notificaciones>
+}

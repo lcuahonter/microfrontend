@@ -1,0 +1,52 @@
+<div class="page page-color">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="fw-bold my-5 titulo-tasks">Registro de persona para oír y recibir notificaciones</h2>
+                <div class="bg-primary"></div>
+            </div>
+        </div>
+        <form [formGroup]="FormNotificaciones">
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="rfc" class="form-label text-title">Registro Federal de Contribuyentes</label>
+                    <input type="text" id="rfc" formControlName="rfc" class="form-control font-weight-titulo text-title"
+                        placeholder="Registro Federal de Contribuyentes"
+                        (change)="setValoresStore(FormNotificaciones,'rfc', 'setValorRFC')" />
+                    <div *ngIf="FormNotificaciones.get('rfc')?.hasError('rfcInvalido') && FormNotificaciones.get('rfc')?.touched"
+                        class="text-danger">
+                        El RFC debe tener entre 12 y 13 caracteres, y no debe contener espacios.
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            <div class="d-flex justify-content-lg-end h1">
+                <button class="btn btn-primary ms-2" type="button" [disabled]="FormNotificaciones.invalid"
+                    (click)="agregarPersonas()">
+                    Agregar
+                </button>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="table-responsive">
+                <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccion.CHECKBOX"
+                    [configuracionTabla]="encabezadoDeTablaNotificadores" [datos]="personasNotificaciones"
+                    (listaDeFilaSeleccionada)="notificadoresSeleccionados = $event">
+                </app-tabla-dinamica>
+            </div>
+        </div>
+        <div *ngIf="botonEliminar" class="row">
+            <div class="d-flex justify-content-lg-end h1">
+                <button class="btn btn-primary ms-2" type="button" (click)="enviarFirma()">Firmar</button>
+                <button class="btn btn-default ms-2" type="button" (click)="eliminarSeleccionados()">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+@if (nuevaNotificacion) {
+<section>
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+    </lib-notificaciones>
+</section>
+}

@@ -1,0 +1,264 @@
+<div class="container">
+  <ng-titulo titulo="Datos de los federatarios" />
+  <form [formGroup]="federatariosFormGroup">
+    <div class="row">
+      <formas-dinamicas [forma]="federatariosFormGroup" [soloLectura]="esFormularioSoloLectura"
+        [formularioDatos]="representanteLegalFormData"
+        (emitirCambioDeValor)="establecerCambioDeValor($event)"></formas-dinamicas>
+      <div class="row mt-5">
+        <div class="col-12 container text-end mt-5">
+          <button class="btn btn-danger me-2" [disabled]="esFormularioSoloLectura">Eliminar</button>
+          <button class="btn btn-primary" (click)="aggregarDatos()" [disabled]="esFormularioSoloLectura">
+            Agregar
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="row">
+    <div class="col">
+      <div class="row">
+        <h5>Datos de los federatarios:</h5>
+      </div>
+      <div class="row">
+        <div class="col">
+          <app-tabla-dinamica [configuracionTabla]="federatariosConfig.TablaEncabezado"
+            [disableSeleccionTablaCheckBox]="esFormularioSoloLectura? true : false"
+            [tipoSeleccionTabla]="federatariosConfig.TablaSeleccion" [datos]="federatariosDatos"></app-tabla-dinamica>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="esExpresasVisible">
+    <div class="col">
+      <ng-titulo titulo="Empresas extranjeras" />
+      <form [formGroup]="expresasFormGroup">
+        <div class="row">
+          <formas-dinamicas [forma]="expresasFormGroup" [soloLectura]="esFormularioSoloLectura"
+            [formularioDatos]="expresasFormData"
+            (emitirCambioDeValor)="establecerCambioDeValor($event)"></formas-dinamicas>
+          <div class="row mt-5">
+            <div class="col-12 container text-end mt-5">
+              <button class="btn btn-default me-2" [disabled]="esFormularioSoloLectura">Eliminar</button>
+              <button class="btn btn-primary" (click)="aggregarExpresasDatos()" [disabled]="esFormularioSoloLectura">
+                Agregar
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="row" *ngIf="esExpresasVisible">
+    <div class="col">
+      <div class="row">
+        <h5>Empresas extranjeras:</h5>
+      </div>
+      <div class="row">
+        <div class="col">
+          <app-tabla-dinamica [configuracionTabla]="ExpresasConfig.TablaEncabezado"
+            [disableSeleccionTablaCheckBox]="esFormularioSoloLectura? true : false"
+            [tipoSeleccionTabla]="ExpresasConfig.TablaSeleccion" [datos]="expresasDatos"></app-tabla-dinamica>
+        </div>
+      </div>
+    </div>
+  </div>
+  <form [formGroup]="plantasForm">
+    <div class="form">
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <ng-titulo titulo="Datos de las plantas donde se realizaran las operaciones IMMEX" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="row">
+                <div class="col-md-4">
+                  <app-catalogo-select [catalogo]="estadoImmex" [label]="'Estado'" [required]="true"
+                    [isDisabled]="esFormularioSoloLectura"
+                    (selectionChange)="eventoDeCambioDeValor($event, 'estadoDos')" name="estado"
+                    formControlName="estadoDos"
+                    (change)="setValoresStore(plantasForm, 'estadoDos', 'setEstadoDos')"></app-catalogo-select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="pull-right ms-2">
+                    <button class="btn btn-primary" (click)="buscarPlantasImmex()"
+                      [disabled]="esFormularioSoloLectura">Buscar plantas IMMEX</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="row">
+                <div class="col">
+                  <div class="row">
+                    <div class="col">
+                      <h5>Plantas disponibles:</h5>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col">
+                      <app-tabla-dinamica [configuracionTabla]="
+                      plantasDisponiblesConfig.TablaEncabezado
+                    " [tipoSeleccionTabla]="plantasDisponiblesConfig.TablaSeleccion
+                    " [datos]="plantasDisponiblesDatos"
+                        [disableSeleccionTablaCheckBox]="esFormularioSoloLectura? true : false"
+                        (listaDeFilaSeleccionada)="onSeleccionChange($event)"></app-tabla-dinamica>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col">
+                      <ng-alert [CONTENIDO]="textodAlerta"></ng-alert>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="pull-right ms-2">
+                        <button class="btn btn-primary" (click)="agregarPlantas()"
+                          [disabled]="esFormularioSoloLectura">Agregar plantas</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="row">
+                  <div class="col">
+                    <h5>Plantas Immex:</h5>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <app-tabla-dinamica [configuracionTabla]="plantasImmexConfig.TablaEncabezado"
+                      [tipoSeleccionTabla]="plantasImmexConfig.TablaSeleccion" [datos]="plantasImmexDatos"
+                      [disableSeleccionTablaCheckBox]="esFormularioSoloLectura? true : false"
+                      (filaSeleccionada)="setPlantaImmexSeleccionada($event)"></app-tabla-dinamica>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="d-flex flex-row flex-wrap">
+                  <div class="p-2">
+                    <button class="btn btn-danger" (click)="abrirDialogoComplementarPlanta()"
+                      [disabled]="esFormularioSoloLectura">
+                      Complementar planta
+                    </button>
+                  </div>
+                  <div class="p-2">
+                    <button class="btn btn-danger" (click)="abrirDialogoMontos()" [disabled]="esFormularioSoloLectura">
+                      Montos de inversión
+                    </button>
+                  </div>
+                  <div class="p-2">
+                    <button class="btn btn-danger" (click)="abrirDialogoempleadosAcciones()"
+                      [disabled]="esFormularioSoloLectura">
+                      Empleados
+                    </button>
+                  </div>
+                  <div class="p-2">
+                    <button class="btn btn-danger" (click)="abrirDialogocapacidadInstalada()"
+                      [disabled]="esFormularioSoloLectura">
+                      Capacidad Instalada
+                    </button>
+                  </div>
+                  <div class="p-2">
+                    <button class="btn btn-primary" (click)="abrirDialogocargaPorPrchivo()"
+                      [disabled]="esFormularioSoloLectura">
+                      Carga por archivo
+                    </button>
+                  </div>
+                  <div class="p-2">
+                    <button class="btn btn-danger" [disabled]="esFormularioSoloLectura"
+                      (click)="abrirDialogoEliminarPlantas()">Eliminar plantas</button>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-5">
+                <div class="col-md-4">
+                  <app-catalogo-select [catalogo]="representacionFederalOptions" [label]="'Representación federal'"
+                    [required]="true" [isDisabled]="esFormularioSoloLectura" name="estado"
+                    formControlName="representacionFederal"
+                    (selectionChange)="eventoDeCambioDeValor($event, 'representacionFederal')"
+                    (change)="setValoresStore(plantasForm, 'representacionFederal', 'setRepresentacionFederal')"></app-catalogo-select>
+                </div>
+                <div class="col-md-4">
+                  <app-catalogo-select [catalogo]="actividadProductivaOptions" [label]="'Actividad productiva'"
+                    [required]="true" formControlName="actividadProductiva" [isDisabled]="esFormularioSoloLectura"
+                    (selectionChange)="eventoDeCambioDeValor($event, 'actividadProductiva')"
+                    (change)="setValoresStore(plantasForm, 'actividadProductiva', 'setActividadProductiva')"></app-catalogo-select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+<ng-container *ngIf="mostrarComplementarPlantaPopup">
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <app-complementar-planta (obtenerComplementarPlantaList)="obtenerComplementarPlantaList($event)"
+        (obtenerFirmantesList)="obtenerFirmantesList($event)"
+        (cerrarPopup)="cerrarComplementarPlanta()"></app-complementar-planta>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="mostrarMontosDeInversionPopup">
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <app-montos-de-inversion (obtenerMontosInversionList)="obtenerMontosInversionList($event)"
+        (cerrarPopup)="cerrarMontosDeInversion()"></app-montos-de-inversion>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="mostrarEmpleadosPopup">
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <app-empleados (obtenerEmpleadosList)="obtenerEmpleadosList($event)"
+        (cerrarPopup)="cerrarEmpleados()"></app-empleados>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="mostrarCapacidadInstaladaPopup">
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <app-capacidad-instalada (obtenerCapacidadInstaladaTablaList)="obtenerCapacidadInstaladaTablaList($event)"
+        (cerrarPopup)="cerrarCapacidadInstalada()"></app-capacidad-instalada>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="mostrarProveedorPorArchivoPopup">
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <app-carga-por-archivo (cerrarPopup)="cerrarProveedorPorArchivo()"></app-carga-por-archivo>
+    </div>
+  </div>
+</ng-container>
+
+@if (federatarioNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="federatarioNotificacion"
+    (confirmacionModal)="federatarioNotificacion = undefined"></lib-notificaciones>
+</section>
+}
+
+@if (eliminarPlantaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="eliminarPlantaNotificacion"
+    (confirmacionModal)="eliminarPlanta($event)"></lib-notificaciones>
+</section>
+}

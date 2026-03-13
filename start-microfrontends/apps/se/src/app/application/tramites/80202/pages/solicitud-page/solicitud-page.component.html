@@ -1,0 +1,58 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h1>{{ tituloMensaje || null }}</h1>
+    </div>
+    <ng-container *ngIf="indice === 2">
+      <ng-alert [CONTENIDO]="mensajeDeTextoDeExito"></ng-alert>
+    </ng-container>
+    <app-wizard [listaPasos]="pasos"></app-wizard>
+  </div>
+
+  <div class="row">
+    @switch (indice) { @case (1) {
+    <app-paso-uno></app-paso-uno>
+    } @case (2) {
+    <app-paso-carga-documento 
+    [idSolicitud]="solicitudState.idSolicitud"
+    [idTipoTRamite]="'80202'"
+    [cargaArchivosEvento]="cargarArchivosEvento"
+    (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+    (reenviarCargaRealizada)="cargaRealizada($event)"
+    (cargaEnProgreso)="onCargaEnProgreso($event)"
+    ></app-paso-carga-documento>
+    } @case (3) {
+    <paso-firma [idSolicitud]="solicitudState.idSolicitud" [procedure]="80202" [procedureUrl]="'immex-ampliacion-sensibles/solicitud'"></paso-firma>
+
+    } }
+  <div class="row">
+      <div class="col-md-12">
+        @if (indice !== 2) {
+          <btn-continuar [datos]="datosPasos" (continuarEvento)="obtenerDatosDelStore($event)"></btn-continuar>
+         } @else {
+        <div class="mt-5 mb-3 d-flex justify-content-end">
+          <button
+            type="button"
+            class="btn btn-default"
+            (click)="anterior()"
+            *ngIf="seccionCargarDocumentos"
+          >
+            Anterior
+          </button>
+
+          <button
+            class="btn btn-primary ms-3"
+            (click)="
+              seccionCargarDocumentos ? onClickCargaArchivos() : siguiente()
+            "
+            [disabled]="(seccionCargarDocumentos && !activarBotonCargaArchivos) || (!seccionCargarDocumentos && cargaEnProgreso)"
+          >
+            {{ seccionCargarDocumentos ? 'Cargar archivos' : 'Continuar' }}
+          </button>
+        </div>
+        }
+      </div>
+    </div>
+   
+  </div>
+</div>

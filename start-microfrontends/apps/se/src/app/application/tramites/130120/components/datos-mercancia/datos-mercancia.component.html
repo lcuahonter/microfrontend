@@ -1,0 +1,485 @@
+<div class="container">
+  <form [formGroup]="datosMercanica">
+    <ng-titulo [titulo]="'Datos de la mercancía'"></ng-titulo>
+
+    <!-- Descripción de la mercancía -->
+    <div class="row align-items-end">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="descripcion">Descripción de la mercancía
+            <span
+              [ngClass]="datosMercanica.get('descripcion')?.errors?.['required'] && datosMercanica.get('descripcion')?.touched ? 'text-danger' : ''">*</span>:
+          </label>
+          <textarea
+            [ngClass]="{'is-invalid': datosMercanica.get('descripcion')?.touched && datosMercanica.get('descripcion')?.invalid}"
+            class="form-control text_area" id="descripcion" formControlName="descripcion" rows="3" maxlength="4000"
+            required="true" [disabled]="esFormularioSoloLectura"
+            (change)="setValoresStore( datosMercanica, 'descripcion', 'setDescripcion')">
+            </textarea>
+          <div *ngIf="datosMercanica.get('descripcion')?.touched && datosMercanica.get('descripcion')?.invalid">
+            <small *ngIf="datosMercanica.get('descripcion')?.errors?.['required']" class="text-danger">Este campo es
+              obligatorio</small>
+            <small *ngIf="datosMercanica.get('descripcion')?.errors?.['maxlength']" class="text-danger">No puede exceder
+              4000 caracteres.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Marca(s) comercial(es) y modelo(s) -->
+    <div class="row align-items-end">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="marca"> Marca(s) comercial(es) y modelo(s)
+            <span
+              [ngClass]="datosMercanica.get('marca')?.errors?.['required'] && datosMercanica.get('marca')?.touched ? 'text-danger' : ''">*</span>:
+          </label>
+          <input
+            [ngClass]="{'is-invalid': datosMercanica.get('marca')?.touched && datosMercanica.get('marca')?.invalid}"
+            class="form-control" type="text" id="marca" placeholder="" formControlName="marca" required="true"
+            [disabled]="esFormularioSoloLectura" maxlength="256" libUppercase
+            (change)="setValoresStore(datosMercanica, 'marca', 'setMarca')" />
+          <div *ngIf="datosMercanica.get('marca')?.touched && datosMercanica.get('marca')?.invalid">
+            <small *ngIf="datosMercanica.get('marca')?.errors?.['required']" class="text-danger">Este campo es
+              obligatorio</small>
+            <small *ngIf="datosMercanica.get('marca')?.errors?.['maxlength']" class="text-danger">No puede exceder 256
+              caracteres.</small>
+            <small *ngIf="datosMercanica.get('marca')?.errors?.['pattern']" class="text-danger">Solo caracteres
+              alfanuméricos.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tipo de aduana de entrada -->
+    <div class="row align-items-end">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="tipo_entrada">Tipo de aduana de entrada
+            <span
+              [ngClass]="datosMercanica.get('tipo_entrada')?.errors?.['required'] && datosMercanica.get('tipo_entrada')?.touched ? 'text-danger' : ''">*</span>:
+          </label>
+          <select class="form-control form-select" formControlName="tipo_entrada" [disabled]="esFormularioSoloLectura"
+            (change)="setValoresStore(datosMercanica, 'tipo_entrada', 'setTipoEntrada')">
+            <option [ngValue]="null">Seleccione una opción</option>
+            <option *ngFor="let tipo of tipoEntradaOpcion" [title]="tipo.descripcion" [value]="tipo.clave">
+              {{ tipo.descripcion }}
+            </option>
+          </select>
+          <div *ngIf="datosMercanica.get('tipo_entrada')?.touched && datosMercanica.get('tipo_entrada')?.invalid">
+            <small *ngIf="datosMercanica.get('tipo_entrada')?.errors?.['required']" class="text-danger">Este campo es
+              obligatorio</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fracción arancelaria -->
+    <div class="row align-items-end">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="fraccion">Fracción arancelaria
+            <span
+              [ngClass]="datosMercanica.get('fraccion')?.errors?.['required'] && datosMercanica.get('fraccion')?.touched ? 'text-danger' : ''">*</span>:
+          </label>
+          <select class="form-control form-select" formControlName="fraccion" [disabled]="esFormularioSoloLectura"
+            (change)="onFraccionArancelariaSeleccionada()">
+            <option [ngValue]="null">Seleccione una opción</option>
+            <option *ngFor="let fraccion of fraccionOpcion" [title]="fraccion.descripcion" [value]="fraccion.clave">
+              {{ fraccion.descripcion }}
+            </option>
+          </select>
+          <div *ngIf="datosMercanica.get('fraccion')?.touched && datosMercanica.get('fraccion')?.invalid">
+            <small *ngIf="datosMercanica.get('fraccion')?.errors?.['required']" class="text-danger">Este campo es
+              obligatorio</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NICO -->
+    <div class="row align-items-end">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="nico">NICO
+            <span
+              [ngClass]="datosMercanica.get('nico')?.errors?.['required'] && datosMercanica.get('nico')?.touched ? 'text-danger' : ''">*</span>:
+          </label>
+          <select class="form-control form-select" formControlName="nico" [disabled]="esFormularioSoloLectura"
+            (change)="setValoresStore(datosMercanica, 'nico', 'setNico')">
+            <option [ngValue]="null">Seleccione una opción</option>
+            <option *ngFor="let nico of nicoOpcion" [title]="nico.descripcion" [value]="nico.clave">
+              {{ nico.descripcion }}
+            </option>
+          </select>
+          <div *ngIf="datosMercanica.get('nico')?.touched && datosMercanica.get('nico')?.invalid">
+            <small *ngIf="datosMercanica.get('nico')?.errors?.['required']" class="text-danger">Este campo es
+              obligatorio</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- UMT & Numero de factura -->
+    <div class="row align-items-end">
+      <div class="col-md-4 mt-md-5">
+        <div class="form-group">
+          <label class="form-label" for="umt">Unidad de medida la tarifa(UMT)
+            <span
+              [ngClass]="datosMercanica.get('umt')?.errors?.['required'] && datosMercanica.get('umt')?.touched ? 'text-danger' : ''">*</span>:
+          </label>
+          <select class="form-control form-select" formControlName="umt" [disabled]="esFormularioSoloLectura"
+            (change)="setValoresStore(datosMercanica, 'umt', 'setUmt')">
+            <option [ngValue]="null">Seleccione una opción</option>
+            <option *ngFor="let umt of umtOpcion" [title]="umt.descripcion" [value]="umt.clave">
+              {{ umt.descripcion }}
+            </option>
+          </select>
+        </div>
+        <div *ngIf="datosMercanica.get('umt')?.touched && datosMercanica.get('umt')?.invalid">
+          <small *ngIf="datosMercanica.get('umt')?.errors?.['required']" class="text-danger">Este campo es
+            obligatorio</small>
+        </div>
+      </div>
+      <div class="col-md-4 mt-md-5">
+        <div class="form-group">
+          <label class="form-label" for="factura_numero">Número de factura
+            <span
+              [ngClass]="datosMercanica.get('factura_numero')?.errors?.['required'] && datosMercanica.get('factura_numero')?.touched ? 'text-danger' : ''">*</span>:
+          </label>
+          <input
+            [ngClass]="{'is-invalid': datosMercanica.get('factura_numero')?.touched && datosMercanica.get('factura_numero')?.invalid}"
+            class="form-control" type="text" id="factura_numero" placeholder="" formControlName="factura_numero"
+            required="true" maxlength="50" libUppercase [disabled]="esFormularioSoloLectura"
+            (change)="setValoresStore(datosMercanica, 'factura_numero', 'setFacturaNumero')" />
+        </div>
+        <div class="contenedor-error">
+          <span *ngIf="datosMercanica.get('factura_numero')?.touched && datosMercanica.get('factura_numero')?.invalid">
+            <small *ngIf="datosMercanica.get('factura_numero')?.errors?.['required']" class="text-danger">Este campo
+              es obligatorio</small>
+            <small *ngIf="datosMercanica.get('factura_numero')?.errors?.['maxlength']" class="text-danger">No puede
+              exceder 50 caracteres.</small>
+            <small *ngIf="datosMercanica.get('factura_numero')?.errors?.['pattern']" class="text-danger">Solo números
+              permitidos.</small>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fecha de factura & UMC -->
+    <div class="row">
+      <div class="col-md-4 mt-md-5">
+        <div class="form-group">
+          <input-fecha [setFecha]="datosMercanica.get('factura_fecha')?.value" [datos]="fechaFactura"
+            [isDisabled]="esFormularioSoloLectura" (valorCambiado)="fechaCambiado($event)" [deshabilitarFuturas]="true"
+            [marcarError]="(datosMercanica.get('factura_fecha')?.touched ?? false) && (datosMercanica.get('factura_fecha')?.invalid ?? false)"
+            [asteriskClass]="datosMercanica.get('factura_fecha')?.invalid && (datosMercanica.get('factura_fecha')?.touched || datosMercanica.get('factura_fecha')?.dirty) ? 'mensaje-error' : ''">
+          </input-fecha>
+        </div>
+        <div *ngIf="datosMercanica.get('factura_fecha')?.touched && datosMercanica.get('factura_fecha')?.invalid"
+          class="text-danger mt-1">
+          <small *ngIf="datosMercanica.get('factura_fecha')?.errors?.['required']">
+            Este campo es obligatorio.
+          </small>
+        </div>
+      </div>
+
+      <div class="col-md-4 mt-2">
+        <div class="form-group">
+          <label class="form-label" for="umc">Unidad de medida de comercialización(UMC)
+            <span
+              [ngClass]="datosMercanica.get('umc')?.errors?.['required'] && datosMercanica.get('umc')?.touched ? 'text-danger' : ''">*</span>:
+          </label>
+          <select class="form-control form-select" formControlName="umc" [disabled]="esFormularioSoloLectura"
+            (change)="onUmcChange(datosMercanica, 'umc', 'setUmc'); configurarComboUMC()">
+            <option [ngValue]="null">Selecciona una opción</option>
+            <option *ngFor="let umc of umcOpcion" [title]="umc.descripcion" [value]="umc.clave">
+              {{ umc.descripcion }}
+            </option>
+          </select>
+        </div>
+        <div *ngIf="datosMercanica.get('umc')?.touched && datosMercanica.get('umc')?.invalid" class="mt-1">
+          <small *ngIf="datosMercanica.get('umc')?.errors?.['required']" class="text-danger">Este campo es
+            obligatorio</small>
+        </div>
+      </div>
+    </div>
+    <!-- BREAK_CONTENT -->
+
+    <!-- Row 4 -->
+    <div class="row align-items-end mt-4">
+      <!-- 9: Otro UMC -->
+      <div class="col-md-4 mb-auto">
+        <div class="form-group">
+          <label class="form-label" for="otro_umc">
+            Otro UMC
+          </label>
+          <input class="form-control" type="text" id="otro_umc" placeholder="" formControlName="otro_umc"
+            (change)="setValoresStore(datosMercanica, 'otro_umc', 'setOtroUmc'); configurarComboUMC()" />
+        </div>
+        <div *ngIf="datosMercanica.get('otro_umc')?.touched && datosMercanica.get('otro_umc')?.invalid" class="mt-1">
+          <small *ngIf="datosMercanica.get('otro_umc')?.errors?.['required']" class="text-danger">Este campo es
+            obligatorio</small>
+        </div>
+      </div>
+
+      <!-- 10: Cantidad UMC* -->
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="cantidad_umc">Cantidad UMC
+            <span
+              [ngClass]="datosMercanica.get('cantidad_umc')?.errors?.['required'] && datosMercanica.get('cantidad_umc')?.touched ? 'text-danger' : ''">*</span>:
+          </label>
+          <input
+            [ngClass]="{'is-invalid': datosMercanica.get('cantidad_umc')?.touched && datosMercanica.get('cantidad_umc')?.invalid}"
+            class="form-control" type="text" id="cantidad_umc" placeholder="" formControlName="cantidad_umc"
+            required="true" maxlength="17" pattern="^\d{1,14}(\.\d{1,2})?$" [disabled]="esFormularioSoloLectura"
+            (input)="setValoresStore(datosMercanica, 'cantidad_umc', 'setCantidadUmc'); calcularUmtPrecioUnitario();" />
+        </div>
+        <div *ngIf="datosMercanica.get('cantidad_umc')?.touched && datosMercanica.get('cantidad_umc')?.invalid" class="mt-1">
+          <small *ngIf="datosMercanica.get('cantidad_umc')?.errors?.['required']" class="text-danger">Este campo es
+            obligatorio</small>
+          <small *ngIf="datosMercanica.get('cantidad_umc')?.errors?.['pattern']" class="text-danger">El valor
+            capturado no es válido.</small>
+        </div>
+      </div>
+    </div>
+    <!-- BREAK_CONTENT -->
+
+    <!-- Row 5 -->
+    <div class="row align-items-end mt-4">
+      <!-- 11: Factor de conversión -->
+      <div class="col-md-4 mt-4">
+        <div class="form-group">
+          <label class="form-label" for="factor_conversion">Factor de conversión
+            <span
+              [ngClass]="datosMercanica.get('factor_conversion')?.errors?.['required'] && datosMercanica.get('factor_conversion')?.touched ? 'text-danger' : ''">*</span>:
+          </label>
+          <input
+            [ngClass]="{'is-invalid': datosMercanica.get('factor_conversion')?.touched && datosMercanica.get('factor_conversion')?.invalid}"
+            class="form-control disabled-bg" type="text" id="factor_conversion" placeholder=""
+            formControlName="factor_conversion" required="true" maxlength="19" pattern="^\d{1,14}(\.\d{1,4})?$"
+            (change)="setValoresStore(datosMercanica, 'factor_conversion', 'setFactorConversion'); calcularUmtPrecioUnitario();" />
+        </div>
+        <div class="mt-1"
+          *ngIf="datosMercanica.get('factor_conversion')?.touched && datosMercanica.get('factor_conversion')?.invalid">
+          <small *ngIf="datosMercanica.get('factor_conversion')?.errors?.['required']" class="text-danger">Este campo
+            es obligatorio</small>
+          <small *ngIf="datosMercanica.get('factor_conversion')?.errors?.['pattern']" class="text-danger">El valor
+            capturado no es válido.</small>
+        </div>
+      </div>
+
+      <!-- 12: Cantidad UMT* -->
+      <div class="col-md-4 mt-4">
+        <div class="form-group">
+          <label class="form-label" for="cantidad_umt">Cantidad UMT
+            <span
+              [ngClass]="datosMercanica.get('cantidad_umt')?.errors?.['required'] && datosMercanica.get('cantidad_umt')?.touched ? 'text-danger' : ''">*</span>:
+          </label>
+          <input
+            [ngClass]="{'is-invalid': datosMercanica.get('cantidad_umt')?.touched && datosMercanica.get('cantidad_umt')?.invalid}"
+            class="form-control disabled-bg" type="text" id="cantidad_umt" placeholder="" formControlName="cantidad_umt"
+            required="true" maxlength="17" pattern="^\d{1,14}(\.\d{1,2})?$" [disabled]="true"
+            (change)="setValoresStore(datosMercanica, 'cantidad_umt', 'setCantidadUmt'); calcularPrecioUnitarioUSD();" />
+        </div>
+        <div *ngIf="datosMercanica.get('cantidad_umt')?.touched && datosMercanica.get('cantidad_umt')?.invalid" class="mt-1">
+          <small *ngIf="datosMercanica.get('cantidad_umt')?.errors?.['required']" class="text-danger">Este campo es
+            obligatorio</small>
+          <small *ngIf="datosMercanica.get('cantidad_umt')?.errors?.['pattern']" class="text-danger">El valor
+            capturado no es válido.</small>
+        </div>
+      </div>
+    </div>
+    <!-- BREAK_CONTENT -->
+
+    <!-- Row 6 -->
+    <div class="row align-items-end">
+      <!-- 13: Valor de la factura de la mercancía a importar en términos de la Moneda de Comercialización* -->
+      <div class="col-md-8 mt-4">
+        <div class="form-group">
+          <label class="form-label" for="valor_factura">Valor de la factura de la mercancía a importar en términos de la
+            Moneda de Comercialización
+            <span
+              [ngClass]="datosMercanica.get('valor_factura')?.errors?.['required'] && datosMercanica.get('valor_factura')?.touched ? 'text-danger' : ''">*</span>:
+          </label>
+          <input
+            [ngClass]="{'is-invalid': datosMercanica.get('valor_factura')?.touched && datosMercanica.get('valor_factura')?.invalid}"
+            class="form-control" type="text" id="valor_factura" placeholder="" formControlName="valor_factura"
+            required="text" maxlength="17" pattern="^\d{1,14}(\.\d{1,2})?$" [disabled]="esFormularioSoloLectura"
+            (change)="setMercanciaImportar(datosMercanica,'valor_factura', 'setValorFactura'); calcularValoresDolares();" />
+          <div *ngIf="datosMercanica.get('valor_factura')?.touched && datosMercanica.get('valor_factura')?.invalid">
+            <small *ngIf="datosMercanica.get('valor_factura')?.errors?.['required']" class="text-danger">Este campo es
+              obligatorio</small>
+            <small *ngIf="datosMercanica.get('valor_factura')?.errors?.['pattern']" class="text-danger">El valor
+              capturado no es válido.</small>
+          </div>
+        </div>
+      </div>
+      <!-- 14: Moneda de comercialización -->
+      <div class="col-md-8">
+        <div class="form-group umc-select-wrapper">
+          <label class="form-label" for="moneda_comercializacion">Moneda de comercialización
+            <span
+              [ngClass]="datosMercanica.get('moneda_comercializacion')?.errors?.['required'] && datosMercanica.get('moneda_comercializacion')?.touched ? 'text-danger' : ''">*</span>:
+          </label>
+          <select class="form-control form-select" formControlName="moneda_comercializacion"
+            [disabled]="esFormularioSoloLectura"
+            (change)="setValoresStore(datosMercanica, 'moneda_comercializacion', 'setMonedaComercializacion'); calcularValorMoneda();">
+            <option [ngValue]="null">Seleccione una opción</option>
+            <option *ngFor="let moneda of monedaComercializacionOpcion" [title]="moneda.descripcion"
+              [value]="moneda.clave">
+              {{ moneda.descripcion }}
+            </option>
+          </select>
+          <div
+            *ngIf="datosMercanica.get('moneda_comercializacion')?.touched && datosMercanica.get('moneda_comercializacion')?.invalid">
+            <small *ngIf="datosMercanica.get('moneda_comercializacion')?.errors?.['required']" class="text-danger">Este
+              campo es
+              obligatorio</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- BREAK_CONTENT -->
+
+    <!-- Row 7 -->
+    <div class="row align-items-end">
+      <!-- 15: Valor de la factura en USD de la mercancía a importar* -->
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="valor_factura_usd">Valor de la factura en USD de la mercancía a importar
+            <span
+              [ngClass]="datosMercanica.get('valor_factura_usd')?.errors?.['required'] && datosMercanica.get('valor_factura_usd')?.touched ? 'text-danger' : ''">*</span>:
+          </label>
+          <input
+            [ngClass]="{'is-invalid': datosMercanica.get('valor_factura_usd')?.touched && datosMercanica.get('valor_factura_usd')?.invalid}"
+            class="form-control disabled-bg noevents" type="text" id="valor_factura_usd" placeholder=""
+            formControlName="valor_factura_usd" required="true" readonly
+            (change)="setValoresStore(datosMercanica, 'valor_factura_usd', 'setValorFacturaUsd')" />
+          <div
+            *ngIf="datosMercanica.get('valor_factura_usd')?.touched && datosMercanica.get('valor_factura_usd')?.invalid">
+            <small *ngIf="datosMercanica.get('valor_factura_usd')?.errors?.['required']" class="text-danger">Este campo
+              es obligatorio</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- 16: Precio unitario en USD* -->
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="precio_unitario_usd">Precio unitario en USD
+            <span
+              [ngClass]="datosMercanica.get('precio_unitario_usd')?.errors?.['required'] && datosMercanica.get('precio_unitario_usd')?.touched ? 'text-danger' : ''">*</span>:
+          </label>
+          <input
+            [ngClass]="{'is-invalid': datosMercanica.get('precio_unitario_usd')?.touched && datosMercanica.get('precio_unitario_usd')?.invalid}"
+            class="form-control disabled-bg noevents" type="text" id="precio_unitario_usd" placeholder=""
+            formControlName="precio_unitario_usd" required="true" readonly
+            (change)="setValoresStore(datosMercanica, 'precio_unitario_usd', 'setPrecioUnitarioUsd')" />
+          <div
+            *ngIf="datosMercanica.get('precio_unitario_usd')?.touched && datosMercanica.get('precio_unitario_usd')?.invalid">
+            <small *ngIf="datosMercanica.get('precio_unitario_usd')?.errors?.['required']" class="text-danger">Este
+              campo es obligatorio</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- BREAK_CONTENT -->
+
+    <!-- Row 8 -->
+    <div class="row align-items-end">
+      <!-- 17: País exportador -->
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="pais_exportador">País exportador
+            <span
+              [ngClass]="datosMercanica.get('pais_exportador')?.errors?.['required'] && datosMercanica.get('pais_exportador')?.touched ? 'text-danger' : ''">*</span>:
+          </label>
+          <select class="form-control form-select" formControlName="pais_exportador"
+            [disabled]="esFormularioSoloLectura"
+            (change)="setValoresStore(datosMercanica, 'pais_exportador', 'setPaisExportador')">
+            <option [ngValue]="null">Seleccione una opción</option>
+            <option *ngFor="let pais of paisExportadorOpcion" [title]="pais.descripcion" [value]="pais.clave">
+              {{ pais.descripcion }}
+            </option>
+          </select>
+          <div *ngIf="datosMercanica.get('pais_exportador')?.touched && datosMercanica.get('pais_exportador')?.invalid">
+            <small *ngIf="datosMercanica.get('pais_exportador')?.errors?.['required']" class="text-danger">Este campo es
+              obligatorio</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- 18: País origen -->
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="pais_origen">País origen
+            <span
+              [ngClass]="datosMercanica.get('pais_origen')?.errors?.['required'] && datosMercanica.get('pais_origen')?.touched ? 'text-danger' : ''">*</span>:
+          </label>
+          <select class="form-control form-select" formControlName="pais_origen" [disabled]="esFormularioSoloLectura"
+            (change)="setValoresStore(datosMercanica, 'pais_origen', 'setPaisOrigen')">
+            <option [ngValue]="null">Seleccione una opción</option>
+            <option *ngFor="let pais of paisOrigenOpcion" [title]="pais.descripcion" [value]="pais.clave">
+              {{ pais.descripcion }}
+            </option>
+          </select>
+          <div *ngIf="datosMercanica.get('pais_origen')?.touched && datosMercanica.get('pais_origen')?.invalid">
+            <small *ngIf="datosMercanica.get('pais_origen')?.errors?.['required']" class="text-danger">Este campo es
+              obligatorio</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- BREAK_CONTENT -->
+
+    <!-- Row 9 -->
+    <div class="row align-items-end">
+      <!-- 19: Valor total de la factura in términos de la Moneda de Comercialización -->
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="valor_total_factura">Valor total de la factura en términos de la Moneda de
+            Comercialización
+            <span
+              [ngClass]="datosMercanica.get('valor_total_factura')?.errors?.['required'] && datosMercanica.get('valor_total_factura')?.touched ? 'text-danger' : ''">*</span>:
+          </label>
+          <input
+            [ngClass]="{'is-invalid': datosMercanica.get('valor_total_factura')?.touched && datosMercanica.get('valor_total_factura')?.invalid}"
+            class="form-control" type="text" id="valor_total_factura" placeholder=""
+            formControlName="valor_total_factura" required="true" maxlength="17" pattern="^\d{1,14}(\.\d{1,2})?$"
+            [disabled]="esFormularioSoloLectura"
+            (change)="setTotalMercanciaImportar(datosMercanica, 'valor_total_factura', 'setValorTotalFactura'); calcularValorTotalFacturaUSD();" />
+          <div
+            *ngIf="datosMercanica.get('valor_total_factura')?.touched && datosMercanica.get('valor_total_factura')?.invalid">
+            <small *ngIf="datosMercanica.get('valor_total_factura')?.errors?.['required']" class="text-danger">Este
+              campo es obligatorio</small>
+            <small *ngIf="datosMercanica.get('valor_total_factura')?.errors?.['pattern']" class="text-danger">El valor
+              capturado no es válido.</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- 20: Valor total de la factura USD de la mercancía a importar -->
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="valor_total_factura_usd">Valor total de la factura USD de la mercancía a
+            importar
+            <span
+              [ngClass]="datosMercanica.get('valor_total_factura_usd')?.errors?.['required'] && datosMercanica.get('valor_total_factura_usd')?.touched ? 'text-danger' : ''">*</span>:
+          </label>
+          <input
+            [ngClass]="{'is-invalid': datosMercanica.get('valor_total_factura_usd')?.touched && datosMercanica.get('valor_total_factura_usd')?.invalid}"
+            class="form-control disabled-bg noevents" type="text" id="valor_total_factura_usd" placeholder=""
+            formControlName="valor_total_factura_usd" [required]="true" [readonly]="true"
+            (change)="setValoresStore(datosMercanica, 'valor_total_factura_usd', 'setValorTotalFacturaUsd')" />
+          <div
+            *ngIf="datosMercanica.get('valor_total_factura_usd')?.touched && datosMercanica.get('valor_total_factura_usd')?.invalid">
+            <small *ngIf="datosMercanica.get('valor_total_factura_usd')?.errors?.['required']" class="text-danger">Este
+              campo es obligatorio</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

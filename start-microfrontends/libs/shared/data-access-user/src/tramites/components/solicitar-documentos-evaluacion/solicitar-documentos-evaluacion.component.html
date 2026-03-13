@@ -1,0 +1,85 @@
+<form [formGroup]="formSolicitudDocumentos">
+  @if (isEvaluar) {
+    <h5>Seleccione los documentos que van a ser requeridos</h5>
+  } @else {
+    <h4 class="mb-3">Documentos</h4>
+  }
+  
+  <div *ngIf="validacion || (validarTablaLength && triggerGuardar)" class="text-danger mt-2 mb-2">
+    Debe seleccionar al menos un documento.
+  </div>
+  <div class="col-md-12 mt-3">
+    <div class="row">
+      <table class="table table-bordered">
+        <thead class="table-light">
+          <tr>
+            <th *ngIf="enableMode">Requerir</th>
+            <th>Tipo de documento</th>
+            <th>Nombre del archivo</th>
+            <th>{{isEvaluar ? 'Estatus' : 'Ver'}}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody *ngIf="iniciarResponse.documentos.length">
+          <tr *ngFor="let documento of iniciarResponse.documentos">
+            <td *ngIf="enableMode">
+              <input type="checkbox" [checked]="documento.requerido"
+-               (change)="onRequeridoChange(documento, $event)" />
+            </td>
+              <td>{{documento.tipo_documento}}</td>
+              <td>{{documento.nombre}}</td>
+              <td>{{documento.estado_documento_solicitud}}</td>
+            <td>
+              @if(documento.documento_uuid){
+              <div class="icono">
+                <span class="d-flex justify-content-center">
+                  <i class="bi bi-archive" (click)="verDetalleAcuse(documento.documento_uuid, documento.nombre)">
+                  </i>
+                </span>
+              </div>
+              }
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  @if (enableMode) {
+     <div class="col-md-12"  *ngIf="isSegundaTabla">
+    <div class="row ">
+      <div class="col-md-6">
+        <span>Documentos adicionales</span>
+        <br>
+        <br>
+         <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccion.CHECKBOX"
+          [configuracionTabla]="encabezadoDeTablaDocumentos" [datos]="listadoDocumentos" [showRowNumber]="true"
+          (listaDeFilaSeleccionada)="documentosSeleccionados = $event">
+        </app-tabla-dinamica>
+       <button class="btn btn-primary" (click)="eliminarDocumento()">Eliminar</button>
+
+      </div>
+      <div class="col-md-6">
+         <span>Para solicitar documentos adicionales, seleccione el documento y presiones "Agregar Nuevo".</span>
+       <br>
+       <br>
+         <label for="tipoDocumento">Tipo documento</label>
+        <select id="tipoDocumento" formControlName="tipoDocumento" class="form-select form-control" >
+         <option value=""  >Seleccione una opción</option>
+         <option *ngFor="let doc of documentosEspecificos" [value]="doc.id_tipo_documento">
+           {{ doc.documento }}         
+          </option>
+       </select>
+        <br>
+        <button class="btn btn-primary" (click)="agregarDocumento()">Agregar nuevo</button>
+        <br>
+      </div>
+    </div>
+  </div>
+  }
+</form>
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+  </lib-notificaciones>
+</section>
+}

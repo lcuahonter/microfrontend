@@ -1,0 +1,152 @@
+<form [formGroup]="detalleForm">
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="estatus" class="form-label">Estatus</label>
+                <input class="form-control" id="estatus" type="text" formControlName="estatus"
+                    libUppercase>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="sentidoDictamen" class="form-label">Sentido del dictamen</label>
+                <input class="form-control" id="sentidoDictamen" type="text"
+                    formControlName="sentidoDictamen" libUppercase>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="fechaCreacion" class="form-label">Fecha de creación</label>
+                <input class="form-control" id="fechaCreacion" type="text"
+                    formControlName="fechaCreacion" libUppercase>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="tipoDictamen" class="form-label">Tipo de dictamen</label>
+                <input class="form-control" id="tipoDictamen" type="text"
+                    formControlName="tipoDictamen" libUppercase>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="dictaminadoPor" class="form-label">Dictaminado por</label>
+                <input class="form-control" id="dictaminadoPor" type="text"
+                    formControlName="dictaminadoPor" libUppercase>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="fechaGeneracion" class="form-label">Fecha de generación</label>
+                <input class="form-control" id="fechaGeneracion" type="text"
+                    formControlName="fechaGeneracion" libUppercase>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="autorizadoPor" class="form-label">Autorizado por</label>
+                <input class="form-control" id="autorizadoPor" type="text"
+                    formControlName="autorizadoPor" libUppercase>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="fechaAutorizacion" class="form-label">Fecha de autorización</label>
+                <input class="form-control" id="fechaAutorizacion" type="text"
+                    formControlName="fechaAutorizacion" libUppercase>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="justificacionDictamen" class="form-label">Justificación del dictamen</label>
+                <textarea id="justificacionDictamen" class="form-control" formControlName="justificacionDictamen"
+                    libUppercase></textarea>
+            </div>
+        </div>
+    </div>
+
+    @if(isFechasDetalleDictamenes) {
+        <div class="row">
+          <div class="col-md-6">
+              <div class="form-group">
+                  <label for="fechaInicioVigencia" class="form-label">Fecha de inicio de vigencia</label>
+                  <input class="form-control" id="fechaInicioVigencia" type="text"
+                      formControlName="fechaInicioVigencia" libUppercase>
+              </div>
+          </div>
+          <div class="col-md-6">
+              <div class="form-group">
+                  <label for="fechaFinVigencia" class="form-label">Fecha de fin de vigencia</label>
+                  <input class="form-control" id="fechaFinVigencia" type="text"
+                      formControlName="fechaFinVigencia" libUppercase>
+              </div>
+          </div>
+      </div>
+    }
+    @if (dictamenDetalle) {
+        @if (dictamenDetalle.texto_dictamen.trim() && isFechasDetalleDictamenes){
+            <div class="row mb-5">
+               <div class="col-md-8">
+                   <div class="form-group">
+                       <label for="fundamentoLegalDictamen" class="form-label">Fundamento Legal y motivación del dictamen</label>
+                       <textarea id="fundamentoLegalDictamen" class="form-control" formControlName="fundamentoLegalDictamen"
+                           libUppercase></textarea>
+                   </div>
+               </div>
+           </div>
+        }
+    }
+</form>
+
+<div class="card" *ngIf="dictamenDetalle?.observaciones?.length">
+    <div class="card-header">
+        <h5 class="card-title">Observaciones al dictamen</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            @for (item of encabezadoTablaObservaciones; track $index) {
+                            <th>{{ item.valor }}</th>
+                            }
+                            <th class="center">Detalle</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngIf="datosTablaObservaciones.length === 0">
+                            <td [attr.colspan]="encabezadoTablaObservaciones.length + 1" class="text-center">Sin registros que mostrar</td>
+                        </tr>
+                        @for (row of datosTablaObservaciones; track $index) {
+                        <tr class="table-row">
+                            @for (item of encabezadoTablaObservaciones; let i = $index; track $index) {
+                            <td>{{ row[item.key] }}</td>
+                            }
+                            <td class="center">
+                                <button type="button" class="btn btn-link me-2" id="verDetalle" data-bs-toggle="button"
+                                    data-bs-placement="top" title="Detalle del dictamen" (click)="verDetalle(row.id)">
+                                    <i class="bi bi-eye bi-c text-gold"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

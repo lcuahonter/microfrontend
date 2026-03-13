@@ -1,0 +1,148 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h3>Detalle de la mercancía</h3>
+      <hr class="red" />
+      <form [formGroup]="commodityForm" (ngSubmit)="onSubmit()" autocomplete="off">
+        <!-- Fila 1 -->
+        <div class="row">
+          <!-- Rate Type -->
+          <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+              <label class="control-label">Rate Type*:</label>
+              <app-tooltip text="Identificador de Tipo de Tarifa"></app-tooltip>
+              <select
+                class="form-control"
+                formControlName="rateType"
+                [ngClass]="{
+                  'form-control-error': formUtils.isValidField(commodityForm, 'rateType')
+                }"
+              >
+                <option [ngValue]="null">Selecciona una opción</option>
+                <option *ngFor="let fareClass of fareClasses" [value]="fareClass.clave">{{ fareClass.valor }}</option>
+              </select>
+              <ng-container *ngIf="formUtils.isValidField(commodityForm, 'rateType')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getFieldError(commodityForm, 'rateType') }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fila 2 -->
+        <div class="row">
+           <!-- Gross Weight Measure -->
+          <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+              <label class="control-label">Gross Weight Measure*:</label>
+              <app-tooltip text="Peso Bruto"></app-tooltip>
+              <input
+                type="text"
+                class="form-control"
+                numericDecimal
+                formControlName="grossWeightMeasure"
+                [ngClass]="{
+                  'form-control-error': formUtils.isValidField(commodityForm, 'grossWeightMeasure')
+                }"
+              />
+              <ng-container *ngIf="formUtils.isValidField(commodityForm, 'grossWeightMeasure')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getFieldError(commodityForm, 'grossWeightMeasure') }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+
+          <!-- Gross Weight Unit Code -->
+          <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+              <label class="control-label">Gross Weight Measure - unit Code*:</label>
+              <app-tooltip text="Código de la Unidad del Peso"></app-tooltip>
+              <select
+                class="form-control"
+                formControlName="grossWeightUnitCode"
+                [ngClass]="{
+                  'form-control-error': formUtils.isValidField(commodityForm, 'grossWeightUnitCode')
+                }"
+              >
+                <option [ngValue]="null">Selecciona una opción</option>
+                <option *ngFor="let unit of weightUnits" [value]="unit.clave">
+                  {{ unit.valor }}
+                </option>
+              </select>
+              <ng-container *ngIf="formUtils.isValidField(commodityForm, 'grossWeightUnitCode')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getFieldError(commodityForm, 'grossWeightUnitCode') }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+
+          <!-- Piece Quantity -->
+          <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+              <label class="control-label">Piece Quantity*:</label>
+              <app-tooltip text="Número de piezas"></app-tooltip>
+              <input
+                type="text"
+                class="form-control"
+                numericDecimal
+                formControlName="pieceQuantity"
+                [ngClass]="{
+                  'form-control-error': formUtils.isValidField(commodityForm, 'pieceQuantity')
+                }"
+              />
+              <ng-container *ngIf="formUtils.isValidField(commodityForm, 'pieceQuantity')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getFieldError(commodityForm, 'pieceQuantity') }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fila 3 -->
+        <div class="row">
+          <!-- Description -->
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="control-label">Description*:</label>
+              <app-tooltip text="Descripción del producto"></app-tooltip>
+              <textarea
+                rows="3"
+                class="form-control"
+                formControlName="description"
+                [ngClass]="{
+                  'form-control-error': formUtils.isValidField(commodityForm, 'pieceQuantity')
+                }"
+              ></textarea>
+              <ng-container *ngIf="formUtils.isValidField(commodityForm, 'description')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getFieldError(commodityForm, 'description') }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="row">
+          <div class="col-md-12 text-right">
+            <gob-button
+              type="submit"
+              className="btn-primary mr-1"
+              label="Agregar"
+            ></gob-button>
+            <gob-button
+              type="button"
+              className="btn-danger"
+              label="Cancelar"
+              (clicked)="onCancel()"
+            ></gob-button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

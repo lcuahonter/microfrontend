@@ -1,0 +1,80 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-12">
+      <h4 class="mb-4 fw-bold">Impresión de certificados</h4>
+    </div>
+  </div>
+
+  <app-error-messages [errors]="errors" [successMessage]="successMessage"></app-error-messages>
+
+  <div class="row mt-2">
+    <div class="col-md-12">
+      <app-expandir-tabla title="Consultar certificados">
+        <div class="mb-4">
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="tipoConsulta" id="especifica" value="especifica" [(ngModel)]="tipoConsulta">
+            <label class="form-check-label fw-bold" for="especifica">Consulta Especifica</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="tipoConsulta" id="folio" value="folio" [(ngModel)]="tipoConsulta">
+            <label class="form-check-label fw-bold" for="folio">Consulta Por Folio</label>
+          </div>
+        </div>
+
+        <div *ngIf="tipoConsulta === 'especifica'">
+          <app-consulta-especifica 
+            (buscar)="onBuscarEspecifica($event)"
+            (errors)="errors = $event"
+            (successMessage)="successMessage = $event"
+          ></app-consulta-especifica>
+        </div>
+        <div *ngIf="tipoConsulta === 'folio'">
+          <app-consulta-por-folio 
+            (buscar)="onBuscarPorFolio($event)"
+            (errors)="errors = $event"
+            (successMessage)="successMessage = $event"
+          ></app-consulta-por-folio>
+        </div>
+      </app-expandir-tabla>
+    </div>
+  </div>
+
+  <div class="row mt-4" *ngIf="resultados.length > 0 || cargando">
+    <div class="col-md-12">
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+          <app-tabla-dinamica
+            [configuracionTabla]="configuracionTabla"
+            [datos]="resultados"
+            [totalItems]="totalItems"
+            [itemsPerPage]="itemsPerPage"
+            [currentPage]="currentPage"
+            (pageChange)="onPageChange($event)"
+          ></app-tabla-dinamica>
+          
+          <div class="p-2 bg-light border-top d-flex justify-content-between align-items-center" *ngIf="resultados.length > 0">
+             <app-table-pagination
+              [showCurrentPage]="true"
+              (pageChange)="onPageChange($event)"
+            ></app-table-pagination>
+          </div>
+
+          <div *ngIf="cargando" class="p-4 text-center">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="mt-2 text-muted">Buscando certificados...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4" *ngIf="resultados.length === 0 && !cargando && (tipoConsulta)">
+    <div class="col-md-12">
+        <div class="alert alert-info bg-opacity-10 border-info">
+            <i class="bi bi-info-circle me-2"></i> Sin registros que mostrar. Realice una búsqueda para obtener resultados.
+        </div>
+    </div>
+  </div>
+</div>

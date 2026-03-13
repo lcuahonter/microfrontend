@@ -1,0 +1,78 @@
+<div class="page">
+    <div class="container">
+        <div class="row">
+            <div class="col-md mb-3">
+                <h1>Acuses y resoluciones</h1>
+            </div>
+        </div>
+        @if(alertVisible){
+        <ng-alert [CONTENIDO]="alertMessage" [CUSTOMECLASS]="classAlert"></ng-alert>
+        }
+        <form [formGroup]="formBusqueda">
+            <div class="row">
+                <div class="col-md-8 form-group">
+                    <label class="form-label" for="solicitante">Solicitante:</label>
+                    <p>{{ formBusqueda.get('solicitante')?.value }}</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 form-group">
+                    <label>RFC:</label>
+                    <p>{{ rfcValor }}</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col acuses-y-resolutiones-busqueda">
+                    <div class="acuses-y-resoluciones-folio-tramite">
+                        <div class="acuses-y-resoluciones-cuerpo p-0">
+                            <div class="row">
+                                <div class="col-md-4 form-group">
+                                    <label class="form-label" for="folio">Folio:</label>
+                                    <input class="form-control" id="folio" type="text" formControlName="folio"
+                                        [class.is-invalid]="
+                      folio.invalid && (folio.dirty || folio.touched)
+                    " />
+
+                                    <div *ngIf="folio.invalid && (folio.dirty || folio.touched)"
+                                        class="invalid-feedback">
+                                        <div *ngIf="folio.hasError('maxlength')">
+                                            Por favor, no escriba más de 25 caracteres
+                                        </div>
+                                        <div *ngIf="folio.hasError('pattern')">
+                                            Existen datos incorrectos que no cumplen con el formato.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <input-fecha [datos]="fechaInicioInput"
+                                        (valorCambiado)="cambioFechaInicio($event)"></input-fecha>
+                                </div>
+                                <div class="col-md-4">
+                                    <input-fecha [datos]="fechaFinalInput"
+                                        (valorCambiado)="cambioFechaFinal($event)"></input-fecha>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md" (click)="obtenerDatosPorFolioYFecha()">
+                                    <button type="button" class="btn btn-primary me-2">
+                                        Buscar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md">
+                    <h1>Acuses y resoluciones</h1>
+                    <app-tabla-dinamica [configuracionTabla]="configuracionTabla" [datos]="configuracionTablaDatos"
+                        (filaClic)="onFilaClic($event)" [acciones]="tablaAcciones" [showPagination]="true"
+                        [mode]="'client'" [totalItems]="configuracionTablaDatos.length" [itemsPerPage]="10" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

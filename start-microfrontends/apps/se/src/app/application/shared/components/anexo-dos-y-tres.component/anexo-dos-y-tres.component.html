@@ -1,0 +1,112 @@
+<div class="container">
+    <ng-titulo titulo="Anexo II" />
+    <form [formGroup]="anexoDosFormGroup">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label" for="claveArancelaria">
+                        Contenedores, cajas de trailer:</label>
+                    <label class="form-label" for="fraccionArancelaria">Fracción arancelaria:</label>
+                    <input class="form-control min-hgt" maxlength="10" id="fraccionArancelaria"
+                        formControlName="fraccionArancelaria" type="text">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label for="descripcion" class="form-label text-start">Descripción:</label>
+                    <textarea id="descripcion" class="form-control txt-area-custom" maxlength="1000"
+                        formControlName="descripcion" (input)="convertirAMayusculas($event, 'anexoDos')"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 container text-end mt-5">
+                <button class="btn btn-danger me-2 " (click)="eliminarAnexoDos()"
+                    [disabled]="formularioDeshabilitado">Eliminar</button>
+                <button class="btn btn-primary" (click)="agregarAnexoDos()"
+                    [disabled]="formularioDeshabilitado">Agregar</button>
+            </div>
+        </div>
+        <div class="row">
+            <label>Descripción anexo II:</label>
+        </div>
+        <div class="row mt-5">
+            <app-tabla-dinamica [tipoSeleccionTabla]="anexo1y3Configuartion.anexoDosTablaSeleccionCheckbox"
+                [configuracionTabla]="anexo1y3Configuartion.anexoDosEncabezadoDeTabla" [datos]="anexoDosTablaLista"
+                (listaDeFilaSeleccionada)="setAnexoDosLista($event)"
+                [disableSeleccionTablaCheckBox]="formularioDeshabilitado"></app-tabla-dinamica>
+            <ul class="pagination d-flex justify-content-center">
+                <li class="page-item"><a class="page-link">1</a></li>
+            </ul>
+        </div>
+    </form>
+
+
+    <ng-titulo titulo="Anexo III" />
+    <ng-alert [CONTENIDO]="anexoTresAlerta"></ng-alert>
+
+    <form [formGroup]="anexoTresFormGroup">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label" for="fraccionArancelaria">Fracción arancelaria:</label>
+                    <input class="form-control min-hgt" maxlength="100" id="fraccionArancelaria"
+                        formControlName="fraccionArancelaria" type="text">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label for="descripcion" class="form-label text-start">Descripción:</label>
+                    <textarea id="descripcion" class="form-control txt-area-custom" maxlength="1000" 
+                        formControlName="descripcion" (input)="convertirAMayusculas($event, 'anexoTres')"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 container text-end mt-5">
+                <button class="btn btn-danger me-2 " (click)="eliminarAnexoTres()"
+                    [disabled]="formularioDeshabilitado">Eliminar</button>
+                <button class="btn btn-primary" (click)="agregarAnexoTres()"
+                    [disabled]="formularioDeshabilitado">Agregar</button>
+            </div>
+        </div>
+        <div class="row">
+            <label>Descripción anexo III:</label>
+        </div>
+        <div class="row mt-5">
+            <app-tabla-dinamica [tipoSeleccionTabla]="anexo1y3Configuartion.anexoTresTablaSeleccionCheckbox"
+                [configuracionTabla]="anexo1y3Configuartion.anexoTresEncabezadoDeTabla" [datos]="anexoTresTablaLista"
+                (listaDeFilaSeleccionada)="setAnexoTresLista($event)"
+                [disableSeleccionTablaCheckBox]="formularioDeshabilitado"></app-tabla-dinamica>
+        </div>
+
+    </form>
+</div>
+@if (nuevaDosNotificacion && nuevaDosNotificacion.cerrar) {
+<section>
+    <lib-notificaciones [notificacionInput]="nuevaDosNotificacion"
+        (confirmacionModal)="confirmarEliminacionDos($event)">
+    </lib-notificaciones>
+</section>
+}
+@if (nuevaTresNotificacion && nuevaTresNotificacion.cerrar) {
+<section>
+    <lib-notificaciones [notificacionInput]="nuevaTresNotificacion"
+        (confirmacionModal)="confirmarEliminacionTres($event)">
+    </lib-notificaciones>
+</section>
+}
+
+@if (NotValidRfcNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="NotValidRfcNotificacion"
+    >
+  </lib-notificaciones>
+</section>
+}

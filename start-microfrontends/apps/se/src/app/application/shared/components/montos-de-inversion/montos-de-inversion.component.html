@@ -1,0 +1,92 @@
+<div class="container">
+  <ng-titulo titulo="Montos de inversión"></ng-titulo>
+  <form [formGroup]="montosDeInversionForm">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="full-width-select">
+        <app-catalogo-select [catalogo]="tipoOptions" [label]="'Tipo'" [required]="true" name="tipo"
+          formControlName="tipos"
+          (change)="setValoresStore(montosDeInversionForm, 'tipos', 'setTipos')"></app-catalogo-select>
+      </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="cantidad">Cantidad*:</label>
+        <input class="form-control min-hgt" id="cantidad" formControlName="cantidad" type="number" maxlength="11"
+          (input)="onInputMaxLength($event, 11, 'cantidad')"
+          (change)="setValoresStore(montosDeInversionForm, 'cantidad', 'setCantidad')" />
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-md-8">
+        <label class="control-label" for="descripsion">Descripción*:</label>
+        <textarea rows="3" class="form-control text-height " id="descripsion" formControlName="descripsion" maxlength="1000"
+          (change)="setValoresStore(montosDeInversionForm, 'descripsion', 'setDescripsion')"></textarea>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-md-4">
+        <label class="form-label mnx" for="mnx">Monto de inversión en moneda nacional(mxn)*:</label>
+        <input class="form-control" id="mnx" formControlName="mnx" type="number" maxlength="16"
+          (change)="setValoresStore(montosDeInversionForm, 'mnx', 'setMnx')"
+          (input)="onInputMaxLength($event, 16, 'mnx')" />
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-12 d-flex justify-content-between align-items-center">
+        <p class="ml-6px">* Campos obligatorios</p>
+        <div>
+          <button class="btn btn-default me-2" (click)="limpiarFormulario()">Limpiar</button>
+          <button class="btn btn-primary" (click)="agregarMonto()">Agregar</button>
+        </div>
+      </div>
+    </div>
+
+  </form>
+  <div class="row">
+    <h5>Montos de inversión</h5>
+  </div>
+  <div class="row mt-5">
+    <app-tabla-dinamica [configuracionTabla]="montosDeInversionEncabezado"
+      [tipoSeleccionTabla]="montosDeInversionTablaSeleccion" [datos]="montosDeInversionDatos"
+      (listaDeFilaSeleccionada)="onSeleccionChange($event)"  [mode]="'client'" [showPagination]="true"
+      [totalItems]="montosDeInversionDatos.length" [itemsPerPage]="5"></app-tabla-dinamica>
+    <ul class="pagination d-flex justify-content-center">
+      <li class="page-item"><a class="page-link" href="#">1</a></li>
+    </ul>
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-12 container text-end mt-5">
+      <button class="btn btn-danger me-2" (click)="eliminarMonto()">Eliminar</button>
+      <button class="btn btn-primary" (click)="editarMonto()">Editar</button>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <div class="col-12 container text-end mt-5 mb-5">
+      <button class="btn btn-danger me-2" (click)="regrasar()">
+        Regresar a plantas
+      </button>
+    </div>
+  </div>
+</div>
+
+@if (agregarMontoNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="agregarMontoNotificacion">
+  </lib-notificaciones>
+</section>
+}
+
+@if (nuevaNotificacionEditor) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacionEditor">
+  </lib-notificaciones>
+</section>
+}
+
+@if (NotificacionEliminarMonto) {
+<section>
+  <lib-notificaciones [notificacionInput]="NotificacionEliminarMonto">
+  </lib-notificaciones>
+</section>
+}

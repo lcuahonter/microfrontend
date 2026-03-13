@@ -1,0 +1,38 @@
+<div class="page">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h2>Trámites disponibles</h2>
+      </div>
+      @if(esFormaValido){
+        <div class="col-md-12">
+          <ng-alert [CONTENIDO]="formErrorAlert" [CUSTOMECLASS]="'alert-danger'"></ng-alert>
+        </div>
+        }
+        @if(showCatalogoError){
+        <div class="col-md-12">
+          <ng-alert [CONTENIDO]="catalogoErrorAlert" [CUSTOMECLASS]="'alert-danger'"></ng-alert>
+        </div>
+        }
+      <app-wizard [listaPasos]="pasos"></app-wizard>
+
+    </div>
+
+    <div class="row">
+      @switch (indice) {
+      @case (1) {
+      <app-paso-uno #pasoUno (noDatosError)="showError()"></app-paso-uno>
+      }
+      @case (2) {
+      <paso-firma [idSolicitud]="guardarIdSolicitud" [procedure]="110210" [procedureUrl]="'tramites-disponibles/solicitud'"></paso-firma>
+      }
+    }
+
+      <btn-continuar [datos]="datosPasos" (continuarEvento)="getValorIndice($event)" [dePadre]="true"></btn-continuar>
+
+       <div class="row">
+          <ng-alert [CONTENIDO]="ADVERTENCIA.Aviso"></ng-alert>
+      </div>
+    </div>
+  </div>
+</div>

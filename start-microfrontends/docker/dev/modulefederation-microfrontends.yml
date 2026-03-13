@@ -1,0 +1,620 @@
+services:
+#----------------------------------------------------------------
+  modulefederation-dashboard:
+    image: ghcr.io/vucem30/dockerized-modulefederation-dashboard:1.2.69
+    build: 
+      context: ../../
+      dockerfile: apps/dashboard/Dockerfile.dev
+      args:
+        - NODE_ENV=production
+    container_name: modulefederation-dashboard
+    restart: unless-stopped
+    expose:
+      - '4200'
+    ports:
+      - "4200:80"
+    networks:
+      - modulefederation-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - nginx_logs:/var/log/nginx
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+#----------------------------------------------------------------
+  modulefederation-login-microfront:
+    image: ghcr.io/vucem30/dockerized-modulefederation-login-microfront:1.0.0
+    build: 
+      context: ./../
+      dockerfile: apps/login/Dockerfile.dev
+      args:
+        - NODE_ENV=production
+    container_name: modulefederation-login-microfront
+    restart: unless-stopped
+    expose:
+      - '4201'
+    ports:
+      - "4201:80"
+    depends_on:
+      - modulefederation-dashboard
+    networks:
+      - modulefederation-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - nginx_logs:/var/log/nginx
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+#----------------------------------------------------------------
+  modulefederation-aga-microfront:
+    image: ghcr.io/vucem30/dockerized-modulefederation-aga-microfront:1.0.0
+    build: 
+      context: ./../
+      dockerfile: apps/aga/Dockerfile.dev
+      args:
+        - NODE_ENV=production
+    container_name: modulefederation-aga-microfront
+    restart: unless-stopped
+    expose:
+      - '4202'
+    ports:
+      - "4202:80"
+    depends_on:
+      - modulefederation-login-microfront
+    networks:
+      - modulefederation-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - nginx_logs:/var/log/nginx
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+#----------------------------------------------------------------
+  modulefederation-agricultura-microfront:
+    image: ghcr.io/vucem30/dockerized-modulefederation-agricultura-microfront:1.0.0
+    build: 
+      context: ./../
+      dockerfile: apps/agricultura/Dockerfile.dev
+      args:
+        - NODE_ENV=production
+    container_name: modulefederation-agricultura-microfront
+    restart: unless-stopped
+    expose:
+      - '4204'
+    ports:
+      - "4204:80"
+    networks:
+      - modulefederation-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - nginx_logs:/var/log/nginx
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+#----------------------------------------------------------------
+  modulefederation-se-microfront:
+    image: ghcr.io/vucem30/dockerized-modulefederation-se-microfront:1.0.1
+    build: 
+      context: ./../
+      dockerfile: apps/se/Dockerfile.dev
+      args:
+        - NODE_ENV=production
+    container_name: modulefederation-se-microfront
+    restart: unless-stopped
+    expose:
+      - '4205'
+    ports:
+      - "4205:80"
+    networks:
+      - modulefederation-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - nginx_logs:/var/log/nginx
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+#----------------------------------------------------------------
+  modulefederation-semarnat-microfront:
+    image: ghcr.io/vucem30/dockerized-modulefederation-semarnat-microfront:1.0.0
+    build: 
+      context: ./../
+      dockerfile: apps/semarnat/Dockerfile.dev
+      args:
+        - NODE_ENV=production
+    container_name: modulefederation-semarnat-microfront
+    restart: unless-stopped
+    expose:
+      - '4206'
+    ports:
+      - "4206:80"
+    networks:
+      - modulefederation-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - nginx_logs:/var/log/nginx
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+#----------------------------------------------------------------
+  modulefederation-agace-microfront:
+    image: ghcr.io/vucem30/dockerized-modulefederation-agace-microfront:1.0.2
+    build: 
+      context: ./../
+      dockerfile: apps/agace/Dockerfile.dev
+      args:
+        - NODE_ENV=production
+    container_name: modulefederation-agace-microfront
+    restart: unless-stopped
+    expose:
+      - '4209'
+    ports:
+      - "4209:80"
+    networks:
+      - modulefederation-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - nginx_logs:/var/log/nginx
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+#----------------------------------------------------------------
+  modulefederation-funcionario-microfront:
+    image: ghcr.io/vucem30/dockerized-modulefederation-funcionario-microfront:1.0.0
+    build: 
+      context: ./../
+      dockerfile: apps/funcionario/Dockerfile.dev
+      args:
+        - NODE_ENV=production
+    container_name: modulefederation-funcionario-microfront
+    restart: unless-stopped
+    expose:
+      - '4210'
+    ports:
+      - "4210:80"
+    networks:
+      - modulefederation-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - nginx_logs:/var/log/nginx
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+#----------------------------------------------------------------
+  modulefederation-cofepris-microfront:
+    image: ghcr.io/vucem30/dockerized-modulefederation-cofepris-microfront:1.0.0
+    build: 
+      context: ./../
+      dockerfile: apps/cofepris/Dockerfile.dev
+      args:
+        - NODE_ENV=production
+    container_name: modulefederation-cofepris-microfront
+    restart: unless-stopped
+    expose:
+      - '4211'
+    ports:
+      - "4211:80"
+    networks:
+      - modulefederation-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - nginx_logs:/var/log/nginx
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+#----------------------------------------------------------------
+  modulefederation-amecafe-microfront:
+    image: ghcr.io/vucem30/dockerized-modulefederation-amecafe-microfront:1.0.0
+    build: 
+      context: ./../
+      dockerfile: apps/amecafe/Dockerfile.dev
+      args:
+        - NODE_ENV=production
+    container_name: modulefederation-amecafe-microfront
+    restart: unless-stopped
+    expose:
+      - '4212'
+    ports:
+      - "4212:80"
+    networks:
+      - modulefederation-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - nginx_logs:/var/log/nginx
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+#----------------------------------------------------------------
+  modulefederation-sener-microfront:
+    image: ghcr.io/vucem30/dockerized-modulefederation-sener-microfront:1.0.0
+    build: 
+      context: ./../
+      dockerfile: apps/sener/Dockerfile.dev
+      args:
+        - NODE_ENV=production
+    container_name: modulefederation-sener-microfront
+    restart: unless-stopped
+    expose:
+      - '4217'
+    ports:
+      - "4217:80"
+    networks:
+      - modulefederation-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - nginx_logs:/var/log/nginx
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+#----------------------------------------------------------------
+  modulefederation-inbal-microfront:
+    image: ghcr.io/vucem30/dockerized-modulefederation-inbal-microfront:1.0.0
+    build: 
+      context: ./../
+      dockerfile: apps/inbal/Dockerfile.dev
+      args:
+        - NODE_ENV=production
+    container_name: modulefederation-inbal-microfront
+    restart: unless-stopped
+    expose:
+      - '4218'
+    ports:
+      - "4218:80"
+    networks:
+      - modulefederation-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - nginx_logs:/var/log/nginx
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+#----------------------------------------------------------------
+  modulefederation-sedena-microfront:
+    image: ghcr.io/vucem30/dockerized-modulefederation-sedena-microfront:1.0.0
+    build: 
+      context: ./../
+      dockerfile: apps/sedena/Dockerfile.dev
+      args:
+        - NODE_ENV=production
+    container_name: modulefederation-sedena-microfront
+    restart: unless-stopped
+    expose:
+      - '4219'
+    ports:
+      - "4219:80"
+    networks:
+      - modulefederation-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - nginx_logs:/var/log/nginx
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+#----------------------------------------------------------------
+  modulefederation-profepa-microfront:
+    image: ghcr.io/vucem30/dockerized-modulefederation-profepa-microfront:1.0.0
+    build: 
+      context: ./../
+      dockerfile: apps/profepa/Dockerfile.dev
+      args:
+        - NODE_ENV=production
+    container_name: modulefederation-profepa-microfront
+    restart: unless-stopped
+    expose:
+      - '4220'
+    ports:
+      - "4220:80"
+    networks:
+      - modulefederation-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - nginx_logs:/var/log/nginx
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+#----------------------------------------------------------------
+  modulefederation-inah-microfront:
+    image: ghcr.io/vucem30/dockerized-modulefederation-inah-microfront:1.0.0
+    build: 
+      context: ./../
+      dockerfile: apps/inah/Dockerfile.dev
+      args:
+        - NODE_ENV=production
+    container_name: modulefederation-inah-microfront
+    restart: unless-stopped
+    expose:
+      - '4221'
+    ports:
+      - "4221:80"
+    networks:
+      - modulefederation-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - nginx_logs:/var/log/nginx
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+#----------------------------------------------------------------
+  modulefederation-crt-microfront:
+    image: ghcr.io/vucem30/dockerized-modulefederation-crt-microfront:1.0.0
+    build: 
+      context: ./../
+      dockerfile: apps/crt/Dockerfile.dev
+      args:
+        - NODE_ENV=production
+    container_name: modulefederation-crt-microfront
+    restart: unless-stopped
+    expose:
+      - '4222'
+    ports:
+      - "4222:80"
+    networks:
+      - modulefederation-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - nginx_logs:/var/log/nginx
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+#----------------------------------------------------------------
+  modulefederation-stps-microfront:
+    image: ghcr.io/vucem30/dockerized-modulefederation-stps-microfront:1.0.0
+    build: 
+      context: ./../
+      dockerfile: apps/stps/Dockerfile.dev
+      args:
+        - NODE_ENV=production
+    container_name: modulefederation-stps-microfront
+    restart: unless-stopped
+    expose:
+      - '4223'
+    ports:
+      - "4223:80"
+    networks:
+      - modulefederation-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - nginx_logs:/var/log/nginx
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+#----------------------------------------------------------------
+  modulefederation-bandejas-microfront:
+    image: ghcr.io/vucem30/dockerized-modulefederation-bandejas-microfront:1.0.0
+    build: 
+      context: ./../
+      dockerfile: apps/bandejas/Dockerfile.dev
+      args:
+        - NODE_ENV=production
+    container_name: modulefederation-bandejas-microfront
+    restart: unless-stopped
+    expose:
+      - '4224'
+    ports:
+      - "4224:80"
+    networks:
+      - modulefederation-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - nginx_logs:/var/log/nginx
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+#----------------------------------------------------------------
+  modulefederation-privados-microfront:
+    image: ghcr.io/vucem30/dockerized-modulefederation-privados-microfront:1.2.32
+    build:
+      context: ./../
+      dockerfile: apps/privados/Dockerfile.dev
+      args:
+        - NODE_ENV=production
+    container_name: modulefederation-privados-microfront
+    restart: unless-stopped
+    expose:
+      - '4225'
+    ports:
+      - "4225:80"
+    networks:
+      - modulefederation-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - nginx_logs:/var/log/nginx
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+#----------------------------------------------------------------
+networks:
+  modulefederation-network:
+    driver: bridge
+
+volumes:
+  nginx_logs:

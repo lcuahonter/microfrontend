@@ -1,0 +1,79 @@
+@if(slectTramite) {
+<div class="container mt-2">
+    <div>
+        <div *ngIf="!firmar">
+            <div class="row">
+                <div class="col-md-12 mt-3 mb-3">
+                    <lib-encabezado-requerimiento [numFolioTramite]="guardarDatos.folioTramite"
+                        [tipoTramite]="guardarDatos.tipoDeTramite"></lib-encabezado-requerimiento>
+                </div>
+            </div>
+            <div class="row margin-top">
+                <ul class="nav nav-tabs">
+                    <li [ngClass]="indiceOpinion === 1 ? 'active' : ''">
+                        <a data-toggle="tab" (click)="seleccionaTab(1)" (keydown.enter)="seleccionaTab(1)"
+                            (keydown.space)="seleccionaTab(1)" role="button" tabindex="0">Registrar opinión</a>
+                    </li>
+                </ul>
+
+                <ng-container>
+                    @switch (indiceOpinion) {
+                    @case (1) {
+                    @if(tramite === 130113){
+                    <app-registrar-opinion-130 [tramite]="tramite" [guardarDatos]="guardarDatos"
+                        (cadena)="cadenaOriginal = $event" (firmar)="firmar = $event"></app-registrar-opinion-130>
+                    }@else{
+                    <app-registrar-opinion-801 [tramite]="tramite" [guardarDatos]="guardarDatos"
+                        (cadena)="cadenaOriginal = $event" (firmar)="firmar = $event"></app-registrar-opinion-801>
+                    }
+                    }
+
+                    }
+                </ng-container>
+            </div>
+
+        </div>
+        <div *ngIf="firmar">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="titulo mt-5 mb-5">Firmar</h2>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <firma-electronica [tipo]="''" [cadenaOriginal]="cadenaOriginal || cadenaOriginalRequerimiento"
+                        (datosFirma)="obtieneFirma($event)"></firma-electronica>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-5 mt-5">
+            @if (!vistasModificacion110101.actualizarVista) {
+            <app-reviewers-tabs [viewChild]="viewChild" [tramite]="tramite" [tabs]="tabs"
+                [documentos]="documentosSolicitud" [tareasSolicitud]="tareasSolicitud"
+                [dictamenes]="dictamenesSolicitud" [envioDigital]="envioDigital" [opinion]="opinion"
+                [requerimientos]="requerimientosSolicitud" [acusesResolucion]="acusesResolucion"
+                [isFechasDetalleDictamenes]="tabsConfig.isFechasDetallesDictamen"
+                (viewChildcambioDePestana)="viewChildcambioDePestana($event)"
+                (tabSeleccionado)="onTabSeleccionado($event)">
+            </app-reviewers-tabs>
+            }@else {
+            <app-reviewers-tabs-110101 [viewChild]="viewChild" [tramite]="tramite" [tabs]="tabs"
+                [documentos]="documentosSolicitud" [tareasSolicitud]="tareasSolicitud"
+                [dictamenes]="dictamenesSolicitud" [envioDigital]="envioDigital" [opinion]="opinion"
+                [esDictaminador]="calificacionDictaminador" [requerimientos]="requerimientosSolicitud"
+                [acusesResolucion]="acusesResolucion" (viewChildcambioDePestana)="viewChildcambioDePestana($event)"
+                (tabSeleccionado)="onTabSeleccionado($event)"
+                (tratadosParaEvaluar)="recibirTratadosDesdeReviewers($event)">
+            </app-reviewers-tabs-110101>
+            }
+        </div>
+    </div>
+</div>
+}
+@if(nuevaNotificacion) {
+<section>
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+    </lib-notificaciones>
+</section>
+}

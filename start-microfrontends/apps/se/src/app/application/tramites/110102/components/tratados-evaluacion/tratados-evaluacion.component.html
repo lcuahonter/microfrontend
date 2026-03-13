@@ -1,0 +1,162 @@
+<ng-titulo titulo="País/bloque-tratado/acuerdo seleccionados por el solicitante" />
+<div class="col-md-12">
+  <div class="table-wrapper">
+    <table class="table table-hover table-bordered table-responsive">
+      <thead>
+        <tr>
+          <th class="text-center" style="width: 50px;"></th>
+          <th class="text-center">País o bloque</th>
+          <th class="text-center">Tratado o Acuerdo</th>
+          <th class="text-center">Criterio de origen</th>
+          <th class="text-center">Norma de origen</th>
+          <th class="text-center">Requisito específico</th>
+          <th class="text-center">Calificación sistema</th>
+          <th class="text-center">Calificación dictaminador</th>
+          <th class="text-center">Criterio otras instancias</th>
+          <th class="text-center">Proceso de transformación</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let item of tratadosEvaluacionTablaDatos"
+            (click)="toggleFila(item)"
+            [class.table-active]="isSelected(item)"
+            class="cursor-pointer">
+
+          <td class="text-center">
+            <input  type="radio"
+                    name="tratadoSeleccionado"
+                    [checked]="isSelected(item)"
+                    (click)="toggleCheckbox($event, item)">
+          </td>
+
+          <td class="text-center">{{ item.pais_bloque_nombre }}</td>
+          <td class="text-center">{{ item.tratado_acuerdo }}</td>
+          <td class="text-center">{{ item.criterio_origen }}</td>
+          <td class="text-center">{{ item.norma_origen }}</td>
+          <td class="text-center">{{ item.requisito_especifico }}</td>
+          <td class="text-center">
+            {{ item.cal_aprobada_sistema ? 'APROBADA' : 'NO APROBADA' }}
+          </td>
+          <td class="text-center">
+            {{ item.cal_aprobada_dictaminador ? 'APROBADA' : 'NO APROBADA' }}
+          </td>
+          <td class="text-center">{{ item.otras_instancias }}</td>
+          <td class="text-center">{{ item.proceso_transformacion ?? '' }}</td>
+
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+   <div class=" text-end mt-5">
+    <button class="btn btn-primary me-2" (click)="criterioTratadoResumen()">
+      Resumen de valores
+    </button>
+    <button class="btn btn-primary  me-2" (click)="insumosEmpaques()">
+      Insumos
+    </button>
+    @if (this.consultaState.parameter === "EvaluarSolicitud" && esCalificacionBandera) {
+      <button class="btn btn-primary  me-2" (click)="abrirModalDictaminador()" >
+        Calificación del dictaminador
+      </button>
+    }
+  </div>
+</div>
+
+<div class="modal fade" id="modalAgregar" #modalAgregar tabindex="-1" aria-labelledby="modalAgregarLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0 d-flex justify-content-end">
+        <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="cerrarDialogo()"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="dictaminador">
+          <div class="col-md-12">
+            <div class="form-check">
+              <input
+                  class="form-check-input"
+                  type="radio"
+                  name="opcionSeleccionada"
+                  id="radioSi"
+                  value="true"
+                  formControlName="opcionSeleccionada"
+                />
+                <label class="form-check-label" for="radioSi">Aprobada</label>
+            </div>
+            <div class="form-check">
+              <input  class="form-check-input"
+                  type="radio"
+                  name="opcionSeleccionada"
+                  id="radioNo"
+                  value="false"
+                  formControlName="opcionSeleccionada">
+              <label class="form-check-label" for="radioNo" >
+                No aprobada
+              </label>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer d-flex justify-content-end p-5 gap-3">
+        <button class="btn btn-primary ms-2" (click)="modificarRegistros()">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalInsumoEmpaques" #modalInsumoEmpaques tabindex="-1" aria-labelledby="modalAgregarLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form [formGroup]="dictaminador">
+          <div class="col-md-12">
+            @if (tratadosInsumosTablaDatos.length > 0) {
+              <ng-titulo titulo="Insumos (materias prima, partes y piezas)" />
+              <app-tabla-dinamica 
+              [configuracionTabla]="tablaInsumos" 
+              [datos]="tratadosInsumosTablaDatos">
+              </app-tabla-dinamica>
+            }
+            @if (tratadosEmpaquesTablaDatos.length > 0) {
+              <ng-titulo titulo="Envases y empaques para la venta al menudeo" />
+              <app-tabla-dinamica 
+              [configuracionTabla]="tablaEmpaques" 
+              [datos]="tratadosEmpaquesTablaDatos">
+              </app-tabla-dinamica> 
+            }
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer d-flex justify-content-end p-5 gap-3">
+        <button class="btn btn-default" (click)="cerrarDialogo()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="modalResumenValores" #modalResumenValores tabindex="-1" aria-labelledby="modalResumenLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+      <app-resumen-valores-formulario 
+        [valoresRecibidosResumen]="valoresFormularioResumen">
+      </app-resumen-valores-formulario>
+      </div>
+      <div class="modal-footer d-flex justify-content-end p-3 gap-2">
+        <button class="btn btn-default" (click)="cerrarDialogo()">Regresar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion" >
+  </lib-notificaciones>
+</section>
+}

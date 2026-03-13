@@ -1,0 +1,29 @@
+<h1>Permisos a cancelar</h1>
+<app-tabla-dinamica [datos]="permisosCancelar" [tipoSeleccionTabla]="TablaSeleccion"
+    [configuracionTabla]="configuracionTabla" 
+ [disableSeleccionTablaCheckBox]="esSoloLectura"
+    ></app-tabla-dinamica>
+<br>
+
+<form action="" [formGroup]="solicitud">
+    <div class="alert alert-info">
+        <label for="filaSeleccion" class="d-flex align-items-start">
+            <input  formControlName="declaracionBoolean" id="filaSeleccion" class="cursor-pointer mt-2" type="checkbox" aria-label="Seleccionar"
+                (change)="setValoresStore(solicitud,'declaracionBoolean')" /> <span class="text-danger mx-2">*</span> {{manifestoDeVeracidad}}
+        </label>
+        <div *ngIf="solicitud.get('declaracionBoolean')?.errors?.['required'] && (solicitud.get('declaracionBoolean')?.touched || solicitud.get('declaracionBoolean')?.dirty)" class="text-danger">
+            Favor de seleccionar el Manifiesto.
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-md-4 form-group">
+            <label class="form-label" for="motivoDesistimiento">Motivo desistimiento*:</label>
+            <textarea formControlName="descripcionClobGenerica1" id="motivoDesistimiento" name="motivoDesistimiento" rows="4"
+                cols="50" [ngClass]="isValid('motivoDesistimiento') ? 'required' : ''"
+                (change)="setValoresStore(solicitud,'descripcionClobGenerica1')"></textarea>
+                <div *ngIf="solicitud?.get('descripcionClobGenerica1')?.invalid && solicitud?.get('descripcionClobGenerica1')?.touched" class="text-danger">
+                    Este campo es obligatorio
+                </div>
+        </div>
+    </div>
+</form>

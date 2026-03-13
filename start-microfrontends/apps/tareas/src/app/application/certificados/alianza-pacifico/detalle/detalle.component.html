@@ -1,0 +1,98 @@
+<div class="container-fluid mt-3">
+  <lib-notificaciones *ngIf="notificacionInput" [notificacionInput]="notificacionInput"></lib-notificaciones>
+  
+  <div class="d-flex justify-content-end mb-3 gap-2">
+    <button type="button" class="btn btn-primary" (click)="onRegresar()">Regresar</button>
+    <button type="button" class="btn btn-primary" (click)="onGuardar()">Guardar</button>
+    <button type="button" class="btn btn-primary" (click)="onEnviarRespuesta()">Enviar Respuesta</button>
+  </div>
+
+  <div class="card p-3">
+    <form [formGroup]="form">
+      <div class="row mb-2 align-items-center">
+        <div class="col-md-3">
+          <label class="fw-bold">No. de Certificado</label>
+        </div>
+        <div class="col-md-4">
+          <input type="text" class="form-control" formControlName="noCertificado">
+        </div>
+      </div>
+      <div class="row mb-2 align-items-center">
+        <div class="col-md-3">
+          <label class="fw-bold">País de procedencia</label>
+        </div>
+        <div class="col-md-4">
+          <input type="text" class="form-control" formControlName="paisProcedencia">
+        </div>
+      </div>
+      <div class="row mb-3 align-items-center">
+        <div class="col-md-3">
+          <label class="fw-bold">Fecha Expedición</label>
+        </div>
+        <div class="col-md-4 position-relative">
+          <input-fecha
+            [datos]="configFechaExpedicion"
+            [setFecha]="form.get('fechaExpedicion')?.value"
+            (valorCambiado)="onFechaExpedicionChange($event)"
+          ></input-fecha>
+        </div>
+      </div>
+
+      <div class="border-top pt-3">
+        <div class="row mb-2">
+          <div class="col-md-3">
+            <label class="fw-bold"><span class="text-danger">*</span>Informar</label>
+          </div>
+          <div class="col-md-9">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="informar" id="incorrecto" [value]="true" formControlName="informar">
+              <label class="form-check-label" for="incorrecto">
+                Recibido incorrecto por el país destino
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-3">
+            <label class="fw-bold">Información adicional</label>
+          </div>
+          <div class="col-md-7">
+            <textarea class="form-control" rows="8" formControlName="informacionAdicional"></textarea>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="tabs-container mt-4">
+    <ul class="nav-tabs-custom">
+      <li class="nav-item" *ngFor="let tab of tabs; let i = index">
+        <a
+          href="javascript:void(0)"
+          class="nav-link"
+          [class.active]="activeTab === i"
+          (click)="seleccionaTab(i)"
+        >
+          {{ tab.titulo }}
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="tab-content-custom">
+    <div [ngSwitch]="activeTab">
+      <div *ngSwitchCase="0" class="p-0">
+        <app-tabla-dinamica
+          [configuracionTabla]="configuracionErrores"
+          [datos]="erroresData"
+        ></app-tabla-dinamica>
+      </div>
+      <div *ngSwitchCase="1" class="p-0">
+        <app-tabla-dinamica
+          [configuracionTabla]="configuracionSeguimiento"
+          [datos]="seguimientoData"
+        ></app-tabla-dinamica>
+      </div>
+    </div>
+  </div>
+</div>

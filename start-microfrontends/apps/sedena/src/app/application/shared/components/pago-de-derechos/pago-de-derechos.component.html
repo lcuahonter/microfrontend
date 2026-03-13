@@ -1,0 +1,148 @@
+<div class="container mt-4">
+  <ng-titulo titulo="Pago de derechos"></ng-titulo>
+
+  <form [formGroup]="pagoDerechosForm">
+    <div class="row">
+      <!-- Clave de referencia -->
+      <div class="col-md-8">
+        <label for="claveReferencia" class="form-label"
+          >Clave de referencia<span [ngClass]="{'text-danger': pagoDerechosForm.get('claveReferencia')?.invalid && (pagoDerechosForm.get('claveReferencia')?.touched || pagoDerechosForm.get('claveReferencia')?.dirty)}" *ngIf="campoObligatorio">*</span>:</label
+        >
+        
+        <input
+          type="text"
+          id="claveReferencia"
+          class="form-control"
+          formControlName="claveReferencia"
+          maxlength="50"
+          [disabled]="esFormularioSoloLectura"
+          (input)="toUppercase('claveReferencia')"
+        />
+        <div class="error-message">
+          @if (pagoDerechosForm.get('claveReferencia')?.hasError('required') && (pagoDerechosForm.get('claveReferencia')?.touched || pagoDerechosForm.get('claveReferencia')?.dirty)) {
+            <small class="mensaje-error">Este campo es obligatorio</small>
+          }
+        </div>
+      </div>
+    </div>
+    <div class="row g-3">
+      <!-- Cadena de la dependencia -->
+      <div class="col-md-8">
+        <label for="cadenaDependencia" class="form-label"
+          >Cadena de la dependencia<span [ngClass]="{'text-danger': pagoDerechosForm.get('cadenaDependencia')?.invalid && (pagoDerechosForm.get('cadenaDependencia')?.touched || pagoDerechosForm.get('cadenaDependencia')?.dirty)}" *ngIf="campoObligatorio">*</span>:</label
+        >
+        <input
+          type="text"
+          id="cadenaDependencia"
+          class="form-control"
+          formControlName="cadenaDependencia"
+          maxlength="14"
+          (input)="toUppercase('cadenaDependencia')"
+          [disabled]="esFormularioSoloLectura"
+        />
+        <div class="error-message">
+          @if (pagoDerechosForm.get('cadenaDependencia')?.hasError('required') && (pagoDerechosForm.get('cadenaDependencia')?.touched || pagoDerechosForm.get('cadenaDependencia')?.dirty)) {
+            <small class="mensaje-error">Este campo es obligatorio</small>
+          }
+        </div>       
+      </div>
+
+      <!-- Estado (using <app-catalogo-select>) -->
+      <div class="col-md-4">
+        <app-catalogo-select
+          [catalogo]="bancoDatossagar"
+          formControlName="banco"
+          [label]="'Bancosagar'"
+          [required]="true"
+          [markTouched]="pagoDerechosForm.get('banco')?.touched??false"
+          [isDisabled]="esFormularioSoloLectura"
+          (selectionChange)="pagoDerechosForm.get('banco')?.setValue($event.id)"
+        ></app-catalogo-select>   
+      </div>
+    </div>
+
+    <div class="row g-3 mt-2">
+      <!-- Llave de pago -->
+      <div class="col-md-4">
+        <label for="llavePago" class="form-label">Llave de pago<span [ngClass]="{'text-danger': pagoDerechosForm.get('llavePago')?.invalid && (pagoDerechosForm.get('llavePago')?.touched || pagoDerechosForm.get('llavePago')?.dirty)}" *ngIf="campoObligatorio">*</span>:</label>
+        <input
+          type="text"
+          id="llavePago"
+          class="form-control"
+          formControlName="llavePago"
+          maxlength="30"
+          (input)="toUppercase('llavePago')"
+          [disabled]="esFormularioSoloLectura"
+        />
+        <div class="error-message">
+          @if (pagoDerechosForm.get('llavePago')?.hasError('required') && (pagoDerechosForm.get('llavePago')?.touched || pagoDerechosForm.get('llavePago')?.dirty)) {
+            <small class="mensaje-error">Este campo es obligatorio</small>
+          } @else if (pagoDerechosForm.get('llavePago')?.hasError('pattern') && (pagoDerechosForm.get('llavePago')?.touched || pagoDerechosForm.get('llavePago')?.dirty)) {
+            <small class="mensaje-error">El formato de la llave de pago es incorrecto</small>
+          }
+        </div>      
+      </div>
+
+      <!-- Fecha de pago -->
+      <div class="col-md-4">
+        <div (focusin)="markFechaPagoAsTouched()" (click)="markFechaPagoAsTouched()">
+          <input-fecha
+            [datos]="fechaInicioInput"
+            name="fechaPago"
+            (valorCambiado)="onFechaCambiada($event)"
+            [setFecha]="pagoDerechosForm.get('fechaPago')?.value"
+            [isDisabled]="esFormularioSoloLectura"
+            [mostrarErrores]="false"
+          ></input-fecha>
+        </div>
+        <div class="error-message">
+          @if (pagoDerechosForm.get('fechaPago')?.hasError('required') && (pagoDerechosForm.get('fechaPago')?.touched || pagoDerechosForm.get('fechaPago')?.dirty)) {
+            <small class="mensaje-error">Este campo es obligatorio</small>
+          } @else if (pagoDerechosForm.get('fechaPago')?.hasError('pattern') && (pagoDerechosForm.get('fechaPago')?.touched || pagoDerechosForm.get('fechaPago')?.dirty)) {
+            <small class="mensaje-error">El formato de fecha es incorrecto</small>
+          }
+        </div>       
+      </div>
+
+      <!-- Importe de pago -->
+      <div class="col-md-4">
+        <label for="importePago" class="form-label">Importe de pago<span [ngClass]="{'text-danger': pagoDerechosForm.get('importePago')?.invalid && (pagoDerechosForm.get('importePago')?.touched || pagoDerechosForm.get('importePago')?.dirty)}" *ngIf="campoObligatorio">*</span>:</label>
+        <input
+          type="text"
+          id="importePago"
+          class="form-control"
+          formControlName="importePago"
+          maxlength="16"
+          (input)="toUppercase('importePago')"
+          (click)="mostrarMensajeComa()"
+          [disabled]="esFormularioSoloLectura"
+        />
+        <div class="error-message">
+          @if (mostrarMensajeComaVisible) {
+            <small class="mensaje-coma-personalizado">No está permitido capturar "," (COMA)</small>
+          } @else if (pagoDerechosForm.get('importePago')?.hasError('required') && (pagoDerechosForm.get('importePago')?.touched || pagoDerechosForm.get('importePago')?.dirty)) {
+            <small class="mensaje-error">Este campo es obligatorio</small>
+          } @else if (pagoDerechosForm.get('importePago')?.hasError('pattern') && (pagoDerechosForm.get('importePago')?.touched || pagoDerechosForm.get('importePago')?.dirty)) {
+            <small class="mensaje-error">Por favor, escribe un valor menor o igual a 10000000000000000</small>
+          }
+        </div>       
+      </div>
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-md-12">
+        <div class="pull-right">
+          <button
+            type="button"
+            name="agregarMercancias"
+            class="btn btn-primary ms-2"
+            (click)="onReset()"
+            [disabled]="esFormularioSoloLectura"
+          >
+            Borrar datos del pago
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

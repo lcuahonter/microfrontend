@@ -1,0 +1,90 @@
+<div class="container">
+    <div>
+        <ng-titulo titulo="Datos del certificado"></ng-titulo>
+        <form [formGroup]="datosDelCertificado" novalidate>
+            <div class="row">
+
+                <div class="col-md-12 mb-4">
+                    <label class="form-label" for="lugar">Lugar*:</label>
+                    <input type="text" class="form-control" id="lugar" placeholder="Tamaulipas 15 cl: centro"
+                        formControlName="lugar"
+                        [class.bg-white]="!datosDelCertificado.get('lugar')?.disabled"
+                        [class.is-invalid]="datosDelCertificado.get('lugar')?.touched && datosDelCertificado.get('lugar')?.invalid"
+                        maxlength="120"
+                        (change)="setValorStore(datosDelCertificado,'lugar')"
+                        >
+                    <div class="invalid-feedback">Este campo es obligatorio.</div>
+                </div>
+
+                <div class="col-md-12 mb-5">
+                    <label class="form-label" for="observaciones">Observaciones:</label>
+                    <textarea class="form-control custom-textarea" id="observaciones"
+                        placeholder="Este es un texto de prueba para el llenado de los formularios del sistema." 
+                        formControlName="observaciones"
+                        [class.bg-white]="!datosDelCertificado.get('observaciones')?.disabled"
+                        [class.is-invalid]="datosDelCertificado.get('observaciones')?.touched && datosDelCertificado.get('observaciones')?.invalid"
+                        (change)="setValorStore(datosDelCertificado,'observaciones')"
+                        maxlength="80"
+                        [disabled]="esSoloLectura">
+                    </textarea>
+                    <div class="invalid-feedback">Este campo es obligatorio.</div>
+                </div>
+
+            </div>
+        </form>
+
+    </div>
+    <label class="form-label mt-5" for="mercanciasseleccionadas">Mercancías seleccionadas</label>
+    <app-tabla-dinamica
+    [configuracionTabla]="arregloConfiguracionTabla"
+    [datos]="datos || []"
+    [tipoSeleccionTabla]="radioDeMesa"
+    (filaSeleccionada)="manejarFilaSeleccionada($event)"
+    [disableSeleccionTablaRadio]="esSoloLectura"
+    >
+    </app-tabla-dinamica>
+    <div class="col-md-12">
+            <app-table-pagination [showCurrentPage]="true"></app-table-pagination>
+    </div>
+    <div class="col-md-12">
+    <button type="button" class="btn btn-primary col-auto pull-right float-end mt-3" (click)="onModificarClick()"
+    [disabled]="esSoloLectura">
+      Modificar
+    </button>
+    </div>
+
+</div>
+
+
+<div class="modal fade custom-backdrop" id="mercanciasSeleccionadas" tabindex="-1"
+  aria-labelledby="mercanciasSeleccionadasLabel" data-bs-backdrop="static"
+  #mercanciasSeleccionadas>
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title mt-0">Modificar</h4>
+      </div>
+ 
+      <div class="modal-body">
+        <app-mercancias-seleccionadas-form [selectedRow]="filaSeleccionada" (closeModalEvent)="modalCancelar()" (datosModificados)="onDatosModificados($event)"></app-mercancias-seleccionadas-form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para alerta de selección de mercancía -->
+<div class="modal fade" id="modalSeleccionMercancia" tabindex="-1" aria-labelledby="modalSeleccionMercanciaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 350px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalSeleccionMercanciaLabel"></h5>
+      </div>
+      <div class="modal-body text-center">
+        <p>Debes seleccionar una<br>mercancía</p>
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="cerrarSeleccionMercanciaModal()">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>

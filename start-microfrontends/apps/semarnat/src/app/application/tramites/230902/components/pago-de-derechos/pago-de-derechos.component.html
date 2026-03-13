@@ -1,0 +1,70 @@
+<div class="container-fluid px-0">
+  <ng-titulo titulo="Pago de derechos" />
+  <form [formGroup]="formPagoDerechos">
+    <div class="form">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="control-label" for="claveDeReferencia">Clave de referencia*:</label>
+            <input class="form-control" id="claveDeReferencia" type="number" placeholder="084000966"
+              formControlName="claveDeReferencia" [required]="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="control-label" for="cadenaPagoDependencia">Cadena de la dependencia*:</label>
+            <input class="form-control" id="cadenaPagoDependencia" type="number" placeholder="00130090940161"
+              formControlName="cadenaPagoDependencia" [required]="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <app-catalogo-select [catalogo]="this.permisoCitesService.banco" formControlName="banco" [label]="'Banco'"
+              [required]="true" name="banco" [isDisabled]="esFormularioSoloLectura" (change)="setValoresStore(formPagoDerechos,'banco')"></app-catalogo-select>
+              <div *ngIf="formPagoDerechos.get('banco')?.touched && formPagoDerechos.get('banco')?.invalid">
+              <small *ngIf="formPagoDerechos.get('banco')?.errors?.['required']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="control-label" for="llaveDePago">Llave de pago*:</label>
+            <input class="form-control" id="llaveDePago" type="text" formControlName="llaveDePago" [required]="true" maxlength="10"
+              [class.is-invalid]="formPagoDerechos.get('llaveDePago')?.touched && formPagoDerechos.get('llaveDePago')?.invalid"
+              (input)="onllavaDePagoChange()" (change)="setValoresStore(formPagoDerechos,'llaveDePago')">
+            <div class="invalid-feedback"
+              *ngIf="formPagoDerechos.get('llaveDePago')?.touched && formPagoDerechos.get('llaveDePago')?.invalid">
+              <span *ngIf="formPagoDerechos.get('llaveDePago')?.hasError('required')">Este campo es
+                obligatorio.</span>
+              <small *ngIf="formPagoDerechos.get('llaveDePago')?.hasError('pattern') && !showError">Debe capturar el formato correcto</small>
+            </div>
+            <small class="text-danger" *ngIf="showError">Existen datos incorrectos que no cumplen con el formato esperado</small>
+          </div>
+        </div>
+        <div class="col-md-4" [ngClass]="{ 'disabled-field': esFormularioSoloLectura }">
+          <input-fecha [setFecha]="formPagoDerechos.get('fecPago')?.value" [isDisabled]="esFormularioSoloLectura"  [datos]="fechaFinalInput" (valorCambiado)="cambioFechaFinal($event)"  [class.is-invalid]="formPagoDerechos.get('fecPago')?.touched && formPagoDerechos.get('fecPago')?.invalid">
+          </input-fecha>
+          
+          <div class="invalid-feedback"
+            *ngIf="formPagoDerechos.get('fecPago')?.touched && formPagoDerechos.get('fecPago')?.invalid">
+            <span *ngIf="formPagoDerechos.get('fecPago')?.hasError('required')">Este campo es obligatorio.</span>
+          </div>
+          <small class="text-danger" *ngIf="pagoError">La fecha de pago debe ser menor o igual a la fecha actual.</small>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="control-label" for="impPago">Importe de pago*:</label>
+            <input class="form-control" id="impPago" type="number" placeholder="672"
+              formControlName="impPago" [required]="true" />
+              <div *ngIf="formPagoDerechos.get('impPago')?.touched && formPagoDerechos.get('impPago')?.invalid">
+              <small *ngIf="formPagoDerechos.get('impPago')?.errors?.['required']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

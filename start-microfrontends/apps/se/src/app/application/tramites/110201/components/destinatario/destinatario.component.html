@@ -1,0 +1,99 @@
+<form [formGroup]="registroForm" (ngSubmit)="validarDestinatarioFormulario()">
+  <ng-container formGroupName="validacionForm">
+    <ng-titulo titulo="Datos del destinatario" />
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <label>Nombre(s):</label>
+        <input type="text" class="form-control" formControlName="nombre" maxlength="20" (change)="setValoresStore(validacionForm, 'nombre', 'setNombre')" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label>Primer apellido:</label>
+        <input type="text" class="form-control" id="primerApellido" formControlName="apellidoPrimer" maxlength="20" (click)="onClick()" (change)=" setValoresStore(validacionForm,'apellidoPrimer','setApellidoPrimer')" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label>Segundo apellido:</label>
+        <input type="text" class="form-control" id="segundoApellido" formControlName="apellidoSegundo" maxlength="20" (change)="setValoresStore( validacionForm, 'apellidoSegundo','setApellidoSegundo')" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <label>Número de registro fiscal*:</label>
+        <input type="text" class="form-control" id="denominacion" formControlName="numeroFiscal" maxlength="30" (change)=" setValoresStore(validacionForm, 'numeroFiscal', 'setNumeroFiscal') " />
+        <div *ngIf="registroForm.get('validacionForm.numeroFiscal')?.invalid && registroForm.get('validacionForm.numeroFiscal')?.touched" class="text-danger">
+          <small class="text-danger" *ngIf="registroForm.get('validacionForm.numeroFiscal')?.errors?.['required']">Este campo es obligatorio.</small>
+          <small class="text-danger" *ngIf="registroForm.get('validacionForm.numeroFiscal')?.errors?.['maxlength']">Por favor, no escribas más de 30 caracteres</small>
+        </div>
+      </div>
+      <div class="col-md-8 mb-3">
+        <label>Razón social:</label>
+        <input type="text" class="form-control" [ngClass]="{'gray-class': registroForm.get('validacionForm.apellidoPrimer')?.value !== ''}" id="denominacion" [readonly]="registroForm.get('validacionForm.apellidoPrimer')?.value !== ''" formControlName="razonSocial" (change)="setValoresStore(validacionForm, 'razonSocial', 'setRazonSocial')" />
+      </div>
+    </div>
+    <ng-titulo titulo="Domicilio del destinatario" />
+    <div class="row">
+      <div class="col-md-8 mb-3">
+        <label>Ciudad (población, estado o provincia)*:</label>
+        <input type="text" class="form-control" id="denominacion" formControlName="ciudad" maxlength="50" (change)="setValoresStore(validacionForm, 'ciudad', 'setCiudad')" />
+        <div *ngIf="registroForm.get('validacionForm.ciudad')?.invalid && registroForm.get('validacionForm.ciudad')?.touched" class="text-danger">
+          <small class="text-danger" *ngIf="registroForm.get('validacionForm.ciudad')?.errors?.['required']">Este campo es obligatorio.</small>
+          <small class="text-danger" *ngIf="registroForm.get('validacionForm.ciudad')?.errors?.['maxlength']">Por favor, no escribas más de 50 caracteres</small>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <label>Calle*:</label>
+        <input type="text" class="form-control" id="nombre" formControlName="calle" maxlength="90" (change)="setValoresStore(validacionForm, 'calle', 'setCalle')" />
+        <div *ngIf="registroForm.get('validacionForm.calle')?.invalid && registroForm.get('validacionForm.calle')?.touched" class="text-danger">
+          <small class="text-danger" *ngIf="registroForm.get('validacionForm.calle')?.errors?.['required']">Este campo es obligatorio.</small>
+          <small class="text-danger" *ngIf="registroForm.get('validacionForm.calle')?.errors?.['maxlength']">Por favor, no escribas más de 90 caracteres</small>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <label>Número y/o letra*:</label>
+        <input type="text" class="form-control" id="primerApellido" formControlName="numeroLetra" maxlength="30" (change)=" setValoresStore(validacionForm, 'numeroLetra', 'setNumeroLetra') " />
+        <div *ngIf="registroForm.get('validacionForm.numeroLetra')?.invalid && registroForm.get('validacionForm.numeroLetra')?.touched" class="text-danger">
+          <small class="text-danger" *ngIf="registroForm.get('validacionForm.numeroLetra')?.errors?.['required']">Este campo es obligatorio.</small>
+          <small class="text-danger" *ngIf="registroForm.get('validacionForm.numeroLetra')?.errors?.['maxlength']">Por favor, no escribas más de 30 caracteres</small>
+        </div>
+      </div>
+      <div class="col-md-1 mb-3">
+        <label>Lada:</label>
+        <input type="text" class="form-control" id="segundoApellido" formControlName="lada" (change)="setValoresStore(validacionForm, 'lada', 'setLada')" />
+      </div>
+      <div class="col-md-3 mb-3">
+        <label>Teléfono:</label>
+        <input type="text" class="form-control" id="segundoApellido" formControlName="telefono" maxlength="10" (input)="soloDigitos($event)" (change)="setValoresStore(validacionForm, 'telefono', 'setTelefono')" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <label>Fax:</label>
+        <input type="number" class="form-control" id="nombre" formControlName="fax" maxlength="20" (change)="setValoresStore(validacionForm, 'fax', 'setFax')" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label>Correo electrónico*:</label>
+        <span class="bi bi-question-circle-fill fs-4 m-1" data-bs-title="ejemplo@dominio.com" data-bs-toggle="tooltip"></span>
+        <input type="email" class="form-control" formControlName="correoElectronico" maxlength="70" (change)=" setValoresStore( validacionForm, 'correoElectronico', 'setCorreoElectronico' ) " />
+        <div *ngIf="registroForm.get('validacionForm.correoElectronico')?.invalid && registroForm.get('validacionForm.correoElectronico')?.touched" class="text-danger">
+          <small class="text-danger" *ngIf="registroForm.get('validacionForm.correoElectronico')?.errors?.['required']">Este campo es obligatorio.</small>
+          <small class="text-danger" *ngIf="registroForm.get('validacionForm.correoElectronico')?.errors?.['email']">Por favor, escribe una dirección de correo válida</small>
+          <small class="text-danger" *ngIf="registroForm.get('validacionForm.correoElectronico')?.errors?.['maxlength']">Por favor, no escribas más de 70 caracteres</small>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8 mb-3">
+        <app-catalogo-select [catalogo]="nacionOptions.catalogos" [required]="true" [label]="'País destino'" 
+        (selectionChange)="onNacionChange($event)"
+        formControlName="nacion" (change)="setValoresStore(validacionForm, 'nacion', 'setNacion')" [isDisabled]="soloLectura" [markTouched]="registroForm.get('validacionForm.nacion')?.touched??false"></app-catalogo-select>
+      </div>
+    </div>
+    <ng-titulo titulo="Detalles del transporte" />
+    <div class="col-md-8 mb-3">
+      <app-catalogo-select [catalogo]="transporteOptions.catalogos" [label]="'Medio de transporte'" formControlName="transporte" [required]="true" (change)="setValoresStore(validacionForm, 'transporte', 'setTransporte') " 
+      (selectionChange)="onTransporteChange($event)"
+      [isDisabled]="soloLectura" [markTouched]="registroForm.get('validacionForm.transporte')?.touched??false"></app-catalogo-select>
+    </div>
+  </ng-container>
+</form>

@@ -1,0 +1,64 @@
+<div class="criterios-container">
+  <div class="row mb-3 d-flex justify-content-end">
+    <div class="col-auto">
+      <button type="button" class="btn btn-primary" (click)="onBuscar()">
+        Buscar
+      </button>
+    </div>
+    <div class="col-auto">
+      <button type="button" class="btn btn-primary" (click)="onExportar()">
+        Exportar excel
+      </button>
+    </div>
+  </div>
+  <div class="row p-3">
+    <form [formGroup]="form">
+      <div class="col-md-4">
+        <div class="form-group">
+          <input-fecha
+            [datos]="configFechaInicio"
+            (valorCambiado)="onFechaInicioChange($event)"
+          ></input-fecha>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <input-fecha
+            [datos]="configFechaFin"
+            (valorCambiado)="onFechaFinChange($event)"
+            [marcarError]="form.errors?.['dateRangeInvalid']"
+          ></input-fecha>
+          <div class="text-danger" *ngIf="form.errors?.['dateRangeInvalid']">
+            <small
+              >La fecha fin debe ser posterior o igual a la fecha de inicio de
+              vigencia</small
+            >
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="tipoTramite">Tipo trámite:</label>
+          <select
+            id="tipoTramite"
+            class="form-control form-select"
+            formControlName="tipoTramite"
+          >
+            <option [ngValue]="null">Selecciona un valor</option>
+            <option
+              *ngFor="let tipoTramite of configTipoTramite.catalogos"
+              [value]="tipoTramite.clave"
+            >
+              {{ tipoTramite.descripcion }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </form>
+  </div>
+  <lib-notificaciones
+    *ngIf="configNotificacion"
+    [notificacionInput]="configNotificacion"
+    (confirmacionModal)="onConfirmarModal($event)"
+  ></lib-notificaciones>
+</div>

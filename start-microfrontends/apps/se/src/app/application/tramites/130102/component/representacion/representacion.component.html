@@ -1,0 +1,46 @@
+<div class="container">
+  <ng-titulo titulo="Representación federal"></ng-titulo>
+  <form [formGroup]="frmRepresentacion">
+    <div class="row">
+      <div class="col-md-4 form-group">
+        <label for="entidad" class="form-label">Entidad federativa*:</label>
+          <select class="form-control form-select" formControlName="entidad" (change)="setValoresStore(frmRepresentacion,'entidad', 'setEntidad'); onChangeEntidad(frmRepresentacion)">
+            <option [ngValue]="null">Seleccione una opción</option>
+            <option *ngFor="let ent of entidadFederativaLista" [value]="ent.clave">
+              {{ ent.descripcion }}
+            </option>
+          </select>
+        @if (frmRepresentacion.controls['entidad'].invalid && frmRepresentacion.controls['entidad'].touched) {
+          <div class="text-danger">
+            @if (frmRepresentacion.controls['entidad'].errors?.['required']) {
+              <small>Debe seleccionar una opción.</small>
+            }
+          </div>
+        }
+        
+      </div>
+      <div class="col-md-4 form-group">
+        <label for="representacion" class="form-label">Representación federal*:</label>
+          <select class="form-control form-select" formControlName="representacion" (change)="setValoresStore(frmRepresentacion,'representacion', 'setRepresentacion')">
+            <option [ngValue]="null">Selecciona una opción</option>
+            <option *ngFor="let rep of representacionFederalLista" [value]="rep.clave">
+              {{ rep.descripcion }}
+            </option>
+          </select>
+        @if (frmRepresentacion.controls['representacion'].invalid && frmRepresentacion.controls['representacion'].touched) {
+          <div class="text-danger">
+            @if (frmRepresentacion.controls['representacion'].errors?.['required']) {
+              <small>Debe seleccionar una opción.</small>
+            }
+          </div>
+        }
+        
+      </div>
+    </div>
+    <table>
+      <tr>
+        <td colspan="2">&nbsp;</td>
+      </tr>
+    </table>
+  </form>
+</div>

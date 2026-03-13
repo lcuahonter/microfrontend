@@ -1,0 +1,36 @@
+<form [formGroup]="formularioExportadorAutorizado">
+        <ng-titulo [titulo]="'¿Desea usar la opción de exportador autorizado?'"></ng-titulo>
+    <div class="row" *ngIf="formularioExportadorAutorizado.get('exportadorAutorizadoJPN')?.value">
+        <div class="col-md-12">
+            <div class="alert alert-info d-flex align-items-start">
+                <div class="form-check text-center">
+                    <span class="form-check-label" for="protesta">
+                        <p class="font-wt-500">Seleccione la condición que le permite usar la opción de exportador autorizado:</p>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="row">
+            <div class="col-md-8">
+                <p><input class="form-check-input me-2" type="checkbox" id="exportadorAutorizadoJPN" [disabled]="esFormularioSoloLectura" 
+                    formControlName="exportadorAutorizadoJPN"  (change)="setValoresStore(formularioExportadorAutorizado, 'exportadorAutorizadoJPN', 'setExportadorAutorizadoJPN')">
+                    ¿Desea usar la opción de exportador autorizado?
+                </p>
+            </div>
+        </div>
+    <div class="row p-4" *ngIf="formularioExportadorAutorizado.get('exportadorAutorizadoJPN')?.value">
+        <div class="col-md-12">
+            <div *ngFor="let opcion of radioOpcions"  class="radio-label-wrap">
+                <input type="radio" [id]="opcion.value" [value]="opcion.value"
+                    [disabled]="esFormularioSoloLectura" formControlName="informacionRadiosJPN" 
+                    (change)="setValoresStore(formularioExportadorAutorizado, 'informacionRadiosJPN', 'setInformacionRadiosJPN')"/>
+                <span class="etiqueta-de-radio radio-label-margin-left" [title]="opcion.label">
+                    {{ opcion.label }}
+                </span>
+                <span class="p-2" *ngIf="opcion.label" tooltip="{{opcion.value }}">
+                </span>
+            </div>
+        </div>
+    </div>
+</form>

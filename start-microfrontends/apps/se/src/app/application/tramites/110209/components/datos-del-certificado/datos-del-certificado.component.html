@@ -1,0 +1,53 @@
+<form [formGroup]="datosDelCertificadoForm">
+    <ng-titulo [titulo]="'Datos del certificado'"></ng-titulo>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="observaciones" class="form-label">Observaciones:</label>
+                    <textarea class="form-control" id="observaciones" formControlName="observaciones"
+                        
+                        (change)="setValoresStore(datosDelCertificadoForm,'observaciones')"
+                        rows="6"></textarea>
+                        <div *ngIf="datosDelCertificadoForm.get('observaciones')?.touched && datosDelCertificadoForm.get('observaciones')?.invalid">
+                            <small *ngIf="datosDelCertificadoForm.get('observaciones')?.errors?.['pattern']" class="text-danger">Por favor, corrija la observaciones.</small>
+                          </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="form">
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <label for="mercancíasSeleccionadas" class="form-label">Mercancías seleccionadas</label>
+            <div>
+                <app-tabla-dinamica [configuracionTabla]="configuracionTabla" [datos]="datosTabla" [disableSeleccionTablaRadio]="esFormularioSoloLectura"
+                    [tipoSeleccionTabla]="seleccionTabla" (filaSeleccionada)="getMercanciasSeleccionadas($event)" ></app-tabla-dinamica>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end mt-4 p-5">
+            <button class="btn btn-primary ml-auto" (click)="navegar()" [disabled]="esFormularioSoloLectura">Modificar</button>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade custom-backdrop" id="registrodeMercancia" tabindex="-1"
+  aria-labelledby="registrodeMercanciaLabel" data-bs-backdrop="static"
+  #registrodeMercancia>
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title mt-0">Modificar</h4>
+      </div>
+ 
+      <div class="modal-body">
+       <app-registro-de-mercancia #registroMercancia></app-registro-de-mercancia>
+ 
+        <footer class="footer d-flex py-5 gap-3 justify-content-end">
+          <button type="button" class="btn btn-primary" (click)="modalCancelar()">Cancelar</button>
+          <button type="button" class="btn btn-primary" (click)="onModificar()">Modificar</button>
+        </footer>
+      </div>
+    </div>
+  </div>
+</div>

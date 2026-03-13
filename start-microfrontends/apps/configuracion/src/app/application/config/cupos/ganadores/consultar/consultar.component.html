@@ -1,0 +1,64 @@
+<div class="container">
+    <div class="page">
+        <header>
+            <h2 class="titulo titulo-gold mb-5">Consulta de Asignación de Ganadores de LP(Licitación Pública)</h2>
+        </header>
+        <section class="p-5 bg-light form-busqueda-container">
+            <h4>Criterios de busqueda</h4>
+            @if(alertaVisible){
+            <br />
+            <ng-alert [CONTENIDO]="mensajeAlerta" [CUSTOMECLASS]="claseAlerta" />
+            }
+            <form [formGroup]="FormBusquedaTramite">
+                <div class="form-field">
+                    <label class="form-label" for="">No. Licitación</label>
+                    <select id="licitacion" formControlName="licitacion" class="form-select form-control"
+                        [class.is-invalid]="licitacionSeleccionada?.invalid && (licitacionSeleccionada?.touched || licitacionSeleccionada?.dirty)">
+                        >
+                        @if (listaLicitaciones$ | async; as lista) {
+                        @for (licitacion of lista; track licitacion.value) {
+                        <option value="{{licitacion.value}}">
+                            {{licitacion.label}}
+                        </option>
+                        }
+                        }
+                    </select>
+                    @if (licitacionSeleccionada?.invalid && (licitacionSeleccionada?.dirty ||
+                    licitacionSeleccionada?.touched)) {
+                    <div class="invalid-feedback">
+                        @if (licitacionSeleccionada?.hasError('required')) {
+                        <div>Debe seleccionar una licitacion.</div>
+                        }
+                    </div>
+                    }
+                </div>
+                <div class="form-field">
+                    <label class="form-label" for="">Producto</label>
+                    <input class="form-control" id="producto" type="text" formControlName="producto">
+                </div>
+                <div class="form-field">
+                    <label class="form-label" for="">Clasificación de subproducto</label>
+                    <input class="form-control" id="clasificacion" type="text" formControlName="clasificacion">
+                </div>
+            </form>
+            <div class="controles-form mt-3">
+                <button (click)="buscarTramites()" class="btn btn-primary" type="button">Buscar</button>
+                <button class="btn btn-danger" type="button">Cancelar</button>
+            </div>
+        </section>
+        <br />
+        <section>
+            <h5>Resultados de Búsqueda.</h5>
+            <div>
+                <app-tabla-dinamica [configuracionTabla]="configuracionTabla" [datos]="listaGanadores" [mode]="'client'"
+                    [totalItems]="listaGanadores.length" [showPagination]="true" [itemsPerPage]="listaGanadores.length" />
+            </div>
+            <table class="w-100">
+                <tr class="w-full">
+                    <td class="w-full" style="text-align: end;"><b>TOTAL {{totalMontos}}</b></td>
+                </tr>
+            </table>
+        </section>
+    </div>
+</div>
+<br />

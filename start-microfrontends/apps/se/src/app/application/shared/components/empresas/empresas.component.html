@@ -1,0 +1,98 @@
+<div class="container">
+<ng-titulo [titulo]="tituloEmpresas" />    
+<form [formGroup]="empresasForm">
+<div class="row">
+    <div class="col-md-4">     
+        <div class="form-group">
+          <label class="form-label" for="rfc">RFC<span [ngClass]="{ 'text-danger': isValid(empresasForm, 'rfc') }">*</span>:</label>
+          <input
+            class="form-control"
+            id="rfc"
+            type="text"
+            maxlength="13"
+            formControlName="rfc"
+            (change)="setValoresStore(empresasForm, 'rfc', 'setRfc')"
+            [ngClass]="isValid(empresasForm, 'rfc') ? 'required' : ''"
+          />
+        </div>
+      @if (empresasForm.controls['rfc'].invalid && empresasForm.controls['rfc'].touched) {
+        <div class="d-grid">
+          @if (empresasForm.controls['rfc'].errors?.['required']) {
+            <span class="mensaje-error">Este campo es obligatorio</span>
+          }
+          @if (empresasForm.controls['rfc'].errors?.['maxlength']) {
+            <span class="mensaje-error">No puede exceder los 13 caracteres.</span>
+          }
+        </div>
+      }
+    </div>
+    <div class="col-md-4">
+        <div class="form-group"> 
+            <app-catalogo-select [catalogo]="estadosCatalogo" formControlName="estado" [label]="'Estado'" [isDisabled]="esFormularioSoloLectura"
+            [required]="true" name="estado" (change)="setValoresStore(empresasForm, 'estado', 'setEstado')">
+          </app-catalogo-select>
+          </div>
+    </div>
+</div>
+<div class="col-md-12 mt-5 d-flex justify-content-end">
+    <button type="button" class="btn btn-primary ms-3"  (click)="buscarControladoras()" [disabled]="esFormularioSoloLectura">Buscar controladoras</button>
+</div>
+<div class="row">
+  <h6>{{ tituloDisponibles }}</h6>
+    <app-tabla-dinamica
+      [configuracionTabla]="configuracionTablaDatos"
+      [datos]="disponibles"
+      [tipoSeleccionTabla]="checkbox"
+      [tipoSeleccionTabla]="checkbox" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+      (listaDeFilaSeleccionada)="onDisponiblesRowSelected($event)"
+    ></app-tabla-dinamica>
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center">
+        <li class="page-item"><a class="page-link">1</a></li>
+      </ul>
+    </nav>
+</div>
+<div class="col-md-12 mt-5 d-flex justify-content-end">
+    <button type="button" class="btn btn-primary ms-3" (click)="agregarPlantas()" [disabled]="esFormularioSoloLectura">Agregar plantas</button>
+</div>
+<div class="row">
+  <h6>{{ tituloSeleccionadas }}</h6>
+    <app-tabla-dinamica
+      [configuracionTabla]="configuracionTablaDatos"
+      [datos]="seleccionadas"
+      [tipoSeleccionTabla]="checkbox"
+      [tipoSeleccionTabla]="checkbox" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+      (listaDeFilaSeleccionada)="onSeleccionadasRowSelected($event)"
+    ></app-tabla-dinamica>
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center">
+        <li class="page-item"><a class="page-link">1</a></li>
+      </ul>
+    </nav>
+</div>
+<div class="col-md-12 mt-5 d-flex justify-content-end">
+  <button type="button" class="btn btn-danger ms-3" [disabled]="esFormularioSoloLectura" (click)="eliminarPlantas()">Eliminar plantas</button>
+
+</div>
+
+</form>
+</div>
+
+@if (NotValidRfcNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="NotValidRfcNotificacion"
+    >
+  </lib-notificaciones>
+</section>
+}
+
+@if (ComponentNotificacion) {
+<section>
+  <lib-notificaciones 
+    [notificacionInput]="ComponentNotificacion"
+    [invertirBotones]="isConfirmationNotification"
+    (confirmacionModal)="onNotificationConfirmacion($event)"
+    >
+  </lib-notificaciones>
+</section>
+}

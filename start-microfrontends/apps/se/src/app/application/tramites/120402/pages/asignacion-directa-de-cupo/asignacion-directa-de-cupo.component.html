@@ -1,0 +1,87 @@
+<div class="Page">
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-12">
+        <h1>Asignación directa de cupo personas morales (primera vez)</h1>
+      </div>
+      
+      <!-- Validation messages above wizard -->
+      @if (mostrarMensajeValidacion) {
+        <div class="col-md-12 mb-3">
+          <div class="alert alert-primary alert-dismissible fade show custom-info-alert" role="alert" (click)="cerrarMensajeValidacion()">
+            {{ mensajeValidacion }}
+            </div>
+        </div>
+      }
+      <div class="col-12">
+        @if(esFormaValido){
+        <div class="col-md-12">
+          <ng-alert [CONTENIDO]="formErrorAlert" [CUSTOMECLASS]="'alert-danger'"></ng-alert>
+        </div>
+        }
+      </div>
+      
+      <app-wizard [listaPasos]="pantallasPasos"></app-wizard>
+      
+        @if(indice ===3 && guardarIdSolicitud > 0){
+          <div class="col-md-12">
+            <ng-alert [CONTENIDO]="TEXTOS_FIRMAR"></ng-alert>
+          </div>
+        }
+    </div>
+    <div class="row">
+      @switch (indice) { @case (1) {
+      <app-datos></app-datos>
+      } @case (2) {
+      <app-paso-carga-documento 
+        [idSolicitud]="guardarIdSolicitud"
+        [idTipoTRamite]="'120402'"
+        [cargaArchivosEvento]="cargarArchivosEvento"
+        (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+        (reenviarCargaRealizada)="cargaRealizada($event)"
+        (cargaEnProgreso)="onCargaEnProgreso($event)"
+        ></app-paso-carga-documento>
+      } @case (3) {
+      <paso-firma [idSolicitud]="guardarIdSolicitud" [procedure]="120402" [procedureUrl]="'asignacion-directa-cupo-personas-fisicas/solicitante'"></paso-firma>
+      }
+     }
+    </div>
+
+     <div class="col-md-12">
+        @if (indice !== 2) {
+         <btn-continuar
+          [datos]="datosPasos"
+          [dePadre]="!consultaState.readonly ? true : false"
+          (continuarEvento)="getValorIndice($event)"
+          ></btn-continuar>
+        } @else {
+        <div class="mt-5 mb-3 d-flex justify-content-end">
+          <button
+            type="button"
+            class="btn btn-default"
+            (click)="anterior()"
+            *ngIf="seccionCargarDocumentos"
+          >
+            Anterior
+          </button>
+
+          <button
+            class="btn btn-primary ms-3"
+            (click)="
+              seccionCargarDocumentos ? onClickCargaArchivos() : siguiente()
+            "
+            [disabled]="(seccionCargarDocumentos && !activarBotonCargaArchivos) || (!seccionCargarDocumentos && cargaEnProgreso)"
+          >
+            {{ seccionCargarDocumentos ? 'Cargar archivos' : 'Continuar' }}
+          </button>
+        </div>
+        }
+      </div>
+  </div>
+  </div>
+
+  <div class="container">
+    <div class="row">    
+      <ng-alert [CONTENIDO]="TEXTOS.AVISO.Aviso"></ng-alert>
+    </div>   
+  </div>

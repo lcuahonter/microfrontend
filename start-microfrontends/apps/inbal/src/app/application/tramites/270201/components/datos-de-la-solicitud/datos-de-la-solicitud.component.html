@@ -1,0 +1,220 @@
+<div class="container">
+    <div *ngIf="showTableDiv">
+        <form [formGroup]="solicitudFormGroup">
+            <div class="tipo-dropdown-container mt-5">
+                <div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <app-catalogo-select [catalogo]="operacionData" [label]="'Tipo de operacíon'"
+                                [required]="true" for="tipoDeOperacion" id="tipoDeOperacion"
+                                formControlName="tipoDeOperacion" (change)="actualizarOperacion()" [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 ms-5">
+                        <div class="form-group">
+                            <app-catalogo-select [catalogo]="movimientoData" [label]="'Tipo de movimiento'"
+                                [required]="true" for="tipoDeMovimiento" id="tipoDeMovimiento"
+                                formControlName="tipoDeMovimiento"  (change)="actualizarMovimiento()" [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+
+                <div class="obra-De-Arte-table mt-5">
+                    <label class="form-label" for="obraDeArteInformacion">Información obra de arte*:</label>
+                    <div class="table-responsive">
+                        <ng-table [commonTableHeader]="tablaObraDeArteData" [commonTableBody]="obraDeArteRowData" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"></ng-table>
+                    </div>
+                </div>
+
+                <div class="col-md-12 mt-5 d-flex justify-content-end">
+                    <button type="button" class="btn btn-danger" [disabled]="esFormularioSoloLectura">Eliminar</button>
+                    <button type="button" class="btn btn-primary ms-3" (click)="toggleObraDeArte()" [disabled]="esFormularioSoloLectura">Agregar</button>
+                </div>
+            </div>
+
+            <div class="motivo-importacion">
+                <ng-titulo titulo="Motivo" />
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <app-catalogo-select [catalogo]="motivoData" [label]="'Motivo'" [required]="true" for="motivo"
+                            id="motivo" formControlName="motivo"  (change)="actualizarMotivo()" [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="clearfix"></div>
+
+            <div class="procedencia-container mt-4">
+                <ng-titulo titulo="Destino o procedencia" />
+                <div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <app-catalogo-select [catalogo]="paisData" [label]="'País'" [required]="true" for="pais"
+                                id="pais" formControlName="pais"  (change)="actualizarPais()" [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label" for="ciudad">Ciudad*:</label>
+                        <input type="text" class="form-control" id="ciudad" formControlName="ciudad" name="ciudad"
+                            [required]="true" (input)="actualizarCiudad()">
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <app-catalogo-select [catalogo]="transporteData" [label]="'Medio de transporte'"
+                                [required]="true" for="medioTransporte" id="medioTransporte"
+                                formControlName="medioTransporte" (change)="actualizarTransporte()" [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="clearfix"></div>
+
+            <div class="aduana-container mt-4">
+                <ng-titulo titulo="Aduana" />
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <app-catalogo-select [catalogo]="aduanaData" [label]="'Aduana de entrada'" [required]="true"
+                            for="aduanaEntrada" id="aduanaEntrada"
+                            formControlName="aduanaEntrada" name="aduanaData" (change)="actualizarAduana()" [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="clearfix"></div>
+
+            <div class="manifiesto-container mt-4">
+                <ng-titulo titulo="Manifiesto" />
+                <div class="alert alert-info content-with-checkbox py-6">
+                  <input formControlName="manifiesto" type="checkbox" id="manifiesto" /> 
+                  <div>{{manifiestosText}}</div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<app-modal [active]="showObraDeArteModal">
+    <div class="row">
+        <ng-titulo titulo="Informacion de la obra de arte que se pretende importar/exportar" />
+        <form [formGroup]="obraDeArteFormgroup">
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="form-label" for="autor">Autor*:</label>
+                    <input type="text" class="form-control" id="autor" formControlName="autor" name="autor" (input)="actualizarAutor()"
+                        placeholder="Inserta autor" [required]=true>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="titulo">Título*:</label>
+                    <input type="text" class="form-control" id="titulo" formControlName="titulo" name="titulo" (input)="actualizarTitulo()"
+                        placeholder="Inserta titulo">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="tecnicaDeRealizacion">Técnica de realización*:</label>
+                    <input type="text" class="form-control" id="tecnicaDeRealizacion"
+                        formControlName="tecnicaDeRealizacion" name="tecnicaDeRealizacion" (input)="actualizarTecnica()"
+                        placeholder="Inserta tecnica de realizacion">
+                </div>
+
+                <div class="col-md-12 mt-5">
+                    <label class="form-label" for="medidas">Medidas*:</label>
+                    <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true"
+                        [layout]="'vertical'" id="medidas" formControlName="medidas" name="medidas"></app-input-radio>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="alto">Alto (centímetros):</label>
+                    <input type="text" class="form-control" id="alto" formControlName="alto" name="alto" (input)="actualizarAlto()"
+                        placeholder="0.00">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="ancho">Ancho (centímetros):</label>
+                    <input type="text" class="form-control" id="ancho" formControlName="ancho" name="ancho" (input)="actualizarAncho()"
+                        placeholder="0.00">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="profundidad">Profundidad (centímetros):</label>
+                    <input type="text" class="form-control" id="profundidad" formControlName="profundidad"
+                        name="profundidad" (input)="actualizarProfundidad()" placeholder="0.00">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="diametro">Diametro (centímetros):</label>
+                    <input type="text" class="form-control" id="diametro" formControlName="diametro" name="diametro" (input)="actualizarDiametro()"
+                        placeholder="0.00">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="variables">Variables:</label>
+                    <input type="text" class="form-control" id="variables" formControlName="variables" name="variables" (input)="actualizarVariables()"
+                        placeholder="Inserta variables">
+                </div>
+
+                <div class="mt-5">
+                    <ng-alert [CONTENIDO]="TEXTO_OBRA_ALERT"></ng-alert>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="anoDeCreacion">Año de creación*:</label>
+                    <input type="text" class="form-control" id="anoDeCreacion" formControlName="anoDeCreacion"
+                        name="anoDeCreacion" (input)="actualizarAnoDeCreacion()" placeholder="aaaa">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="avaluo">Avalúo*:</label>
+                    <input type="text" class="form-control" id="avaluo" formControlName="avaluo" name="avaluo" (input)="actualizarAvaluo()"
+                        placeholder="0">
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <app-catalogo-select [catalogo]="monedaData" [label]="'Moneda'" [required]="true" for="moneda"
+                            id="moneda" formControlName="moneda" name="moneda"  (change)="actualizarMoneda()" [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="propietario">Propietario*:</label>
+                    <input type="text" class="form-control" id="propietario" formControlName="propietario"
+                        name="propietario" (input)="actualizarPropietario()" placeholder="Inserta propietario">
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <app-catalogo-select [catalogo]="arancelariaData" [label]="'Fracción arancelaria'"
+                            [required]="true" for="fraccionArancelaria" id="fraccionArancelaria"
+                            formControlName="fraccionArancelaria" name="fraccionArancelaria"  (change)="actualizarFraccionArancelaria()" [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <label class="form-label" for="descripcionArancelaria">Descripción de la fracción
+                        arancelaria:</label>
+                    <input type="text" class="form-control" id="descripcionArancelaria"
+                        formControlName="descripcionArancelaria" name="descripcionArancelaria" (input)="actualizarDescArancelaria()">
+                </div>
+
+                <div class="row mt-5 mb-5">
+                    <div class="col-md-3 text-muted text-vertical-align-button">
+                        <span>*Campos obligatorios</span>
+                    </div>
+
+                    <div class="col-md-9 d-flex justify-content-end">
+                        <button type="button" class="btn btn-default me-3" (click)="toggleObraDeArte()" [disabled]="esFormularioSoloLectura"> Cancelar
+                        </button>
+                        <button type="button" class="btn btn-primary" (click)="submitDeArteForm()" [disabled]="esFormularioSoloLectura"> Guardar </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</app-modal>

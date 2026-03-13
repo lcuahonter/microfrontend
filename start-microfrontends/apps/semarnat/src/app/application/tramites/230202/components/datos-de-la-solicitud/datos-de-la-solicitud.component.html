@@ -1,0 +1,425 @@
+<div class="mt-4">
+  <form [formGroup]="solicitudForm">
+    <div class="col-md-12">
+      <ng-container formGroupName="reexportacionForm">
+        <div class="row">
+          <div class="col-md-8">
+            <app-catalogo-select
+              [catalogo]="numeroDeCertificado"
+              [label]="'Número de certificado fitosanitario de importación'"
+              formControlName="numeroDeCertificado"
+              [isDisabled]="soloLectura"
+              (change)="numeroDeCertificadoSeleccion()"
+              name="numeroDeCertificado"
+              [placeholder]="'Seleccione un valor'"
+            >
+            </app-catalogo-select>
+          </div>
+        </div>
+        <ng-titulo titulo="Aduana"></ng-titulo>
+        <div class="row">
+          <div class="col-md-8">
+            <app-catalogo-select
+              [catalogo]="aduana"
+              [label]="'Aduana de salida'"
+              formControlName="aduana"
+              [placeholder]="'Seleccione un valor'"
+              [isDisabled]="soloLectura"
+              (change)="aduanaSeleccion()"
+              name="aduana"
+            >
+            </app-catalogo-select>
+          </div>
+        </div>
+        <ng-titulo titulo="Pais"></ng-titulo>
+        <label class="form-label">País de origen*</label>
+        <crosslist
+          [fechas]="selectRangoDias"
+          [label]="paisDeOrigenLabel"
+          [botones]="paisDeOrigenBotons"
+          [fechasSeleccionadas]="fechasSeleccionadas.value"
+          [isDisabled]="soloLectura"
+          (fechasSeleccionadasChange)="changeCrosslist($event)"
+        ></crosslist>
+        <br />
+        <label class="form-label"
+          >Lungar de procedencia en el terretorio nacional*</label
+        >
+        <crosslist
+          [fechas]="selectEntidades"
+          [label]="entidadesLabel"
+          [botones]="entidadesBotons"
+          [fechasSeleccionadas]="entidadesSeleccionadas.value"
+          [isDisabled]="soloLectura"
+          (fechasSeleccionadasChange)="changeCrosslistEntidades($event)"
+        ></crosslist>
+        <div class="row">
+          <div class="col-md-12">            
+            <app-catalogo-select
+              [catalogo]="descripcionProducto"
+              [label]="'Descripción del producto'"
+              formControlName="descripcionProducto"
+              [isDisabled]="soloLectura"
+              [required]="true"
+              [markTouched]="solicitudForm.get('reexportacionForm.descripcionProducto')?.touched??false"
+              (change)="descripcionProductoSeleccion()"
+            >
+            </app-catalogo-select>
+          </div>
+        </div>
+        <ng-titulo titulo="Mercancías"></ng-titulo>
+        <div class="table-responsive">
+          <div class="innercontainer">
+            <app-tabla-dinamica
+              [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX"
+              [configuracionTabla]="encabezadoDeTabla"
+              [datos]="datosSolicitud"
+              [disableSeleccionTablaCheckBox]="soloLectura"
+              (listaDeFilaSeleccionada)="onSelectedRowsChange($event)"
+            ></app-tabla-dinamica>
+          </div>
+        </div>
+        <div class="col-md-12 mt-5 d-flex justify-content-end">
+          <button type="button" class="btn btn-default" [disabled]="soloLectura" (click)="modificar()">Modificar</button>
+          <button type="button" class="btn btn-danger ms-3" [disabled]="soloLectura" (click)="eliminar()">Eliminar</button>
+          <button
+            type="button"
+            class="btn btn-primary ms-3"
+            [disabled]="soloLectura"
+            (click)="agregarMercancia()"
+          >
+            Agregar
+          </button>
+        </div>
+        <div class="row">
+          <div class="col-md-8">
+            <app-catalogo-select
+              [catalogo]="unidadDeMedida"
+              [label]="'Unidad de medida'"
+              formControlName="unidadDeMedida"
+              
+              [isDisabled]="soloLectura"
+              (change)="unidadDeMedidaSeleccion()"
+              name="unidadDeMedida"
+            >
+            </app-catalogo-select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-8">
+            <label>Lungar de entrada en el pais importador:</label>
+            <span class="require">*</span>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="lungarDeEntrada"
+              id="lungarDeEntrada"
+              (change)="setValoresStore(reexportacionForm, 'lungarDeEntrada', 'setLungarDeEntrada')"
+            />
+          </div>
+        </div>
+        <ng-titulo titulo="Datos del transporte"></ng-titulo>
+        <div class="row">
+          <div class="col-md-4">
+            <app-catalogo-select
+              [catalogo]="medioDeTransporte"
+              [label]="'Medio de transporte'"
+              formControlName="medioDeTransporte"
+              [isDisabled]="soloLectura"
+              (change)="medioDeTransporteSeleccion()"
+              name="medioDeTransporte"
+            >
+            </app-catalogo-select>
+          </div>
+          <div class="col-md-8">
+            <label>Número y descripción de los bultos y/o contenedores*:</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="numeroYDescripcion"
+              id="numeroYDescripcion"
+              (change)="setValoresStore(reexportacionForm, 'numeroYDescripcion', 'setNumeroYDescripcion')"
+            />
+          </div>
+        </div>
+        <ng-titulo titulo="Datos de la ubicación de la Mercancía"></ng-titulo>
+        <div class="row">
+          <div class="col-md-4">
+            <label>Código Postal o equivalente*:</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="codigoPostal"
+              id="codigoPostal"
+              (change)="setValoresStore(reexportacionForm, 'codigoPostal', 'setCodigoPostal')"
+            />
+          </div>
+          <div class="col-md-4">
+            <app-catalogo-select
+              [catalogo]="estado"
+              [label]="'Estado'"
+              formControlName="estado"
+              [isDisabled]="soloLectura"
+              (change)="estadoSeleccion()"
+              name="estado"
+            >
+            </app-catalogo-select>
+          </div>
+          <div class="col-md-4">
+            <label>Calle*:</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="calle"
+              id="calle"
+              
+              (change)="setValoresStore(reexportacionForm, 'calle', 'setCalle')"
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <label>Colonia*:</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="colonia"
+              id="colonia"
+              
+              (change)="setValoresStore(reexportacionForm, 'colonia', 'setColonia')"
+            />
+          </div>
+          <div class="col-md-4">
+            <label>Número exterior*:</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="numeroExterior"
+              id="numeroExterior"
+              
+              (change)="setValoresStore(reexportacionForm, 'numeroExterior', 'setNumeroExterior')"
+            />
+          </div>
+          <div class="col-md-4">
+            <label>Número interior*:</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="numeroInterior"
+              id="numeroInterior"
+              (change)="setValoresStore(reexportacionForm, 'numeroInterior', 'setNumeroInterior')"
+            />
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </form>
+</div>
+
+<div
+  class="modal fade"
+  id="modalAgregarMercancias"
+  tabindex="-1"
+  aria-labelledby="modalAgregarMercanciasLabel"
+  aria-hidden="true"
+  #modalAgregarMercancias
+>
+  <div class="modal-dialog modal-dialog-centered modal-lg-custom">
+    <div class="modal-content">
+      <div class="modal-body mb-4">
+        <form [formGroup]="agregarMercanciasForm">
+          <ng-container formGroupName="datosMercancia">
+            <ng-titulo titulo="Mercancía"></ng-titulo>
+            <div class="row">
+              <div class="col-md-4">
+                <app-catalogo-select
+                  [catalogo]="fraccionArancelaria"
+                  [label]="'Fracción arancelaria'"
+                  formControlName="fraccionArancelaria"
+                  [required]="true"
+                  [markTouched]="agregarMercanciasForm.get('datosMercancia.fraccionArancelaria')?.touched??false"
+                  (change)="fraccionArancelariaSeleccion()"
+                  name="fraccionArancelaria"
+                ></app-catalogo-select>
+              </div>
+              <div class="col-md-8">
+                <label>Descripción de la fracción arancelaria<span [ngClass]="agregarMercanciasForm.get('datosMercancia.descripcionfraccionArancelaria')?.invalid && 
+                  agregarMercanciasForm.get('datosMercancia.descripcionfraccionArancelaria')?.touched ? 'text-danger' : ''">*</span>:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="descripcionfraccionArancelaria"
+                  id="descripcionfraccionArancelaria"
+                  (change)="
+                    setValoresStore(
+                      datosMercancia,
+                      'descripcionfraccionArancelaria',
+                      'setDescripcionFraccionArancelaria'
+                    )
+                  "
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <label for="cantidad">Cantidad<span [ngClass]="agregarMercanciasForm.get('datosMercancia.cantidad')?.invalid && 
+                  agregarMercanciasForm.get('datosMercancia.cantidad')?.touched ? 'text-danger' : ''">*</span>:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="cantidad"
+                  id="cantidad"
+                  (change)="setValoresStore(datosMercancia, 'cantidad', 'setCantidad')"
+                />
+                <div *ngIf="isInvalid('cantidad')" class="mensaje-error">
+                  Este campo es obligatorio.
+                </div>
+              </div>
+              <div class="col-md-8">
+                <label for="cantidadComercial">Cantidad(letra)</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="cantidadLetra"
+                  id="cantidadLetra"
+                  (change)="
+                    setValoresStore(
+                      datosMercancia,
+                      'cantidadLetra',
+                      'setCantidadLetra'
+                    )
+                  "
+                />
+              </div>
+            </div>
+            <ng-titulo titulo="Detalle"></ng-titulo>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <app-catalogo-select
+                    [catalogo]="genero"
+                    formControlName="genero"
+                    [label]="'Género'"
+                    name="genero"
+                    [required]="true"
+                    [markTouched]="agregarMercanciasForm.get('datosMercancia.genero')?.touched??false"
+                  ></app-catalogo-select>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <app-catalogo-select
+                    [catalogo]="especie"
+                    formControlName="especie"
+                    [label]="'Especie'"
+                    name="especie"
+                    [required]="true"
+                    [markTouched]="agregarMercanciasForm.get('datosMercancia.especie')?.touched??false"
+                  ></app-catalogo-select>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <app-catalogo-select
+                    [catalogo]="nombreComun"
+                    formControlName="nombreComun"
+                    [label]="'Nombre común'"
+                    name="nombreComun"
+                    [required]="true"
+                    [markTouched]="agregarMercanciasForm.get('datosMercancia.nombreComun')?.touched??false"
+                    (change)="onNombreComunChange($event)"
+                  ></app-catalogo-select>
+                </div>
+              </div>
+            </div>            
+            <div *ngIf="mostrarOtroNombreComun" class="row">
+              <div class="col-md-4">
+                <div class="form-group mt-2">
+                  <label for="otroNombreComun">Otro<span [ngClass]="agregarMercanciasForm.get('datosMercancia.otroNombreComun')?.invalid && 
+                    agregarMercanciasForm.get('datosMercancia.otroNombreComun')?.touched ? 'text-danger' : ''">*</span>:</label>
+                  <input type="text" formControlName="otroNombreComun" id="otroNombreComun" class="form-control" />
+                  <div *ngIf="isInvalid('otroNombreComun')" class="mensaje-error">
+                    Este campo es obligatorio.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+              <button
+                type="button"
+                class="btn btn-danger"
+                [disabled]="soloLectura"
+                (click)="eliminarDetalle()"
+              >
+                Eliminar detalle
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                [disabled]="soloLectura"
+                (click)="agregarDetalle()"
+              >
+                Agregar dettalle
+              </button>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label">Detalle</label>
+            </div>
+            <div class="col-md-6">
+              <app-tabla-dinamica
+                [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX"
+                [configuracionTabla]="encabezadoDeTablaDetalle"
+                [datos]="datosDetalle"
+                (listaDeFilaSeleccionada)="onSelectedRows($event)"
+              ></app-tabla-dinamica>
+            </div>
+            <div class="col-md-12 mt-5 d-flex justify-content-end">
+              <button type="button" [disabled]="soloLectura" class="btn btn-default" (click)="limpiar()">Limpiar</button>
+              <button type="button" [disabled]="soloLectura" class="btn btn-danger ms-3" data-bs-dismiss="modal" #closeModal>
+                Cancelar
+              </button>
+              <button
+                type="button"
+                [disabled]="soloLectura"
+                class="btn btn-primary ms-3"
+                (click)="agregarSolicitud()"
+              >
+                Agregar
+              </button>
+            </div>
+          </ng-container>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  id="modalConfirmacion"
+  aria-labelledby="modalConfirmacionLabel"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+  #modalConfirmacion
+>  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content modalsm">
+      <div class="modal-header w-100">
+          <h3 class="modal-title w-100"></h3>
+      </div>
+      <div class="modal-body">
+        <label>Seleccione la descripcion<br />del producto</label>
+      </div>
+      <div class="modal-footer" style="justify-content: center">
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-dismiss="modal"
+          #closeModal
+        >
+          Aceptar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

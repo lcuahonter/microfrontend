@@ -1,0 +1,41 @@
+<div>
+    <libs-modal (closed)="modalControler(ModalControl.CERRAR)" tituloModal="Agregar Fraccion(es)">
+        <modal-body>
+            <div class="fracciones-tree">
+                <div class="tree-list">
+                    @for (fraccion of fraccionesAdapter(); track fraccion.id) {
+                    <div class="tree-node" [class.nivel-par]="(fraccion.level || 0) % 2 === 0"
+                        [style.paddingLeft.px]="(fraccion.level || 0) * 20">
+                        <div class="node-content" (click)="expandirArbol(fraccion)">
+                            <div class="expand-icon">
+                                @if (fraccion.hasChildren && !fraccion.isExpanded) {
+                                <span>▶</span>
+                                }
+                                @if (fraccion.hasChildren && fraccion.isExpanded) {
+                                <span>▼</span>
+                                }
+                                @if (!fraccion.hasChildren) {
+                                <span class="dot">•</span>
+                                }
+                            </div>
+
+                            <input type="checkbox" [checked]="esSeleccionada(fraccion)"
+                                (change)="checkCambio(fraccion, $event)" (click)="$event.stopPropagation()"
+                                class="node-checkbox" />
+
+                            <span class="node-title">
+                                {{ fraccion.id }} - {{ fraccion.title }}
+                            </span>
+                        </div>
+                    </div>
+                    }
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button class="btn-primary" (click)="confirmarSeleccion()" [disabled]="selectedItems.size === 0">
+                Agregar
+            </button>
+        </modal-footer>
+    </libs-modal>
+</div>

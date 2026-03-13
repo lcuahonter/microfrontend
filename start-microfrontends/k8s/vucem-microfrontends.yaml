@@ -1,0 +1,1689 @@
+---
+# Namespace for VUCEM Microfrontends
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: default
+---
+# ConfigMap for environment variables
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vucem-frontend-config
+  namespace: default
+data:
+  NODE_ENV: "production"
+  API_URL: "https://api-vucem-dev.example.com"
+---
+# ConfigMap for Module Federation Manifest
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: module-federation-manifest
+  namespace: default
+data:
+  module-federation.manifest.json: |
+    {
+      "login": "https://front.v30.ultrasist.net/login/remoteAppEntry.js",
+      "aga": "https://front.v30.ultrasist.net/aga/remoteAppEntry.js", 
+      "agricultura": "https://front.v30.ultrasist.net/agricultura/remoteAppEntry.js",
+      "se": "https://front.v30.ultrasist.net/se/remoteAppEntry.js",
+      "semarnat": "https://front.v30.ultrasist.net/semarnat/remoteAppEntry.js",
+      "agace": "https://front.v30.ultrasist.net/agace/remoteAppEntry.js",
+      "funcionario": "https://front.v30.ultrasist.net/funcionario/remoteAppEntry.js",
+      "cofepris": "https://front.v30.ultrasist.net/cofepris/remoteAppEntry.js",
+      "amecafe": "https://front.v30.ultrasist.net/amecafe/remoteAppEntry.js",
+      "sener": "https://front.v30.ultrasist.net/sener/remoteAppEntry.js",
+      "inbal": "https://front.v30.ultrasist.net/inbal/remoteAppEntry.js",
+      "sedena": "https://front.v30.ultrasist.net/sedena/remoteAppEntry.js",
+      "profepa": "https://front.v30.ultrasist.net/profepa/remoteAppEntry.js",
+      "crt": "https://front.v30.ultrasist.net/crt/remoteAppEntry.js",
+      "inah": "https://front.v30.ultrasist.net/inah/remoteAppEntry.js",
+      "bandejas": "https://front.v30.ultrasist.net/bandejas/remoteAppEntry.js",
+      "stps": "https://front.v30.ultrasist.net/stps/remoteAppEntry.js"
+    }
+---
+# Deployment for dashboard
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modulefederation-dashboard-deployment-${ENV}
+  namespace: default
+  labels:
+    app: dashboard
+    env: ${ENV}
+spec:
+  replicas: ${REPLICAS}
+  selector:
+    matchLabels:
+      app: dashboard
+      env: ${ENV}
+  template:
+    metadata:
+      labels:
+        app: dashboard
+        env: ${ENV}
+    spec:
+      imagePullSecrets:
+        - name: vucem30registrykey
+      volumes:
+        - name: module-federation-manifest
+          configMap:
+            name: module-federation-manifest
+      containers:
+        - name: dashboard
+          image: ${REGISTRY}/vucem-front-dashboard:${TAG}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: http
+          volumeMounts:
+            - name: module-federation-manifest
+              mountPath: /usr/share/nginx/html/assets/module-federation.manifest.json
+              subPath: module-federation.manifest.json
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+            periodSeconds: 10
+---
+# Deployment for login
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modulefederation-login-microfront-deployment-${ENV}
+  namespace: default
+  labels:
+    app: login-microfront
+    env: ${ENV}
+spec:
+  replicas: ${REPLICAS}
+  selector:
+    matchLabels:
+      app: login-microfront
+      env: ${ENV}
+  template:
+    metadata:
+      labels:
+        app: login-microfront
+        env: ${ENV}
+    spec:
+      imagePullSecrets:
+        - name: vucem30registrykey
+      containers:
+        - name: login
+          image: ${REGISTRY}/vucem-front-login:${TAG}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+            periodSeconds: 10
+---
+# Deployment for aga
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modulefederation-aga-microfront-deployment-${ENV}
+  namespace: default
+  labels:
+    app: aga-microfront
+    env: ${ENV}
+spec:
+  replicas: ${REPLICAS}
+  selector:
+    matchLabels:
+      app: aga-microfront
+      env: ${ENV}
+  template:
+    metadata:
+      labels:
+        app: aga-microfront
+        env: ${ENV}
+    spec:
+      imagePullSecrets:
+        - name: vucem30registrykey
+      containers:
+        - name: aga
+          image: ${REGISTRY}/vucem-front-aga:${TAG}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+            periodSeconds: 10
+---
+# Deployment for agricultura
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modulefederation-agricultura-microfront-deployment-${ENV}
+  namespace: default
+  labels:
+    app: agricultura-microfront
+    env: ${ENV}
+spec:
+  replicas: ${REPLICAS}
+  selector:
+    matchLabels:
+      app: agricultura-microfront
+      env: ${ENV}
+  template:
+    metadata:
+      labels:
+        app: agricultura-microfront
+        env: ${ENV}
+    spec:
+      imagePullSecrets:
+        - name: vucem30registrykey
+      containers:
+        - name: agricultura
+          image: ${REGISTRY}/vucem-front-agricultura:${TAG}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+            periodSeconds: 10
+---
+# Deployment for SE
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modulefederation-se-microfront-deployment-${ENV}
+  namespace: default
+  labels:
+    app: se-microfront
+    env: ${ENV}
+spec:
+  replicas: ${REPLICAS}
+  selector:
+    matchLabels:
+      app: se-microfront
+      env: ${ENV}
+  template:
+    metadata:
+      labels:
+        app: se-microfront
+        env: ${ENV}
+    spec:
+      imagePullSecrets:
+        - name: vucem30registrykey
+      containers:
+        - name: se
+          image: ${REGISTRY}/vucem-front-se:${TAG}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+            periodSeconds: 10
+---
+# Deployment for Semarnat
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modulefederation-semarnat-microfront-deployment-${ENV}
+  namespace: default
+  labels:
+    app: semarnat-microfront
+    env: ${ENV}
+spec:
+  replicas: ${REPLICAS}
+  selector:
+    matchLabels:
+      app: semarnat-microfront
+      env: ${ENV}
+  template:
+    metadata:
+      labels:
+        app: semarnat-microfront
+        env: ${ENV}
+    spec:
+      imagePullSecrets:
+        - name: vucem30registrykey
+      containers:
+        - name: semarnat
+          image: ${REGISTRY}/vucem-front-semarnat:${TAG}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+            periodSeconds: 10
+---
+# Deployment for Agace
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modulefederation-agace-microfront-deployment-${ENV}
+  namespace: default
+  labels:
+    app: agace-microfront
+    env: ${ENV}
+spec:
+  replicas: ${REPLICAS}
+  selector:
+    matchLabels:
+      app: agace-microfront
+      env: ${ENV}
+  template:
+    metadata:
+      labels:
+        app: agace-microfront
+        env: ${ENV}
+    spec:
+      imagePullSecrets:
+        - name: vucem30registrykey
+      containers:
+        - name: agace
+          image: ${REGISTRY}/vucem-front-agace:${TAG}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+            periodSeconds: 10
+---
+# Deployment for Funcionario
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modulefederation-funcionario-microfront-deployment-${ENV}
+  namespace: default
+  labels:
+    app: funcionario-microfront
+    env: ${ENV}
+spec:
+  replicas: ${REPLICAS}
+  selector:
+    matchLabels:
+      app: funcionario-microfront
+      env: ${ENV}
+  template:
+    metadata:
+      labels:
+        app: funcionario-microfront
+        env: ${ENV}
+    spec:
+      imagePullSecrets:
+        - name: vucem30registrykey
+      containers:
+        - name: funcionario
+          image: ${REGISTRY}/vucem-front-funcionario:${TAG}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+            periodSeconds: 10
+---
+# Deployment for Cofepris
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modulefederation-cofepris-microfront-deployment-${ENV}
+  namespace: default
+  labels:
+    app: cofepris-microfront
+    env: ${ENV}
+spec:
+  replicas: ${REPLICAS}
+  selector:
+    matchLabels:
+      app: cofepris-microfront
+      env: ${ENV}
+  template:
+    metadata:
+      labels:
+        app: cofepris-microfront
+        env: ${ENV}
+    spec:
+      imagePullSecrets:
+        - name: vucem30registrykey
+      containers:
+        - name: cofepris
+          image: ${REGISTRY}/vucem-front-cofepris:${TAG}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+            periodSeconds: 10
+---
+# Deployment for Amecafe
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modulefederation-amecafe-microfront-deployment-${ENV}
+  namespace: default
+  labels:
+    app: amecafe-microfront
+    env: ${ENV}
+spec:
+  replicas: ${REPLICAS}
+  selector:
+    matchLabels:
+      app: amecafe-microfront
+      env: ${ENV}
+  template:
+    metadata:
+      labels:
+        app: amecafe-microfront
+        env: ${ENV}
+    spec:
+      imagePullSecrets:
+        - name: vucem30registrykey
+      containers:
+        - name: amecafe
+          image: ${REGISTRY}/vucem-front-amecafe:${TAG}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+            periodSeconds: 10
+---
+# Deployment for Sener
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modulefederation-sener-microfront-deployment-${ENV}
+  namespace: default
+  labels:
+    app: sener-microfront
+    env: ${ENV}
+spec:
+  replicas: ${REPLICAS}
+  selector:
+    matchLabels:
+      app: sener-microfront
+      env: ${ENV}
+  template:
+    metadata:
+      labels:
+        app: sener-microfront
+        env: ${ENV}
+    spec:
+      imagePullSecrets:
+        - name: vucem30registrykey
+      containers:
+        - name: sener
+          image: ${REGISTRY}/vucem-front-sener:${TAG}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+            periodSeconds: 10
+---
+# Deployment for Inbal
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modulefederation-inbal-microfront-deployment-${ENV}
+  namespace: default
+  labels:
+    app: inbal-microfront
+    env: ${ENV}
+spec:
+  replicas: ${REPLICAS}
+  selector:
+    matchLabels:
+      app: inbal-microfront
+      env: ${ENV}
+  template:
+    metadata:
+      labels:
+        app: inbal-microfront
+        env: ${ENV}
+    spec:
+      imagePullSecrets:
+        - name: vucem30registrykey
+      containers:
+        - name: inbal
+          image: ${REGISTRY}/vucem-front-inbal:${TAG}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+            periodSeconds: 10
+---
+# Deployment for Sedena
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modulefederation-sedena-microfront-deployment-${ENV}
+  namespace: default
+  labels:
+    app: sedena-microfront
+    env: ${ENV}
+spec:
+  replicas: ${REPLICAS}
+  selector:
+    matchLabels:
+      app: sedena-microfront
+      env: ${ENV}
+  template:
+    metadata:
+      labels:
+        app: sedena-microfront
+        env: ${ENV}
+    spec:
+      imagePullSecrets:
+        - name: vucem30registrykey
+      containers:
+        - name: sedena
+          image: ${REGISTRY}/vucem-front-sedena:${TAG}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+            periodSeconds: 10
+---
+# Deployment for Profepa
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modulefederation-profepa-microfront-deployment-${ENV}
+  namespace: default
+  labels:
+    app: profepa-microfront
+    env: ${ENV}
+spec:
+  replicas: ${REPLICAS}
+  selector:
+    matchLabels:
+      app: profepa-microfront
+      env: ${ENV}
+  template:
+    metadata:
+      labels:
+        app: profepa-microfront
+        env: ${ENV}
+    spec:
+      imagePullSecrets:
+        - name: vucem30registrykey
+      containers:
+        - name: profepa
+          image: ${REGISTRY}/vucem-front-profepa:${TAG}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+            periodSeconds: 10
+---
+# Deployment for CRT
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modulefederation-crt-microfront-deployment-${ENV}
+  namespace: default
+  labels:
+    app: crt-microfront
+    env: ${ENV}
+spec:
+  replicas: ${REPLICAS}
+  selector:
+    matchLabels:
+      app: crt-microfront
+      env: ${ENV}
+  template:
+    metadata:
+      labels:
+        app: crt-microfront
+        env: ${ENV}
+    spec:
+      imagePullSecrets:
+        - name: vucem30registrykey
+      containers:
+        - name: crt
+          image: ${REGISTRY}/vucem-front-crt:${TAG}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+            periodSeconds: 10
+---
+# Deployment for INAH
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modulefederation-inah-microfront-deployment-${ENV}
+  namespace: default
+  labels:
+    app: inah-microfront
+    env: ${ENV}
+spec:
+  replicas: ${REPLICAS}
+  selector:
+    matchLabels:
+      app: inah-microfront
+      env: ${ENV}
+  template:
+    metadata:
+      labels:
+        app: inah-microfront
+        env: ${ENV}
+    spec:
+      imagePullSecrets:
+        - name: vucem30registrykey
+      containers:
+        - name: inah
+          image: ${REGISTRY}/vucem-front-inah:${TAG}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+            periodSeconds: 10
+---
+# Deployment for Bandejas
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modulefederation-bandejas-microfront-deployment-${ENV}
+  namespace: default
+  labels:
+    app: bandejas-microfront
+    env: ${ENV}
+spec:
+  replicas: ${REPLICAS}
+  selector:
+    matchLabels:
+      app: bandejas-microfront
+      env: ${ENV}
+  template:
+    metadata:
+      labels:
+        app: bandejas-microfront
+        env: ${ENV}
+    spec:
+      imagePullSecrets:
+        - name: vucem30registrykey
+      containers:
+        - name: bandejas
+          image: ${REGISTRY}/vucem-front-bandejas:${TAG}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+            periodSeconds: 10
+---
+# Deployment for STPS
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modulefederation-stps-microfront-deployment-${ENV}
+  namespace: default
+  labels:
+    app: stps-microfront
+    env: ${ENV}
+spec:
+  replicas: ${REPLICAS}
+  selector:
+    matchLabels:
+      app: stps-microfront
+      env: ${ENV}
+  template:
+    metadata:
+      labels:
+        app: stps-microfront
+        env: ${ENV}
+    spec:
+      imagePullSecrets:
+        - name: vucem30registrykey
+      containers:
+        - name: stps
+          image: ${REGISTRY}/vucem-front-stps:${TAG}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health.txt
+              port: 80
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+            periodSeconds: 10
+---
+# Services for each microfrontend
+apiVersion: v1
+kind: Service
+metadata:
+  name: modulefederation-dashboard-service-${ENV}
+  namespace: default
+  labels:
+    app: dashboard
+    env: ${ENV}
+spec:
+  selector:
+    app: dashboard
+    env: ${ENV}
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: 32126
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: modulefederation-login-microfront-service-${ENV}
+  namespace: default
+  labels:
+    app: login-microfront
+    env: ${ENV}
+spec:
+  selector:
+    app: login-microfront
+    env: ${ENV}
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: 30809
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: modulefederation-aga-microfront-service-${ENV}
+  namespace: default
+  labels:
+    app: aga-microfront
+    env: ${ENV}
+spec:
+  selector:
+    app: aga-microfront
+    env: ${ENV}
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: 31507
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: modulefederation-agricultura-microfront-service-${ENV}
+  namespace: default
+  labels:
+    app: agricultura-microfront
+    env: ${ENV}
+spec:
+  selector:
+    app: agricultura-microfront
+    env: ${ENV}
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: 31995
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: modulefederation-se-microfront-service-${ENV}
+  namespace: default
+  labels:
+    app: se-microfront
+    env: ${ENV}
+spec:
+  selector:
+    app: se-microfront
+    env: ${ENV}
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: 30033
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: modulefederation-semarnat-microfront-service-${ENV}
+  namespace: default
+  labels:
+    app: semarnat-microfront
+    env: ${ENV}
+spec:
+  selector:
+    app: semarnat-microfront
+    env: ${ENV}
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: 30589
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: modulefederation-agace-microfront-service-${ENV}
+  namespace: default
+  labels:
+    app: agace-microfront
+    env: ${ENV}
+spec:
+  selector:
+    app: agace-microfront
+    env: ${ENV}
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: 32149
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: modulefederation-funcionario-microfront-service-${ENV}
+  namespace: default
+  labels:
+    app: funcionario-microfront
+    env: ${ENV}
+spec:
+  selector:
+    app: funcionario-microfront
+    env: ${ENV}
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: 31039
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: modulefederation-cofepris-microfront-service-${ENV}
+  namespace: default
+  labels:
+    app: cofepris-microfront
+    env: ${ENV}
+spec:
+  selector:
+    app: cofepris-microfront
+    env: ${ENV}
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: 32107
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: modulefederation-amecafe-microfront-service-${ENV}
+  namespace: default
+  labels:
+    app: amecafe-microfront
+    env: ${ENV}
+spec:
+  selector:
+    app: amecafe-microfront
+    env: ${ENV}
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: 30858
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: modulefederation-sener-microfront-service-${ENV}
+  namespace: default
+  labels:
+    app: sener-microfront
+    env: ${ENV}
+spec:
+  selector:
+    app: sener-microfront
+    env: ${ENV}
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: modulefederation-inbal-microfront-service-${ENV}
+  namespace: default
+  labels:
+    app: inbal-microfront
+    env: ${ENV}
+spec:
+  selector:
+    app: inbal-microfront
+    env: ${ENV}
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: 31587
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: modulefederation-sedena-microfront-service-${ENV}
+  namespace: default
+  labels:
+    app: sedena-microfront
+    env: ${ENV}
+spec:
+  selector:
+    app: sedena-microfront
+    env: ${ENV}
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: 31332
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: modulefederation-profepa-microfront-service-${ENV}
+  namespace: default
+  labels:
+    app: profepa-microfront
+    env: ${ENV}
+spec:
+  selector:
+    app: profepa-microfront
+    env: ${ENV}
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: modulefederation-crt-microfront-service-${ENV}
+  namespace: default
+  labels:
+    app: crt-microfront
+    env: ${ENV}
+spec:
+  selector:
+    app: crt-microfront
+    env: ${ENV}
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: modulefederation-inah-microfront-service-${ENV}
+  namespace: default
+  labels:
+    app: inah-microfront
+    env: ${ENV}
+spec:
+  selector:
+    app: inah-microfront
+    env: ${ENV}
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: modulefederation-bandejas-microfront-service-${ENV}
+  namespace: default
+  labels:
+    app: bandejas-microfront
+    env: ${ENV}
+spec:
+  selector:
+    app: bandejas-microfront
+    env: ${ENV}
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: modulefederation-stps-microfront-service-${ENV}
+  namespace: default
+  labels:
+    app: stps-microfront
+    env: ${ENV}
+spec:
+  selector:
+    app: stps-microfront
+    env: ${ENV}
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+  type: NodePort
+---
+# Ingress for VUCEM Microfrontends
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: modulefederation-vucem-frontend-ingress-${ENV}
+  namespace: default
+  annotations:
+    ingressClassName: "public"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "128k"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "180"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "180"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "180"
+    # Add Cache-Control headers for Module Federation - CRITICAL FOR MODULE FEDERATION
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      # Add CORS headers
+      add_header 'Access-Control-Allow-Origin' '*' always;
+      add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS, PUT, DELETE' always;
+      add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization' always;
+      add_header 'Access-Control-Max-Age' 1728000;
+      
+      # Ensure remoteAppEntry.js files are never cached - THIS IS CRITICAL FOR MODULE FEDERATION
+      if ($request_uri ~* \/remoteAppEntry\.js$) {
+        add_header Cache-Control "no-store, no-cache, must-revalidate" always;
+        add_header Pragma "no-cache" always;
+        expires -1;
+      }
+      
+      # Handle OPTIONS preflight requests
+      if ($request_method = 'OPTIONS') {
+        add_header 'Access-Control-Allow-Origin' '*';
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS, PUT, DELETE';
+        add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization';
+        add_header 'Access-Control-Max-Age' 1728000;
+        add_header 'Content-Type' 'text/plain charset=UTF-8';
+        add_header 'Content-Length' 0;
+        return 204;
+      }
+spec:
+  ingressClassName: public
+  tls:
+  - hosts:
+    - front.v30.ultrasist.net
+    secretName: vucem-tls-cert
+  rules:
+  - host: front.v30.ultrasist.net
+    http:
+      paths:
+      # Dashboard app (Shell)
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: modulefederation-dashboard-service-${ENV}
+            port:
+              number: 80
+      # Login microfrontend
+      - path: /login
+        pathType: Prefix
+        backend:
+          service:
+            name: modulefederation-login-microfront-service-${ENV}
+            port:
+              number: 80
+      - path: /auth
+        pathType: Prefix
+        backend:
+          service:
+            name: modulefederation-login-microfront-service-${ENV}
+            port:
+              number: 80
+      # Aga microfrontend
+      - path: /aga
+        pathType: Prefix
+        backend:
+          service:
+            name: modulefederation-aga-microfront-service-${ENV}
+            port:
+              number: 80
+      # agricultura microfrontend
+      - path: /agricultura
+        pathType: Prefix
+        backend:
+          service:
+            name: modulefederation-agricultura-microfront-service-${ENV}
+            port:
+              number: 80
+      # SE microfrontend
+      - path: /se
+        pathType: Prefix
+        backend:
+          service:
+            name: modulefederation-se-microfront-service-${ENV}
+            port:
+              number: 80
+      # Semarnat microfrontend  
+      - path: /semarnat
+        pathType: Prefix
+        backend:
+          service:
+            name: modulefederation-semarnat-microfront-service-${ENV}
+            port:
+              number: 80
+      # Agace microfrontend
+      - path: /agace
+        pathType: Prefix
+        backend:
+          service:
+            name: modulefederation-agace-microfront-service-${ENV}
+            port:
+              number: 80
+      # Funcionario microfrontend
+      - path: /funcionario
+        pathType: Prefix
+        backend:
+          service:
+            name: modulefederation-funcionario-microfront-service-${ENV}
+            port:
+              number: 80
+      # Cofepris microfrontend
+      - path: /cofepris
+        pathType: Prefix
+        backend:
+          service:
+            name: modulefederation-cofepris-microfront-service-${ENV}
+            port:
+              number: 80
+      # Amecafe microfrontend
+      - path: /amecafe
+        pathType: Prefix
+        backend:
+          service:
+            name: modulefederation-amecafe-microfront-service-${ENV}
+            port:
+              number: 80
+      # Sener microfrontend
+      - path: /sener
+        pathType: Prefix
+        backend:
+          service:
+            name: modulefederation-sener-microfront-service-${ENV}
+            port:
+              number: 80
+      # Inbal microfrontend
+      - path: /inbal
+        pathType: Prefix
+        backend:
+          service:
+            name: modulefederation-inbal-microfront-service-${ENV}
+            port:
+              number: 80
+      # Sedena microfrontend
+      - path: /sedena
+        pathType: Prefix
+        backend:
+          service:
+            name: modulefederation-sedena-microfront-service-${ENV}
+            port:
+              number: 80
+      # Profepa microfrontend
+      - path: /profepa
+        pathType: Prefix
+        backend:
+          service:
+            name: modulefederation-profepa-microfront-service-${ENV}
+            port:
+              number: 80
+      # CRT microfrontend
+      - path: /crt
+        pathType: Prefix
+        backend:
+          service:
+            name: modulefederation-crt-microfront-service-${ENV}
+            port:
+              number: 80
+      # INAH microfrontend
+      - path: /inah
+        pathType: Prefix
+        backend:
+          service:
+            name: modulefederation-inah-microfront-service-${ENV}
+            port:
+              number: 80
+      # Bandejas microfrontend
+      - path: /bandejas
+        pathType: Prefix
+        backend:
+          service:
+            name: modulefederation-bandejas-microfront-service-${ENV}
+            port:
+              number: 80
+      # STPS microfrontend
+      - path: /stps
+        pathType: Prefix
+        backend:
+          service:
+            name: modulefederation-stps-microfront-service-${ENV}
+            port:
+              number: 80
+      # Module Federation specific paths - IMPORTANT FOR FEDERATION TO WORK
+      - path: /remoteAppEntry.js
+        pathType: Exact
+        backend:
+          service:
+            name: modulefederation-dashboard-service-${ENV}
+            port:
+              number: 80
+      - path: /assets/module-federation.manifest.json
+        pathType: Exact
+        backend:
+          service:
+            name: modulefederation-dashboard-service-${ENV}
+            port:
+              number: 80
+      - path: /login/remoteAppEntry.js
+        pathType: Exact
+        backend:
+          service:
+            name: modulefederation-login-microfront-service-${ENV}
+            port:
+              number: 80
+      - path: /aga/remoteAppEntry.js
+        pathType: Exact
+        backend:
+          service:
+            name: modulefederation-aga-microfront-service-${ENV}
+            port:
+              number: 80
+      - path: /agricultura/remoteAppEntry.js
+        pathType: Exact
+        backend:
+          service:
+            name: modulefederation-agricultura-microfront-service-${ENV}
+            port:
+              number: 80
+      - path: /se/remoteAppEntry.js
+        pathType: Exact
+        backend:
+          service:
+            name: modulefederation-se-microfront-service-${ENV}
+            port:
+              number: 80
+      - path: /semarnat/remoteAppEntry.js
+        pathType: Exact
+        backend:
+          service:
+            name: modulefederation-semarnat-microfront-service-${ENV}
+            port:
+              number: 80
+      - path: /agace/remoteAppEntry.js
+        pathType: Exact
+        backend:
+          service:
+            name: modulefederation-agace-microfront-service-${ENV}
+            port:
+              number: 80
+      - path: /funcionario/remoteAppEntry.js
+        pathType: Exact
+        backend:
+          service:
+            name: modulefederation-funcionario-microfront-service-${ENV}
+            port:
+              number: 80
+      - path: /cofepris/remoteAppEntry.js
+        pathType: Exact
+        backend:
+          service:
+            name: modulefederation-cofepris-microfront-service-${ENV}
+            port:
+              number: 80
+      - path: /amecafe/remoteAppEntry.js
+        pathType: Exact
+        backend:
+          service:
+            name: modulefederation-amecafe-microfront-service-${ENV}
+            port:
+              number: 80
+      - path: /sener/remoteAppEntry.js
+        pathType: Exact
+        backend:
+          service:
+            name: modulefederation-sener-microfront-service-${ENV}
+            port:
+              number: 80
+      - path: /inbal/remoteAppEntry.js
+        pathType: Exact
+        backend:
+          service:
+            name: modulefederation-inbal-microfront-service-${ENV}
+            port:
+              number: 80
+      - path: /sedena/remoteAppEntry.js
+        pathType: Exact
+        backend:
+          service:
+            name: modulefederation-sedena-microfront-service-${ENV}
+            port:
+              number: 80
+      - path: /profepa/remoteAppEntry.js
+        pathType: Exact
+        backend:
+          service:
+            name: modulefederation-profepa-microfront-service-${ENV}
+            port:
+              number: 80
+      - path: /crt/remoteAppEntry.js
+        pathType: Exact
+        backend:
+          service:
+            name: modulefederation-crt-microfront-service-${ENV}
+            port:
+              number: 80
+      - path: /inah/remoteAppEntry.js
+        pathType: Exact
+        backend:
+          service:
+            name: modulefederation-inah-microfront-service-${ENV}
+            port:
+              number: 80
+      - path: /bandejas/remoteAppEntry.js
+        pathType: Exact
+        backend:
+          service:
+            name: modulefederation-bandejas-microfront-service-${ENV}
+            port:
+              number: 80
+      - path: /stps/remoteAppEntry.js
+        pathType: Exact
+        backend:
+          service:
+            name: modulefederation-stps-microfront-service-${ENV}
+            port:
+              number: 80
+---
+# HorizontalPodAutoscaler for VUCEM Microfrontends
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: vucem-dashboard-hpa-${ENV}
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: modulefederation-dashboard-deployment-${ENV}
+  minReplicas: ${MIN_REPLICAS}
+  maxReplicas: ${MAX_REPLICAS}
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 80
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80

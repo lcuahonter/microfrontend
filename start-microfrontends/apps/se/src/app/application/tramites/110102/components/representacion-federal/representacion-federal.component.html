@@ -1,0 +1,60 @@
+<form [formGroup]="formularioRepresentacionFederal">
+    <div class="form">
+        <ng-titulo [titulo]="'Representación federal'"></ng-titulo>
+        <div class="row">
+            <div class="col-md-4">
+                <app-catalogo-select (selectionChange)="onRepresentacionFederal($event)" [catalogo]="entidad"
+                    [label]="'Entidad federativa'" [required]="true"
+                    [isDisabled]="esSoloLectura"
+                    formControlName="claveEntidadFederativa"></app-catalogo-select>
+                 @if(formularioRepresentacionFederal.get('claveEntidadFederativa')?.invalid && formularioRepresentacionFederal.get('claveEntidadFederativa')?.touched) {
+                      <div>
+                          @if(formularioRepresentacionFederal.get('claveEntidadFederativa')?.errors?.['required']) {
+                              <small class="text-danger">{{MENSAJE_REQUERIDO}}</small>
+                          }
+                      </div>
+                  }
+            </div>
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="representacion" [label]="'Representación federal'"
+                    [required]="true" formControlName="claveUnidadAdministrativa"
+                    [isDisabled]="esSoloLectura"
+                    (selectionChange)="onRepresentacionChange($event)">
+                </app-catalogo-select>
+                 @if(formularioRepresentacionFederal.get('claveUnidadAdministrativa')?.invalid && formularioRepresentacionFederal.get('claveUnidadAdministrativa')?.touched) {
+                      <div>
+                          @if(formularioRepresentacionFederal.get('claveUnidadAdministrativa')?.errors?.['required']) {
+                              <small class="text-danger">{{MENSAJE_REQUERIDO}}</small>
+                          }
+                      </div>
+                  }
+            </div>
+
+        </div>
+    </div>
+    <div class="form">
+        <ng-titulo [titulo]="'Protesto de Decir Verdad'"></ng-titulo>
+        <div class="row ">
+            <div class="col-md-12">
+                <div class="alert alert-info  d-flex align-items-start">
+                    <div>
+                        <input type="checkbox" id="protestoDecirVerdad" class="form-check-input me-5"
+                            formControlName="protestoDecirVerdad"
+                            (change)="establecerValoresEnEstado(formularioRepresentacionFederal,'protestoDecirVerdad')" />
+                    </div>
+                    <div class="text-justify">
+                        <p> {{ textos }}</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        @if(formularioRepresentacionFederal.get('protestoDecirVerdad')?.invalid && formularioRepresentacionFederal.get('protestoDecirVerdad')?.touched) {
+    <div>
+        @if(formularioRepresentacionFederal.get('protestoDecirVerdad')?.errors?.['required']) {
+        <small class="text-danger">{{MENSAJE_REQUERIDO}}</small>
+        }
+    </div>
+    }
+    </div>
+</form>

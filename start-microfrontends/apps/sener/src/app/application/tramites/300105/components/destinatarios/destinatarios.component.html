@@ -1,0 +1,144 @@
+<div class="container">
+  <ng-titulo titulo="Destinatarios" />
+  <form [formGroup]="formularioSolicitud">
+    <div class="row mt-5">
+      <div class="contenedor-de-mesa">
+        <app-tabla-dinamica [configuracionTabla]="configuracionTabla" [datos]="datosTablaDestinatario"
+          [tipoSeleccionTabla]="tipoSeleccionTabla"
+          [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+          (listaDeFilaSeleccionada)="manejarFilaSeleccionada($event)"></app-tabla-dinamica>
+      </div>
+      <div class="row mt-3" style="padding-bottom: 20px; text-align: right">
+        <div>
+          <button type="button" class="btn btn-primary me-2" [disabled]="esFormularioSoloLectura" (click)="mostrarFormularioMercanciaModal()">
+            Agregar
+          </button>
+          <button type="button" class="btn me-2"
+            [ngClass]="{'btn-default': !enableEliminarBoton, 'btn-danger': enableEliminarBoton}"
+            [disabled]="!enableEliminarBoton" (click)="confirmEliminarMercanciaItem()">Eliminar</button>
+        </div>
+      </div>
+    </div>
+
+    <lib-notificaciones 
+      *ngIf="confirmEliminarPopupAbierto"
+      [notificacionInput]="nuevaNotificacion" 
+      (confirmacionModal)="eliminarMercanciaItem()">
+    </lib-notificaciones>
+  
+    <lib-notificaciones 
+      *ngIf="multipleSeleccionPopupAbierto"
+      [notificacionInput]="nuevaNotificacion" 
+      (confirmacionModal)="cerrarMultipleSeleccionPopup()">
+    </lib-notificaciones>
+
+    <lib-notificaciones 
+      *ngIf="relacionMercanciaPopupAbierto"
+      [notificacionInput]="nuevaNotificacion" 
+      (confirmacionModal)="cerrarRelacionMercanciaPopup()">
+    </lib-notificaciones>
+  </form>
+
+  @if(mostrarModalDatosMercancia){
+  <app-modal>
+    <div class="datos-mercancia-container">
+      <ng-titulo titulo="Datos destinatario" />
+      <form [formGroup]="formularioMercancia">
+        <div class="row">
+          <div class="col-md-8">
+            <label class="form-label" for="denominacionRazon">Denominación o razón social*:</label>
+            <div class="form-group">
+              <input id="denominacionRazon" type="text" class="form-control" formControlName="denominacionRazon" [required]="true"
+                [class.is-invalid]="formularioMercancia.get('denominacionRazon')?.touched && formularioMercancia.get('denominacionRazon')?.invalid" />
+            </div>
+            <div *ngIf="esControlInvalido('denominacionRazon')" class="text-danger">
+              <small *ngIf="formularioMercancia.controls['denominacionRazon'].hasError('required')">Este campo es
+                obligatorio.</small>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-8">
+            <label class="form-label" for="domicilio">Domicilio*:</label>
+            <div class="form-group">
+              <input id="domicilio" type="text" class="form-control" formControlName="domicilio" [required]="true"
+                [class.is-invalid]="formularioMercancia.get('domicilio')?.touched && formularioMercancia.get('domicilio')?.invalid" />
+            </div>
+            <div *ngIf="esControlInvalido('domicilio')" class="text-danger">
+              <small *ngIf="formularioMercancia.controls['domicilio'].hasError('required')">Este campo es
+                obligatorio.</small>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <app-catalogo-select name="pais" formControlName="pais"
+              [catalogo]="autorizacionDeRayosXService.pais" [label]="'País'"
+              [required]="true"></app-catalogo-select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="correo">Correo electrónico*:</label>
+            <div class="form-group">
+              <input id="correo" type="text" class="form-control" formControlName="correo" [required]="true"
+                [class.is-invalid]="formularioMercancia.get('correo')?.touched && formularioMercancia.get('correo')?.invalid" />
+            </div>
+            <div *ngIf="esControlInvalido('correo')" class="text-danger">
+              <small *ngIf="formularioMercancia.controls['correo'].hasError('required')">Este campo es
+                obligatorio.</small>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="paginaWeb">Página web</label>
+              <input id="paginaWeb" type="text" class="form-control" formControlName="paginaWeb" [required]="true"
+              [class.is-invalid]="formularioMercancia.get('paginaWeb')?.touched && formularioMercancia.get('paginaWeb')?.invalid"/>
+            </div>
+            <div *ngIf="esControlInvalido('paginaWeb')" class="text-danger">
+              <small *ngIf="formularioMercancia.controls['paginaWeb'].hasError('required')">Este campo es
+                obligatorio.</small>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-8">
+            <app-catalogo-select name="tipoMercancia" formControlName="tipoMercancia"
+              [catalogo]="autorizacionDeRayosXService.tipoMercancia" [label]="'Mercancias'"
+              [required]="true"></app-catalogo-select>
+          </div>
+          <div class="col-md-4 d-flex justify-content-start gap-1">
+            <div class="form-group mt-auto">
+              <button type="button" class="btn btn-primary" (click)="enviarFormularioMercancia(false)">
+                Relacionar mercancia
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-8 mt-3">
+            <div class="contenedor-de-mesa">
+              <app-tabla-dinamica [configuracionTabla]="mercanciaTabla" [datos]="datosTablaDestinatario"
+                [tipoSeleccionTabla]="tipoSeleccionTabla"
+                (listaDeFilaSeleccionada)="manejarFilaSeleccionada($event)"></app-tabla-dinamica>
+            </div>
+          </div>
+          <div class="col-md-12 mt-3 d-flex justify-content-end gap-1">
+            <button type="button" class="btn btn-danger" (click)="alternarModalMercancia()">
+              Eliminar
+            </button>  
+          </div>
+        </div>
+        <div class="row mt-5">
+          <div class="col-md-12 d-flex justify-content-end gap-1">
+            <button type="button" class="btn btn-primary" (click)="enviarFormularioMercancia(true)">
+              Guardar
+            </button>
+            <button type="button" class="btn btn-danger" (click)="alternarModalMercancia()">
+              Cancelar
+            </button>        
+          </div>
+        </div>
+      </form>
+    </div>
+  </app-modal>
+  }
+</div>

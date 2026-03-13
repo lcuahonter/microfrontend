@@ -1,0 +1,61 @@
+<div class="tabla-fracciones-container">
+    <div class="tabla-wrapper scrollable">
+        <table class="tabla-fracciones table table-bordered">
+            <thead class="fixed-header">
+                <tr>
+                    @if(accion==="ELIMINAR"){
+                    <th>
+                        <input id="checkAll" type="checkbox" [checked]="checkAll"
+                            (change)="toggleSeleccionTodos($event)">
+                    </th>
+                    }
+                    @for(col of columnas; track $index){
+                    <th>{{ col.titulo }}</th>
+                    }
+                </tr>
+            </thead>
+
+            <tbody>
+                @for(item of datosPaginados[paginaActual - 1]; track item.id){
+                <tr>
+                    @if(accion === "ELIMINAR"){
+                    <td>
+                        <input type="checkbox" [checked]="estaSeleccionado(item)"
+                            (change)="toggleSeleccion(item, $event)">
+
+                    </td>
+                    }
+
+                    @for(col of columnas; track $index) {
+                    <td (click)="buscarPorId(item.id)" [class.disabled]="datosAEliminar.length > 0">
+                        {{ item[col.campo] }}
+                    </td>
+                    }
+                </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>
+<div class="footer-actions">
+    <div>
+        <button>Recargar</button>
+        @if(accion === "ELIMINAR"){
+        <button (click)="onEliminarTodos()">Eliminar todos</button>
+        }
+    </div>
+    <div class="paginador">
+        <button>«</button>
+        <button>‹</button>
+        <div>
+            Página
+            <input size="3">
+        </div>
+        <button>›</button>
+        <button>»</button>
+    </div>
+    <div>
+        <p>{{ obtenerRangoMostrado() }}</p>
+    </div>
+</div>

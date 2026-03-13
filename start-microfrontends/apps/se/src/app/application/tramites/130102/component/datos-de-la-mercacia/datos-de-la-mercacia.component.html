@@ -1,0 +1,160 @@
+<div class="container">
+  <form [formGroup]="formDelLa">
+    <ng-titulo titulo="Datos de la mercancía"> </ng-titulo>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="producto">Producto*:</label>
+          <app-input-radio
+            [radioOptions]="producto"
+            [isRequired]="true"
+            [selectedValue]="defaultSelect"
+            formControlName="productos"
+            (change)="setValoresStore(formDelLa,'productos','setProducto')"
+            [layout]="'vertical'"
+          ></app-input-radio>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <label for="message" class="form-label"
+          >Descripción de la mercancía*:</label
+        >
+        <textarea
+          id="message"
+          class="form-control"
+          placeholder="Descripción de la mercancía"
+          rows="8"
+          formControlName="descripcion"
+          maxlength="500"
+          (change)="setValoresStore(formDelLa,'descripcion', 'setDescripcion')"
+        ></textarea>
+        @if (formDelLa.controls['descripcion'].invalid && formDelLa.controls['descripcion'].touched) {
+          <div class="text-danger">
+            @if (formDelLa.controls['descripcion'].errors?.['required']) {
+              <small>Este campo es obligatorio.</small>
+            }
+            @if (formDelLa.controls['descripcion'].errors?.['minlength']) {
+              <small>Debe tener al menos 10 caracteres.</small>
+            }
+            @if (formDelLa.controls['descripcion'].errors?.['maxlength']) {
+              <small>Por favor corrija la descripción.</small>
+            }
+            @if (formDelLa.controls['descripcion'].errors?.['leadingSpaces']) {
+              <small>No se permiten espacios al inicio del campo.</small>
+            }
+          </div>
+        }
+        
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="fraccionArancelaria" class="form-label">Fracción arancelaria*:</label>
+      <select class="form-control form-select" formControlName="fraccionArancelaria" (change)="setValoresStore(formDelLa,'fraccionArancelaria', 'setFraccionArancelaria'); onChangeFraccion(formDelLa)">
+        <option [ngValue]="null">Seleccione una opción</option>
+        <option *ngFor="let frac of fraccionF" [value]="frac.clave">
+          {{ frac.descripcion }}
+        </option>
+      </select>
+      @if (formDelLa.controls['fraccionArancelaria'].invalid && formDelLa.controls['fraccionArancelaria'].touched) {
+        <div class="text-danger">
+          @if (formDelLa.controls['fraccionArancelaria'].errors?.['required']) {
+            <small>Este campo es obligatorio.</small>
+          }
+        </div>
+      }
+      
+    </div>
+    <div class="row">
+      <div class="col-md-4 form-group">
+        <label for="unidadMedida" class="form-label">Unidad de medida*:</label>
+      <select class="form-control form-select" formControlName="unidadMedida" (change)="fetchUnidad(); setValoresStore(formDelLa,'unidadMedida', 'setUnidadMedida')">
+        <option [ngValue]="null">Seleccione una opción</option>
+        <option *ngFor="let uni of Unidad" [value]="uni.clave">
+          {{ uni.descripcion }}
+        </option>
+      </select>
+        @if (formDelLa.controls['unidadMedida'].invalid && formDelLa.controls['unidadMedida'].touched) {
+          <div class="text-danger">
+            @if (formDelLa.controls['unidadMedida'].errors?.['required']) {
+              <small>Este campo es obligatorio.</small>
+            }
+          </div>
+        }
+        
+      </div>
+      <div class="col-md-4 form-group">
+        <label class="form-label" for="cantidad"
+          >Cantidad<span class="require">*</span>:</label
+        >
+        <input
+          class="form-control"
+          id="Cantidad"
+          placeholder=""
+          type="text"
+          formControlName="cantidad"
+          (change)="setValoresStore(formDelLa,'cantidad', 'setcantidad')"
+       
+        />
+        @if (formDelLa.controls['cantidad'].invalid && formDelLa.controls['cantidad'].touched) {
+          <div class="text-danger">
+            @if (formDelLa.controls['cantidad'].errors?.['required']) {
+              <small>Este campo es obligatorio.</small>
+            }
+            @if (formDelLa.controls['cantidad'].errors?.['soloNumeros']) {
+              <small>Solo se permiten números.</small>
+            }
+            @if (formDelLa.controls['cantidad'].errors?.['maxDigits']) {
+              <small>Este campo permite 11 enteros y tres decimales.</small>
+            }
+            @if (formDelLa.controls['cantidad'].errors?.['min']) {
+              <small>Debe ser mayor que 0.</small>
+            }
+            @if (formDelLa.controls['cantidad'].errors?.['leadingSpaces']) {
+              <small>No se permiten espacios al inicio del campo.</small>
+            }
+          </div>
+        }
+        
+      </div>
+      <div class="col-md-4 form-group">
+        <label class="form-label" for="nombre_imp"
+          >Valor factura USD<span class="require">*</span>:</label
+        ><span
+          class="bi bi-question-circle-fill"
+          title="En caso de no contar con valor factura proporciona el dólar como valor estimado"
+          data-bs-toggle="tooltip"
+
+        ></span>
+        <input
+          class="form-control"
+          id="Valor_factura_USD"
+          placeholder=""
+          type="text"
+          formControlName="valorFacturaUSD"
+          maxlength="17"
+          (change)="setValoresStore(formDelLa,'valorFacturaUSD', 'setValorFacturaUSD')"
+        />
+        @if (formDelLa.controls['valorFacturaUSD'].invalid && formDelLa.controls['valorFacturaUSD'].touched) {
+          <div class="text-danger">
+            @if (formDelLa.controls['valorFacturaUSD'].errors?.['required']) {
+              <small>Este campo es obligatorio.</small>
+            }
+            @if (formDelLa.controls['valorFacturaUSD'].errors?.['decimalesDosLugares']) {
+              <small>Ingrese un valor numérico válido (ej. 100.50).</small>
+            }
+            @if (formDelLa.controls['valorFacturaUSD'].errors?.['maxDigits']) {
+              <small>Este campo permite 11 enteros y dos decimales.</small>
+            }
+            @if (formDelLa.controls['valorFacturaUSD'].errors?.['min']) {
+              <small>Debe ser mayor que 0.</small>
+            }
+            @if (formDelLa.controls['valorFacturaUSD'].errors?.['leadingSpaces']) {
+              <small>No se permiten espacios al inicio del campo.</small>
+            }
+          </div>
+        }
+        
+      </div>
+    </div>
+  </form>
+</div>

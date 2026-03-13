@@ -1,0 +1,175 @@
+<div class="datos-mercancia-container" style="margin: 25px" [formGroup]="formularioMercancia">
+    <ng-titulo titulo="Datos mercancía" />
+    <form [formGroup]="formularioMercancia">
+        <div class="row">
+            <div class="col-md-5">
+                <app-catalogo-select [catalogo]="datosService.listaFraccionesArancelarias()"
+                    name="cve_fraccion_arancelaria" formControlName="cve_fraccion_arancelaria"
+                    (selectionChange)="manejarCambioFraccionArancelaria($event)" [label]="'Fracción arancelaria'"
+                    [required]="true" [showClave]="true" [isDisabled]="otraFraccionSeleccionada()"
+                    [markTouched]="cve_fraccion_arancelaria.touched"></app-catalogo-select>
+            </div>
+            <div class="col-md-7">
+                <div class="form-group">
+                    <label class="form-label" for="descripcion">Descripción de la fracción arancelaria:</label>
+                    <input id="descripcion" type="text" formControlName="descripcion" class="form-control" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 justify-content-start">
+                <div class="form-check mt-4">
+                    <input id="otraFraccion" type="checkbox" formControlName="otraFraccion" class="form-check-input"
+                        (change)="manejarCambioOtraFraccion($event)" />
+                    <label class="form-check-label" for="otraFraccion">Otra fracción
+                    </label>
+                </div>
+            </div>
+            @if(otraFraccionSeleccionada()){
+            <div class="row">
+                <div class="col-md-5">
+                    <label class="form-label" style="text-align: left;" for="clave_fraccion_arancelaria">La Fracción
+                        debe
+                        estar vigente conforme a la TIGIE</label>
+                    <input id="clave_fraccion_arancelaria" type="text" formControlName="clave_fraccion_arancelaria"
+                        class="form-control" (blur)="buscarfraccionVigente($event)" />
+                </div>
+            </div>
+            }
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label for="message" class="form-label">Descripción*:</label>
+                <textarea id="descripcion" formControlName="descripcion_mercancia" class="form-control" rows="4"
+                    [required]="true"
+                    [class.is-invalid]="formControls['descripcion_mercancia'].touched && formControls['descripcion_mercancia'].invalid"></textarea>
+                <div *ngIf="utils.esControlInvalido(formularioMercancia,'descripcion_mercancia')" class="text-danger">
+                    <small *ngIf="formControls['descripcion_mercancia'].hasError('required')">Este campo
+                        es
+                        obligatorio.</small>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label for="rendimientoProducto" class="form-label">Rendimiento del producto (en su caso):</label>
+                <textarea id="rendimientoProducto" class="form-control" rows="4"
+                    formControlName="rendimiento_producto"></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="datosService.listaClasificacionTaxonomica()"
+                    name="clasificacionTaxonomica" formControlName="clasificacionTaxonomica"
+                    [label]="'Clasificación taxonómica'" [required]="true"
+                    [markTouched]="formControls['clasificacionTaxonomica'].touched"
+                    (selectionChange)="manejarClasificacionTaxonomica($event)"></app-catalogo-select>
+            </div>
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="nombreCientifico" name="nombreCientifico"
+                    formControlName="cve_nombre_cientifico" [label]="'Nombre científico'" [required]="true"
+                    (selectionChange)="manejarNombreCientifico($event)"
+                    [markTouched]="formControls['cve_nombre_cientifico'].touched"></app-catalogo-select>
+            </div>
+            @if(mostrarOtroNombreCientifico()){
+            <div class="col-md-4">
+                <label class="form-label" for="nombre_cientifico">Otro *:</label>
+                <input id="nombre_cientifico" type="text" class="form-control" formControlName="nombre_cientifico">
+                <div *ngIf="utils.esControlInvalido(formularioMercancia,'nombre_cientifico')" class="text-danger">
+                    <small *ngIf="formControls['nombre_cientifico'].hasError('required')">Este campo
+                        es
+                        obligatorio.</small>
+                </div>
+            </div>
+            }
+        </div>
+        <div class="row mb-5">
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="nombreComun" name="nombreComun" formControlName="cve_nombre_comun"
+                    [label]="'Nombre común'" [required]="true" (selectionChange)="manejarNombreComun($event)"
+                    [markTouched]="formControls['cve_nombre_comun'].touched" [required]="true"></app-catalogo-select>
+            </div>
+            @if(mostrarOtroNombreComun()){
+            <div class="col-md-4">
+                <label class="form-label" for="otroNombreComun">Otro *:</label>
+                <input id="nombre_comun" type="text" class="form-control" formControlName="nombre_comun">
+                <div *ngIf="utils.esControlInvalido(formularioMercancia,'nombre_comun')" class="text-danger">
+                    <small *ngIf="formControls['nombre_comun'].hasError('required')">Este campo
+                        es
+                        obligatorio.</small>
+                </div>
+            </div>
+            }
+        </div>
+        <ng-alert [CONTENIDO]="mensajeAlertaMercancia" [CUSTOMECLASS]="'alert-info'"></ng-alert>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label" for="marca">Marca (Marcaje)*:</label>
+                    <input id="marca" type="text" class="form-control" formControlName="marca_marcaje" [required]="true"
+                        [class.is-invalid]="formControls['marca_marcaje'].touched && formControls['marca_marcaje'].invalid" />
+                </div>
+                <div *ngIf="utils.esControlInvalido(formularioMercancia,'marca_marcaje')" class="text-danger">
+                    <small *ngIf="formControls['marca_marcaje'].hasError('required')">Este campo es
+                        obligatorio.</small>
+                    <span *ngIf="formControls['marca_marcaje'].hasError('hasSpecialCharacters')">Ingresa
+                        datos
+                        validos.</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label" for="cantidad">Cantidad*:</label>
+                    <input id="cantidad" type="text" class="form-control" formControlName="cantidad" [required]="true"
+                        maxlength="10"
+                        [class.is-invalid]="formControls['cantidad'].touched && formControls['cantidad'].invalid" />
+                    <div *ngIf="utils.esControlInvalido(formularioMercancia,'cantidad')" class="text-danger">
+                        <small *ngIf="formControls['cantidad'].hasError('required')">Este campo es
+                            obligatorio.</small>
+                    </div>
+                    <div *ngIf="utils.esControlInvalido(formularioMercancia,'cantidad')" class="text-danger">
+                        <span *ngIf="formControls['cantidad'].hasError('pattern')">Estos campos permiten
+                            hasta
+                            12
+                            enteros y 3 decimales</span>
+                    </div>
+                    <p>No está permitido capturar "," (coma)</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <app-catalogo-select name="unidadMedida" formControlName="cve_unidad_medida_comercial"
+                    [catalogo]="datosService.listaUnidadMedida()" [label]="'Unidad de medida'" [required]="true"
+                    [markTouched]="formControls['cve_unidad_medida_comercial'].touched"></app-catalogo-select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <app-catalogo-select formControlName="cve_pais_origen" name="paisOrigen"
+                    [catalogo]="datosService.listaPaises()" [label]="'País de origen'" [required]="true"
+                    [markTouched]="formControls['cve_pais_origen'].touched"
+                    [isDisabled]="esExportacion"></app-catalogo-select>
+            </div>
+            <div class="col-md-4">
+                <app-catalogo-select name="paisProcedencia" formControlName="cve_pais_procedencia"
+                    [catalogo]="esExportacion ? datosService.listaPaises() : datosService.listaPaisesSinMexico()"
+                    [label]="'País de procedencia'" [required]="true" [isDisabled]="esExportacion"
+                    [markTouched]="formControls['cve_pais_procedencia'].touched"></app-catalogo-select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 d-flex justify-content-end gap-1">
+                <button type="button" class="btn btn-default" (click)="limpiar()">Limpiar</button>
+                <button type="button" class="btn btn-danger" (click)="cerrarModal()">
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" (click)="enviarFormularioMercancia()">
+                    {{esModificarMercancia() ? 'Modificar' : 'Agregar'}}
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+<lib-notificaciones *ngIf="nuevaNotificacionEliminar" [notificacionInput]="nuevaNotificacionEliminar"
+    (confirmacionModal)="onConfirmacion($event)">
+</lib-notificaciones>

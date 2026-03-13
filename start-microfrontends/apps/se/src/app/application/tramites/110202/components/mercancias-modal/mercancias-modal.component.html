@@ -1,0 +1,107 @@
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-between">
+        <h5 class="modal-title" id="exampleModalLabel">Datos de la mercancía</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cerrarModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="mercanciaForm">
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label class="form-label" for="fraccionArancelaria">Fracción arancelaria: </label>
+              <input type="text" class="form-control" formControlName="fraccionArancelaria" [readonly]="true">
+            </div>
+            <div class="col-md-8">
+              <label for="nombreComercialMercancia">Nombre comercial de la mercancía (igual que en la factura):</label>
+              <input type="text" class="form-control" formControlName="nombreComercialMercancia">
+            </div>
+          </div>
+      
+          <div class="row mt-3 mb-3">
+            <div class="col-md-8">
+              <label for="nombreTecnico">Nombre técnico:</label>
+              <input type="text" class="form-control" formControlName="nombreTecnico">
+            </div>
+          </div>
+      
+          <div class="row mt-3 mb-3">
+            <div class="col-md-6">
+              <label for="nombreIngles">Nombre en inglés:</label>
+              <input type="text" class="form-control" formControlName="nombreIngles">
+            </div>
+            <div class="col-md-6">
+              <label for="criterioClasificacion">Criterio para clasificación:</label>
+              <input type="text" class="form-control" formControlName="criterioClasificacion">
+            </div>
+          </div>
+      
+          <div class="row mt-3 mb-3">
+            <div class="col-md-6">
+              <label for="marca">Marca:</label>
+              <input type="text" class="form-control" formControlName="marca">
+            </div>
+            <div class="col-md-6">
+              <label for="cantidad">Cantidad:</label>
+              <input type="number" class="form-control" formControlName="cantidad">
+            </div>
+          </div>
+          <div class="row mt-3 mb-3">
+            <div class="col-md-7">
+              <app-catalogo-select [catalogo]="(umcs$ | async) || []" [label]="'UMC'" [required]="true" name="umc" formControlName="umc" (selectionChange)="tipoUmcSeleccion($event)"></app-catalogo-select>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="valorMercancia">Valor de la mercancía (dólares)*:</label>
+              <input type="number" class="form-control" formControlName="valorMercancia">
+            </div>
+            <div class="col-md-6">
+              <label for="complementoClasificacion">Complemento de la clasificación*:</label>
+              <textarea class="mb-4 h-20 w-100 form-control" formControlName="complementoClasificacion" rows="2"></textarea>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="masaBruta">Masa Bruta*:</label>
+              <input type="number" class="form-control" formControlName="masaBruta">
+            </div>
+            <div class="col-md-6">
+              <app-catalogo-select [catalogo]="(masaBrutas$ | async) || []" [label]="'Unidad de medida de la masa bruta'" [required]="true" name="masaBruta" formControlName="unidadMedidaMasaBruta" (selectionChange)="tipoMasaBrutaSeleccion($event)"></app-catalogo-select>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-3">
+              <input-fecha [datos]="fechaFinalInput" [setFecha]="mercanciaForm.get('fechaFinal')?.value" (valorCambiado)="cambioFechaFinal($event)"></input-fecha>
+            </div>
+            <div class="col-md-4">
+              <label for="numeroFactura">N° factura:</label>
+              <input type="text" class="form-control" formControlName="numeroFactura">
+            </div>
+            <div class="col-md-4 mr-2">
+              <app-catalogo-select [catalogo]="(facturas$ | async) || []" [label]="'Tipo de factura'" [required]="true" name="estado" formControlName="tipoFactura" (selectionChange)="tipoFacturasSeleccion($event)"></app-catalogo-select>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cerrarModal()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="activarModal()" >Agregar</button>
+      </div>
+
+      <div class="modal" tabindex="-1" [ngClass]="{'show': mostrarAlerta}" [ngStyle]="{'display': mostrarAlerta ? 'block' : 'none'}">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 350px;">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="btn-close" aria-label="Close" (click)="cerrarModal()"></button>
+            </div>
+            <div class="modal-body">
+              <p>{{ mensajeDeAlerta }}</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+              <button type="button" class="btn btn-primary" (click)="aceptar()">Aceptar</button>
+            </div>
+          </div>
+        </div>
+      </div>

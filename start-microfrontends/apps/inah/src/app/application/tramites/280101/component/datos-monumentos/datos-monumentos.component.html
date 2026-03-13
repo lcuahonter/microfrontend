@@ -1,0 +1,162 @@
+<div class="container">
+  <ng-titulo titulo="Datos generales de monumentos o bienes muebles"/>
+  
+      <form [formGroup]="mercanciaForm" id="mercanciaForm">
+        <div class="container">
+        <input type="hidden" formControlName="descEpoca" id="descEpoca"/>
+        <input type="hidden" formControlName="descMaterial" id="descMaterial"/>
+        <input type="hidden" formControlName="descFraccion" id="descFraccion"/>
+        <div>
+        <div class="row">
+          <div class="col-md-4">
+            <label for="descripcionMercancia">Título</label>
+            <span class="require">*:</span>
+            <input type="text" formControlName="descripcionMercancia" class="form-control" id="descripcionMercancia"/>
+            <div *ngIf="mercanciaForm.get('descripcionMercancia')?.errors?.['required'] && (mercanciaForm.get('descripcionMercancia')?.touched || mercanciaForm.get('descripcionMercancia')?.dirty)">
+              <small class="text-danger">El campo Título es obligatorio.</small></div>
+              </div> 
+              <div class="col-md-4"> 
+               <app-catalogo-select [catalogo]="aduana" formControlName="generica2" [label]="'Época'"
+                  [required]="true" name="generica2" [placeholder]="'Selecciona época'" (change)="cambiaEpoca()"></app-catalogo-select>
+                
+               <div *ngIf="mercanciaForm.get('generica2')?.errors?.['required'] && (mercanciaForm.get('generica2')?.touched || mercanciaForm.get('generica2')?.dirty)">
+                <small class="text-danger">El campo Época es obligatorio.</small>
+              </div>
+              </div>
+              </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  <label for="descripcionIdentificacion">Autor</label>
+                  <span class="require">*</span>
+                  <input type="text" formControlName="descripcionIdentificacion" class="form-control" id="descripcionIdentificacion"/>
+                 <div *ngIf="mercanciaForm.get('descripcionIdentificacion')?.errors?.['required'] && (mercanciaForm.get('descripcionIdentificacion')?.touched || mercanciaForm.get('descripcionIdentificacion')?.dirty)">
+                 <small class="text-danger">El campo Autor es obligatorio.</small>
+                </div>
+                </div>
+                <div class="col-md-4">
+                  <app-catalogo-select [catalogo]="aduana" formControlName="generica1" [label]="'Material'"
+                  [required]="true" name="generica1" [placeholder]="'Selecciona material'" (change)="cambiaMaterial()"></app-catalogo-select>
+                    
+                  <div *ngIf="mercanciaForm.get('generica1')?.errors?.['required'] && (mercanciaForm.get('generica1')?.touched || mercanciaForm.get('generica1')?.dirty)">
+                    <small class="text-danger">El campo Material es obligatorio.</small>
+                  </div>
+                </div>
+                </div>
+                </div>
+
+  
+<div class="container">
+  <ng-titulo titulo="Dimensiones"/>
+       <div class="row">
+        <div class="col-md-4">
+          <label for="cantidadPresentacion">Alto*:</label>
+          <span class="bi bi-question-circle-fill fs-4 m-1"></span>
+          <input type="number" formControlName="cantidadPresentacion" class="form-control" id="cantidadPresentacion"/>
+              <div *ngIf="mercanciaForm.get('cantidadPresentacion')?.errors?.['required'] && (mercanciaForm.get('cantidadPresentacion')?.touched || mercanciaForm.get('cantidadPresentacion')?.dirty)">
+                <small class="text-danger">El campo Alto es obligatorio.</small>
+              </div>
+              <div *ngIf="mercanciaForm.get('cantidadPresentacion')?.errors?.['pattern'] && (mercanciaForm.get('cantidadPresentacion')?.touched || mercanciaForm.get('cantidadPresentacion')?.dirty)">
+                <small class="text-danger">El campo Alto debe ser numérico.</small>
+              </div>
+        </div>
+        <div class="col-md-4">
+          <label for="componente">Ancho*:</label>
+          <span class="bi bi-question-circle-fill fs-4 m-1"></span>
+          <input type="number" formControlName="componente" class="form-control" id="componente"/>
+              <div *ngIf="mercanciaForm.get('componente')?.errors?.['required'] && (mercanciaForm.get('componente')?.touched || mercanciaForm.get('componente')?.dirty)">
+                <small class="text-danger">El campo Ancho es obligatorio.</small>
+              </div>
+              <div *ngIf="mercanciaForm.get('componente')?.errors?.['pattern'] && (mercanciaForm.get('componente')?.touched || mercanciaForm.get('componente')?.dirty)">
+                <small class="text-danger">El campo Ancho debe ser numérico.</small>
+              </div>
+              </div>
+              <div class="col-md-4">
+                <label for="importeTotalComponente">Profundidad*:</label>
+                <span class="bi bi-question-circle-fill fs-4 m-1"></span>
+                <input type="number" formControlName="importeTotalComponente" class="form-control" id="importeTotalComponente"/>
+                <div *ngIf="mercanciaForm.get('importeTotalComponente')?.errors?.['required'] && (mercanciaForm.get('importeTotalComponente')?.touched || mercanciaForm.get('importeTotalComponente')?.dirty)">
+                  <small class="text-danger">El campo Profundidad es obligatorio.</small>
+                </div>
+                <div *ngIf="mercanciaForm.get('importeTotalComponente')?.errors?.['pattern'] && (mercanciaForm.get('importeTotalComponente')?.touched || mercanciaForm.get('importeTotalComponente')?.dirty)">
+                  <small class="text-danger">El campo Profundidad debe ser numérico.</small>
+                </div>
+              </div>
+              </div>
+       </div>       
+       <div class="container">
+        <ng-titulo titulo="Fracción anarcelaria"/>
+          <div class="row">
+          <div class="col-md-4">
+            <app-catalogo-select [catalogo]="aduana" formControlName="idFraccionGubernamental" [label]="'Fracción'"
+                [required]="true" name="idFraccionGubernamental" [placeholder]="'Selecciona fracción'" (change)="cambiaFraccion()"></app-catalogo-select>
+
+              <div *ngIf="mercanciaForm.get('idFraccionGubernamental')?.errors?.['required'] && (mercanciaForm.get('idFraccionGubernamental')?.touched || mercanciaForm.get('fraccionTipoTramite.idFraccionGubernamental')?.dirty)">
+              <small class="text-danger">El campo Fracción es obligatorio.</small>
+            </div>
+          </div>
+          </div>
+        </div>
+      
+        <div class="container">
+            <ng-titulo titulo="Conservación del monumento o bien mueble histórico"/>
+          <div class="row">
+            <div class="col-md-8">
+              <label for="descripcionUsoMercancia">Descripción del Estado de conservación actual*:</label>
+              <textarea formControlName="descripcionUsoMercancia" id="descripcionUsoMercancia" class="form-control" rows="5"></textarea>
+              <div *ngIf="mercanciaForm.get('descripcionUsoMercancia')?.errors?.['required'] && (mercanciaForm.get('descripcionUsoMercancia')?.touched || mercanciaForm.get('descripcionUsoMercancia')?.dirty)">
+                <small class="text-danger">El campo Descripción del Estado es obligatorio.</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="container">
+            <ng-titulo titulo="Elementos añadidos"/>
+          <div class="row">
+           
+            <div class="col-md-12">
+
+              <div class="table-responsive">
+                <h6>Elementos añadidos</h6>
+                <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX" [configuracionTabla]="configTableArray" [datos]="elementoTablaDatos" (listaDeFilaSeleccionada)="elementoSeleccionLista = $event"></app-tabla-dinamica>
+              </div>
+              <div class="col-md-12">
+                <nav aria-label="Page navigation example">
+                  <ul class="pagination d-flex justify-content-center">
+                      <li class="page-item"><a class="page-link" href="#">1</a></li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="row">
+              <div class="col-md-12"> 
+              <div class="pull-right">
+                <div class="col-md-6 button-align">  
+            <button type="button" id="btn-borrar-parte" class="btn btn-danger" [disabled] ="!elementoSeleccionLista.length" (click)="Borrar()">Borrar</button>
+            </div>
+            <div class="col-md-6">  
+            <button type="button" id="btn-agregar-parte" class="btn btn-primary" (click)="agregar()">Agregar</button>
+          </div>
+          </div>
+            </div>
+            </div>
+          </div>
+              </div>
+              <div class="datos-monumento-button">
+                <div class="row">
+                  <div class="col-md-12 button-position"> 
+                  <div class="pull-right">
+                    <div class="col-md-6 button-align-cancel">  
+                <button type="button" id="btn-borrar-parte" class="btn btn-danger" (click)="cancelar()">Cancelar</button>
+                </div>
+                <div class="col-md-6">  
+                <button type="button" id="btn-agregar-parte" class="btn btn-primary" (click)="Guardar()">Guardar</button>
+              </div>
+              </div>
+                </div>
+                </div>
+              </div>
+            </form>     
+</div>

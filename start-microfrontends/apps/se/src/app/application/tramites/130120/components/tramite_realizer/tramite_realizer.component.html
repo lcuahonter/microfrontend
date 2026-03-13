@@ -1,0 +1,47 @@
+<div class="container">
+    <form [formGroup]="datosRealizer">
+        <ng-titulo [titulo]="'Datos del trámite a realizar'"></ng-titulo>
+        <div class="row align-items-end">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label class="form-label" for="">Régimen al que destinará la mercancía
+                        <span
+                            [ngClass]="datosRealizer.get('regimen')?.errors?.['required'] && datosRealizer.get('regimen')?.touched ? 'text-danger' : ''">*</span>:
+                    </label>
+                    <select class="form-control form-select" formControlName="regimen"
+                        [disabled]="esFormularioSoloLectura" (change)="onRegimenSeleccionado()">
+                        <option [ngValue]="null">Seleccione una opción</option>
+                        <option *ngFor="let regimen of regimenOpciones" [title]="regimen.descripcion"
+                            [value]="regimen.clave">
+                            {{ regimen.descripcion }}
+                        </option>
+                    </select>
+                    <div *ngIf="datosRealizer.get('regimen')?.touched && datosRealizer.get('regimen')?.invalid">
+                        <small *ngIf="datosRealizer.get('regimen')?.errors?.['required']" class="text-danger">Este campo
+                            es obligatorio</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label class="form-label" for="">Clasificación de régimen
+                        <span
+                            [ngClass]="datosRealizer.get('classificion_regimen')?.errors?.['required'] && datosRealizer.get('classificion_regimen')?.touched ? 'text-danger' : ''">*</span>:
+                    </label>
+                    <select class="form-control form-select" formControlName="classificion_regimen"
+                        [disabled]="esFormularioSoloLectura" (change)="setValoresStore(datosRealizer, 'classificion_regimen', 'setclassificion_regimen')">
+                        <option [ngValue]="null">Seleccione una opción</option>
+                        <option *ngFor="let clasificaRegimen of classificationRegimenOpciones" [title]="clasificaRegimen.descripcion"
+                            [value]="clasificaRegimen.clave">
+                            {{ clasificaRegimen.descripcion }}
+                        </option>
+                    </select>
+                    <div *ngIf="datosRealizer.get('classificion_regimen')?.touched && datosRealizer.get('classificion_regimen')?.invalid">
+                        <small *ngIf="datosRealizer.get('classificion_regimen')?.errors?.['required']" class="text-danger">Este campo
+                            es obligatorio</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

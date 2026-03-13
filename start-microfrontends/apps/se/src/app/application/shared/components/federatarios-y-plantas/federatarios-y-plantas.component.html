@@ -1,0 +1,224 @@
+<div class="container">
+  <ng-titulo titulo="Datos de los federatarios" />
+  <form [formGroup]="federatariosFormGroup">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="nombre">Nombre(s)*:</label>
+              <input class="form-control min-hgt uppercase" id="nombre" formControlName="nombre" type="text"
+                maxlength="28" [ngClass]="esValido(federatariosFormGroup, 'nombre') ? 'required' : ''"/>
+              <div *ngIf="federatariosFormGroup.get('nombre')?.invalid && federatariosFormGroup.get('nombre')?.touched"
+                class="text-danger">
+                <small *ngIf="federatariosFormGroup.get('nombre')?.errors?.['required']">Este campo es
+                  obligatorio.</small>
+                <small *ngIf="federatariosFormGroup.get('nombre')?.errors?.['maxlength']">El nombre no puede exceder los
+                  28 caracteres.</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="primerApellido">Primer apellido*</label>
+              <input class="form-control min-hgt uppercase" id="primerApellido" formControlName="primerApellido"
+                type="text" maxlength="20" [ngClass]="esValido(federatariosFormGroup, 'primerApellido') ? 'required' : ''"/>
+              <div
+                *ngIf="federatariosFormGroup.get('primerApellido')?.invalid && federatariosFormGroup.get('primerApellido')?.touched"
+                class="text-danger">
+                <small *ngIf="federatariosFormGroup.get('primerApellido')?.errors?.['required']">Este campo es
+                  obligatorio.</small>
+                <small *ngIf="federatariosFormGroup.get('primerApellido')?.errors?.['maxlength']">El apellido no puede
+                  exceder los 20 caracteres.</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="segundoApellido">Segundo apellido:</label>
+              <input class="form-control min-hgt uppercase" id="segundoApellido" formControlName="segundoApellido"
+                type="text" maxlength="20" />
+              <div
+                *ngIf="federatariosFormGroup.get('segundoApellido')?.invalid && federatariosFormGroup.get('segundoApellido')?.touched"
+                class="text-danger">
+                <small *ngIf="federatariosFormGroup.get('segundoApellido')?.errors?.['maxlength']">El apellido no puede
+                  exceder los 20 caracteres.</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="numeroDeActa">Número de acta*:</label>
+              <input class="form-control min-hgt" id="numeroDeActa" formControlName="numeroDeActa" type="number" (input)="limitLength($event)"
+              [ngClass]="esValido(federatariosFormGroup, 'numeroDeActa') ? 'required' : ''"/>
+              <div
+                *ngIf="federatariosFormGroup.get('numeroDeActa')?.invalid && federatariosFormGroup.get('numeroDeActa')?.touched"
+                class="text-danger">
+                <small *ngIf="federatariosFormGroup.get('numeroDeActa')?.errors?.['required']">Este campo es
+                  obligatorio.</small>
+                <small *ngIf="federatariosFormGroup.get('numeroDeActa')?.errors?.['max']">El número de acta no
+                  puede exceder 999999.</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <input-fecha [datos]="fechaDelActa" [isDisabled]="formularioDeshabilitado"
+                (valorCambiado)="onFechaCambiada($event)"
+                [setFecha]="federatariosFormGroup.get('fechaDelActa')?.value" [deshabilitarFuturas]="true"
+               [mostrarErrores]="federatariosFormGroup.get('fechaDelActa')?.touched??false"></input-fecha>
+              </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="numeroDeNotaria">Número de notaría*:</label>
+              <input class="form-control min-hgt" id="numeroDeNotaria" formControlName="numeroDeNotaria" type="number" (input)="limitLength($event)"
+                maxlength="6" [ngClass]="esValido(federatariosFormGroup, 'numeroDeNotaria') ? 'required' : ''"/>
+              <div
+                *ngIf="federatariosFormGroup.get('numeroDeNotaria')?.invalid && federatariosFormGroup.get('numeroDeNotaria')?.touched"
+                class="text-danger">
+                <small *ngIf="federatariosFormGroup.get('numeroDeNotaria')?.errors?.['required']">Este campo es
+                  obligatorio.</small>
+                <small *ngIf="federatariosFormGroup.get('numeroDeNotaria')?.errors?.['maxlength']">El número de notaría
+                  no puede exceder los 6 caracteres.</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-4">
+            <div class="full-width-select">
+            <app-catalogo-select [catalogo]="estadoOptionsConfig.estadosFederatarios" formControlName="entidadFederativa"
+              [label]="'Estado'" [required]="true" name="entidadFederativa"
+              [isDisabled]="formularioDeshabilitado" [markTouched]="federatariosFormGroup.get('entidadFederativa')?.touched??false" (change)="setMunicipio($event)"></app-catalogo-select>
+          </div>
+            </div>
+          <div class="col-md-4">
+            <div class="full-width-select">
+            <app-catalogo-select [catalogo]="municipioCatologo" formControlName="municipioODelegacion"
+              [label]="'Municipio o alcaldía'" [required]="true" name="municipioODelegacion"
+              [isDisabled]="formularioDeshabilitado" [markTouched]="federatariosFormGroup.get('municipioODelegacion')?.touched??false"></app-catalogo-select>
+          </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+          <div class="col-12 container text-end mt-5">
+            <button class="btn btn-danger me-2" [disabled]="formularioDeshabilitado"
+              (click)="eliminarDatos()">Eliminar</button>
+            <button class="btn btn-primary" (click)="aggregarDatos()" [disabled]="formularioDeshabilitado">
+              Agregar
+            </button>
+          </div>
+        </div>
+  </form>
+  <form [formGroup]="federatariosCatalogoGroup">
+        <div class="row mt-5">
+          <h5>Datos de los federatarios:</h5>
+        </div>
+        <div class="row">
+          <div class="col">
+            <app-tabla-dinamica [configuracionTabla]="federatariosConfig.TablaEncabezado"
+              [tipoSeleccionTabla]="federatariosConfig.TablaSeleccion" [datos]="federatariosDatos"
+              (listaDeFilaSeleccionada)="federatariosSeleccionadoDatos=$event"
+              [disableSeleccionTablaCheckBox]="formularioDeshabilitado" [mode]="'client'" [showPagination]="true"
+              [totalItems]="federatariosDatos.length" [itemsPerPage]="5"></app-tabla-dinamica>
+          </div>
+        </div>
+    
+    <div class="row mt-5">
+      <div class="col">
+        <ng-titulo titulo="Datos de las plantas donde se realizaran las operaciones IMMEX" />
+        <div class="row mb-3">
+          <div class="col-md-4">
+           <div class="full-width-select">
+            <app-catalogo-select [catalogo]="estadoImmex" [label]="'Estado*'"
+              name="estadoUno" formControlName="estadoUno"
+              [isDisabled]="formularioDeshabilitado"
+              [markTouched]="federatariosCatalogoGroup.get('estadoUno')?.touched ?? false"
+              (selectionChange)="eventoDeCambioDeValor($event, 'estadoUno')"></app-catalogo-select>
+          </div>
+            </div>
+        </div>
+          <div class="d-flex justify-content-end mt-2">
+          <button class="btn btn-primary" [disabled]="formularioDeshabilitado"
+              (click)="buscarPlantasImmex()">Buscar plantas IMMEX</button>
+        </div>
+
+        <h5 class="mt-4">Plantas disponibles:</h5>
+        <app-tabla-dinamica [configuracionTabla]="plantasDisponiblesConfig.TablaEncabezado"
+          [tipoSeleccionTabla]="plantasDisponiblesConfig.TablaSeleccion"
+          [datos]="plantasDisponiblesDatos"
+          (listaDeFilaSeleccionada)="plantasDisponiblesSeleccionadoDatos=$event"
+          [disableSeleccionTablaCheckBox]="formularioDeshabilitado"></app-tabla-dinamica>
+        <ng-alert [CONTENIDO]="textodAlerta"></ng-alert>
+        <div class="d-flex justify-content-end mt-2">
+          <button class="btn btn-primary" [disabled]="formularioDeshabilitado"
+            (click)="agregarPlantas()">Agregar plantas</button>
+        </div>
+
+        <h5 class="mt-4">Plantas Immex:</h5>
+        <app-tabla-dinamica [configuracionTabla]="plantasImmexConfig.TablaEncabezado"
+          [tipoSeleccionTabla]="plantasImmexConfig.TablaSeleccion" [datos]="plantasImmexDatos"
+          (listaDeFilaSeleccionada)="plantasImmexSeleccionadoDatos=$event"
+          [disableSeleccionTablaCheckBox]="formularioDeshabilitado"></app-tabla-dinamica>
+
+        <div class="d-flex flex-wrap mt-3 gap-2">
+          <button class="btn btn-danger" (click)="irAAcciones('../complementar-plantas-acciones')"
+            [disabled]="formularioDeshabilitado">Complementar planta</button>
+          <button class="btn btn-danger" (click)="irAAcciones('../montos-inversion-acciones')"
+            [disabled]="formularioDeshabilitado">Montos de inversión</button>
+          <button class="btn btn-danger" (click)="irAAcciones('../empleados-acciones')"
+            [disabled]="formularioDeshabilitado">Empleados</button>
+          <button class="btn btn-danger" (click)="irAAcciones('../capacidad-instalada-acciones')"
+            [disabled]="formularioDeshabilitado">Capacidad Instalada</button>
+          <button class="btn btn-primary" (click)="irAAcciones('../proveedor-por-archivo')"
+            [disabled]="formularioDeshabilitado">Carga por archivo</button>
+          <button class="btn btn-danger end ms-auto" [disabled]="formularioDeshabilitado"
+            (click)="eliminarPlantas()">Eliminar plantas</button>
+        </div>
+
+        <div class="row mt-5">
+          <div class="col-md-4">
+            <div class="full-width-select">
+            <app-catalogo-select [catalogo]="RepresentacionCatalogo" [label]="'Representación federal'"
+              [required]="true" name="estadoDos" formControlName="estadoDos"
+              [isDisabled]="formularioDeshabilitado" [markTouched]="federatariosCatalogoGroup.get('estadoDos')?.touched ?? false"
+                      (selectionChange)="eventoDeCambioDeValor($event, 'estadoDos')"></app-catalogo-select>
+          </div>
+                    </div>
+          <div class="col-md-4">
+            <div class="full-width-select">
+            <app-catalogo-select [catalogo]="estadoOptionsConfig.municipio" [label]="'Actividad productiva'"
+              [required]="true" name="estadoTres" formControlName="estadoTres"
+              [isDisabled]="formularioDeshabilitado" [markTouched]="federatariosCatalogoGroup.get('estadoTres')?.touched ?? false"
+              (selectionChange)="eventoDeCambioDeValor($event, 'estadoTres')"></app-catalogo-select>
+         </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+@if (miembrosNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="miembrosNotificacion"  (confirmacionModal)="eliminarPedimentoDatos($event)">
+  </lib-notificaciones>
+</section>
+}
+
+@if (plantasEliminarNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="plantasEliminarNotificacion"  (confirmacionModal)="eliminarPlantasEvent($event)">
+  </lib-notificaciones>
+</section>
+}
+
+
+@if (plantasNotificacion && plantasNotificacion.cerrar) {
+<section>
+  <lib-notificaciones [notificacionInput]="plantasNotificacion" (confirmacionModal)="closePlantasModal()">
+  </lib-notificaciones>
+</section>
+}

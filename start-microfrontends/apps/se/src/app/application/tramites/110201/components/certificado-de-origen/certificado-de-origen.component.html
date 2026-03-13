@@ -1,0 +1,391 @@
+<ng-container *ngIf="!esFormulario">
+  <ng-titulo *ngIf="!cargarArchivo" titulo="Validación inicial del certificado de circulación de mercancías" />
+  <ng-titulo *ngIf="!cargarArchivo" titulo="Tratado y país o bloque" />
+</ng-container>
+<div class="container" *ngIf="!esFormulario">
+  <form [formGroup]="registroForm" (ngSubmit)="validarDestinatarioFormulario()">
+    <ng-container formGroupName="validacionForm">
+      <ng-container *ngIf="!cargarArchivo">
+        <div class="row">
+          <div class="col-md-4">
+            <app-catalogo-select [catalogo]="optionsTratado.catalogos || []" [label]="'Tratado / Acuerdo'"
+              [required]="true" id="tratado" formControlName="tratado" [isDisabled]="soloLectura"
+              (change)=" setValoresStore(validacionForm, 'tratado', 'setTratado') "
+              (selectionChange)="onTratadoChange($event)"
+              [markTouched]="registroForm.get('validacionForm.tratado')?.touched??false"></app-catalogo-select>
+
+          </div>
+          <div class="col-md-4">
+            <app-catalogo-select [catalogo]="optionsPais.catalogos || []" [label]="'País / Bloque'" [required]="true"
+              id="pais" formControlName="pais" [isDisabled]="soloLectura"
+              (change)="setValoresStore(validacionForm, 'pais', 'setPais')"
+              (selectionChange)="onPaisChange($event)"
+              [markTouched]="registroForm.get('validacionForm.pais')?.touched??false"></app-catalogo-select>
+          </div>
+        </div>
+        <div class="row mt-5">
+          <div class="col-md-4">
+            <label>Fracción arancelaria:</label>
+            <input type="text" class="form-control" formControlName="fraccionArancelaria" minlength="8" maxlength="8"
+              (input)="onFraccionArancelariaInput($event)"
+              (change)=" setValoresStore( validacionForm, 'fraccionArancelaria', 'setFraccionArancelaria' ) " />
+            <div
+              *ngIf="registroForm.get('validacionForm.fraccionArancelaria')?.invalid && registroForm.get('validacionForm.fraccionArancelaria')?.touched"
+              class="text-danger">
+              <small class="text-danger"
+                *ngIf="registroForm.get('validacionForm.fraccionArancelaria')?.errors?.['minlength']">Mínimo 8 dígitos
+                requeridos.</small>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <label># Registro producto:</label>
+            <input type="text" class="form-control" formControlName="numeroRegistro" maxlength="12"
+              (change)=" setValoresStore( validacionForm, 'numeroRegistro', 'setNumRegistro' ) " />
+            <div
+              *ngIf="registroForm.get('validacionForm.numeroRegistro')?.invalid && registroForm.get('validacionForm.numeroRegistro')?.touched"
+              class="text-danger">
+              <small class="text-danger"
+                *ngIf="registroForm.get('validacionForm.numeroRegistro')?.errors?.['maxlength']">Por favor, no escribas
+                más de 12 caracteres</small>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <label>Nombre comercial:</label>
+            <input type="text" class="form-control" formControlName="nombreComercial" maxlength="200"
+              (change)=" setValoresStore( validacionForm, 'nombreComercial', 'setNomComercial' ) " />
+            <div
+              *ngIf="registroForm.get('validacionForm.nombreComercial')?.invalid && registroForm.get('validacionForm.nombreComercial')?.touched"
+              class="text-danger">
+              <small class="text-danger"
+                *ngIf="registroForm.get('validacionForm.nombreComercial')?.errors?.['maxlength']">Por favor, no escribas
+                más de 200 caracteres</small>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <label style="margin-left: 338px">Periodo</label>
+        </div>
+        <div class="row mt-5">
+          <div class="col-md-4">
+            <input-fecha [setFecha]=" registroForm.get('validacionForm.fechaInicial')?.value "
+              [datos]="fechaInicialInput" [isDisabled]="soloLectura"
+              (valorCambiado)="cambioFechaInicial($event)"></input-fecha>
+          </div>
+          <div class="col-md-4">
+            <input-fecha [setFecha]="registroForm.get('validacionForm.fechaFinal')?.value" [datos]="fechaFinalInput"
+              [isDisabled]="soloLectura" (valorCambiado)="cambioFechaFinal($event)"></input-fecha>
+          </div>
+        </div>
+        <div class="col-md-12 mt-5 d-flex justify-content-end">
+          <button type="button" class="btn btn-primary ms-3" (click)="buscarMercancias()" [disabled]="soloLectura">
+            Buscar mercancías </button>
+        </div>
+        <div class="row mt-5">
+          <label>Mercancías disponibles</label>
+        </div>
+        <div class="table-container mt-5" *ngIf="!hayMercanciasDisponibles">
+          <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.UNDEFINED" [configuracionTabla]="headers"
+            [disableSeleccionTablaCheckBox]="soloLectura? true : false"></app-tabla-dinamica>
+        </div>
+        <div class="table-container mt-5" *ngIf="hayMercanciasDisponibles">
+          <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.UNDEFINED" [configuracionTabla]="headers"
+            [datos]="mercanciaDisponsiblesTablaDatos" [disableSeleccionTablaCheckBox]="soloLectura? true : false"
+            (filaClic)="abrirModalMercancia($event)"></app-tabla-dinamica>
+        </div>
+        <nav aria-label="Page navigation example">
+          <ul class="pagination d-flex justify-content-center">
+            <li class="page-item">
+              <a class="page-link" title="Current page is 1">1</a>
+            </li>
+          </ul>
+        </nav>
+      </ng-container>
+      <ng-titulo titulo="Carga de mercancías por archivo" />
+      <div class="col-md-12 mt-5 d-flex justify-content-end" *ngIf="!cargarArchivo">
+        <button type="button" class="btn btn-primary ms-3" (click)="cargaArchivo()" [disabled]="soloLectura"> Carga por
+          archivo </button>
+      </div>
+      <div class="bottom-buffer" *ngIf="cargarArchivo">
+        <div class="row">
+          <div class="col-md-8">
+            <div class="form-group">
+              <div>
+                <label class="control-label"> Archivo: </label>
+              </div>
+              <input class="visually-hidden-file" type="file" formControlName="archivo" id="archivoAdjuntar" size="60"
+                (change)="alSeleccionarArchivo($event)"
+                (change)=" setValoresStore(validacionForm, 'archivo', 'setArchivo') " />
+              <label class="custome-file-label font-weight" for="archivoAdjuntar" value="Seleccionar archivo">Elegir
+                archivo</label>
+              <p style="display: inline-block"> {{ nombreArchivo || 'No se eligió ningún archivo' }} </p>
+              <br />
+              <div
+                *ngIf="registroForm.get('validacionForm.archivo')?.invalid && registroForm.get('validacionForm.archivo')?.touched"
+                class="text-danger">
+                <small>El archivo es requerido.</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-8 pull-right">
+            <hr />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="pull-right">
+              <button type="button" class="btn btn-default" (click)="cerrarAdjuntarArchivoMercancias()"
+                [disabled]="soloLectura"> Cerrar </button>
+              <button type="submit" class="btn btn-primary" (click)="darError()" [disabled]="soloLectura"> Enviar
+              </button> @if (nuevaNotificacion) { <section>
+                <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+                  (confirmacionModal)="eliminarPedimento($event)"></lib-notificaciones>
+              </section> }
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <ng-alert *ngIf="!cargarArchivo" [CONTENIDO]="TEXTO_DE_ALERTA" style="margin-top: 40px"></ng-alert>
+      </div>
+      <ng-container *ngIf="!cargarArchivo">
+        <div class="row mt-5">
+          <label>Mercancías seleccionadas</label>
+        </div>
+        <div class="table-container mt-5">
+          <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.RADIO" [datos]="mercanciaSeleccionadasTablaData"
+            [configuracionTabla]="headersData" [disableSeleccionTablaRadio]="soloLectura ? true : false"
+            (filaSeleccionada)="onFilaSeleccionadaradio($event)"></app-tabla-dinamica>
+          <div
+            *ngIf="!esMercanciaEnEdicion && mostrarErrorMercancias && (!mercanciaSeleccionadasTablaData || mercanciaSeleccionadasTablaData.length === 0)"
+            class="text-danger mt-2">
+            <small>Este campo es obligatorio.</small>
+          </div>
+        </div>
+        <nav aria-label="Page navigation example">
+          <ul class="pagination d-flex justify-content-center">
+            <li class="page-item">
+              <a class="page-link" title="Current page is 1">1</a>
+            </li>
+          </ul>
+        </nav>
+        <div class="col-md-12 mt-5 d-flex justify-content-end">
+          <button type="button" class="btn btn-default ms-3" (click)="cerrarEdicionMercancia()"
+            [disabled]="soloLectura">Eliminar</button>
+          <button type="button" class="btn btn-primary ms-3" (click)="modificar()" [disabled]="soloLectura"> Modificar
+          </button>
+        </div>
+        <div class="row mt-5">
+          <div class="alert alert-danger" style="margin-top: 40px" *ngIf="mostrarErrores">
+            <strong>Existen errores en la carga de mercancías por archivo</strong>
+          </div>
+        </div>
+        <div class="row mt-5">
+          <label *ngIf="mostrarErrores">Mercancías*:</label>
+        </div>
+        <div class="table-container instance-special mt-5" *ngIf="mostrarErrores">
+          <label style="margin-left: 490px">Error</label>
+          <ng-table id="myElement " class="hide-checkbox" [enableScrollbar]="true"
+            [commonTableHeader]="mercanciasHeader" [commonTableBody]="mercanciasBody" [enableScrollbar]="true"
+            [disableSeleccionTablaCheckBox]="soloLectura? true : false"></ng-table>
+        </div>
+      </ng-container>
+    </ng-container>
+  </form>
+</div>
+<!-- new modal -->
+<ng-container>
+  <div class="modal fade modal-xl" id="modalAgregar" tabindex="-1" role="dialog" aria-labelledby="modalAgregarLabel"
+    aria-hidden="true" #modalAgregar>
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalAgregarLabel">Datos de la mercancía</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="mostrarErrorRegistro" class="alert alert-danger text-center">
+            <strong>¡Error de registro! Faltan campos por capturer</strong>
+          </div>
+          <form [formGroup]="mercanciaForm" *ngIf="mercanciaForm">
+            <div formGroupName="validacionMercanciaForm">
+              <div class="row">
+                <div class="col-md-4">
+                  <label>Fracción arancelaria:</label>
+                  <input type="text" required="true" class="form-control grisColor" readonly
+                    formControlName="fraccionMercanciaArancelaria"
+                    (change)=" setValoresStore( validacionMercanciaForm, 'fraccionMercanciaArancelaria', 'setfraccionMercanArancelaria' ) " />
+                </div>
+                <div class="col-md-8">
+                  <label>Nombre comercial de la mercancía(igual que en la factura):</label>
+                  <input type="text" required="true" class="form-control grisColor"
+                    formControlName="nombreComercialDelaMercancia" readonly
+                    (change)=" setValoresStore( validacionMercanciaForm, 'nombreComercialDelaMercancia', 'setnombrecomercialdelamercancia' ) " />
+                </div>
+              </div>
+              <div class="row mt-5">
+                <div class="col-md-8">
+                  <label>Nombre técnico:</label>
+                  <input type="text" class="form-control grisColor" formControlName="nombreTecnico" readonly
+                    (change)=" setValoresStore( validacionMercanciaForm, 'nombreTecnico', 'setnombretecnico' ) " />
+                </div>
+              </div>
+              <div class="row mt-5">
+                <div class="col-md-8">
+                  <label>Nombre en inglés:</label>
+                  <input type="text" class="form-control grisColor" formControlName="nombreEnIngles" readonly
+                    (change)=" setValoresStore( validacionMercanciaForm, 'nombreEnIngles', 'setnomreeningles' ) " />
+                </div>
+                <div class="col-md-4">
+                  <label>Criterio para conferir origen:</label>
+                  <input type="text" class="form-control grisColor" formControlName="criterioParaConferir" readonly
+                    (change)=" setValoresStore( validacionMercanciaForm, 'criterioParaConferir', 'setcriterioparaconferir' ) " />
+                </div>
+              </div>
+              <div class="row mt-5">
+                <div class="col-md-8">
+                  <label>Marca:</label>
+                  <input type="text" maxlength="256" class="form-control" formControlName="marca"
+                    (change)=" setValoresStore(validacionMercanciaForm, 'marca', 'setmarca') " />
+                </div>
+                <div class="col-md-4">
+                  <label>Cantidad<span
+                      [ngClass]="{'text-danger': mercanciaForm.get('validacionMercanciaForm.cantidad')?.invalid && mercanciaForm.get('validacionMercanciaForm.cantidad')?.touched}">*</span>:
+                  </label>
+                  <input type="text" required="true" class="form-control" formControlName="cantidad"
+                    (change)="setValoresStore( validacionMercanciaForm, 'cantidad', 'setcantidad' );" />
+                  <div
+                    *ngIf="mercanciaForm.get('validacionMercanciaForm.cantidad')?.touched && mercanciaForm.get('validacionMercanciaForm.cantidad')?.invalid"
+                    class="text-danger">
+                    <small class="text-danger"
+                      *ngIf="mercanciaForm.get('validacionMercanciaForm.cantidad')?.errors?.['required']"> Este campo es
+                      obligatorio. </small>
+                    <small class="text-danger"
+                      *ngIf="mercanciaForm.get('validacionMercanciaForm.cantidad')?.errors?.['pattern']"> El valor debe
+                      ser un número con hasta 15 dígitos enteros y hasta 4 dígitos decimales. </small>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-5">
+                <div class="col-md-4">
+                  <app-catalogo-select [catalogo]="optionsUMC.catalogos" [label]="'UMC'" [required]="true"
+                    [tooltipQuestionCircle]="true" id="umc" formControlName="umc"
+                    [markTouched]="mercanciaForm.get('validacionMercanciaForm.umc')?.touched??false"
+                     (selectionChange)="onUmcChange($event)"
+                    (change)="setValoresStore(validacionMercanciaForm, 'umc', 'setUMC')"></app-catalogo-select>
+                </div>
+              </div>
+              <div class="row mt-5">
+                <div class="col-md-4">
+                  <label>Valor de la mercancía(dólares)<span
+                      [ngClass]="{'text-danger': mercanciaForm.get('validacionMercanciaForm.valorDelaMercancia')?.invalid && mercanciaForm.get('validacionMercanciaForm.valorDelaMercancia')?.touched}">*</span>:
+                  </label>
+                  <input type="text" required="true" class="form-control" formControlName="valorDelaMercancia"
+                    (change)="setValoresStore(validacionMercanciaForm, 'valorDelaMercancia', 'setvalordelamercancia'); formatearValorDelaMercancia()"
+                    (blur)="formatearValorDelaMercancia()" />
+                  <div
+                    *ngIf="mercanciaForm.get('validacionMercanciaForm.valorDelaMercancia')?.invalid && mercanciaForm.get('validacionMercanciaForm.valorDelaMercancia')?.touched"
+                    class="text-danger">
+                    <small class="text-danger"
+                      *ngIf=" mercanciaForm.get('validacionMercanciaForm.valorDelaMercancia')?.errors?.['pattern'] || mercanciaForm.get('validacionMercanciaForm.valorDelaMercancia')?.errors?.['maxlength'] ">
+                      El valor debe ser un número con hasta 15 dígitos enteros y hasta 4 dígitos decimales. </small>
+                    <small class="text-danger"
+                      *ngIf="mercanciaForm.get('validacionMercanciaForm.valorDelaMercancia')?.errors?.['required']">
+                      Este campo es obligatorio. </small>
+                  </div>
+                </div>
+                <div class="col-md-8">
+                  <label> Complemento de la descripción<span class="text-danger">*</span>: </label>
+                  <textarea cols="70" rows="3" class="w-100" formControlName="complementoDelaDescripcion"
+                    maxlength="200"
+                    [ngClass]="{'is-invalid': mercanciaForm.get('validacionMercanciaForm.complementoDelaDescripcion')?.invalid && mercanciaForm.get('validacionMercanciaForm.complementoDelaDescripcion')?.touched}"
+                    (change)="setValoresStore(validacionMercanciaForm, 'complementoDelaDescripcion', 'setcomplementodeladescripcion')"></textarea>
+                  <div
+                    *ngIf="mercanciaForm.get('validacionMercanciaForm.complementoDelaDescripcion')?.invalid && mercanciaForm.get('validacionMercanciaForm.complementoDelaDescripcion')?.touched"
+                    class="text-danger">
+                    <small class="text-danger"
+                      *ngIf="mercanciaForm.get('validacionMercanciaForm.complementoDelaDescripcion')?.errors?.['maxlength']">
+                      Por favor, no escribas más de 200 caracteres </small>
+                    <small class="text-danger"
+                      *ngIf="mercanciaForm.get('validacionMercanciaForm.complementoDelaDescripcion')?.errors?.['required']">
+                      Este campo es obligatorio </small>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-5">
+                <div class="col-md-4">
+                  <label> Masa bruta<span
+                      [ngClass]="{'text-danger': mercanciaForm.get('validacionMercanciaForm.masaBruta')?.invalid && mercanciaForm.get('validacionMercanciaForm.masaBruta')?.touched}">*</span>:
+                  </label>
+                  <input type="text" required="true" class="form-control" formControlName="masaBruta"
+                    (change)="setValoresStore(validacionMercanciaForm, 'masaBruta', 'setmasabruta'); formatearMasaBruta()"
+                    (blur)="formatearMasaBruta()"
+                    [ngClass]="{'is-invalid': mercanciaForm.get('validacionMercanciaForm.masaBruta')?.invalid && mercanciaForm.get('validacionMercanciaForm.masaBruta')?.touched}" />
+                  <div
+                    *ngIf=" mercanciaForm.get('validacionMercanciaForm.masaBruta')?.invalid && mercanciaForm.get('validacionMercanciaForm.masaBruta')?.touched "
+                    class="text-danger">
+                    <small class="text-danger"
+                      *ngIf="mercanciaForm.get('validacionMercanciaForm.masaBruta')?.errors?.['pattern']"> El valor debe
+                      ser un número con hasta <b>15 dígitos enteros</b> y hasta <b>4 dígitos decimales</b>. </small>
+                    <small class="text-danger"
+                      *ngIf="mercanciaForm.get('validacionMercanciaForm.masaBruta')?.errors?.['required']"> Este campo
+                      es obligatorio. </small>
+                  </div>
+                </div>
+                <div class="col-md-8">
+                  <app-catalogo-select [catalogo]="optionsUnidadMedida.catalogos"
+                    [label]="'Unidad de medida de la masa bruta'" [required]="true" id="unidadMedida"
+                    formControlName="unidadMedida"
+                         (selectionChange)="onUnidadMedidaChange($event)"
+                    (change)=" setValoresStore( validacionMercanciaForm, 'unidadMedida', 'setUnidadMedida' ) "
+                    [markTouched]="mercanciaForm.get('validacionMercanciaForm.unidadMedida')?.touched ?? false"></app-catalogo-select>
+                </div>
+              </div>
+              <div class="row mt-5">
+                <div class="col-md-4">
+                  <input-fecha [setFecha]="registroForm.get('fecha')?.value" [datos]="fechaFacturaInput"
+                    (valorCambiado)="cambioFechaFactura($event)"></input-fecha>
+                </div>
+                <div class="col-md-4">
+                  <label> N° factura<span
+                      [ngClass]="{'text-danger': mercanciaForm.get('validacionMercanciaForm.numeroFactura')?.invalid && mercanciaForm.get('validacionMercanciaForm.numeroFactura')?.touched}">*</span>:
+                  </label>
+                  <input type="text" required="true" class="form-control" formControlName="numeroFactura" maxlength="50"
+                    (change)="setValoresStore(validacionMercanciaForm, 'numeroFactura', 'setNFactura')"
+                    [ngClass]="{'is-invalid': mercanciaForm.get('validacionMercanciaForm.numeroFactura')?.invalid && mercanciaForm.get('validacionMercanciaForm.numeroFactura')?.touched}" />
+                  <div
+                    *ngIf="mercanciaForm.get('validacionMercanciaForm.numeroFactura')?.invalid && mercanciaForm.get('validacionMercanciaForm.numeroFactura')?.touched"
+                    class="text-danger">
+                    <small class="text-danger"
+                      *ngIf="mercanciaForm.get('validacionMercanciaForm.numeroFactura')?.errors?.['required']"> Este
+                      campo es obligatorio </small>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <app-catalogo-select [catalogo]="optionsTipoFactura.catalogos" [label]="'Tipo de factura'"
+                    [required]="true"
+                    [markTouched]="mercanciaForm.get('validacionMercanciaForm.tipoFactura')?.touched??false"
+                    id="tipoFactura" formControlName="tipoFactura"
+                    (selectionChange)="onTipoFacturaChange($event)"
+                    (change)=" setValoresStore( validacionMercanciaForm, 'tipoFactura', 'setTipoFactura' )"></app-catalogo-select>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-bs-dismiss="modal" #closeModal (click)="cancelar()"
+            [disabled]="soloLectura">Cancelar</button>
+          <button type="button" class="btn btn-primary" #closeModal (click)="agregar()"
+            [disabled]="soloLectura">Agregar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container> @if (nuevaNotificacion) { <section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+    (confirmacionModal)="eliminarPedimento($event)"></lib-notificaciones>
+</section> }

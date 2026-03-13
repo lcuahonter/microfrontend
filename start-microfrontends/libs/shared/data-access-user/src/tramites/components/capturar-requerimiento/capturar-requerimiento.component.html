@@ -1,0 +1,77 @@
+<div class="container">
+  <div class="row padding-top">
+    <div class="row">
+      <div class="col-12">
+        <h2 class="fw-bold my-5 titulo-tasks">Requerimiento</h2>
+        <hr class="red">
+      </div>
+    </div>
+    <form [formGroup]="formRequerimiento">
+      <div class="row">
+        <div class="col-md-12" *ngIf="isTipoRequerimiento">
+          <div class="col-md-4">
+            <div class="row">
+              <app-catalogo-select-clave [catalogo]="catTipoRequerimiento" formControlName="tipoRequerimiento"
+                [label]="'Tipo requerimiento'" [required]="true" name="tipoRequerimiento"
+                (change)="tipoRequerimientoSeleccionado(formRequerimiento,'tipoRequerimiento', 'settipoRequerimientoValue')"></app-catalogo-select-clave>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12 left" *ngIf="isAreaSolicitante">
+          <label for="areaSolicitante" class="form-label">Área(s) solicitante(s)*:</label>
+          <textarea name="areaSolicitante" id="areaSolicitante" class="form-control text-height"
+            formControlName="areaSolicitante" (input)="onInput()"
+            (blur)="setValoresStore(formRequerimiento,'areaSolicitante', 'setareaSolicitanteValue')"
+            (keydown)="onKeydown($event)" (paste)="onPaste($event)"></textarea>
+          <div class="text-muted small mt-1">
+            {{ (formRequerimiento.get('areaSolicitante')?.value || '').length }} / {{ MAX_CHARS }} caracteres
+          </div>
+          <div
+            *ngIf="formRequerimiento.get('areaSolicitante')?.invalid && (formRequerimiento.get('areaSolicitante')?.touched || formRequerimiento.get('justificacionRequerimiento')?.dirty)"
+            class="text-danger">
+            <div *ngIf="formRequerimiento.get('areaSolicitante')?.errors?.['required']">
+              Este campo es obligatorio.
+            </div>
+            <div *ngIf="formRequerimiento.get('areaSolicitante')?.errors?.['maxlength']">
+              Por favor, no escriba más de {{ MAX_CHARS }} caracteres.
+            </div>
+          </div>
+          <!-- Mensaje personalizado para límite de caracteres alcanzado -->
+          <div *ngIf="showCharLimitMessage && !formRequerimiento.get('areaSolicitante')?.errors?.['maxlength']"
+            class="text-danger">
+            <div>Por favor, no escriba más de {{ MAX_CHARS }} caracteres.</div>
+          </div>
+        </div>
+        <div class="col-md-12 left" *ngIf="isJustificacionRequerimiento">
+          <label for="justificacionRequerimiento" class="form-label">Justificación del requerimiento*:</label>
+          <textarea name="justificacionRequerimiento" id="justificacionRequerimiento" class="form-control text-height"
+            formControlName="justificacionRequerimiento" (input)="onInput()"
+            (blur)="setValoresStore(formRequerimiento,'justificacionRequerimiento', 'setjustificacionRequerimientoValue')"
+            (keydown)="onKeydown($event)" (paste)="onPaste($event)"></textarea>
+          <div class="text-muted small mt-1"  *ngIf="mostrarContadorCaracteres">
+            {{ (formRequerimiento.get('justificacionRequerimiento')?.value || '').length }} / 10000 caracteres
+          </div>
+          <div
+            *ngIf="formRequerimiento.get('justificacionRequerimiento')?.invalid && (formRequerimiento.get('justificacionRequerimiento')?.touched || formRequerimiento.get('justificacionRequerimiento')?.dirty)"
+            class="text-danger">
+            <div *ngIf="formRequerimiento.get('justificacionRequerimiento')?.errors?.['required']">
+              Este campo es obligatorio.
+            </div>
+            <div *ngIf="formRequerimiento.get('justificacionRequerimiento')?.errors?.['maxlength']">
+              Por favor, no escriba más de 10000 caracteres.
+            </div>
+          </div>
+          <!-- Mensaje personalizado para límite de caracteres alcanzado -->
+          <div
+            *ngIf="showCharLimitMessage && !formRequerimiento.get('justificacionRequerimiento')?.errors?.['maxlength']"
+            class="text-danger">
+            <div>Por favor, no escriba más de 10000 caracteres.</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <p class="small">*Campos obligatorios</p>
+      </div>
+    </form>
+  </div>
+</div>

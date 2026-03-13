@@ -1,0 +1,70 @@
+<div class="page">
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-6">
+        <h3>
+          Registro de solicitud AUTORIZACION - PROSEC productor
+indirecto
+        </h3>
+      </div>
+          <div class="col-12">
+        @if (esFormaValido) {
+        <ng-alert [CONTENIDO]="formErrorAlert" [CUSTOMECLASS]="infoError"></ng-alert>
+      }
+      </div>
+
+
+      <app-wizard [listaPasos]="pasos"></app-wizard>
+    </div>
+
+    <div class="row">
+      @switch (indice) { @case (1) {
+      <app-paso-uno #pasoUnoRef></app-paso-uno>
+      } @case (2) {
+        <app-paso-carga-documento 
+        [idSolicitud]="solicitudState.idSolicitud"
+        [idTipoTRamite]="'90102'"
+        [cargaArchivosEvento]="cargarArchivosEvento"
+        (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+        (reenviarCargaRealizada)="cargaRealizada($event)"
+        (cargaEnProgreso)="onCargaEnProgreso($event)"></app-paso-carga-documento>
+      } @case (3) {
+        <paso-firma [idSolicitud]="solicitudState.idSolicitud" [procedure]="90102" [procedureUrl]="'autorizacion-prosec-productor/prosec'"></paso-firma>
+      } }
+
+      <div class="row">
+        <div class="col-md-12">
+          @if (indice !== 2) {
+          <btn-continuar
+            [datos]="datosPasos"
+            (continuarEvento)="getValorIndice($event)"
+            [dePadre]="true"
+          ></btn-continuar>
+          } @else {
+          <div class="mt-5 mb-3 d-flex justify-content-end">
+            <button
+              type="button"
+              class="btn btn-default"
+              (click)="anterior()"
+              *ngIf="seccionCargarDocumentos"
+            >
+              Anterior
+            </button>
+  
+            <button
+              class="btn btn-primary ms-3"
+              (click)="
+                seccionCargarDocumentos ? onClickCargaArchivos() : siguiente()
+              "
+              [disabled]="!activarBotonCargaArchivos && seccionCargarDocumentos"
+            >
+              {{ seccionCargarDocumentos ? 'Cargar archivos' : 'Continuar' }}
+            </button>
+          </div>
+          }
+        </div>
+      </div>
+      <ng-alert *ngIf="indice === 1" [CONTENIDO]="TEXTOS.Aviso"></ng-alert>
+    </div>
+  </div>
+</div>

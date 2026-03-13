@@ -1,0 +1,104 @@
+<div class="container py-4">
+  <div class="d-flex align-items-center mb-3">
+    <a href="javascript:void(0)" class="text-primary text-decoration-none" (click)="onCancelar()">Antecesor</a>
+    <span class="text-muted mx-2">|</span>
+    <span class="text-muted">Activo</span>
+  </div>
+
+  <ng-titulo [titulo]="'Buscar Fracción Arancelaria'"></ng-titulo>
+
+  <div class="card mt-4 shadow-sm border-0">
+    <div class="card-body bg-light rounded shadow-inner p-4">
+      <form [formGroup]="form">
+        <!-- Tipo de Operación -->
+        <div class="row mb-4 justify-content-center">
+          <div class="col-md-6 d-flex align-items-center gap-2">
+            <label class="form-label text-nowrap mb-0">Tipo de Operación:</label>
+            <select class="form-control form-select border-primary" formControlName="tipoOperacion">
+              <option value="importacion">Importación</option>
+              <option value="exportacion">Exportación</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Ingresar Fracción Arancelaria -->
+        <fieldset class="border rounded p-4 mb-4 bg-white shadow-sm border-2">
+          <legend class="float-none w-auto px-2 fs-6 text-muted fw-bold">Ingresar Fracción Arancelaria</legend>
+          <div class="row align-items-center justify-content-center g-3">
+            <div class="col-auto">
+              <label class="form-label mb-0">Fracción Arancelaria:</label>
+            </div>
+            <div class="col-md-4">
+              <input type="text" class="form-control border-primary" formControlName="busquedaFraccion" placeholder="Ej: 70">
+            </div>
+            <div class="col-auto">
+              <button type="button" class="btn btn-primary rounded-pill px-4" (click)="onBuscar()">
+                Buscar
+              </button>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Seleccionar Fracción Arancelaria -->
+        <fieldset class="border rounded p-4 mb-4 bg-white shadow-sm border-2">
+          <legend class="float-none w-auto px-2 fs-6 text-muted fw-bold">Seleccionar Fracción Arancelaria</legend>
+          <div class="tree-container border rounded p-3 bg-white overflow-auto" style="max-height: 400px;">
+            @if (isLoading) {
+              <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Cargando...</span>
+                </div>
+                <p class="mt-2 text-primary">Cargando fracciones...</p>
+              </div>
+            } @else if (nodes.length > 0) {
+              <div class="tree-content">
+                @for (node of nodes; track node.clave) {
+                  <app-tree-node-item 
+                    [node]="node" 
+                    [selectedNodes]="selectedNodes"
+                    (nodeToggled)="toggleExpand($event)"
+                    (nodeSelected)="onSelectNode($event)">
+                  </app-tree-node-item>
+                }
+              </div>
+            } @else {
+              <div class="text-center py-5 text-muted">
+                <i class="bi bi-search fs-1 mb-3"></i>
+                <p>Ingrese una fracción y presione buscar para ver los resultados.</p>
+              </div>
+            }
+          </div>
+        </fieldset>
+
+        <!-- Footer Buttons -->
+        <div class="row mt-5">
+          <div class="col-12 d-flex justify-content-center gap-3 py-3">
+            <button type="button" class="btn btn-primary rounded-pill px-4" (click)="onAceptar()">Aceptar</button>
+            <button type="button" class="btn btn-primary rounded-pill px-4" (click)="onActualizarCargaMasiva()">Actualizar Carga Masiva</button>
+            <button type="button" class="btn btn-secondary rounded-pill px-4" (click)="onCancelar()">Cancelar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para Carga Masiva -->
+<div class="modal fade" id="modalCargaMasiva" tabindex="-1" #modalCarga>
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content overflow-hidden rounded-4 shadow border-0">
+      <div class="modal-header border-0 bg-dark">
+        <h5 class="modal-title fw-bold text-white">Actualizar Carga Masiva Fracción Arancelaria TIGIE</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="border rounded p-4 bg-white">
+          <h6 class="text-muted border-bottom pb-2 mb-4">Actualización Masiva</h6>
+          <div class="d-flex align-items-center gap-3">
+            <app-cargar-archivo-menus titulo="Seleccione Archivo a Procesar:" (cancel)="closeModal()"></app-cargar-archivo-menus>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

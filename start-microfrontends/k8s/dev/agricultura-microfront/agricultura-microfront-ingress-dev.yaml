@@ -1,0 +1,25 @@
+# Create Ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: modulefederation-agricultura-microfront-ingress-dev
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+  - host: front.v30.ultrasist.net
+    http:
+      paths:
+      - path: /agricultura(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: modulefederation-agricultura-microfront-service-dev
+            port:
+              number: 4204
+  tls:
+  - hosts:
+    - front.v30.ultrasist.net
+    secretName: v30certs

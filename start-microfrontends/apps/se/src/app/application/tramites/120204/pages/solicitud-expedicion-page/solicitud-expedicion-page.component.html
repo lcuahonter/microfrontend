@@ -1,0 +1,114 @@
+<!-- 
+  Componente: solicitudExpedicion-page.component.html
+  Descripción: Este componente representa la página de solicitud de expedición de un certificado de cupo obtenido por licitación pública. 
+  Contiene diferentes secciones y pasos que se muestran dinámicamente según el valor de la variable `indice`.
+
+  Estructura:
+  - Clase principal "Page" que contiene el diseño general de la página.
+  - Sección de encabezado:
+    - Muestra diferentes títulos dependiendo del valor de `indice`.
+    - Incluye un componente de alerta (`ng-alert`) para mostrar mensajes dinámicos.
+  - Componente `app-wizard`:
+    - Representa un asistente que muestra los pasos del proceso.
+    - Recibe la lista de pasos a través de la propiedad `listaPasos`.
+  - Sección dinámica:
+    - Utiliza una estructura `@switch` para renderizar diferentes componentes según el valor de `indice`:
+      - `app-datos`: Muestra los datos iniciales del trámite.
+      - `app-requisitos-necessarios`: Muestra los requisitos necesarios.
+      - `app-anexar-requisitos`: Permite anexar los requisitos.
+      - `app-firmar-solicitud`: Permite firmar la solicitud.
+  - Botón de continuar:
+    - Componente `btn-continuar` que permite avanzar al siguiente paso.
+    - Emite un evento `continuarEvento` para actualizar el valor de `indice`.
+
+  Notas:
+  - Asegúrese de que las variables `indice`, `pantallasPasos`, y `datosPasos` estén correctamente definidas en el componente TypeScript asociado.
+  - Verifique que todos los componentes utilizados (`app-datos`, `app-requisitos-necessarios`, etc.) estén importados y registrados correctamente en el módulo correspondiente.
+-->
+<div class="Page">
+  <div class="container">
+    <div class="row">
+      @if(indice === 1) {
+      <div class="col-md-12">
+        <h1>Solicitud expedición de certificado de cupo obtenido por licitación pública</h1>
+      </div>
+      }
+        
+      @if(indice === 2){
+      <h1>Cargas archivos</h1> 
+      }
+
+      @if (!esFormaValido && esFormaValido !== undefined && licitacionSeleccionada) {
+      <div class="col-md-12">
+        <ng-alert [CONTENIDO]="formErrorAlert" [CUSTOMECLASS]="'alert-danger'"></ng-alert>
+      </div>
+      }
+
+      @if (!licitacionSeleccionada && esFormaValido === false && indice === 1) {
+      <div class="col-md-12">
+        <ng-alert [CONTENIDO]="licitacionErrorAlert" [CUSTOMECLASS]="'alert-danger'"></ng-alert>
+      </div>
+      }
+
+      <app-wizard [listaPasos]="pantallasPasos"></app-wizard>
+    </div>
+    <div class="row">
+      @switch (indice) {
+      @case (1) {
+      <app-datos #datosComponent></app-datos>
+      }
+      @case (2){
+      <app-paso-carga-documento [idSolicitud]="solicitudState.idSolicitud" [idTipoTRamite]="'120204'"
+      [cargaArchivosEvento]="cargarArchivosEvento"
+      (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+      (reenviarCargaRealizada)="cargaRealizada($event)"
+      (cargaEnProgreso)="onCargaEnProgreso($event)"
+      (enBlancoObligatoria)="onBlancoObligatoria($event)"></app-paso-carga-documento>
+      }
+      @case (3) {
+      <paso-firma [idSolicitud]="solicitudState.idSolicitud" [procedure]="120204" [procedureUrl]="'expedicion-certificado-cupos/solicitud-expedicion'"></paso-firma>
+      }
+      }
+      <div class="row">
+        <div class="col-md-12">
+          @if (indice !== 2) {
+        <btn-continuar [datos]="datosPasos" (continuarEvento)="getValorIndice($event)" (anteriorEvento)="getValorIndice($event)"></btn-continuar>
+          } @else {
+          <div class="mt-5 mb-3 d-flex justify-content-end">
+            <button
+              type="button"
+              class="btn btn-default"
+              (click)="anterior()"
+              *ngIf="seccionCargarDocumentos"
+            >
+              Anterior
+            </button>
+            
+            @if(isSaltar) {
+              <button
+                type="button"
+                class="btn btn-default ms-3"
+                (click)="saltar()"
+              >
+                Saltar
+              </button>
+            }
+  
+            <button
+              class="btn btn-primary ms-3"
+              (click)="
+                seccionCargarDocumentos ? onClickCargaArchivos() : siguiente()
+              "
+              [disabled]="(seccionCargarDocumentos && !activarBotonCargaArchivos) || (!seccionCargarDocumentos && cargaEnProgreso)"
+            >
+              {{ seccionCargarDocumentos ? 'Cargar archivos' : 'Continuar' }}
+            </button>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+    <ng-alert [CONTENIDO]="TEXTOSR.inst"></ng-alert>
+  </div>  
+</div>
+

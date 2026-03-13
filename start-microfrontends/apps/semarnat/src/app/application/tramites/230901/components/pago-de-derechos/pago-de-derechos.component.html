@@ -1,0 +1,54 @@
+<div class="container">
+  <ng-titulo titulo="Pago de derechos" />
+  <form [formGroup]="formularioPagoDerechos">
+    <div class="form">
+      <div class="row">
+        <div class="col-md-4">
+          <label class="mt-3" for="cve_referencia_bancaria">Clave de referencia*:</label>
+          <input id="cve_referencia_bancaria" type="number" class="form-control"
+            formControlName="cve_referencia_bancaria" placeholder="" [required]="true" />
+        </div>
+        <div class="col-md-4">
+          <label class="mt-3" for="cadena_pago_dependencia">Cadena de la dependencia*:</label>
+          <input id="cadena_pago_dependencia" type="number" class="form-control"
+            formControlName="cadena_pago_dependencia" placeholder="" [required]="true">
+        </div>
+        <div class="col-md-4">
+          <app-catalogo-select formControlName="cve_banco" name="cve_banco" [catalogo]="bancos" [label]="'Banco'"
+            [required]="true" [isDisabled]="esFormularioSoloLectura()"
+            [markTouched]="formularioPagoDerechos.get('cve_banco')?.touched??false"
+            (change)="esValidoFormulario()"></app-catalogo-select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <label class="mt-3 " for="llave_pago">Llave de pago*:</label>
+          <input class="form-control" id="llave_pago" type="text" formControlName="llave_pago" [required]="true"
+            maxlength="10" [class.is-invalid]="formControls['llave_pago'].touched && formControls['llave_pago'].invalid"
+            (change)="esValidoFormulario()" libUppercase>
+          <div *ngIf="utils.esControlInvalido(formularioPagoDerechos,'llave_pago')" class="text-danger">
+            <small *ngIf="formControls['llave_pago'].hasError('required')">Este campo es
+              obligatorio.</small>
+            <small *ngIf="formControls['llave_pago'].hasError('pattern')">Debe capturar el
+              formato correcto</small>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <input-fecha [setFecha]="formControls['fec_pago'].value" [datos]="configuracionFechaFinal"
+            [isDisabled]="esFormularioSoloLectura()" (valorCambiado)="cambioFechaFinal($event);esValidoFormulario()"
+            [class.is-invalid]="formControls['fec_pago'].touched && formControls['fec_pago'].invalid">
+          </input-fecha>
+          <div *ngIf="utils.esControlInvalido(formularioPagoDerechos,'fec_pago')" class="text-danger">
+            <small *ngIf="formControls['fec_pago'].hasError('required')">Este campo es
+              obligatorio.</small>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label class="mt-3" for="imp_pago">Importe de pago*:</label>
+          <input class="form-control" id="imp_pago" type="number" formControlName="imp_pago" [required]="true" />
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,41 @@
+<div class="row">
+    <div class="col-md-12 mt-3 text-center">
+      <app-table
+        *ngIf="!flightSelected()"
+        title="Vuelos"
+        [tableData]="tableFlightsData"
+        [borderedStyle]="true"
+        [isLoading]="isLoadingFlightsDataTable"
+        [hiddenData]="hiddenFlightsData"
+        [error]="errorFlightsData"
+        [hasRedirect]="true"
+        [hasPagination]="true"
+        [pagination]="pagination()"
+        [textCenterTitleColums]="true"
+        (pageChange)="onFlightsPageChange($event)"
+        (onRowClicked)="getMasterByManifest($event.hiddenData)"
+      />
+
+      <ng-container *ngIf="flightSelected()">
+        <app-table
+          title="Vuelos"
+          [tableData]="tableFlightSelectedData"
+          [borderedStyle]="true"
+          [isLoading]="isLoadingFlightSelectedDataTable"
+		  [textCenterTitleColums]="true"
+          [error]="errorFlightSelectedData"
+        />
+        <app-table
+          title="Guías Master"
+          [tableData]="tableMasterData"
+          [borderedStyle]="true"
+          [isLoading]="isLoadingMasterDataTable"
+          [hiddenData]="hiddenMasterData"
+          [error]="errorMasterData"
+          [hasRedirect]="true"
+		  [textCenterTitleColums]="true"
+          (onRowClicked)="masterSelected($event)"
+        />
+      </ng-container>
+    </div>
+  </div>

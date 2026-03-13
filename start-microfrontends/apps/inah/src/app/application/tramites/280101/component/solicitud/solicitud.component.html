@@ -1,0 +1,111 @@
+<div class="container">
+  <form [formGroup]="solicitudForm">
+    <div class="container">
+    <ng-titulo titulo="Modalidad"/>
+    <div class="row">
+      <div class="col-md-4">
+        <label class="form-label" for="modalidadOpcion"
+          >Modalidad*:
+        </label>
+        <app-input-radio
+            [radioOptions]="radioOpcions"
+            formControlName="modalidadOpcion"
+            (change)="setValoresStore(solicitudForm, 'modalidadOpcion', 'setModalidad')"
+            >
+          </app-input-radio>
+          <div *ngIf="solicitudForm.get('modalidadOpcion')?.errors?.['required'] && solicitudForm.get('modalidadOpcion')?.touched">
+            <small class="text-danger">Este campo es obligatorio.</small>
+          </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="van-a-exposicion">¿ Van a exposición?*:</label>
+        <span class="bi bi-question-circle-fill fs-4 m-1 require"></span>
+        <app-input-radio
+            [radioOptions]="exposicionRadioOpcions"
+            formControlName="exposicionOpcion"
+            [layout]="'horizontal'"
+            (change)="setValoresStore(solicitudForm, 'exposicionOpcion', 'setExposicionOpcion')"
+            >
+          </app-input-radio>
+          <div *ngIf="solicitudForm.get('exposicionOpcion')?.errors?.['required'] && solicitudForm.get('exposicionOpcion')?.touched">
+            <small class="text-danger">Este campo es obligatorio.</small>
+          </div>
+      </div>
+      <div class="col-md-4">
+          <label class="form-label" for="nombre"
+            >Nombre de la Exposición :</label>
+            <span class="bi bi-question-circle-fill fs-4 m-1"></span>
+          <input
+            type="text"
+            class="form-control"
+            id="nombreExposicion"
+            formControlName="nombre"
+            (change)="setValoresStore(solicitudForm, 'nombre', 'setNombre')"
+          />
+        </div>   
+    </div>
+  </div>
+
+<div class="container">
+  <ng-titulo titulo="Lugar de Salida y Entrada de Territorio Nacional"/>
+    <div class="row">
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="aduana" formControlName="aduana" [label]="'Aduana de salida'"
+                [required]="true" name="aduana" [isDisabled]="soloLectura" [placeholder]="'Selecciona un valor'" (change)="setValoresStore(solicitudForm, 'aduana', 'setAduana')"></app-catalogo-select>
+                <div *ngIf="solicitudForm.get('aduana')?.errors?.['required'] && solicitudForm.get('aduana')?.touched">
+                  <small class="text-danger">Este campo es obligatorio.</small>
+                </div>
+
+      </div>
+      @if (solicitudForm.get('modalidadOpcion')?.value === '2') {
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="aduana" formControlName="aduanaEntrada" [label]="'Aduanas de entrada'"
+                [required]="true" name="aduana" [isDisabled]="soloLectura" [placeholder]="'Selecciona un valor'" (change)="setValoresStore(solicitudForm, 'aduanaEntrada', 'setAduanaEntrada')"></app-catalogo-select>
+                <div *ngIf="solicitudForm.get('aduanaEntrada')?.errors?.['required'] && solicitudForm.get('aduanaEntrada')?.touched">
+                  <small class="text-danger">Este campo es obligatorio.</small>
+                </div>
+
+      </div>
+    }
+      </div>
+  </div>
+<div class="container">
+  <ng-titulo titulo="Observaciones"/>
+    <div class="row">
+      <div class="col-md-8">
+        <label class="form-label" for="Monumentos"
+          >Descripción de Monumentos o Bienes Muebles a Exportar*:
+        </label>
+        <textarea
+          class="form-control"
+          formControlName="descripcionClobGenerica"
+          cols="100"
+          rows="5"
+          (change)="setValoresStore(solicitudForm, 'descripcionClobGenerica', 'setDescripcionClobGenerica')"
+        ></textarea>
+        <div *ngIf="solicitudForm.get('descripcionClobGenerica')?.errors?.['required'] && solicitudForm.get('descripcionClobGenerica')?.touched">
+          <small class="text-danger">Este campo es obligatorio.</small>
+        </div>
+      </div>
+      </div>
+</div>
+
+<div class="container">
+  <ng-titulo titulo="Cantidad de monumentos"/>
+    <div class="row">
+      <div class="col-md-8">
+        <label class="form-label" for="cantidad"
+          >Cantidad de Monumentos o bienes históricos a Exportar*:
+        </label>
+        <input
+          type="text"
+          class="form-control"
+          id="cantAutoriBienesCult"
+          formControlName="cantMonumentos"
+          (change)="setValoresStore(solicitudForm, 'cantMonumentos', 'setCantMonumentos')"
+        />
+      </div>
+    </div>
+</div>
+</form>
+</div>

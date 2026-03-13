@@ -1,0 +1,52 @@
+<div class="page">
+    <div class="container">
+      <div class="row">
+        @if(indice === 1){
+          <div class="col-md-12">
+            <h2>Exportación Minerales de Hierro</h2>
+          </div>
+        }
+        @if(indice === 2){
+          <div class="col-md-12">
+            <h1>Cargar archivos</h1>
+          </div>
+        }
+        @if(indice === 3){
+          <div class="col-md-12">
+            <h1>Firmar</h1>
+          </div>
+        }
+        <div class="col-12">
+          @if(esFormaValido){
+          <div class="col-md-12">
+            <ng-alert [CONTENIDO]="formErrorAlert" [CUSTOMECLASS]="'alert-danger'"></ng-alert>
+          </div>
+          }
+        </div>
+    </div>
+    <div class="row mt-5" *ngIf="indice === 3">
+      <div class="col-md-12">
+        <lib-notificaciones
+          [notificacionInput]="alertaNotificacion"
+        ></lib-notificaciones>
+      </div>
+    </div>
+    <app-wizard [listaPasos]="pasosSolicitar"></app-wizard>
+      <div class="row">
+        @switch(indice){
+                @case(1){
+                  <app-paso-uno></app-paso-uno>
+                }@case(2){
+                  <app-paso-carga-documento [idSolicitud]="solicitudState.idSolicitud" [idTipoTRamite]="'130217'"
+                    [cargaArchivosEvento]="cargarArchivosEvento" (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+                    (reenviarCargaRealizada)="cargaRealizada($event)"
+                    (cargaEnProgreso)="onCargaEnProgreso($event)"></app-paso-carga-documento>
+                }@case(3){
+                  <paso-firma [idSolicitud]="solicitudState.idSolicitud" [procedure]="130217"
+                    [procedureUrl]="'previos-exportacion/control-permisos-previos-exportacion'"></paso-firma>
+                }
+        }
+        <btn-continuar [datos]="datosPasos" (continuarEvento)="getValorIndice($event)"></btn-continuar>
+    </div>
+  </div>
+  

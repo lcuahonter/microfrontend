@@ -1,0 +1,84 @@
+
+  <form [formGroup]="formReporteAnnual">
+    @if(mostraTab) {
+      <ng-titulo
+        titulo="Reporte anual balanza comercial (capturar todas las cantidades en miles de pesos)"
+        />
+    } @else {
+       <ng-titulo titulo="Reporte Anual Balanza Comercial" />
+    }
+
+    <div class="row mt-3">
+      <div class="col-md-4">
+        <label class="form-label" for="ventasTotales"
+          >Ventas totales (a)*:</label
+        >
+        <input
+          type="text"
+          id="ventasTotales"
+          class="form-control"
+          formControlName="ventasTotales"
+          (change)="obtenerVentasTotales($event)"
+          pattern="[0-9]*"
+          maxlength="16"
+        />
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="totalExportaciones"
+          >Total exportaciones (b)*:</label
+        >
+        <input
+          type="text"
+          id="totalExportaciones"
+          class="form-control"
+          formControlName="totalExportaciones"
+          pattern="[0-9]*"
+          maxlength="16"
+          (change)="limitarLongitud($event, 16)"
+        />
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="totalImportaciones"
+          >Total importaciones (c)*:</label
+        >
+        <input
+          type="number"
+          id="totalImportaciones"
+          class="form-control"
+          formControlName="totalImportaciones"
+          (change)="obtenerTotalImportaciones($event)"
+        />
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="saldo">Saldo b-c:</label>
+        <input
+          type="number"
+          id="saldo"
+          class="form-control"
+          formControlName="saldo"
+          readonly
+        />
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="porcentajeExportacion"
+          >Porcentaje exportacion b/a*100:</label
+        >
+        <input
+          type="number"
+          id="porcentajeExportacion"
+          class="form-control"
+          formControlName="porcentajeExportacion"
+          readonly
+        />
+      </div>
+    </div>
+  </form>
+  
+  <!-- Notification component with callback handling -->
+  @if(nuevaNotificacion) {
+    <lib-notificaciones 
+      [notificacionInput]="nuevaNotificacion"
+      (onAccept)="cerrarNotificacion()"
+      (onClose)="cerrarNotificacion()">
+    </lib-notificaciones>
+  }

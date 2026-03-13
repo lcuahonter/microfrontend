@@ -1,0 +1,180 @@
+<form [formGroup]="detalleForm">
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="estatus" class="form-label">Estatus:</label>
+                <input class="form-control" id="estatus" placeholder="" type="text" formControlName="estatus"
+                    libUppercase>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="fechaCreacion" class="form-label">Fecha de creación:</label>
+                <input class="form-control" id="fechaCreacion" placeholder="" type="text"
+                    formControlName="fechaCreacion" libUppercase>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="dictaminadoPor" class="form-label">Dictaminado por:</label>
+                <input class="form-control" id="dictaminadoPor" placeholder="" type="text"
+                    formControlName="dictaminadoPor" libUppercase>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="fechaGeneracion" class="form-label">Fecha de generación:</label>
+                <input class="form-control" id="fechaGeneracion" placeholder="" type="text"
+                    formControlName="fechaGeneracion" libUppercase>
+            </div>
+        </div>
+    </div>
+
+    @if (tramite === 260503) {
+        @if (!isIniciado) {
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="verificadoPor" class="form-label">Verificado por:</label>
+                        <input class="form-control" id="verificadoPor" placeholder="" type="text"
+                            formControlName="verificadoPor" libUppercase>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="fechaverificación" class="form-label">Fecha de verificación:</label>
+                        <input class="form-control" id="fechaverificación" placeholder="" type="text"
+                            formControlName="fechaverificación" libUppercase>
+                    </div>
+                </div>
+            </div>
+        }
+        
+    } @else {
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label for="verificadoPor" class="form-label">Verificado por:</label>
+                    <input class="form-control" id="verificadoPor" placeholder="" type="text"
+                        formControlName="verificadoPor" libUppercase>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="fechaverificación" class="form-label">Fecha de verificación:</label>
+                    <input class="form-control" id="fechaverificación" placeholder="" type="text"
+                        formControlName="fechaverificación" libUppercase>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="autorizadoPor" class="form-label">Autorizado por:</label>
+                <input class="form-control" id="autorizadoPor" placeholder="" type="text"
+                    formControlName="autorizadoPor" libUppercase>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="fechaAutorizacion" class="form-label">Fecha de autorización:</label>
+                <input class="form-control" id="fechaAutorizacion" placeholder="" type="text"
+                    formControlName="fechaAutorizacion" libUppercase>
+            </div>
+        </div>
+    </div>
+
+     <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="fechaAtencion" class="form-label">Fecha de atención:</label>
+                <input class="form-control" id="fechaAtencion" placeholder="" type="text"
+                    formControlName="fechaAtencion" libUppercase>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="justificacionRequerimiento" class="form-label">Justificación del Requerimiento:</label>
+                <textarea id="justificacionRequerimiento" class="form-control height" formControlName="justificacionRequerimiento"
+                    libUppercase></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" *ngIf="isFundamento.includes(tramite)">
+        <div class="col-md-12">
+            <div class="form-group">
+            <app-catalogo-select-clave [catalogo]="fundamentoRequerimientoOpcions" formControlName="fundamento"
+            [label]="'Fundamento de requerimiento'" [required]="true" name="fundamento">
+          </app-catalogo-select-clave>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <app-catalogo-select formControlName="motivoDelRequerimiento" [catalogo]="motivoOpcions"
+            [label]="'Motivo del requerimiento'" [isDisabled]="esFormularioSoloLectura" name="Motivo del requerimiento" ></app-catalogo-select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <label for="siglasDelDictaminador" class="form-label">Siglas del dictaminador:</label>
+            <input type="text" id="siglasDelDictaminador" class="form-control" formControlName="siglasDelDictaminador">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <app-catalogo-select formControlName="asignarAutorizardor" [catalogo]="autorizadorOpcions"
+                [label]="'Asignar autorizador'" [isDisabled]="esFormularioSoloLectura" name="Asignar autorizador" ></app-catalogo-select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Documentos-->
+     @if (listadoDocumentos && listadoDocumentos.length > 0) {
+        <div class="row mt-4">
+        <div class="col-md-12">
+            <app-tabla-dinamica
+                [configuracionTabla]="encabezadoDeTablaDocumentos"
+                [datos]="listadoDocumentos"
+            >
+            </app-tabla-dinamica>
+        </div>
+     </div>
+     }
+     
+
+    <!-- Observaciones al requerimiento -->
+       @if (observaciones && observaciones.length > 0) {
+        <div class="row">
+            <div class="col-md-12">
+            <label for="observacionesAlRequerimiento" class="form-label">
+                Observaciones del Requerimiento
+            </label>
+            <app-tabla-dinamica
+                [configuracionTabla]="configuracionTabla"
+                [datos]="observaciones"
+                [acciones]="acciones"
+                [tituloLastColumn]="'Detalle'"
+                (alternarValor)="observacionEmit($event)"
+            >
+            </app-tabla-dinamica>
+            </div>
+        </div>
+       }
+</form>

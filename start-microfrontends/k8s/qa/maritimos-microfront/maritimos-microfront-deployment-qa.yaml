@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modulefederation-maritimos-microfront-deployment-qa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: modulefederation-maritimos-microfront-qa
+  template:
+    metadata:
+      labels:
+        app: modulefederation-maritimos-microfront-qa
+    spec:
+      containers:
+      - name: front-vucem30-container-qa
+        image: ghcr.io/vucem30/dockerized-modulefederation-maritimos-microfront:1.0.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: qa
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+      imagePullSecrets:
+      - name: vucem30registrykey

@@ -1,0 +1,27 @@
+<div class="container">
+  <h2>Consultas</h2>
+  <div class="row mt-3">
+    <div class="col-md-6" *ngFor="let item of menuItems">
+      <div class="custom-card">
+        <!-- Si tiene subitems -->
+        <ng-container *ngIf="item.subitems; else directLink">
+          <h4 (click)="toggle(item)" class="card-toggle">
+            {{ item.title }} <span class="caret" [class.caret-up]="item.open"></span>
+          </h4>
+          <ul class="subitems" *ngIf="item.open">
+            <li *ngFor="let sub of item.subitems">
+              <a [routerLink]="sub.route">{{ sub.title }}</a>
+            </li>
+          </ul>
+        </ng-container>
+
+        <!-- Si es link directo -->
+        <ng-template #directLink>
+          <h4>
+            <a [routerLink]="item.route">{{ item.title }}</a>
+          </h4>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

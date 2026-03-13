@@ -1,0 +1,46 @@
+<div class="container">
+    <div class="row">
+      <ul class="nav nav-tabs">
+        <li [ngClass]="indice === 1 ? 'active' : ''">
+          <a (click)="seleccionaTab(1)" (keyup.enter)="seleccionaTab(1)" (keydown.space)="seleccionaTab(1)" tabindex="0" data-toggle="tab" >Solicitante</a>
+        </li>
+        <li [ngClass]="indice === 2 ? 'active' : ''">
+          <a (click)="seleccionaTab(2)" (keyup.enter)="seleccionaTab(2)" (keydown.space)="seleccionaTab(2)" tabindex="0" data-toggle="tab" >Datos de la solicitud</a>
+        </li>
+
+        <li [ngClass]="indice === 3 ? 'active' : ''">
+          <a (click)="seleccionaTab(3)" (keyup.enter)="seleccionaTab(3)" (keydown.space)="seleccionaTab(3)" tabindex="0" data-toggle="tab" >Certificado Kimberley</a>
+        </li>
+        <li [ngClass]="indice === 4 ? 'active' : ''">
+            <a (click)="seleccionaTab(4)" (keyup.enter)="seleccionaTab(4)" (keydown.space)="seleccionaTab(4)" tabindex="0" data-toggle="tab" >Prorrogas</a>
+          </li>
+      </ul>
+  
+      <ng-container>
+        <div [hidden]="indice !== 1">
+          <app-solicitud #solicitud></app-solicitud>
+          <solicitante #Solicitante [mostrarDatosTramite]="false"></solicitante>
+        </div>
+        
+        @if(esDatosRespuesta){
+          <div [hidden]="indice !== 2">
+            <app-datos-del-tramite #datosDelTramite></app-datos-del-tramite>
+            <app-partidas-de-la-mercancia #partidasDeLaMercancia></app-partidas-de-la-mercancia>
+          </div>
+        }
+        
+        @if(esDatosRespuesta){
+          <div [hidden]="indice !== 3">
+            <app-certificado-kimberley #certificadoKimberley></app-certificado-kimberley>
+          </div>
+        }
+        
+        @if(esDatosRespuesta){
+          <div [hidden]="indice !== 4">
+            <app-prorrogas #prorrogas></app-prorrogas>
+          </div>
+        }
+      </ng-container>
+    </div>
+  </div>
+  

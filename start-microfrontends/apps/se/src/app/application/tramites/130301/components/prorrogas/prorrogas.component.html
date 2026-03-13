@@ -1,0 +1,72 @@
+<ng-titulo titulo="Solicitud prórroga para permisos de importación/exportación" />
+<form [formGroup]="prorrogasForm">
+    <div class="row">
+        <div class="col-md-4">
+            <label for="folioResolucion" class="form-label">Folio resolución:</label>
+            <input type="text" class="form-control" formControlName="folioResolucion" id="folioResolucion">
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <h6 class="mt-5">Prorrogas:</h6>
+            <app-tabla-dinamica [configuracionTabla]="prorrogasTabla"
+            [datos]="prorrogasTablaDatos"></app-tabla-dinamica>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <label for="cantidad" class="form-label">Cantidad:</label><span class="bi bi-question-circle-fill" title="Cantidad pendiente a
+importar/exportar"
+            data-bs-toggle="tooltip"></span>
+            <input type="text" class="form-control" formControlName="cantidad" id="cantidad">
+        </div>
+    </div>
+    <ng-titulo titulo="Datos de la prórroga" />
+    <div class="row">
+        <div class="col-md-4">
+            <label for="prorrogaDel" class="form-label">Prorroga del:</label>
+            <input type="text" class="form-control" formControlName="prorrogaDel" id="prorrogaDel">
+        </div>
+        <div class="col-md-4">
+            <!-- <label for="prorrogaAl" class="form-label">Prorroga al<span [ngClass]="{'text-danger': prorrogasForm.get('prorrogaAl')?.invalid && (prorrogasForm.get('prorrogaAl')?.touched || prorrogasForm.get('prorrogaAl')?.dirty)}">*</span>:</label> -->
+            <!-- <input type="text" class="form-control" formControlName="prorrogaAl" id="prorrogaAl"> -->
+        <input-fecha [datos]="fechaInicioInput"
+        (valorCambiado)="onProrrogaAlChange($event)"
+        [setFecha]="prorrogasForm.get('prorrogaAl')?.value"
+        [isDisabled]="formularioDeshabilitado"
+        [soloDosPuntosRequeridos]="soloDosPuntosRequeridos"
+        ></input-fecha>
+            @if (prorrogasForm.get('prorrogaAl')?.touched && prorrogasForm.get('prorrogaAl')?.invalid) {
+                <div class="text-danger">
+                    <small>Este campo es obligatorio.</small>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="motivoJustificacion">Motivo y/o justificación de las modificaciones<span [ngClass]="{'text-danger': prorrogasForm.get('motivoJustificacion')?.invalid && (prorrogasForm.get('motivoJustificacion')?.touched || prorrogasForm.get('motivoJustificacion')?.dirty)}">*</span>:</label>
+                <textarea id="motivoJustificacion" formControlName="motivoJustificacion" class="form-control h-150" [ngClass]="esValida(prorrogasForm, 'motivoJustificacion') ? 'required' : ''" (change)="setValoresStore(prorrogasForm,'motivoJustificacion', 'setMotivoJustificacion')"></textarea>
+                @if (prorrogasForm.get('motivoJustificacion')?.touched && prorrogasForm.get('motivoJustificacion')?.invalid) {
+                    <div class="text-danger">
+                        <small>Este campo es obligatorio.</small>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="otrasDeclaraciones">Otras declaraciones<span [ngClass]="{'text-danger': prorrogasForm.get('otrasDeclaraciones')?.invalid && (prorrogasForm.get('otrasDeclaraciones')?.touched || prorrogasForm.get('otrasDeclaraciones')?.dirty)}">*</span>:</label>
+                <textarea id="otrasDeclaraciones" formControlName="otrasDeclaraciones" class="form-control h-150" [ngClass]="esValida(prorrogasForm, 'otrasDeclaraciones') ? 'required' : ''" (change)="setValoresStore(prorrogasForm,'otrasDeclaraciones', 'setOtrasDeclaraciones')"></textarea>
+                @if (prorrogasForm.get('otrasDeclaraciones')?.touched && prorrogasForm.get('otrasDeclaraciones')?.invalid) {
+                    <div class="text-danger">
+                        <small>Este campo es obligatorio.</small>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</form>

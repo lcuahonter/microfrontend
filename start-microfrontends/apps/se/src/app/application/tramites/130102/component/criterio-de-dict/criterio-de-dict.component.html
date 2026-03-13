@@ -1,0 +1,43 @@
+<div class="container">
+  <ng-titulo titulo="Criterio de dictámen de regla octava"></ng-titulo>
+  <form [formGroup]="frmCriterioDictamen">
+    <div class="row">
+      <div class="col-md-7 form-group">
+       <app-catalogo-select-clave
+          [catalogo]="solicitudMercanciaLista"
+          [label]="'Solicitud mercancia esquema regla octava clave'"
+          [required]="true"
+          (selectionChange)="fetchSolicitudMercancia($event);setValoresStore(frmCriterioDictamen,'solicitudMercancia', 'setsolicitudMercancia'); setCriterioDictamenText(frmCriterioDictamen);"
+          [placeholder]="'Seleccione una opción'"
+          formControlName="solicitudMercancia"
+          [isDisabled]="esFormularioSoloLectura ? true : false"
+        ></app-catalogo-select-clave>
+        @if (frmCriterioDictamen.controls['solicitudMercancia'].invalid && frmCriterioDictamen.controls['solicitudMercancia'].touched) {
+          <div class="text-danger">
+            @if (frmCriterioDictamen.controls['solicitudMercancia'].errors?.['required']) {
+              <small>Este campo es obligatorio.</small>
+            }
+          </div>
+        }
+        
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-7 mb-3">
+        <label class="form-label" for="criterioDictamen"
+          >Criterio de dictamen de regla octava seleccionado*:</label
+        >
+        <textarea
+          class="form-control textarea-h"
+          id="criterioDictamen"
+          rows="2"
+          [value]="dataCriteroDictamen"
+          formControlName="criterioDictamen"
+          [disabled]="criteroDisabled"
+          [readonly]="criteroDisabled"
+          placeholder=""
+        ></textarea>
+      </div>
+    </div>
+  </form>
+</div>

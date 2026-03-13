@@ -1,0 +1,73 @@
+<div class="page">
+  <div class="container">
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <h1>Validar inicialmente el certificado de Uruguay</h1>
+      </div>
+      <ng-container>
+      <div 
+          *ngIf="isAlerta" 
+          class="alert alert-warning text-center" 
+          role="alert" 
+            [innerHTML]="TEXTO_DE_ALERTA"
+
+        >
+        {{TEXTO_DE_ALERTA}}
+        </div>
+        <div 
+          *ngIf="isPeligro" 
+          class="alert alert-danger text-center" 
+          role="alert" 
+            [innerHTML]="TEXTO_DE_PELIGRO"
+
+        >
+        {{TEXTO_DE_PELIGRO}}
+        
+        
+        </div>
+        @if (mostrarBackendError && backendError) {
+          <div 
+            class="alert alert-danger text-center" 
+            role="alert" >
+            <div>Corrija los siguientes errores:</div>
+            <div class="row">
+              <div class="col-md-1 font-red">
+                <p>1.</p>
+              </div>
+              <div class="col-md-11 d-flex justify-content-center font-red">
+                <p [innerHTML]="backendError">/p>
+              </div>
+            </div>
+          </div>
+        }
+    </ng-container>
+
+      <app-wizard [listaPasos]="pasos"></app-wizard>
+    </div>
+    <div class="row">
+      @switch (indice) {
+        @case (1) {
+          <app-paso-uno #pasoUnoRef [isContinuarTriggered]="isContinuarTriggered"></app-paso-uno>
+        }
+        @case (2) {
+          <paso-firma [idSolicitud]="solicitudState.idSolicitud" [procedure]="110214" [procedureUrl]="'validar-inicialmente-certificado/solicitante'"></paso-firma>
+        }
+      }
+      <btn-continuar
+        [datos]="datosPasos"
+        (continuarEvento)="getValorIndice($event)"
+        [dePadre]="true"
+        [btnGuardar]="true"
+        [btnGuardarVisible]="'visible'"
+        (btnGuardarClicked)="obtenerDatosDelStore()"
+      ></btn-continuar>
+    </div>
+  </div>
+</div>
+
+<lib-notificaciones
+  *ngIf="btnContinuar"
+  [notificacionInput]="nuevaNotificacion"
+  (confirmacionModal)="btnContinuarNotificacion()"
+>
+</lib-notificaciones>

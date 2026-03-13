@@ -1,0 +1,389 @@
+@if(!mostrarAlerta || idProcedimiento !== 110204) {
+<div class="modal-dialog modal-xl">
+  <div class="modal-content">
+    <div class="modal-header d-flex justify-content-between">
+      <h5 class="modal-title" id="exampleModalLabel">Datos de la mercancía</h5>
+      <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close" (click)="cerrarModal()"></button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="mercanciaForm">
+        <div class="row">
+          @if(FRACCION_ARANCELARIA.includes(idProcedimiento)) {
+          <div class="col-md-4 col-sm-12">
+            <label class="form-label" for="fraccionArancelaria">Fracción arancelaria:
+            </label>
+            <input type="text" class="form-control" formControlName="fraccionArancelaria" [readonly]="true" />
+          </div>
+          } @if(CLASIFICACION_NALADI.includes(idProcedimiento)) {
+          <div class="col-md-8 col-sm-12">
+            <label class="form-label" for="rfc">Clasificación NALADI:</label>
+            <input type="text" class="form-control" formControlName="fraccionNaladi" />
+          </div>
+          } @if(CLASIFICACION_NALADISA_1993.includes(idProcedimiento)) {
+          <div class="col-md-8 col-sm-12">
+            <label for="naladisa93">Clasificación NALADISA 1993:</label>
+            <input type="text" class="form-control" formControlName="fraccionNaladiSa93" />
+          </div>
+          } @if(CLASIFICACION_NALADISA_1996.includes(idProcedimiento)) {
+          <div class="col-md-8">
+            <label for="naladisa1996">Clasificación NALADISA 1996:</label>
+            <input type="text" class="form-control" formControlName="fraccionNaladiSa96" />
+          </div>
+          } @if(CLASIFICACION_NALADISA_2002.includes(idProcedimiento)) {
+          <div class="col-md-8 col-sm-12">
+            <label for="naladisa2002">Clasificación NALADISA 2002:</label>
+            <input type="text" class="form-control" formControlName="fraccionNaladiSa02" />
+          </div>
+          }
+          <div class="col-md-8 col-sm-12">
+            <label for="nombreComercialMercancia" class="form-label">Nombre comercial de la mercancía (igual que en la factura):</label>
+            <input type="text" class="form-control" formControlName="nombreComercialMercancia" />
+          </div>
+
+          <div class="col-md-8 col-sm-12">
+            <label for="nombreTecnico" class="form-label">Nombre técnico:</label>
+            <input type="text" class="form-control" formControlName="nombreTecnico" />
+          </div>
+
+          @if(CRITERIO_PARA_TRATO_PREFERENCIAL.includes(idProcedimiento)) {
+          <div class="col-md-6 col-sm-12 mt-2">
+            <label for="criterioParaTratoPreferencial">Criterio para trato preferencial:</label>
+            <input type="text" class="form-control" formControlName="criterioParaTratoPreferencial" />
+          </div>
+          } @if(NORMA_ORIGEN.includes(idProcedimiento)) {
+          <div class="col-md-8 col-sm-12">
+            <label for="normaOrigen">Norma origen:</label>
+            <input type="text" class="form-control" formControlName="normaOrigen" />
+          </div>
+          } @if(NOMBRE_EN_INGLES.includes(idProcedimiento)) {
+          <div class="col-md-8 col-sm-12">
+            <label for="nombreIngles" class="form-label">Nombre en inglés:</label>
+            <input type="text" class="form-control" formControlName="nombreIngles" />
+          </div>
+          } @if(CRITERIO_PARA_CLASIFICATION.includes(idProcedimiento)) {
+          <div class="col-md-6 col-sm-12 mt-2">
+            <label for="criterioParaClasificacion" class="form-label">Criterio para clasificación:</label>
+            <input type="text" class="form-control" formControlName="criterioParaClasificacion" />
+          </div>
+          } @if(VALOR_CONTENIDO_REGIONAL.includes(idProcedimiento)) { }
+          @if(VALOR_CONTENIDO_REGIONAL.includes(idProcedimiento)) {
+          <div class="col-md-6 col-sm-12 mt-2">
+            <label for="valorDeContenidoRegional">Valor de contenido regional:</label>
+            <input type="text" class="form-control" formControlName="valorDeContenidoRegional" />
+          </div>
+          } @if(OTRAS_INSTANCIAS.includes(idProcedimiento)){
+          <div class="col-md-6 col-sm-12">
+            <label for="otrasInstancias">Otras instancias:</label>
+            <input type="text" class="form-control" formControlName="otrasInstancias" />
+          </div>
+          } @if(CRITERIO_PARA_CONFERIR_ORIGEN.includes(idProcedimiento)) {
+          <div class="col-md-4 col-sm-12 mt-2">
+            <label for="criterioParaConferirOrigen">Criterio para conferir origen:</label>
+            <input type="text" class="form-control" formControlName="criterioParaConferirOrigen" />
+          </div>
+          }
+
+          @if(isInsumosDisponiblesMercancia){
+          <div class="row mt-3 mb-2">
+            <div class="col-md-6 col-sm-12 ml-2">
+              <h6>Insumos Disponibles</h6>
+              <app-tabla-dinamica [configuracionTabla]="configuracionInsumosMercanciaDisponible"
+                [datos]="tableInsumosData || []" (filaClic)="insumosModal($event)"></app-tabla-dinamica>
+            </div>
+          </div>
+          }
+          @if(MARCA.includes(idProcedimiento)){
+          <div class="col-md-8 col-sm-12">
+            <div class="form-group">
+              <label for="marca">Marca:</label>
+              <input type="text" id="marca" formControlName="marca" class="form-control" />
+              @if(mercanciaForm.controls['marca'].invalid &&
+              mercanciaForm.controls['marca'].touched) {
+              <div class="d-grid">
+                @if(mercanciaForm.controls['marca'].errors?.['maxlength']) {
+                <span class="mensaje-error">La marca no puede ser mayor a 50 caracteres</span>
+                }
+              </div>
+              }
+            </div>
+          </div>
+          }
+        </div>
+        <div class="row mb-3">
+          <div [ngClass]="MARCA.includes(idProcedimiento) ? 'col-md-4 col-sm-12' : 'col-md-4 col-sm-12 mt-4'">
+            <label for="cantidad" class="form-label">Cantidad<span [ngClass]="{
+                  'text-danger':
+                    mercanciaForm.controls['cantidad'].invalid &&
+                    mercanciaForm.controls['cantidad'].touched
+                }">*</span>:</label>
+            <input type="text" class="form-control" [attr.maxlength]="idProcedimiento === 110204 ? 15 : 22" (blur)="validarCantidadDecimal($event)"
+              formControlName="cantidad" [ngClass]="isValid(mercanciaForm, 'cantidad') ? 'required' : ''" />
+            @if(mercanciaForm.controls['cantidad'].invalid ) {
+            <div class="d-grid">
+              @if(mercanciaForm.controls['cantidad'].errors?.['required']&&
+              mercanciaForm.controls['cantidad'].touched) {
+              <span class="mensaje-error">Este campo es obligatorio</span>
+              } @if(mercanciaForm.get('cantidad')?.errors?.['pattern']) {
+              @if(idProcedimiento === 110204) {
+                <span class="mensaje-error">El valor debe ser un número con hasta 15 dígitos enteros y hasta 4 dígitos decimales</span>
+                } @else {
+                <span class="mensaje-error">El número debe tener máximo 15 dígitos enteros y hasta 4 decimales</span>
+                }
+              }
+            </div>
+            }
+          </div>
+          @if(UNIDAD_MEDIDA_COMERCIALIZACION.includes(idProcedimiento)){
+          <div class="col-md-4 col-sm-12">
+            <app-catalogo-select [catalogo]="umcMedida || []" [label]="'UMC'" [required]="true" name="umc"
+              formControlName="umc" [hiddenPrimerOption]="false" [disabledPrimerOption]="false" (selectionChange)="selectionUMC($event)"
+              [markTouched]="mercanciaForm.get('umc')?.touched ?? false"></app-catalogo-select>
+          </div>
+          } @if(UMC.includes(idProcedimiento)){
+          <div [ngClass]="MARCA.includes(idProcedimiento)? 'col-md-12 col-sm-12':'col-md-4 col-sm-12 mt-4 seleccion-personalizada'">
+            <app-catalogo-select [hiddenPrimerOption]="false" [disabledPrimerOption]="false" [catalogo]="optionsUMC" [label]="'UMC'" [tooltipQuestionCircle]="true"
+              [tooltipQuestionCircleText]="'Unidad de medida de comercialización'" [required]="true" name="umc"
+              formControlName="umc" (selectionChange)="selectionUMC($event)"
+              [markTouched]="mercanciaForm.get('umc')?.touched ?? false"></app-catalogo-select>
+          </div>
+          
+          }
+          <div class="d-flex p-0 align-items-baseline"> 
+            @if(VALOR_MERCANCIA.includes(idProcedimiento)) {
+            <div class="col-md-4 col-sm-12">
+              <label for="valorMercancia" class="form-label text-left">Valor de la mercancía (dólares)<span [ngClass]="{
+                    'text-danger':
+                      mercanciaForm.controls['valorMercancia'].invalid &&
+                      mercanciaForm.controls['valorMercancia'].touched
+                  }">*</span>:</label>
+              <input type="text" maxlength="22" class="form-control" (blur)="validarMercanciaDecimal($event)"
+                formControlName="valorMercancia" [ngClass]="isValid(mercanciaForm, 'valorMercancia') ? 'required' : ''" />
+              @if(mercanciaForm.get('valorMercancia')?.invalid ) {
+              <div class="d-grid">
+                @if(mercanciaForm.controls['valorMercancia'].errors?.['required']&&
+                mercanciaForm.get('valorMercancia')?.touched) {
+                <span class="mensaje-error">Este campo es obligatorio</span>
+                } @if(mercanciaForm.get('valorMercancia')?.errors?.['pattern']) {
+                <span class="mensaje-error">El valor debe ser un número con hasta 15 dígitos enteros y
+                  hasta 4 dígitos decimales</span>
+                }
+              </div>
+              }
+            </div>
+            }
+            <div class="col-md-8 col-sm-12">
+              <label for="complementoDescripcion" class="form-label">Complemento de la descripción<span [ngClass]="{
+                    'text-danger':
+                      mercanciaForm.controls['complementoDescripcion'].invalid &&
+                      mercanciaForm.controls['complementoDescripcion'].touched
+                  }">*</span>:</label>
+              <textarea class="w-100 form-control h-50 no-resize" formControlName="complementoDescripcion" rows="2"
+                [ngClass]="isValid(mercanciaForm, 'complementoDescripcion') ? 'required' : ''"></textarea>
+              @if(mercanciaForm.controls['complementoDescripcion'].invalid ) {
+              <div class="d-grid">
+                @if(mercanciaForm.controls['complementoDescripcion'].errors?.['required']&&
+                mercanciaForm.controls['complementoDescripcion'].touched) {
+                <span class="mensaje-error">Este campo es obligatorio</span>
+                }
+                @if(mercanciaForm.controls['complementoDescripcion'].errors?.['maxlength'])
+                {
+                <span class="mensaje-error">Por favor, no escribas más de 200 caracteres</span>
+                }
+              </div>
+              }
+            </div>
+          </div>
+          @if(MARCA_BRUTA.includes(idProcedimiento)) {
+          <div class="col-md-4 col-sm-12">
+            <label for="marcaBruta" class="form-label">Masa bruta<span
+                [ngClass]="{
+                  'text-danger':
+                    mercanciaForm.controls['marcaBruta'].invalid &&
+                    mercanciaForm.controls['marcaBruta'].touched
+                }">*</span>:</label>
+            <input type="text" class="form-control" formControlName="marcaBruta" maxlength="36"
+              [ngClass]="isValid(mercanciaForm, 'marcaBruta') ? 'required' : ''" />
+            @if(mercanciaForm.controls['marcaBruta'].invalid &&
+            mercanciaForm.controls['marcaBruta'].touched) {
+            <div class="d-grid">
+              @if(mercanciaForm.controls['marcaBruta'].errors?.['required'])
+              {
+              <span class="mensaje-error">Este campo es obligatorio</span>
+              }
+            </div>
+            }
+          </div>
+          }
+
+          @if(UMC_MARCA_BRUTA.includes(idProcedimiento)) {
+          <div class="col-md-8 col-sm-12 full-width-select">
+
+            <app-catalogo-select [hiddenPrimerOption]="false" [disabledPrimerOption]="false" [catalogo]="umcMarcaBrutaCatalogo || []" [label]="'Unidad de medida de la masa bruta'"
+              [required]="true" name="umcMarcaBruta" formControlName="umcMarcaBruta"
+              (selectionChange)="selectionUmcMarcaBruta($event)"
+              [markTouched]="mercanciaForm.get('umcMarcaBruta')?.touched ?? false"></app-catalogo-select>
+          </div>
+          }
+
+          @if(FECHA_FACTURA.includes(idProcedimiento)) {
+          <div class="col-md-4 col-sm-12">
+            <input-fecha [datos]="fechaFactura" [deshabilitarFuturas]="true"
+              [setFecha]="mercanciaForm.get('fechaFactura')?.value"
+                 [marcarError]="(mercanciaForm.get('fechaFactura')?.touched ?? false) && (mercanciaForm.get('fechaFactura')?.invalid ?? false)"
+              (valorCambiado)="cambioFechaFactura($event)"></input-fecha>
+            @if (esInvalido('fechaFactura')) {
+            <div class="d-grid">
+              @if (mercanciaForm.controls['fechaFactura'].errors?.['required'])
+              {
+              <span class="mensaje-error">Este campo es obligatorio</span>
+              }
+            </div>
+            }
+          </div>
+          } @if(FECHA_DE_PAGO.includes(idProcedimiento)) {
+          <div class="col-md-4 col-sm-12">
+            <input-fecha [datos]="fechaDePago" [deshabilitarFuturas]="true"
+              [setFecha]="mercanciaForm.get('fechaDePago')?.value"
+              [marcarError]="(mercanciaForm.get('fechaDePago')?.touched ?? false) && (mercanciaForm.get('fechaDePago')?.invalid ?? false)"
+              (valorCambiado)="cambioFechaDePago($event)"></input-fecha>
+            @if (esInvalido('fechaDePago')) {
+            <div class="d-grid">
+              @if (mercanciaForm.controls['fechaDePago'].errors?.['required']) {
+              <span class="mensaje-error">Este campo es obligatorio</span>
+              }
+            </div>
+            }
+          </div>
+          } @if(FECHA_FACTURA_REFERENCIA.includes(idProcedimiento)) {
+          <div class="col-md-4 col-sm-12">
+            <input-fecha [datos]="fechaFacturaReferencia" [deshabilitarFuturas]="true"
+              [setFecha]="mercanciaForm.get('fechaFactura')?.value"
+                [marcarError]="(mercanciaForm.get('fechaFactura')?.touched ?? false) && (mercanciaForm.get('fechaFactura')?.invalid ?? false)"
+              (valorCambiado)="cambioFechaFactura($event)"></input-fecha>
+            @if (esInvalido('fechaFactura')) {
+            <div class="d-grid">
+              @if (mercanciaForm.controls['fechaFactura'].errors?.['required'])
+              {
+              <span class="mensaje-error">Este campo es obligatorio</span>
+              }
+            </div>
+            }
+          </div>
+          } @if(N_FACTURA_REFERENCIA.includes(idProcedimiento)) {
+          <div class="col-md-4 col-sm-12">
+            <label for="numeroFactura" class="form-label">N° factura / Referencia:</label>
+            <input type="text" class="form-control" formControlName="numeroFactura" maxlength="36" />
+            @if(mercanciaForm.controls['numeroFactura'].invalid &&
+            mercanciaForm.controls['numeroFactura'].touched) {
+            <div class="d-grid">
+              @if(mercanciaForm.controls['numeroFactura'].errors?.['required'])
+              {
+              <span class="mensaje-error">Este campo es obligatorio</span>
+              }
+            </div>
+            }
+          </div>
+          } @if(N_FACTURA.includes(idProcedimiento)) {
+          <div class="col-md-4 col-sm-12">
+            <label for="numeroFactura" class="form-label">N° factura<span [ngClass]="{
+                  'text-danger':
+                    mercanciaForm.controls['numeroFactura'].invalid &&
+                    mercanciaForm.controls['numeroFactura'].touched
+                }">*</span>:</label>
+            <input type="text" class="form-control" formControlName="numeroFactura" maxlength="36"
+              [ngClass]="isValid(mercanciaForm, 'numeroFactura') ? 'required' : ''" />
+            @if(mercanciaForm.controls['numeroFactura'].invalid &&
+            mercanciaForm.controls['numeroFactura'].touched) {
+            <div class="d-grid">
+              @if(mercanciaForm.controls['numeroFactura'].errors?.['required'])
+              {
+              <span class="mensaje-error">Este campo es obligatorio</span>
+              }
+            </div>
+            }
+          </div>
+          } @if(TIPO_DE_FACTURA.includes(idProcedimiento)) {
+          <div class="col-md-4 col-sm-12 mr-2 seleccion-personalizada">
+            <app-catalogo-select [hiddenPrimerOption]="false" [disabledPrimerOption]="false" [catalogo]="factura || []" [label]="'Tipo de factura'" [required]="true"
+              formControlName="tipoFactura" name="tipoFactura" (selectionChange)="selectionTipoFactura($event)"
+              [markTouched]="mercanciaForm.get('tipoFactura')?.touched ?? false"></app-catalogo-select>
+          </div>
+          } @if(TIPO_DE_FACTURA_REFERENCIA.includes(idProcedimiento)) {
+          <div class="col-md-4 col-sm-12 mr-2">
+            <app-catalogo-select [hiddenPrimerOption]="false" [disabledPrimerOption]="false" [catalogo]="factura || []" [label]="'Tipo de factura / Referencia'" [required]="true"
+              formControlName="tipoFactura" name="tipoFacturaReferencia"
+              (selectionChange)="selectionTipoFactura($event)"
+              [markTouched]="mercanciaForm.get('tipoFactura')?.touched ?? false"></app-catalogo-select>
+          </div>
+          } @if(NUMERO_DE_SERIE.includes(idProcedimiento)) {
+          <div class="col-md-4 col-sm-12">
+            <label for="numeroDeSerie" class="form-label">Número de serie:</label>
+            <input type="text" class="form-control" formControlName="numeroDeSerie" maxlength="17" />
+          </div>
+          }
+        </div>
+      </form>
+    </div>
+
+    <div class="modal-footer d-flex justify-content-end p-5">
+      <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cerrarModal()">
+        Cancelar
+      </button>
+      <button type="button" class="btn btn-primary" (click)="acceptar(false)">
+        Agregar
+      </button>
+    </div>
+
+    <!-- Otros casos -->
+    @if(mostrarAlerta && nuevaNotificacion && idProcedimiento !== 110204){
+      <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+        (confirmacionModal)="acceptar(true)"></lib-notificaciones>
+    }
+  </div>
+</div>
+}
+
+<!-- Alerta por 110204, fuera de modal -->
+@if(mostrarAlerta && nuevaNotificacion && idProcedimiento === 110204){
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+    (confirmacionModal)="acceptar(true)"></lib-notificaciones>
+}
+
+<div class="modal fade" #modifyModal tabindex="-1" aria-labelledby="modifyModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-insumo">
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-between">
+        <h5 class="modal-title" id="exampleModalLabel">Cantidad Insumo</h5>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="insumosForm">
+          <div class="row row m-1 mb-4">
+            <label for="cantidad" class="form-label">Cantidad<span [ngClass]="{
+                  'text-danger':
+                    insumosForm.controls['cantidad'].invalid &&
+                    insumosForm.controls['cantidad'].touched
+                }">*</span>:</label>
+            <input type="text" class="form-control ml-4" maxlength="22" formControlName="cantidad"/>
+             @if(insumosForm.controls['cantidad'].invalid &&
+            insumosForm.controls['cantidad'].touched) {
+            <div class="d-grid">
+              @if(insumosForm.controls['cantidad'].errors?.['required'])
+              {
+              <span class="mensaje-error">Este campo es obligatorio</span>
+              }
+            </div>
+            }
+          </div>
+          <div class="row mb-3">
+            <div class="col-sm-6">
+              <button type="button" class="btn btn-primary" (click)="agregarInsumos()">Agregar</button>
+            </div>
+            <div class="col-sm-6">
+              <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cancelarModal()">Cancelar</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

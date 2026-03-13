@@ -1,0 +1,243 @@
+
+    <form [formGroup]="formulario">
+    @if(this.solicitudeState.respuestaServiceConfiguracion.mostrar_exportador_autorizado === true){
+        <ng-titulo titulo="Información Opcional para UE y AELC" />
+        <div class="row">
+            <div class="col-md-8">
+                <p><input class="form-check-input me-2" type="checkbox" id="metodoSeparacion" [disabled]="esFormularioSoloLectura" formControlName="metodoSeparacion" 
+                    (change)="setValoresStore(formulario, 'metodoSeparacion', 'setMetodoSeparacion')">
+                    ¿Desea usar la opción del método de separación contable?
+                </p>
+            </div>
+        </div>
+            <div class="row" *ngIf="formulario.get('exportadorAutorizado')?.value">
+            <div class="col-md-12">
+                <div class="alert alert-info manifest-box">
+                <div class="form-check text-center">
+                    <span class="form-check-label" for="protesta">
+                        <p class="font-wt-500">Seleccione la condición que le permite usar la opción de exportador autorizado:</p>
+                    </span>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <p><input class="form-check-input me-2" type="checkbox" id="exportadorAutorizado" [disabled]="esFormularioSoloLectura" formControlName="exportadorAutorizado"
+                    (change)="setValoresStore(formulario, 'exportadorAutorizado', 'setExportadorAutorizado')">
+                    ¿Desea usar la opción de exportador autorizado?
+                </p>
+            </div>
+        </div>
+            <div class="row p-4" *ngIf="formulario.get('exportadorAutorizado')?.value">
+            <div class="col-md-12">
+                <div *ngFor="let opcion of radioOpcions"  class="radio-label-wrap">
+                    <input type="radio" [id]="opcion.value" [value]="opcion.value"
+                        formControlName="informacionRadios" [disabled]="esFormularioSoloLectura"
+                        (change)="setValoresStore(formulario, 'informacionRadios', 'setInformacionRadios')" />
+            
+                    <span class="etiqueta-de-radio radio-label-margin-left" [title]="opcion.label">
+                        {{ opcion.label }}
+                    </span>
+                    <span class="p-2" *ngIf="opcion.label" tooltip="{{opcion.value }}">
+                    </span>
+                </div>
+            </div>
+        </div>
+    }    
+    @if (this.solicitudeState.respuestaServiceConfiguracion.mostrar_procesos_mercancia_par4 === true){
+        <ng-titulo titulo = "Proceso de Transformación (ACE-53/PAR-4)" />
+        <ng-alert [CONTENIDO]="mensajeDeSeleccion.MENSAJE"></ng-alert>
+        <div class="col-md-12">
+            <div class="form-check form-check-inline me-3">
+                <input class="me-3"  type="radio" id="transformacion53" value="TIPRM.TR"
+                 formControlName="transformacion53"
+                 (change)="setValoresStore(formulario, 'transformacion53', 'setValor', 'transformacion53')">
+                <label class="form-check-label me-3" for="inlineRadio1">Transformación</label>
+            </div>
+            <div class="form-check form-check-inline me-3">
+                <input class="me-3" type="radio" id="montaje53" value="TIPRM.EM"
+                     formControlName="transformacion53"
+                 (change)="setValoresStore(formulario, 'transformacion53', 'setValor', 'transformacion53')">
+                <label class="form-check-label" for="inlineRadio2">Ensamble o montaje</label>
+            </div>
+        </div>
+    }
+     @if(this.solicitudeState.respuestaServiceConfiguracion.mostrar_exportador_autorizado_jpn === true){
+    <ng-titulo titulo="Desea usar la opción de exportador autorizado?" />
+    <div class="row" *ngIf="formulario.get('exportadorAutorizadoJPN')?.value">
+        <div class="col-md-12">
+            <div class="alert alert-info manifest-box">
+                <div class="form-check text-center">
+                    <span class="form-check-label" for="protesta">
+                        <p class="font-wt-500">Seleccione la condición que le permite usar la opción de exportador
+                            autorizado:</p>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <p><input class="form-check-input me-2" type="checkbox" id="exportadorAutorizadoJPN"
+                    [disabled]="esFormularioSoloLectura" formControlName="exportadorAutorizadoJPN"
+                    (change)="setValoresStore(formulario, 'exportadorAutorizadoJPN', 'setExportadorAutorizadoJPN')">
+                ¿Desea usar la opción de exportador autorizado?
+            </p>
+        </div>
+    </div>
+    <div class="row p-4" *ngIf="formulario.get('exportadorAutorizadoJPN')?.value">
+        <div class="col-md-12">
+            <div *ngFor="let opcion of radioOpcions" class="radio-label-wrap">
+                <input type="radio" [id]="opcion.value" [value]="opcion.value" formControlName="informacionRadiosJPN"
+                    [disabled]="esFormularioSoloLectura"
+                    (change)="setValoresStore(formulario, 'informacionRadiosJPN', 'setInformacionRadiosJPN')" />
+    
+                <span class="etiqueta-de-radio radio-label-margin-left" [title]="opcion.label">
+                    {{ opcion.label }}
+                </span>
+                <span class="p-2" *ngIf="opcion.label" tooltip="{{opcion.value }}">
+                </span>
+            </div>
+        </div>
+    </div>
+    }
+    
+    @if(this.solicitudeState.respuestaServiceConfiguracion.mostrar_juegos_y_surtidos === true || this.solicitudeState.materiales_fungibles_ap === true){
+        <ng-titulo titulo = "Juegos o Surtidos" />
+        <label for="nombreJuegoSurtido" class="form-label">Descripción del juego o surtido*:</label>
+        <input type="text" id="nombreJuegoSurtido" 
+                class="form-control" 
+                formControlName="descripcionJuegoSurtido"
+                 (change)="setValoresStore(formulario, 'descripcionJuegoSurtido', 'setValor', 'juegos_surtidos_tab_procesos')">
+    }
+
+    @if(this.solicitudeState.respuestaServiceConfiguracion.mostrar_juegos_y_surtidos === true){
+        @if(this.busquedaPaises('PER')) {
+        <label for="preguntaCondicion" class="form-label">¿Cumple con la condición de ser Juego o Surtido para el Acuerdo México-Perú?:</label>
+        <ng-alert [CONTENIDO]="condiciones.CONDICION"></ng-alert>
+        <div class="col-md-12">
+            <div class="form-check form-check-inline">
+                <input  class="me-3" type="radio" id="inlineRadio1"
+                 formControlName="juegosSurtidosBooleanMexicoPeru"  [value]="true"
+                 (change)="setValoresStore(formulario, 'juegosSurtidosBooleanMexicoPeru', 'setValor', 'juegosSurtidosBooleanMexicoPeru')">
+                <label  for="inlineRadio1">Si</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="me-3"type="radio" id="inlineRadio2"
+                 formControlName="juegosSurtidosBooleanMexicoPeru" [value]="false"
+                 (change)="setValoresStore(formulario, 'juegosSurtidosBooleanMexicoPeru', 'setValor', 'juegosSurtidosBooleanMexicoPeru')">
+                <label class="form-check-label" for="inlineRadio2">No</label>
+            </div>
+        </div>
+    }
+    @if (this.busquedaPaises('PAN')) {
+        <label for="preguntaCondicion" class="form-label">¿Cumple con la condición de ser Juego o Surtido para el Tratado de Libre Comercio MÉXICO-PANAMÁ?:</label>
+        <ng-alert [CONTENIDO]="condiciones.CONDICION"></ng-alert>
+        <div class="col-md-12">
+            <div class="form-check form-check-inline">
+                <input  class="me-3" type="radio" id="inlineRadio1"
+                 formControlName="juegosSurtidosBooleanMexicoPanama"  [value]="true"
+                 (change)="setValoresStore(formulario, 'juegosSurtidosBooleanMexicoPanama', 'setValor', 'juegosSurtidosBooleanMexicoPanama')">
+                <label  for="inlineRadio1">Si</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="me-3"type="radio" id="inlineRadio2"
+                 formControlName="juegosSurtidosBooleanMexicoPanama" [value]="false"
+                 (change)="setValoresStore(formulario, 'juegosSurtidosBooleanMexicoPanama', 'setValor', 'juegosSurtidosBooleanMexicoPanama')">
+                <label class="form-check-label" for="inlineRadio2">No</label>
+            </div>
+        </div>
+        }
+    }
+    @if(this.solicitudeState.materiales_fungibles_ap === true){
+        <label for="preguntaCondicion" class="form-label">¿Cumple con la condición de ser Juego o Surtido para el Acuerdo Alianza del Pacífico?:</label>
+        <ng-alert [CONTENIDO]="condicionAlianza.CONDICION_ALIANZA"></ng-alert>
+        <div class="col-md-12">
+            <div class="form-check form-check-inline">
+                <input  class="me-3" type="radio" id="inlineRadio1"
+                 formControlName="juegosSurtidosBooleanAlianzaPacifico"  [value]="true"
+                 (change)="setValoresStore(formulario, 'juegosSurtidosBooleanAlianzaPacifico', 'setValor', 'juegosSurtidosBooleanAlianzaPacifico')">
+                <label  for="inlineRadio1">Si</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="me-3"type="radio" id="inlineRadio2"
+                 formControlName="juegosSurtidosBooleanAlianzaPacifico" [value]="false"
+                 (change)="setValoresStore(formulario, 'juegosSurtidosBooleanAlianzaPacifico', 'setValor', 'juegosSurtidosBooleanAlianzaPacifico')">
+                <label class="form-check-label" for="inlineRadio2">No</label>
+            </div>
+        </div>
+    }
+
+    @if (descripcionesMostrar) {
+        <div *ngFor="let grupo of descripcionesPorTipo">
+            <ng-titulo [titulo]="'Descripciones disponibles para ' + grupo.tipo" />
+            <ng-alert [CONTENIDO]="'Favor de seleccionar la descripción que coincide con su mercancía.'"></ng-alert>
+            <div class="col-md-12">
+            <div *ngFor="let desc of grupo.descripciones" class="radio-label-wrap">
+                <input
+                type="radio"
+                [id]="'valorDescripcion' + desc.id"
+                [formControlName]="getFormControlName(grupo.tipo)"
+                [value]="desc.id"
+                (change)="setValoresStoreDescripciones(formulario, getFormControlName(grupo.tipo), 'setValor', getFormControlName(grupo.tipo))"
+                />
+                <span class="etiqueta-de-radio radio-label-margin-left">
+                {{ desc.descripcion }}
+                </span>
+            </div>
+            </div>
+        </div>
+    }
+    
+    <ng-titulo titulo="Representación federal" />
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="entidad" [label]="'Entidad federativa'" [required]="true"
+                    formControlName="entidad" [isDisabled]="esFormularioSoloLectura"
+                    (selectionChange)="onRepresentacionFederal($event)">
+                </app-catalogo-select>
+                @if(formulario.get('entidad')?.invalid && formulario.get('entidad')?.touched) {
+                      <div>
+                          @if(formulario.get('entidad')?.errors?.['required']) {
+                              <small class="text-danger">{{MENSAJE_REQUERIDO}}</small>
+                          }
+                      </div>
+                  }
+            </div>
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="representacion" [label]="'Representación federal'" [required]="true"
+                    formControlName="representacion" [isDisabled]="esFormularioSoloLectura"
+                    (selectionChange)="onRepresentacionChange($event)">
+                </app-catalogo-select>
+                @if(formulario.get('representacion')?.invalid && formulario.get('representacion')?.touched) {
+                      <div>
+                          @if(formulario.get('representacion')?.errors?.['required']) {
+                              <small class="text-danger">{{MENSAJE_REQUERIDO}}</small>
+                          }
+                      </div>
+                  }
+            </div>
+        </div>
+
+    <ng-titulo titulo="Protesto de Decir Verdad" />
+    <div class="alert alert-info manifest-box">
+        <div class="form-check">
+            <input class="form-check-input me-2" type="checkbox" id="protesto_verdad" formControlName="protesto_verdad" [disabled]="esFormularioSoloLectura"
+                [checked]="esFormularioSoloLectura || actualizacionCounsulta"
+                (change)="setValoresStore(formulario, 'protesto_verdad', 'setProtesto')">
+            <span class="form-check-label" for="protesta">
+                {{ textos }}
+            </span>
+        </div>
+    </div>
+    @if(formulario.get('protesto_verdad')?.invalid && formulario.get('protesto_verdad')?.touched) {
+        <div>
+            @if(formulario.get('protesto_verdad')?.errors?.['required']) {
+            <small class="text-danger">{{MENSAJE_REQUERIDO}}</small>
+            }
+        </div>
+    }
+    </form>
+

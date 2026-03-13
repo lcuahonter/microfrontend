@@ -1,0 +1,47 @@
+<ng-container *ngIf="!esAutorizarDictamen; else vistaEvaluacion">
+<div class="page">
+        <div class="container">
+
+                <div class="row">
+                        <ul class="nav nav-tabs">
+                                <li [ngClass]="indicePestana === 1 ? 'active' : ''">
+                                        <a data-toggle="tab" (click)="seleccionarPestana(1)"
+                                                (keydown.enter)="seleccionarPestana(1)" (keydown.space)="seleccionarPestana(1)"
+                                                role="button" tabindex="1">Solicitante</a>
+                                </li>
+                        @if (estadoConsulta.create === true) {
+                                <li [ngClass]="indicePestana === 2 ? 'active' : ''">
+                                        <a data-toggle="tab" (click)="seleccionarPestana(2)"
+                                                (keydown.enter)="seleccionarPestana(2)" (keydown.space)="seleccionarPestana(2)"
+                                                role="button" tabindex="2">Datos de la Mercancía</a>
+                                </li>
+                        }
+                        </ul>
+                        <ng-container>
+                                @switch (indicePestana) {
+                                @case (1) {
+                                <solicitante [RFC]="rfcValor" [tabindex]="1"></solicitante>
+                                }
+                                @case (2) {
+                                @if(datosRespuestaDisponibles){
+                                <app-datos-de-la-mercancia #mercanciaRef (mercancia)="recibirMercancia($event)"></app-datos-de-la-mercancia>
+                                <app-registro-mercancia-comercializador [mercancia]="mercancia"></app-registro-mercancia-comercializador>
+                                @if(this.solicitudeState.respuestaServiceConfiguracion.mostrar_exportador_autorizado_jpn === true){
+                                <app-exportador-autorizado></app-exportador-autorizado>
+                                }
+                                @if(this.solicitudeState.respuestaServiceConfiguracion.mostrar_exportador_autorizado === true){
+                                <app-informacion-opcional></app-informacion-opcional>
+                                }
+                                <app-representacion-federal #representacionRef></app-representacion-federal>
+                                }
+                                }
+                                }
+                        </ng-container>
+                </div>
+        </div>
+</div>
+</ng-container>
+
+<ng-template #vistaEvaluacion>
+    <app-datos-evaluacion></app-datos-evaluacion>
+</ng-template>

@@ -1,0 +1,83 @@
+@if(!isAcuseVisible){
+  <div class="page">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h2>Permiso automático de importación</h2>
+        </div>
+        @if (mostrarOtraPestana) {
+        <div class="alert alert-info alert-dismissible fade show text-center firmar-alert" style="color:#3c763d"
+          role="alert">
+          La solicitud ha quedado registrada con el número temporal
+          <span>{{ numeroSolicitud }}</span>. Éste no tiene validez legal y sirve solamente para efectos de identificar
+          tu solicitud.
+          Un folio oficial le será asignado a la solicitud al momento en que ésta sea firmada.
+        </div>
+        }
+        @if(indice === 1){
+        @if (esFormaValido) {
+        <div class="col-12 p-0">
+          <div class="text-center">
+            <div class="col-md-12 campos-requeridos p-0">
+              <div class="alert alert-danger" [innerHTML]="formularioAlertaError"></div>
+            </div>
+          </div>
+        </div>
+        }
+        }
+        <div class="row mt-5" *ngIf="indice === 2">
+        </div>
+        <app-wizard [listaPasos]="pasos"></app-wizard>
+      </div>
+      <div class="row">
+        @switch (indice) {
+        @case (1) {
+        <app-paso-uno #pasoUno></app-paso-uno>
+        } @case (2) {
+        <app-paso-dos
+        [idTipoTRamite]="'130120'"
+          [datosUsuario]="datosUsuario"
+          [idSolicitud]="numeroSolicitud"
+          [cargaArchivosEvento]="cargarArchivosEvento"
+          (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+          (reenviarCargaRealizada)="cargaRealizada($event)"
+          (cargaEnProgresoChange)="onCargaEnProgresoPadre($event)"></app-paso-dos>
+        } @case (3) {
+        <app-paso-cuatro [idSolicitud]="+numeroSolicitud" [procedure]="130120" [procedureUrl]="'permiso-importacion/intro-permiso'"
+          (acuseGenerado)="onAcuseGenerado($event)"></app-paso-cuatro>
+        }
+        }
+            <div class="row">
+              <div class="col-md-12">
+                @if (indice !== 2) {
+                <btn-continuar [datos]="datosPasos" (continuarEvento)="getValorIndice($event)"></btn-continuar>
+                } @else {
+                <div class="mt-5 mb-3 d-flex justify-content-end">
+                  <button type="button" class="btn btn-default" (click)="anterior()" *ngIf="seccionCargarDocumentos">
+                    Anterior
+                  </button>
+            
+                  <button class="btn btn-primary ms-3" (click)="
+                          seccionCargarDocumentos ? onClickCargaArchivos() : siguiente()
+                        "
+                    [disabled]="(seccionCargarDocumentos && !activarBotonCargaArchivos) || (!seccionCargarDocumentos && cargaEnProgreso)">
+                    {{ seccionCargarDocumentos ? 'Cargar archivos' : 'Continuar' }}
+                  </button>
+                </div>
+                }
+              </div>
+            </div>
+            </div>
+            </div>
+            </div>
+            }
+
+@if (isAcuseVisible) {
+  <lib-component-acuse
+    titulo="Acuse de recibo"
+    [txtAlerta]="txtAlerta"
+    [subtitulo]="subtitulo"
+    [idSolicitud]="+numeroSolicitud"
+    [procedure]="130120"
+  ></lib-component-acuse>
+}

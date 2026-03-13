@@ -1,0 +1,98 @@
+<div>
+  <div>
+    <h4 class="fw-bold">Consulta de fracciones</h4>
+    <p>
+      <strong>
+        Seleccione criterios de búsqueda de fracciones arancelarias y presione
+        buscar.
+      </strong>
+    </p>
+    <form [formGroup]="searchForm" (ngSubmit)="onConsultar()">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="numeroClasificacion" class="form-label">
+              <span class="text-danger">*</span> Número de Clasificación
+              Arancelaria
+            </label>
+            <input
+              type="text"
+              id="numeroClasificacion"
+              class="form-control"
+              formControlName="numeroClasificacion"
+              [class.is-invalid]="hasError('numeroClasificacion')"
+              placeholder="Ingrese número de clasificación"
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf="hasError('numeroClasificacion')"
+            >
+              Este campo es obligatorio.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 d-flex align-items-end">
+          <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+            {{ isLoading ? 'Consultando...' : 'Consultar' }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div *ngIf="hasSearched" class="mt-4">
+    <div class="row">
+      <div class="col-md-12">
+        @if(fracciones.length > 0) {
+        <p>
+          <strong
+            >Seleccione individualmente una fracción para ver su
+            detalle.</strong
+          >
+        </p>
+        <app-expandir-tabla [title]="'FRACCIONES ARANCELARIAS'">
+          <app-tabla-dinamica
+            [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX"
+            [configuracionTabla]="columns"
+            [datos]="fracciones"
+            (listaDeFilaSeleccionada)="onSelectionChange($event)"
+            (filaDobleClic)="onRowDoubleClick($event)"
+          ></app-tabla-dinamica>
+          <app-table-pagination [showCurrentPage]="true"></app-table-pagination>
+        </app-expandir-tabla>
+        } @else {
+        <div class="alert alert-info">
+          No se encontraron fracciones arancelarias.
+        </div>
+        }
+      </div>
+    </div>
+    @if(mode === 'eliminar' && fracciones.length > 0) {
+    <div class="row mt-3">
+      <div class="col-md-12">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="onEliminarTodos()"
+        >
+          <i class="bi bi-trash"></i> Eliminar Todos
+        </button>
+      </div>
+    </div>
+    }
+  </div>
+  <div class="d-flex justify-content-end">
+    @if(mode === 'eliminar') {
+    <button
+      type="button"
+      class="btn btn-danger me-2"
+      (click)="onEliminar()"
+      [disabled]="fraccionesSeleccionadas.length === 0"
+    >
+      Eliminar
+    </button>
+    }
+    <button type="button" class="btn btn-default" (click)="onCancelar()">
+      Cancelar
+    </button>
+  </div>
+</div>

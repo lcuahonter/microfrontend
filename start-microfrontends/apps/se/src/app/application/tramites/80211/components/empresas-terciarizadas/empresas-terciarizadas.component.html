@@ -1,0 +1,102 @@
+<div class="container">
+  <form [formGroup]="empresasForm">
+    <div class="row mt-5">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="control-label" for="modalidad"
+            >Selecciona la modalidad:</label
+          >
+          <input id="modalidad" class="form-control" type="text" name="modalidad" formControlName="modalidad" />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="control-label" for="folio">Folio:</label>
+          <input id="folio" name="folio" type="text" class="form-control" formControlName="folio" />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="control-label" for="ano">Año:</label>
+          <input id="ano" name="ano" type="text" class="form-control" formControlName="ano" />
+        </div>
+      </div>
+    </div>
+
+    <ng-titulo titulo="Empresas terciarizadas" />
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label" for="rfc">RFC*:</label>
+          <input id="rfc" name="rfc" type="text" class="form-control" formControlName="rfc"
+            (change)="setValoresStore(empresasForm, 'rfc')" />
+        </div>
+      </div>
+      <div class="col-md-6">
+        <app-catalogo-select name="estado" id="clave" formControlName="estado" [catalogo]="estado" [label]="'Estado'"
+          [required]="true" [isDisabled]="esFormularioSoloLectura" (change)="procesarDatosDelHijo()"></app-catalogo-select>
+      </div>
+
+      <div class="col-md-12 mt-5 d-flex justify-content-end">
+        <button type="button" [disabled]="esFormularioSoloLectura" class="btn btn-primary" [ngClass]="{'btn-secondary': !this.empresasForm.valid}" (click)="buscarTerciarizadas()">
+         Buscar terciarizadas
+        </button>
+      </div>
+
+    </div>
+
+
+
+    <div class="row mt-3">
+      <div class="col-md-12">
+        <h6>Plantas disponibles:</h6>
+        <app-tabla-dinamica
+          [configuracionTabla]="tablaConfiguration"
+          [datos]="plantasDisponibles"
+          [tipoSeleccionTabla]="tipoSeleccionTabla"
+          [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+          (listaDeFilaSeleccionada)="manejarFilaDisponibles($event)"
+        ></app-tabla-dinamica>
+      </div>
+      
+      <div class="col-md-12 mt-5 d-flex justify-content-end">
+        <button type="button" class="btn btn-primary" [disabled]="esFormularioSoloLectura" (click)="agregarPlantas()">
+          Agregar plantas
+        </button>
+      </div>
+    </div>
+  
+    <div class="row mt-3">
+      <div class="col-md-12">
+        <h6>Plantas seleccionadas:</h6>
+        <app-tabla-dinamica 
+        [configuracionTabla]="tablaConfiguration"
+          [datos]="plantasSeleccionadas"
+          [tipoSeleccionTabla]="tipoSeleccionTabla"
+          [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+          (listaDeFilaSeleccionada)="manejarFilaSeleccionada($event)"
+        ></app-tabla-dinamica>
+      </div>
+      <div class="col-md-12 mt-5 d-flex justify-content-end">
+        <button type="button" class="btn btn-danger" [disabled]="esFormularioSoloLectura" (click)="eliminarPlantas()">
+          Eliminar plantas
+        </button>
+      </div>
+    </div>
+  </form>
+<div>
+  @if(eliminarPlantasAlerta) {
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+    (confirmacionModal)="eliminarPedimento($event)"></lib-notificaciones>
+  }
+  @if(espectaculoAlerta) {
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+    (confirmacionModal)="mostrarDomicilios()"></lib-notificaciones>
+  }
+  @if(espectaculoAlertaAgregar){
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+    (confirmacionModal)="agregarPlantasconfirmar()"></lib-notificaciones>
+  }
+</div>
+</div>

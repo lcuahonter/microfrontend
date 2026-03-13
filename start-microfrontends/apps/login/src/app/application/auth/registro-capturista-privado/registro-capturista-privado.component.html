@@ -1,0 +1,58 @@
+<div class="page page-color">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="fw-bold my-5 titulo-tasks">Registro de Capturista Privado</h2>
+                <div class="bg-primary"></div>
+            </div>
+        </div>
+        <form [formGroup]="FormRegistroCapturistaPrivado">
+            <div class="row ">
+                <div class="col-md-6">
+                    <label for="rfc" class="form-label text-title">Registro Federal de Contribuyentes</label>
+                    <input type="text" id="rfc" formControlName="rfc" class="form-control font-weight-titulo text-title"
+                        placeholder="Registro Federal de Contribuyentes" />
+                    <div *ngIf="FormRegistroCapturistaPrivado.get('rfc')?.hasError('rfcInvalido') && FormRegistroCapturistaPrivado.get('rfc')?.touched"
+                        class="text-danger">
+                        El RFC debe tener entre 12 y 13 caracteres, y no debe contener espacios.
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="curp" class="form-label text-title">Clave Única de Registro de Población</label>
+                    <input type="text" id="curp" formControlName="curp"
+                        class="form-control font-weight-titulo text-title"
+                        placeholder="Clave Única de Registro de Población" />
+                    <div *ngIf="FormRegistroCapturistaPrivado.get('curp')?.hasError('curpInvalido') && FormRegistroCapturistaPrivado.get('curp')?.touched"
+                        class="text-danger">
+                        La CURP debe tener 18 caracteres, y no debe contener espacios.
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            <div class="d-flex justify-content-lg-end h1">
+                <button type="submit" class="btn btn-primary me-2" (click)="consultaCapturista()">Agregar</button>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="table-responsive">
+                <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccion.CHECKBOX"
+                    [configuracionTabla]="encabezadoDeTablaCapturistas" [datos]="listadoCapturistas"
+                    (listaDeFilaSeleccionada)="capturistasSeleccionados = $event">
+                </app-tabla-dinamica>
+            </div>
+        </div>
+        <div *ngIf="visualizarTabla" class="row">
+            <div class="d-flex justify-content-lg-end h1">
+                <button class="btn btn-primary ms-2" type="button" (click)="enviarFirma()">Firmar</button>
+                <button class="btn btn-default ms-2" type="button" (click)="eliminarSeleccionados()">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+@if (nuevaNotificacion) {
+<section>
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+    </lib-notificaciones>
+</section>
+}

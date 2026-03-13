@@ -1,0 +1,122 @@
+<div class="container">
+    <!-- <div *ngIf="!firmar"> -->
+    <form [formGroup]="opinionForm">
+        <div class="row mb-4 mt-5">
+            <div class="col-md-6 mt-2">
+                <div class="col-md-12">
+                    <h5>Sentido de la opinión</h5>
+                </div>
+                @if(opcionesSentidosDispobles.length > 0) {
+                <div class="col-md-12 d-flex justify-content-start">
+                    <div class="d-flex gap-3">
+                        <div *ngFor="let opcion of opcionesSentidosDispobles"
+                            class="border px-4 py-2 d-flex align-items-center radio-button">
+                            <input class="form-check-input me-3 seleccion-radio" type="radio"
+                                formControlName="sentidoDelOpinion" name="sentidoDelOpinion" [value]="opcion.clave"
+                                [id]="'sentidoDictamen' + opcion.clave"
+                                [ngClass]="{ 'radio-invalid': opinionForm.get('sentidoDelOpinion')?.invalid && opinionForm.get('sentidoDelOpinion')?.touched }"
+                                [checked]="opinionForm.get('sentidoDelOpinion')?.value === opcion.clave"
+                                [disabled]="true" />
+                            <label class="control-label mb-0" [for]="'sentidoDictamen' + opcion.clave">
+                                {{ opcion.descripcion }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                } @else {
+                <div class="col-md-12 d-flex justify-content-start">
+                    <div class="d-flex gap-3">
+                        <div class="border px-4 py-2 d-flex align-items-center radio-button">
+                            <input class="form-check-input me-3 seleccion-radio" type="radio"
+                                formControlName="sentidoDelOpinion" name="sentidoDelOpinion" value="SEDI.AC"
+                                id="sentidoDictamenAceptado"
+                                [ngClass]="{ 'radio-invalid': opinionForm.get('sentidoDelOpinion')?.invalid && opinionForm.get('sentidoDelOpinion')?.touched }">
+                            <label class="control-label mb-0" for="sentidoDictamenAceptado">Aceptado</label>
+                        </div>
+                        <div class="border px-4 py-2 d-flex align-items-center radio-button">
+                            <input class="form-check-input me-3 seleccion-radio" type="radio"
+                                formControlName="sentidoDelOpinion" name="sentidoDelOpinion" value="SEDI.RZ"
+                                id="sentidoDictamenRechazado"
+                                [ngClass]="{ 'radio-invalid': opinionForm.get('sentidoDelOpinion')?.invalid && opinionForm.get('sentidoDelOpinion')?.touched }">
+                            <label class="control-label mb-0" for="sentidoDictamenRechazado">Rechazado</label>
+                        </div>
+                        <div class="border px-4 py-2 d-flex align-items-center radio-button">
+                            <input class="form-check-input me-3 seleccion-radio" type="radio"
+                                formControlName="sentidoDelOpinion" name="sentidoDelOpinion" value="SEDI.PA"
+                                id="sentidoDictamenParcial"
+                                [ngClass]="{ 'radio-invalid': opinionForm.get('sentidoDelOpinion')?.invalid && opinionForm.get('sentidoDelOpinion')?.touched }">
+                            <label class="control-label mb-0" for="sentidoDictamenParcial">Parcial</label>
+                        </div>
+                    </div>
+                </div>
+                }
+
+            </div>
+            <div class="col-md-6">
+                <label>Fecha de solicitud</label>
+                <div>{{fechaSolicitud}}</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="justificacion" class="form-label">Justificación:</label>
+                <textarea class="form-control textarea-height" id="justificacion" formControlName="justificacion"
+                    rows="3"></textarea>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="opinion" class="form-label">Opinión*:</label>
+                <textarea class="form-control textarea-height" id="opinion" rows="3"
+                    formControlName="opinion"></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h5> Documento a anexar</h5>
+            </div>
+            <div class="col-md-6" style="text-align: end !important;">
+                <button class="btn btn-default ms-2" type="button" (click)="mostrarModalDocumentos()">Anexar
+                    documentos</button>
+                <button class="btn btn-default ms-2" type="button" (click)="mostrarEliminar()">Eliminar</button>
+            </div>
+            <div class="col-md-12 mt-5">
+                <app-tabla-dinamica [configuracionTabla]="configuracionTabla" [tipoSeleccionTabla]="tipoSeleccionTabla"
+                    [datos]="archivosDatos" (listaDeFilaSeleccionada)="seleccionArchivos($event)"></app-tabla-dinamica>
+                <!-- <table class="table table-bordered mt-3">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Archivo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let archivo of archivos; index as i">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ archivo.name }}</td>
+                        </tr>
+                    </tbody>
+                </table> -->
+            </div>
+        </div>
+    </form>
+    <div *ngIf="mostrarBotones" class="col-md-12">
+        <div class="d-flex justify-content-lg-end h1">
+            <button class="btn btn-primary ms-2" type="button" (click)="guardarFormar(true)">Guardar y
+                firmar</button>
+            <button type="button" class="btn btn-default ms-2" (click)="guardarFormar(false)">Guardar</button>
+        </div>
+    </div>
+</div>
+@if (abrirModal) {
+<section>
+    <lib-modal-funciones [abrirModal]="abrirModal" [titulo]="'Anexar nuevo documento'" [descripcion]="descripcionModal"
+        [maxSizeMB]="10" [aceptado]="'application/pdf'" (archivoSeleccionado)="agregarArchivo($event)"
+        (cerrar)="abrirModal = false">
+    </lib-modal-funciones>
+</section>
+}
+
+@if (alertaNotificacion) {
+<div>
+    <lib-notificaciones [notificacionInput]="alertaNotificacion" (confirmacionModal)="confirmacionAlertaNotificacion($event)"></lib-notificaciones>
+</div>
+}

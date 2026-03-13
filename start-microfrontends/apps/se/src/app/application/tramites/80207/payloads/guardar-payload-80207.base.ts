@@ -1,0 +1,1322 @@
+export const GUARDAR_PAYLOAD_80207 = {
+    "tipoDeSolicitud": "guardar",
+    "idSolicitud": 0,
+    "idTipoTramite": 80207,
+    "rfc": "AAL0409235E6",
+    "cveUnidadAdministrativa": "8101",
+    "costoTotal": 10000.5,
+    "certificadoSerialNumber": "1234567890ABCDEF",
+    "certificado": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A",
+    "numeroFolioTramiteOriginal": "TRM-2023-00001",
+    "nombre": "Juan",
+    "apPaterno": "Pérez",
+    "apMaterno": "López",
+    "telefono": "5551234567",
+    "solicitud": {
+        "modalidad": "",
+        "booleanGenerico": true,
+        "descripcionSistemasMedicion": "Web",
+        "descripcionLugarEmbarque": "Localisation",
+        "numeroPermiso": "SI",
+        "fechaOperacion": "2025-09-19",
+        "nomOficialAutorizado": "",
+        "notario": {
+            "nombreNotario": "JORGE",
+            "apellidoMaterno": "NAVARRO",
+            "apellidoPaterno": "NEAVES",
+            "rfc": "AAL0409235E6",
+            "numeroActa": "26117",
+            "numeroNotaria": "22",
+            "numeroNotario": null,
+            "delegacionMunicipio": "08046",
+            "entidadFederativa": "CHIH",
+            "fechaActa": "2025-09-05",
+            "numeroRegistro": "251473"
+        }
+    },
+    "notarios": [
+        {
+            "nombreNotario": "JORGE",
+            "apellidoMaterno": "NAVARRO",
+            "apellidoPaterno": "NEAVES",
+            "rfc": "AAL0409235E6",
+            "numeroActa": "26117",
+            "numeroNotaria": "22",
+            "numeroNotario": null,
+            "delegacionMunicipio": "08046",
+            "entidadFederativa": "CHIH",
+            "fechaActa": "2025-09-05",
+            "numeroRegistro": "251473"
+        }
+    ],
+    "planta": [
+        {
+            "idPlanta": "123",
+            "calle": "Main St",
+            "numeroInterior": "A",
+            "numeroExterior": "10",
+            "codigoPostal": "12345",
+            "colonia": "Centro",
+            "delegacionMunicipio": "MunicipioX",
+            "entidadFederativa": "EntidadY",
+            "pais": "Mexico",
+            "rfc": "RFC123456",
+            "domicilioFiscal": "Fiscal Address",
+            "razonSocial": "Empresa S.A.",
+            "claveEntidadFederativa": "EF01",
+            "clavePlantaEmpresa": "PLT01",
+            "clavePais": "MX",
+            "claveDelegacionMunicipio": "DM01",
+            "estatus": true,
+            "desEstatus": "Activo",
+            "localidad": "Localidad1",
+            "telefono": "5551234567",
+            "fax": "5557654321",
+            "idDireccion": "DIR123",
+            "testadoP": 1,
+            "empresaCalle": "Empresa St",
+            "empresaNumeroInterior": "B",
+            "empresaNumeroExterior": "20",
+            "empresaCodigoPostal": "54321",
+            "empresaColonia": "EmpColonia",
+            "empresaDelegacionMunicipio": "EmpMunicipio",
+            "empresaEntidadFederativa": "EmpEntidad",
+            "empresaPais": "Mexico",
+            "empresaClaveEntidadFederativa": "EF02",
+            "empresaClavePlantaEmpresa": "PLT02",
+            "empresaClavePais": "MX",
+            "empresaClaveDelegacionMunicipio": "DM02",
+            "empresaCorreoElectronico": "empresa@email.com",
+            "empresaTipo": "Tipo1",
+            "permaneceMercancia": "Si",
+            "rfcActivo": "RFC654321",
+            "domiciliosInscritos": "2",
+            "personaMoralISR": "Si",
+            "opinionSAT": "Positiva",
+            "fecha32D": "2024-06-01",
+            "firmantes": [
+                {
+                    "idPlantaF": "FIRM01",
+                    "tipoFirmante": "Representante Legal",
+                    "descTipoFirmante": "Legal Representative"
+                }
+            ],
+            "datosComplementarios": [
+                {
+                    "idPlantaC": "C01",
+                    "idDato": "D01",
+                    "amparoPrograma": "ProgramaX",
+                    "tipoDocumento": "DocType1",
+                    "descDocumento": "Documento de respaldo",
+                    "descripcionOtro": "Otro documento",
+                    "documentoRespaldo": "Respaldo.pdf",
+                    "descDocRespaldo": "Descripción respaldo",
+                    "respaldoOtro": "Otro respaldo",
+                    "fechaFirma": "2024-01-01",
+                    "fechaVigencia": "2025-01-01",
+                    "fechaFirmaRespaldo": "2024-01-02",
+                    "fechaVigenciaRespaldo": "2025-01-02"
+                }
+            ],
+            "montos": [
+                {
+                    "idPlantaM": "M01",
+                    "idMonto": "MON01",
+                    "tipo": "Inversión",
+                    "descTipo": "Inversión inicial",
+                    "cantidad": "1000",
+                    "descripcion": "Monto de inversión",
+                    "monto": "500000",
+                    "testado": "1",
+                    "descTestado": "Testado OK"
+                }
+            ],
+            "listaCapacidad": [
+                {
+                    "idPlantaCa": "CA01",
+                    "idCapacidad": "CAP01",
+                    "claveServicio": "1",
+                    "descripcionServicio": "Servicio de producción",
+                    "cveTipoServicio": "TS01",
+                    "tipoServicio": "Producción",
+                    "fraccion": "FR01",
+                    "fraccionVista": "Fracción Vista",
+                    "umt": "UMT01",
+                    "descripcion": "Capacidad instalada",
+                    "capacidadEfectiva": "10000",
+                    "calculo": "Manual",
+                    "turnos": "3",
+                    "horasTurno": "8",
+                    "cantidadEmpleados": "50",
+                    "cantidadMaquinaria": "10",
+                    "descripcionMaquinaria": "Maquinaria industrial",
+                    "capacidadMensual": "300000",
+                    "capacidadAnual": "3600000",
+                    "testado": "1",
+                    "descTestado": "Testado OK"
+                }
+            ],
+            "datosEmpleados": [
+                {
+                    "idPlantaE": "E01",
+                    "idEmpleados": "EMP01",
+                    "totalEmpleados": "100",
+                    "directos": "80",
+                    "cedula": "CED123",
+                    "fechaCedula": "2024-01-10",
+                    "indirectos": "20",
+                    "contrato": "ContratoX",
+                    "objetoContrato": "Objeto del contrato",
+                    "fechaFirma": "2024-01-15",
+                    "fechaFinVigencia": "2025-01-15",
+                    "rfcEmpresa": "RFCEMP123",
+                    "razonEmpresa": "Empresa Empleadora",
+                    "testado": "1",
+                    "descTestado": "Testado OK"
+                }
+            ]
+        }
+    ],
+    "capacidadProduccion": [
+        {
+            "unidadMedidaTarifaria": "2",
+            "capacidadInstalada": "000000000000010125",
+            "porccentajeUtilizado": 40,
+            "descripcionUnidadMedida": "test",
+            "fraccionCap": "test",
+            "cveFraccion": "string"
+        }
+    ],
+    "plantasSubmanufactureras": [
+        {
+            "idPlanta": "123",
+            "calle": "Main St",
+            "numeroInterior": "A",
+            "numeroExterior": "10",
+            "codigoPostal": "12345",
+            "colonia": "Centro",
+            "delegacionMunicipio": "MunicipioX",
+            "entidadFederativa": "EntidadY",
+            "pais": "Mexico",
+            "rfc": "RFC123456",
+            "domicilioFiscal": "Fiscal Address",
+            "razonSocial": "Empresa S.A.",
+            "claveEntidadFederativa": "EF01",
+            "clavePlantaEmpresa": "PLT01",
+            "clavePais": "MX",
+            "claveDelegacionMunicipio": "DM01",
+            "estatus": true,
+            "desEstatus": "Activo",
+            "localidad": "Localidad1",
+            "telefono": "5551234567",
+            "fax": "5557654321",
+            "idDireccion": "DIR123",
+            "testadoP": 1,
+            "empresaCalle": "Empresa St",
+            "empresaNumeroInterior": "B",
+            "empresaNumeroExterior": "20",
+            "empresaCodigoPostal": "54321",
+            "empresaColonia": "EmpColonia",
+            "empresaDelegacionMunicipio": "EmpMunicipio",
+            "empresaEntidadFederativa": "EmpEntidad",
+            "empresaPais": "Mexico",
+            "empresaClaveEntidadFederativa": "EF02",
+            "empresaClavePlantaEmpresa": "PLT02",
+            "empresaClavePais": "MX",
+            "empresaClaveDelegacionMunicipio": "DM02",
+            "empresaCorreoElectronico": "empresa@email.com",
+            "empresaTipo": "Tipo1",
+            "permaneceMercancia": "Si",
+            "rfcActivo": "RFC654321",
+            "domiciliosInscritos": "2",
+            "personaMoralISR": "Si",
+            "opinionSAT": "Positiva",
+            "fecha32D": "2024-06-01",
+            "firmantes": [
+                {
+                    "idPlantaF": "FIRM01",
+                    "tipoFirmante": "Representante Legal",
+                    "descTipoFirmante": "Legal Representative"
+                }
+            ],
+            "datosComplementarios": [
+                {
+                    "idPlantaC": "C01",
+                    "idDato": "D01",
+                    "amparoPrograma": "ProgramaX",
+                    "tipoDocumento": "DocType1",
+                    "descDocumento": "Documento de respaldo",
+                    "descripcionOtro": "Otro documento",
+                    "documentoRespaldo": "Respaldo.pdf",
+                    "descDocRespaldo": "Descripción respaldo",
+                    "respaldoOtro": "Otro respaldo",
+                    "fechaFirma": "2024-01-01",
+                    "fechaVigencia": "2025-01-01",
+                    "fechaFirmaRespaldo": "2024-01-02",
+                    "fechaVigenciaRespaldo": "2025-01-02"
+                }
+            ],
+            "montos": [
+                {
+                    "idPlantaM": "M01",
+                    "idMonto": "MON01",
+                    "tipo": "Inversión",
+                    "descTipo": "Inversión inicial",
+                    "cantidad": "1000",
+                    "descripcion": "Monto de inversión",
+                    "monto": "500000",
+                    "testado": "1",
+                    "descTestado": "Testado OK"
+                }
+            ],
+            "listaCapacidad": [
+                {
+                    "idPlantaCa": "CA01",
+                    "idCapacidad": "CAP01",
+                    "claveServicio": "1",
+                    "descripcionServicio": "Servicio de producción",
+                    "cveTipoServicio": "TS01",
+                    "tipoServicio": "Producción",
+                    "fraccion": "FR01",
+                    "fraccionVista": "Fracción Vista",
+                    "umt": "UMT01",
+                    "descripcion": "Capacidad instalada",
+                    "capacidadEfectiva": "10000",
+                    "calculo": "Manual",
+                    "turnos": "3",
+                    "horasTurno": "8",
+                    "cantidadEmpleados": "50",
+                    "cantidadMaquinaria": "10",
+                    "descripcionMaquinaria": "Maquinaria industrial",
+                    "capacidadMensual": "300000",
+                    "capacidadAnual": "3600000",
+                    "testado": "1",
+                    "descTestado": "Testado OK"
+                }
+            ],
+            "datosEmpleados": [
+                {
+                    "idPlantaE": "E01",
+                    "idEmpleados": "EMP01",
+                    "totalEmpleados": "100",
+                    "directos": "80",
+                    "cedula": "CED123",
+                    "fechaCedula": "2024-01-10",
+                    "indirectos": "20",
+                    "contrato": "ContratoX",
+                    "objetoContrato": "Objeto del contrato",
+                    "fechaFirma": "2024-01-15",
+                    "fechaFinVigencia": "2025-01-15",
+                    "rfcEmpresa": "RFCEMP123",
+                    "razonEmpresa": "Empresa Empleadora",
+                    "testado": "1",
+                    "descTestado": "Testado OK"
+                }
+            ]
+        }
+    ],
+    "plantasControladoras": [
+        {
+            "idPlanta": "123",
+            "calle": "Main St",
+            "numeroInterior": "A",
+            "numeroExterior": "10",
+            "codigoPostal": "12345",
+            "colonia": "Centro",
+            "delegacionMunicipio": "MunicipioX",
+            "entidadFederativa": "EntidadY",
+            "pais": "Mexico",
+            "rfc": "RFC123456",
+            "domicilioFiscal": "Fiscal Address",
+            "razonSocial": "Empresa S.A.",
+            "claveEntidadFederativa": "EF01",
+            "clavePlantaEmpresa": "PLT01",
+            "clavePais": "MX",
+            "claveDelegacionMunicipio": "DM01",
+            "estatus": true,
+            "desEstatus": "Activo",
+            "localidad": "Localidad1",
+            "telefono": "5551234567",
+            "fax": "5557654321",
+            "idDireccion": "DIR123",
+            "testadoP": 1,
+            "empresaCalle": "Empresa St",
+            "empresaNumeroInterior": "B",
+            "empresaNumeroExterior": "20",
+            "empresaCodigoPostal": "54321",
+            "empresaColonia": "EmpColonia",
+            "empresaDelegacionMunicipio": "EmpMunicipio",
+            "empresaEntidadFederativa": "EmpEntidad",
+            "empresaPais": "Mexico",
+            "empresaClaveEntidadFederativa": "EF02",
+            "empresaClavePlantaEmpresa": "PLT02",
+            "empresaClavePais": "MX",
+            "empresaClaveDelegacionMunicipio": "DM02",
+            "empresaCorreoElectronico": "empresa@email.com",
+            "empresaTipo": "Tipo1",
+            "permaneceMercancia": "Si",
+            "rfcActivo": "RFC654321",
+            "domiciliosInscritos": "2",
+            "personaMoralISR": "Si",
+            "opinionSAT": "Positiva",
+            "fecha32D": "2024-06-01",
+            "firmantes": [
+                {
+                    "idPlantaF": "FIRM01",
+                    "tipoFirmante": "Representante Legal",
+                    "descTipoFirmante": "Legal Representative"
+                }
+            ],
+            "datosComplementarios": [
+                {
+                    "idPlantaC": "C01",
+                    "idDato": "D01",
+                    "amparoPrograma": "ProgramaX",
+                    "tipoDocumento": "DocType1",
+                    "descDocumento": "Documento de respaldo",
+                    "descripcionOtro": "Otro documento",
+                    "documentoRespaldo": "Respaldo.pdf",
+                    "descDocRespaldo": "Descripción respaldo",
+                    "respaldoOtro": "Otro respaldo",
+                    "fechaFirma": "2024-01-01",
+                    "fechaVigencia": "2025-01-01",
+                    "fechaFirmaRespaldo": "2024-01-02",
+                    "fechaVigenciaRespaldo": "2025-01-02"
+                }
+            ],
+            "montos": [
+                {
+                    "idPlantaM": "M01",
+                    "idMonto": "MON01",
+                    "tipo": "Inversión",
+                    "descTipo": "Inversión inicial",
+                    "cantidad": "1000",
+                    "descripcion": "Monto de inversión",
+                    "monto": "500000",
+                    "testado": "1",
+                    "descTestado": "Testado OK"
+                }
+            ],
+            "listaCapacidad": [
+                {
+                    "idPlantaCa": "CA01",
+                    "idCapacidad": "CAP01",
+                    "claveServicio": "1",
+                    "descripcionServicio": "Servicio de producción",
+                    "cveTipoServicio": "TS01",
+                    "tipoServicio": "Producción",
+                    "fraccion": "FR01",
+                    "fraccionVista": "Fracción Vista",
+                    "umt": "UMT01",
+                    "descripcion": "Capacidad instalada",
+                    "capacidadEfectiva": "10000",
+                    "calculo": "Manual",
+                    "turnos": "3",
+                    "horasTurno": "8",
+                    "cantidadEmpleados": "50",
+                    "cantidadMaquinaria": "10",
+                    "descripcionMaquinaria": "Maquinaria industrial",
+                    "capacidadMensual": "300000",
+                    "capacidadAnual": "3600000",
+                    "testado": "1",
+                    "descTestado": "Testado OK"
+                }
+            ],
+            "datosEmpleados": [
+                {
+                    "idPlantaE": "E01",
+                    "idEmpleados": "EMP01",
+                    "totalEmpleados": "100",
+                    "directos": "80",
+                    "cedula": "CED123",
+                    "fechaCedula": "2024-01-10",
+                    "indirectos": "20",
+                    "contrato": "ContratoX",
+                    "objetoContrato": "Objeto del contrato",
+                    "fechaFirma": "2024-01-15",
+                    "fechaFinVigencia": "2025-01-15",
+                    "rfcEmpresa": "RFCEMP123",
+                    "razonEmpresa": "Empresa Empleadora",
+                    "testado": "1",
+                    "descTestado": "Testado OK"
+                }
+            ]
+        }
+    ],
+    "plantasTerciarizadoras": [
+        {
+            "idPlanta": "123",
+            "calle": "Main St",
+            "numeroInterior": "A",
+            "numeroExterior": "10",
+            "codigoPostal": "12345",
+            "colonia": "Centro",
+            "delegacionMunicipio": "MunicipioX",
+            "entidadFederativa": "EntidadY",
+            "pais": "Mexico",
+            "rfc": "RFC123456",
+            "domicilioFiscal": "Fiscal Address",
+            "razonSocial": "Empresa S.A.",
+            "claveEntidadFederativa": "EF01",
+            "clavePlantaEmpresa": "PLT01",
+            "clavePais": "MX",
+            "claveDelegacionMunicipio": "DM01",
+            "estatus": true,
+            "desEstatus": "Activo",
+            "localidad": "Localidad1",
+            "telefono": "5551234567",
+            "fax": "5557654321",
+            "idDireccion": "DIR123",
+            "testadoP": 1,
+            "empresaCalle": "Empresa St",
+            "empresaNumeroInterior": "B",
+            "empresaNumeroExterior": "20",
+            "empresaCodigoPostal": "54321",
+            "empresaColonia": "EmpColonia",
+            "empresaDelegacionMunicipio": "EmpMunicipio",
+            "empresaEntidadFederativa": "EmpEntidad",
+            "empresaPais": "Mexico",
+            "empresaClaveEntidadFederativa": "EF02",
+            "empresaClavePlantaEmpresa": "PLT02",
+            "empresaClavePais": "MX",
+            "empresaClaveDelegacionMunicipio": "DM02",
+            "empresaCorreoElectronico": "empresa@email.com",
+            "empresaTipo": "Tipo1",
+            "permaneceMercancia": "Si",
+            "rfcActivo": "RFC654321",
+            "domiciliosInscritos": "2",
+            "personaMoralISR": "Si",
+            "opinionSAT": "Positiva",
+            "fecha32D": "2024-06-01",
+            "firmantes": [
+                {
+                    "idPlantaF": "FIRM01",
+                    "tipoFirmante": "Representante Legal",
+                    "descTipoFirmante": "Legal Representative"
+                }
+            ],
+            "datosComplementarios": [
+                {
+                    "idPlantaC": "C01",
+                    "idDato": "D01",
+                    "amparoPrograma": "ProgramaX",
+                    "tipoDocumento": "DocType1",
+                    "descDocumento": "Documento de respaldo",
+                    "descripcionOtro": "Otro documento",
+                    "documentoRespaldo": "Respaldo.pdf",
+                    "descDocRespaldo": "Descripción respaldo",
+                    "respaldoOtro": "Otro respaldo",
+                    "fechaFirma": "2024-01-01",
+                    "fechaVigencia": "2025-01-01",
+                    "fechaFirmaRespaldo": "2024-01-02",
+                    "fechaVigenciaRespaldo": "2025-01-02"
+                }
+            ],
+            "montos": [
+                {
+                    "idPlantaM": "M01",
+                    "idMonto": "MON01",
+                    "tipo": "Inversión",
+                    "descTipo": "Inversión inicial",
+                    "cantidad": "1000",
+                    "descripcion": "Monto de inversión",
+                    "monto": "500000",
+                    "testado": "1",
+                    "descTestado": "Testado OK"
+                }
+            ],
+            "listaCapacidad": [
+                {
+                    "idPlantaCa": "CA01",
+                    "idCapacidad": "CAP01",
+                    "claveServicio": "1",
+                    "descripcionServicio": "Servicio de producción",
+                    "cveTipoServicio": "TS01",
+                    "tipoServicio": "Producción",
+                    "fraccion": "FR01",
+                    "fraccionVista": "Fracción Vista",
+                    "umt": "UMT01",
+                    "descripcion": "Capacidad instalada",
+                    "capacidadEfectiva": "10000",
+                    "calculo": "Manual",
+                    "turnos": "3",
+                    "horasTurno": "8",
+                    "cantidadEmpleados": "50",
+                    "cantidadMaquinaria": "10",
+                    "descripcionMaquinaria": "Maquinaria industrial",
+                    "capacidadMensual": "300000",
+                    "capacidadAnual": "3600000",
+                    "testado": "1",
+                    "descTestado": "Testado OK"
+                }
+            ],
+            "datosEmpleados": [
+                {
+                    "idPlantaE": "E01",
+                    "idEmpleados": "EMP01",
+                    "totalEmpleados": "100",
+                    "directos": "80",
+                    "cedula": "CED123",
+                    "fechaCedula": "2024-01-10",
+                    "indirectos": "20",
+                    "contrato": "ContratoX",
+                    "objetoContrato": "Objeto del contrato",
+                    "fechaFirma": "2024-01-15",
+                    "fechaFinVigencia": "2025-01-15",
+                    "rfcEmpresa": "RFCEMP123",
+                    "razonEmpresa": "Empresa Empleadora",
+                    "testado": "1",
+                    "descTestado": "Testado OK"
+                }
+            ]
+        }
+    ],
+    "productoExportacionDtoList": [
+        {
+            "testado": true,
+            "claveServicioImmex": null,
+            "tipoFraccion": "TIPD.EX",
+            "visible": true,
+            "fraccionPadre": null,
+            "replica": true,
+            "activo": true,
+            "idProductoExp": null,
+            "complemento": {
+                "anexoII": "NO SENSIBLE",
+                "tipo": "EXPORTACION",
+                "unidadMedida": "Kilogramo",
+                "categoria": "TICAT.MP",
+                "descripcion": "DEJ JLFKDSFDSFSDF",
+                "valorMensual": "12",
+                "valorAnual": "432",
+                "volumenMensual": "5435",
+                "volumenAnual": "534",
+                "testado": true,
+                "fecFinVigencia": "2025-09-07",
+                "volumenAnualSolicitado": null
+            },
+            "fraccionCompuesta": null,
+            "cveServicioImmex": {
+                "claveServicio": null,
+                "nombre": "ABASTECIMIENTO, ALMACENAJE O DISTRIBUCION DE MERCANCIAS",
+                "tipoServicio": "TISIMMEX.TN",
+                "blnActivo": true,
+                "fechaInicioVigencia": "2025-09-07",
+                "fechaFinVigencia": "2025-09-07"
+            },
+            "cveSector": null,
+            "idSectorProsecSol": 0,
+            "blnFraccionSeleccionada": 0,
+            "descripcionTestado": null,
+            "proyectosImmex": [
+                {
+                    "tipoDocumento": "TIDPI.CM",
+                    "descripcion": null,
+                    "fechaFirma": "04/09/2025",
+                    "fechaVigencia": "04/09/2025",
+                    "rfcFirmante": "AAL0409235E6",
+                    "razonFirmante": "SILVA",
+                    "testado": true,
+                    "fecFinVigencia": "2025-09-07"
+                }
+            ],
+            "proyectosClientes": [
+                {
+                    "paisOrigen": "AUSTIRA",
+                    "rfcProveedor": "WERWSV",
+                    "razonProveedor": "WER QWER QW",
+                    "paisDestino": "ANTARTIDA",
+                    "rfcClient": "AAL0409235E6",
+                    "razonCliente": "CLICNTE UNO ",
+                    "domicilioCliente": null,
+                    "testado": true,
+                    "fecFinVigencia": "2025-09-07"
+                }
+            ],
+            "fraccionArancelaria": {
+                "fraccionPadre": "string",
+                "descripcionFraccionPadre": "string",
+                "tipoFraccion": "string",
+                "exenta": true,
+                "fraccionCompuesta": "string",
+                "claveFraccionPadre": "string",
+                "unidadMedida": "string",
+                "fraccionConcatenada": "string",
+                "descripcionTestado": "string",
+                "testado": true,
+                "tipoOperacion": "string",
+                "valorMonedaMensual": "string",
+                "valorMonedaAnual": "string",
+                "valorProduccionMensual": "string",
+                "valorProduccionAnual": "string",
+                "valorProduccionAnualSolicitada": "string",
+                "claveCategoria": "string",
+                "descripcionCategoria": "string",
+                "mensaje": "string",
+                "descripcionUsuario": "string",
+                "umt": "string",
+                "idFraccion": "string",
+                "idProducto": "string",
+                "idProductoPadre": "string",
+                "claveProductoExportacion": 0,
+                "descripcionServicio": "string",
+                "rowID": "string",
+                "cveFraccion": "61032301",
+                "capitulo": "string",
+                "partida": "string",
+                "subPartida": "string",
+                "descripcion": "string",
+                "fechaCaptura": "2025-09-07T12:43:35.647Z",
+                "fechaInicioVigencia": "2025-09-07T12:43:35.647Z",
+                "fechaFinVigencia": "2025-09-07T12:43:35.647Z",
+                "cveUsuario": "string",
+                "cveCapituloFraccion": "string",
+                "cvePartidaFraccion": "string",
+                "cveSubPartidaFraccion": "string",
+                "activo": true,
+                "activoAnexo28": true,
+                "decretoImmex": true,
+                "sector": [
+                    {
+                        "cveSector": "string",
+                        "nombre": "string",
+                        "productorIndirecto": 0,
+                        "ampliacionMercancias": 0,
+                        "fechaInicioVigencia": "2025-09-07T12:43:35.647Z",
+                        "fechaFinVigencia": "2025-09-07T12:43:35.647Z",
+                        "blnActivo": 0
+                    }
+                ],
+                "cveServicioImmex": {
+                    "claveServicio": 123,
+                    "nombre": "string",
+                    "tipoServicio": "string",
+                    "fechaInicioVigencia": "2025-09-07T12:43:35.647Z",
+                    "fechaFinVigencia": "2025-09-07T12:43:35.647Z",
+                    "blnActivo": true
+                },
+                "listaProveedores": [
+                    {
+                        "idProveedor": "string",
+                        "paisOrigen": "string",
+                        "rfcProveedor": "string",
+                        "razonProveedor": "string",
+                        "paisDestino": "string",
+                        "rfcCliente": "string",
+                        "razonCliente": "string",
+                        "domicilio": "string",
+                        "testado": true,
+                        "idProductoP": "string",
+                        "descTestado": "string"
+                    }
+                ],
+                "listaProyecto": [
+                    {
+                        "idProyecto": "string",
+                        "tipoDocumento": "string",
+                        "descDocumento": "string",
+                        "otro": "string",
+                        "fechaIncio": "string",
+                        "fechaFin": "string",
+                        "firmante": {
+                            "idFirmante": "string",
+                            "rfc": "string",
+                            "razonSocial": "string",
+                            "claveFraccion": "string"
+                        },
+                        "testado": "string",
+                        "idProducto": "string",
+                        "descTestado": "string"
+                    }
+                ],
+                "nicoDtos": [
+                    {
+                        "claveNico": "00",
+                        "descripcion": "string",
+                        "testadoNico": "string",
+                        "testadoInt": true
+                    }
+                ]
+            }
+        }
+    ],
+    "mercanciaImportacion": [
+        {
+            "claveMercanciaImportacion": 0,
+            "testado": 0,
+            "tipoFraccion": "string",
+            "visible": true,
+            "fraccionPadre": "string",
+            "blnFraccionSeleccionada": 0,
+            "claveFraccionPadre": "string",
+            "fraccionCompuesta": "string",
+            "descripcionTestado": "string",
+            "unidadMedida": "string",
+            "tipoOperacion": "string",
+            "valorMonedaMensual": "string",
+            "valorMonedaAnual": "string",
+            "valorProduccionMensual": "string",
+            "valorProduccionAnual": "string",
+            "valorProduccionAnualSolicitada": "string",
+            "categoria": "string",
+            "mensaje": "string",
+            "umt": "string",
+            "claveCategoria": "string",
+            "descripcionUsuario": "string",
+            "descripcionFraccionPadre": "string",
+            "idProductoPadre": "string",
+            "idProducto": "string",
+            "permisoPadre": "string",
+            "fraccionArancelaria": {
+                "fraccionPadre": "string",
+                "descripcionFraccionPadre": "string",
+                "tipoFraccion": "string",
+                "exenta": true,
+                "fraccionCompuesta": "string",
+                "claveFraccionPadre": "string",
+                "unidadMedida": "string",
+                "fraccionConcatenada": "string",
+                "descripcionTestado": "string",
+                "testado": true,
+                "tipoOperacion": "string",
+                "valorMonedaMensual": "string",
+                "valorMonedaAnual": "string",
+                "valorProduccionMensual": "string",
+                "valorProduccionAnual": "string",
+                "valorProduccionAnualSolicitada": "string",
+                "claveCategoria": "string",
+                "descripcionCategoria": "string",
+                "mensaje": "string",
+                "descripcionUsuario": "string",
+                "umt": "string",
+                "idFraccion": "string",
+                "idProducto": "string",
+                "idProductoPadre": "string",
+                "claveProductoExportacion": 0,
+                "descripcionServicio": "string",
+                "rowID": "string",
+                "cveFraccion": "61032301",
+                "capitulo": "string",
+                "partida": "string",
+                "subPartida": "string",
+                "descripcion": "string",
+                "fechaCaptura": "2025-09-07T12:43:35.647Z",
+                "fechaInicioVigencia": "2025-09-07T12:43:35.647Z",
+                "fechaFinVigencia": "2025-09-07T12:43:35.647Z",
+                "cveUsuario": "string",
+                "cveCapituloFraccion": "string",
+                "cvePartidaFraccion": "string",
+                "cveSubPartidaFraccion": "string",
+                "activo": true,
+                "activoAnexo28": true,
+                "decretoImmex": true,
+                "sector": [
+                    {
+                        "cveSector": "string",
+                        "nombre": "string",
+                        "productorIndirecto": 0,
+                        "ampliacionMercancias": 0,
+                        "fechaInicioVigencia": "2025-09-07T12:43:35.647Z",
+                        "fechaFinVigencia": "2025-09-07T12:43:35.647Z",
+                        "blnActivo": 0
+                    }
+                ],
+                "cveServicioImmex": {
+                    "claveServicio": 123,
+                    "nombre": "string",
+                    "tipoServicio": "string",
+                    "fechaInicioVigencia": "2025-09-07T12:43:35.647Z",
+                    "fechaFinVigencia": "2025-09-07T12:43:35.647Z",
+                    "blnActivo": true
+                },
+                "listaProveedores": [
+                    {
+                        "idProveedor": "string",
+                        "paisOrigen": "string",
+                        "rfcProveedor": "string",
+                        "razonProveedor": "string",
+                        "paisDestino": "string",
+                        "rfcCliente": "string",
+                        "razonCliente": "string",
+                        "domicilio": "string",
+                        "testado": true,
+                        "idProductoP": "string",
+                        "descTestado": "string"
+                    }
+                ],
+                "listaProyecto": [
+                    {
+                        "idProyecto": "string",
+                        "tipoDocumento": "string",
+                        "descDocumento": "string",
+                        "otro": "string",
+                        "fechaIncio": "string",
+                        "fechaFin": "string",
+                        "firmante": {
+                            "idFirmante": "string",
+                            "rfc": "string",
+                            "razonSocial": "string",
+                            "claveFraccion": "string"
+                        },
+                        "testado": "string",
+                        "idProducto": "string",
+                        "descTestado": "string"
+                    }
+                ],
+                "nicoDtos": [
+                    {
+                        "claveNico": "00",
+                        "descripcion": "string",
+                        "testadoNico": "string",
+                        "testadoInt": true
+                    }
+                ]
+            },
+            "listaProveedores": [
+                {
+                    "idProveedor": "string",
+                    "paisOrigen": "string",
+                    "rfcProveedor": "string",
+                    "razonProveedor": "string",
+                    "paisDestino": "string",
+                    "rfcCliente": "string",
+                    "razonCliente": "string",
+                    "domicilio": "string",
+                    "testado": true,
+                    "idProductoP": "string",
+                    "descTestado": "string"
+                }
+            ],
+            "listaProyecto": [
+                {
+                    "idProyecto": "string",
+                    "tipoDocumento": "string",
+                    "descDocumento": "string",
+                    "otro": "string",
+                    "fechaIncio": "string",
+                    "fechaFin": "string",
+                    "firmante": {
+                        "idFirmante": "string",
+                        "rfc": "string",
+                        "razonSocial": "string",
+                        "claveFraccion": "string"
+                    },
+                    "testado": "string",
+                    "idProducto": "string",
+                    "descTestado": "string"
+                }
+            ],
+            "nicoDtos": [
+                {
+                    "claveNico": "01",
+                    "descripcion": "string",
+                    "testadoNico": "string",
+                    "testadoInt": true
+                }
+            ],
+            "proyectosClientes": [
+                {
+                    "paisOrigen": "",
+                    "rfcProveedor": "",
+                    "razonProveedor": "",
+                    "paisDestino": "ARGELIA (REPUBLICA DEMOCRATICA Y POPULAR DE)",
+                    "rfcClient": "GDFGFDHGJGHJGH",
+                    "razonCliente": "D FFGSDFSFSDF",
+                    "domicilioCliente": "",
+                    "testado": false,
+                    "fecFinVigencia": null
+                }
+            ],
+            "complemento": {
+                "anexoII": "NO SENSIBLE",
+                "tipo": "EXPORTACION",
+                "unidadMedida": "Kilogramo",
+                "categoria": "TICAT.MP",
+                "descripcion": "DEJ JLFKDSFDSFSDF",
+                "valorMensual": "12",
+                "valorAnual": "432",
+                "volumenMensual": "5435",
+                "volumenAnual": "534",
+                "testado": true,
+                "fecFinVigencia": null,
+                "volumenAnualSolicitado": null
+            }
+        }
+    ],
+    "anexoII": [
+        {
+            "descripcion": "CONTROL DE ENERGIA",
+            "idTipoBien": 0,
+            "idBienComercial": 0,
+            "testado": true,
+            "contadorGrid": null,
+            "descripcionTestado": null
+        }
+    ],
+    "anexoIII": [
+        {
+            "descripcion": "CONTROL DE ENERGIA",
+            "idTipoBien": 0,
+            "idBienComercial": 0,
+            "testado": true,
+            "contadorGrid": null,
+            "descripcionTestado": null
+        }
+    ],
+    "fraccionesSensibles": [
+        {
+            "claveSencible": 0,
+            "complemento": "00001",
+            "unidadMedidaTarifaria": "1",
+            "cantidad": "300000.0",
+            "valor": "20000.00",
+            "fraccionPadre": "02101999",
+            "descUnidadMedida": null,
+            "fechaInicioVigencia": "2025-09-07",
+            "fechaFinVigencia": "2025-09-07",
+            "cveFraccion": "string"
+        }
+    ],
+    "fraccionesTextiles": [
+        {
+            "proyeccionExportacion": 120000.0,
+            "numeroTrabajadores": 8,
+            "maximoImportaciones": 120000.0,
+            "factorAmpliacion": 0.00,
+            "maxImportaciones": null,
+            "proyeccionConsulta": null,
+            "fechaInicioVigencia": "2025-09-07",
+            "fechaFinVigencia": "2025-09-07"
+        }
+    ],
+    "servicios": [
+        {
+            "tipoServicio": "TISIMMEX.TN",
+            "testado": true,
+            "claveServicio": 1,
+            "descripcion": null,
+            "descripcionTipo": null,
+            "descripcionTestado": null,
+            "estatus": true,
+            "desEstatus": null,
+            "fecIniVigencia": "2025-09-07",
+            "fecFinVigencia": "2025-09-07"
+        }
+    ],
+    "empresasNacionales": [
+        {
+            "tipoEmpresa": "1",
+            "caracterEmpresa": "",
+            "montoExportacionesUSD": 0,
+            "numeroProgramaDGCESE": "",
+            "porcentajeParticipacionAccionaria": 0,
+            "porcentajeParticionAccionariaExt": 0,
+            "nombre": "",
+            "apellidoPaterno": "",
+            "apellidoMaterno": "",
+            "razonSocial": "COMPA¿A MEXICANA DE TRAJES, S.A. DE C.V.",
+            "rfc": "MTR8012148K9",
+            "certificada": false,
+            "correoElectronico": "trafico@mextrajes.com",
+            "idDireccionSol": 112053,
+            "testado": false,
+            "fechaInicioVigencia": "2025-09-07",
+            "fecFinVigencia": "2025-09-07",
+            "blnActivo": true,
+            "idServicio": "0",
+            "descripcionServicio": "",
+            "domicilioCompleto": "",
+            "numeroPrograma": "",
+            "tiempoPrograma": "",
+            "descripcionTestado": "",
+            "idCompuestoEmpresa": "",
+            "idServicioAutorizado": 0,
+            "domicilioSolicitud": {
+                "codigoPostal": "w93w9393",
+                "informacionExtra": "3939393"
+            }
+        }
+    ],
+    "sectoresImmex": [
+        {
+            "idSolicitud": 0,
+            "idAtributo": 0,
+            "cveEnumeracionH": "string",
+            "cveEnumeracion": "string",
+            "blnEstado": true,
+            "descGenerica1": "string",
+            "importeGenerico1": 0,
+            "fecGenerica1": "2025-09-07"
+        }
+    ],
+    "actividadProductivaTres": [
+        {
+            "idSolicitud": 0,
+            "idAtributo": 0,
+            "cveEnumeracionH": "string",
+            "cveEnumeracion": "string",
+            "blnEstado": 0,
+            "fecGenerica1": "2025-09-03",
+            "descGenerica1": "string",
+            "importeGenerico1": 0
+        }
+    ],
+    "sociosAccionistas": [
+        {
+            "idPersonaPersonaSolicitudR": 0,
+            "idSolicitud": 202734824,
+            "nombre": "",
+            "apellidoMaterno": "",
+            "apellidoPaterno": "",
+            "razonSocial": "AGRICOLA ALPE S DE RL DE CV",
+            "rfc": "AAL0409235E6",
+            "curp": "",
+            "ideTipoPersonaSol": "TIPERS.SL",
+            "correoElectronico": "vucem.soporte.aplicativo@ultrasist.com.mx",
+            "cedulaProfesional": "",
+            "nss": "",
+            "telefono": "8154563",
+            "descripcionGiro": "Siembra, cultivo y cosecha de papa",
+            "cvePaisOrigen": "",
+            "idDireccionSol": 260833725,
+            "tipoPatenteAgente": "",
+            "recif": "",
+            "puesto": "",
+            "tipoAgente": "",
+            "numeroPatente": "",
+            "numeroIdentificacionFiscal": "",
+            "personaMoral": false,
+            "extranjero": false,
+            "organismoPublico": false,
+            "cveUsuario": "AAL0409235E6",
+            "paginaWeb": "",
+            "ideGenerica1": "",
+            "rfcExtranjero": "",
+            "codAutorizacion": "",
+            "actividadProductiva": "",
+            "estadoEvaluacionEntidad": "AUTORIZADO",
+            "estadoEntidad": "AUTORIZADO",
+            "original": false,
+            "modificado": false,
+            "numeroRegistro": "",
+            "concentimientoInstalacionRecuperacion": false,
+            "cveCatalogo": "",
+            "alquilado": false,
+            "volumenAlmacenaje": 0,
+            "capacidadAlmacenaje": 0,
+            "descripcionDetalladaActividadEconomica": "",
+            "activo": false,
+            "generico1": false,
+            "area": "",
+            "cveNacionalidad": "",
+            "clasificacionArancelaria": "",
+            "infoAdicional": false,
+            "montoImportacion": 0,
+            "montoExportacion": 0,
+            "pctParticAccionaria": 0,
+            "ampliacionModelos": false,
+            "ampliacionPaises": false,
+            "fecFallecimiento": "2025-09-07"
+        }
+    ],
+    "fraccionesAnexoDos": [
+        {
+            "claveFraccion": "02101999",
+            "descripcion": "FDSF DSFS",
+            "testado": true,
+            "fecFinVigencia": null,
+            "descTestado": null,
+            "idFraccion": null
+        }
+    ],
+    "fraccionesAnexoTres": [
+        {
+            "claveFraccion": "02101999",
+            "descripcion": "FDSF DSFS",
+            "testado": true,
+            "fecFinVigencia": null,
+            "descTestado": null,
+            "idFraccion": null
+        }
+    ],
+    "empresasExtranjeras": [
+        {
+            "tipoEmpresa": "1",
+            "caracterEmpresa": "",
+            "montoExportacionesUSD": 0,
+            "numeroProgramaDGCESE": "",
+            "porcentajeParticipacionAccionaria": 0,
+            "porcentajeParticionAccionariaExt": 0,
+            "nombre": "",
+            "apellidoPaterno": "",
+            "apellidoMaterno": "",
+            "razonSocial": "COMPA¿A MEXICANA DE TRAJES, S.A. DE C.V.",
+            "rfc": "MTR8012148K9",
+            "certificada": false,
+            "correoElectronico": "trafico@mextrajes.com",
+            "idDireccionSol": 112053,
+            "testado": false,
+            "fechaInicioVigencia": "2025-09-07",
+            "fecFinVigencia": "2025-09-07",
+            "blnActivo": true,
+            "idServicio": "0",
+            "descripcionServicio": "",
+            "domicilioCompleto": "",
+            "numeroPrograma": "",
+            "tiempoPrograma": "",
+            "descripcionTestado": "",
+            "idCompuestoEmpresa": "",
+            "idServicioAutorizado": 0,
+            "domicilioSolicitud": {
+                "codigoPostal": "dhdjjd",
+                "informacionExtra": "83938"
+            }
+        }
+    ],
+    "programaImmex": {
+        "folioPrograma": "string",
+        "tipoPrograma": "string",
+        "movimientoProgramaSE": "string",
+        "rfc": "MTR8012148K9",
+        "anioPrograma": 0,
+        "fechaInicioVigencia": "2025-09-03",
+        "fechaFinVigencia": "2025-09-03",
+        "actividadProductiva": "string",
+        "fechaSuspension": "2025-09-03",
+        "modalidad": "string",
+        "numeroImmex": "string",
+        "resolucionId": 0,
+        "unidadAdministrativaId": 0
+    },
+    "declaracionSolicitudEntities": [
+        {
+            "acepto": 0,
+            "idTipoTramite": 80207,
+            "manifiestoDeclaracion": true,
+            "cveDeclaracion": "123"
+        },
+        {
+            "acepto": 0,
+            "idTipoTramite": 80207,
+            "manifiestoDeclaracion": true,
+            "cveDeclaracion": "456"
+        }
+    ],
+    "claveModalidadActual": "MOD-123",
+    "datosCertificacion": "CERT-001",
+    "montoImportaciones": 500000,
+    "factorAmpliacion": 1.2,
+    "proyeccion": 750000,
+    "trabajadores": 150,
+    "id_solicitud": 12345,
+    "discriminatorValue": "80207",
+    "certificacion_sat": "CERTIFICADO",
+    "unidadAdministrativaRepresentacionFederal": {
+        "clave": "string",
+        "idDependencia": 0,
+        "claveEntidad": "string",
+        "claveUnidadAdminR": "string",
+        "ideTipoUnidadAdministrativa": "string",
+        "nivel": 0,
+        "acronimo": "string",
+        "nombre": "string",
+        "descripcion": "string",
+        "fechaInicioVigencia": "2025-09-08",
+        "fechaFinVigencia": "2025-09-08",
+        "activo": true,
+        "idDireccion": 0,
+        "fronteriza": true
+    },
+    "programaAutorizadoEconomia": {
+        "idProgramaAutorizado": 0,
+        "folioPrograma": "string",
+        "tipoPrograma": "string",
+        "movimientoProgramaSE": "string",
+        "rfc": "MTR8012148K9",
+        "anioPrograma": 0,
+        "resolucionId": 0,
+        "unidadAdministrativaId": 0,
+        "fechaInicioVigencia": "2025-09-08",
+        "fechaFinVigencia": "2025-09-08",
+        "actividadProductiva": "string",
+        "fechaSuspension": "2025-09-08"
+    },
+    "domicilio": {
+        "idDomicilio": 0,
+        "calle": "string",
+        "numeroExterior": "string",
+        "numeroInterior": "string",
+        "codigoPostal": "string",
+        "informacionExtra": "string",
+        "clave": "string",
+        "cveLocalidad": "string",
+        "cveDelegMun": "string",
+        "cveEntidad": "string",
+        "cvePais": "string",
+        "ciudad": "string",
+        "telefono": "string",
+        "fax": "string",
+        "municipio": "string",
+        "colonia": "string",
+        "descUbicacion": "string",
+        "cveCatalogo": "string",
+        "telefonos": "string",
+        "tipoDomicilio": 0
+    },
+    "solicitante": {
+        "idPersonaPersonaSolicitudR": 0,
+        "idSolicitud": 202734824,
+        "nombre": "",
+        "apellidoMaterno": "",
+        "apellidoPaterno": "",
+        "razonSocial": "AGRICOLA ALPE S DE RL DE CV",
+        "rfc": "AAL0409235E6",
+        "curp": "",
+        "ideTipoPersonaSol": "TIPERS.SL",
+        "correoElectronico": "vucem.soporte.aplicativo@ultrasist.com.mx",
+        "cedulaProfesional": "",
+        "nss": "",
+        "telefono": "8154563",
+        "descripcionGiro": "Siembra, cultivo y cosecha de papa",
+        "cvePaisOrigen": "",
+        "idDireccionSol": 260833725,
+        "tipoPatenteAgente": "",
+        "recif": "",
+        "puesto": "",
+        "tipoAgente": "",
+        "numeroPatente": "",
+        "numeroIdentificacionFiscal": "",
+        "personaMoral": false,
+        "extranjero": false,
+        "organismoPublico": false,
+        "cveUsuario": "AAL0409235E6",
+        "paginaWeb": "",
+        "ideGenerica1": "",
+        "rfcExtranjero": "",
+        "codAutorizacion": "",
+        "actividadProductiva": "",
+        "estadoEvaluacionEntidad": "AUTORIZADO",
+        "estadoEntidad": "AUTORIZADO",
+        "original": false,
+        "modificado": false,
+        "numeroRegistro": "",
+        "concentimientoInstalacionRecuperacion": false,
+        "cveCatalogo": "",
+        "alquilado": false,
+        "volumenAlmacenaje": 0,
+        "capacidadAlmacenaje": 0,
+        "descripcionDetalladaActividadEconomica": "",
+        "activo": false,
+        "generico1": false,
+        "area": "",
+        "cveNacionalidad": "",
+        "clasificacionArancelaria": "",
+        "infoAdicional": false,
+        "montoImportacion": 0,
+        "montoExportacion": 0,
+        "pctParticAccionaria": 0,
+        "ampliacionModelos": false,
+        "ampliacionPaises": false,
+        "fecFallecimiento": "2025-09-07"
+    }
+}

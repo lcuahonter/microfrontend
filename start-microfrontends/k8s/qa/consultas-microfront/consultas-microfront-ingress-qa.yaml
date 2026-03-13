@@ -1,0 +1,25 @@
+# Create Ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: modulefederation-consultas-microfront-ingress-qa
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+  - host: frontqa.v30.cloud-ultrasist.net
+    http:
+      paths:
+      - path: /consultas(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: modulefederation-consultas-microfront-service-qa
+            port:
+              number: 4226
+  tls:
+  - hosts:
+    - frontqa.v30.cloud-ultrasist.net
+    secretName: v30certs-qa

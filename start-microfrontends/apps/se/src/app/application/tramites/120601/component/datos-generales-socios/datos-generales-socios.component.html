@@ -1,0 +1,665 @@
+<div class="container form-container">
+  <ng-titulo titulo="Datos generales socios accionistas" />
+  <div>
+    <form [formGroup]="FormSolicitud">
+      <ng-container formGroupName="datosGeneralesSocios">
+        <div class="row">
+          <div class="col-md-6">
+            <label for="nacionalidadMexicana">Nacionalidad mexicana:</label>
+            <div class="row mt-2">
+              <div class="col-md-6">
+                <input
+                  type="radio"
+                  id="si"
+                  formControlName="nacionalidad"
+                  value="Si"
+                  class="me-4"
+                  (change)="enCambioNacionalidad('Si')"
+                />
+                <label for="yes">Si</label>
+              </div>
+              <div class="col-md-6">
+                <input
+                  type="radio"
+                  id="no"
+                  formControlName="nacionalidad"
+                  value="No"
+                  class="me-4"
+                  (change)="enCambioNacionalidad('No')"
+                />
+                <label for="no">No</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label for="tipoDePersona">Tipo de persona:</label>
+            <div class="row mt-2">
+              <div class="col-md-6">
+                <input
+                  type="radio"
+                  id="personaNo"
+                  formControlName="persona"
+                  value="Si"
+                  class="me-4"
+                  (change)="enCambioPersona('Si')"
+                />
+                <label for="personaNo">Persona física</label>
+              </div>
+              <div class="col-md-6">
+                <input
+                  type="radio"
+                  id="personaYes"
+                  formControlName="persona"
+                  value="No"
+                  class="me-4"
+                  (change)="enCambioPersona('No')"
+                />
+                <label for="personaYes">Persona moral</label>
+              </div>
+            </div>
+          </div> 
+        </div>
+
+        <div class="row" *ngIf="camposEntradaRegulares">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-label" for="cadenaDependencia"
+                >Registro federal de contribuyentes*:</label
+              >
+              <input
+                class="form-control"
+                id="cadenaDependencia"
+                formControlName="cadenaDependencia"
+                type="text"
+                libUppercase
+                (change)="
+                  setValoresStore(datosGeneralesSocios, 'cadenaDependencia')
+                "
+                [class.is-invalid]="
+                  FormSolicitud.get([
+                    'datosGeneralesSocios',
+                    'cadenaDependencia'
+                  ])?.touched &&
+                  FormSolicitud.get([
+                    'datosGeneralesSocios',
+                    'cadenaDependencia'
+                  ])?.invalid
+                "
+                required
+              />
+              <div
+                *ngIf="esInvalido('datosGeneralesSocios.cadenaDependencia')"
+                class="text-danger"
+              >
+                <small
+                  *ngIf="FormSolicitud.get(['datosGeneralesSocios','cadenaDependencia'])?.errors?.['required']"
+                >
+                  Este campo es obligatorio.
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="camposPersonaFisicaExtranjera">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label" for="nombre">Nombre*:</label>
+                <input
+                  class="form-control"
+                  id="nombre"
+                  formControlName="nombre"
+                  type="text"
+                  libUppercase
+                  (change)="setValoresStore(datosGeneralesSocios, 'nombre')"
+                  [class.is-invalid]="
+                    FormSolicitud.get(['datosGeneralesSocios', 'nombre'])
+                      ?.touched &&
+                    FormSolicitud.get(['datosGeneralesSocios', 'nombre'])
+                      ?.invalid
+                  "
+                  required
+                  maxlength="200"
+                />
+                <div
+                  *ngIf="esInvalido('datosGeneralesSocios.nombre')"
+                  class="text-danger"
+                >
+                  <small
+                    *ngIf="FormSolicitud.get(['datosGeneralesSocios','nombre'])?.errors?.['required']"
+                  >
+                    Este campo es obligatorio.
+                  </small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label" for="apellidoPaterno"
+                  >Apellido paterno*:</label
+                >
+                <input
+                  class="form-control"
+                  id="apellidoPaterno"
+                  formControlName="apellidoPaterno"
+                  type="text"
+                  libUppercase
+                  (change)="
+                    setValoresStore(datosGeneralesSocios, 'apellidoPaterno')
+                  "
+                  [class.is-invalid]="
+                    FormSolicitud.get([
+                      'datosGeneralesSocios',
+                      'apellidoPaterno'
+                    ])?.touched &&
+                    FormSolicitud.get([
+                      'datosGeneralesSocios',
+                      'apellidoPaterno'
+                    ])?.invalid
+                  "
+                  required
+                  maxlength="200"
+                />
+                <div
+                  *ngIf="esInvalido('datosGeneralesSocios.apellidoPaterno')"
+                  class="text-danger"
+                >
+                  <small
+                    *ngIf="FormSolicitud.get(['datosGeneralesSocios','apellidoPaterno'])?.errors?.['required']"
+                  >
+                    Este campo es obligatorio.
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <app-catalogo-select
+                  [catalogo]="catalogoPaises"
+                  [label]="'País'"
+                  [isDisabled]="esFormularioSoloLectura"
+                  name="pais"
+                  formControlName="pais"
+                  (change)="setValoresStore(datosGeneralesSocios, 'pais')"
+                  [required]="true"
+                  [class.is-invalid]="
+                    FormSolicitud.get(['datosGeneralesSocios', 'pais'])
+                      ?.touched &&
+                    FormSolicitud.get(['datosGeneralesSocios', 'pais'])?.invalid
+                  "
+                >
+                </app-catalogo-select>
+                <div
+                  *ngIf="esInvalido('datosGeneralesSocios.pais')"
+                  class="text-danger"
+                >
+                  <small
+                    *ngIf="FormSolicitud.get(['datosGeneralesSocios','pais'])?.errors?.['required']"
+                  >
+                    Este campo es obligatorio.
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label" for="codigoPostal"
+                  >Código postal*:</label
+                >
+                <input
+                  class="form-control"
+                  id="codigoPostal"
+                  formControlName="codigoPostal"
+                  type="text"
+                  libUppercase
+                  (change)="
+                    setValoresStore(datosGeneralesSocios, 'codigoPostal')
+                  "
+                  [class.is-invalid]="
+                    FormSolicitud.get(['datosGeneralesSocios', 'codigoPostal'])
+                      ?.touched &&
+                    FormSolicitud.get(['datosGeneralesSocios', 'codigoPostal'])
+                      ?.invalid
+                  "
+                  required
+                  maxlength="12"
+                />
+                <div
+                  *ngIf="esInvalido('datosGeneralesSocios.codigoPostal')"
+                  class="text-danger"
+                >
+                  <small
+                    *ngIf="FormSolicitud.get(['datosGeneralesSocios','codigoPostal'])?.errors?.['required']"
+                  >
+                    Este campo es obligatorio.
+                  </small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label" for="estado">Estado*:</label>
+                <input
+                  class="form-control"
+                  id="estado"
+                  formControlName="estado"
+                  type="text"
+                  libUppercase
+                  (change)="setValoresStore(datosGeneralesSocios, 'estado')"
+                  [class.is-invalid]="
+                    FormSolicitud.get(['datosGeneralesSocios', 'estado'])
+                      ?.touched &&
+                    FormSolicitud.get(['datosGeneralesSocios', 'estado'])
+                      ?.invalid
+                  "
+                  required
+                  maxlength="255"
+                />
+                <div
+                  *ngIf="esInvalido('datosGeneralesSocios.estado')"
+                  class="text-danger"
+                >
+                  <small
+                    *ngIf="FormSolicitud.get(['datosGeneralesSocios','estado'])?.errors?.['required']"
+                  >
+                    Este campo es obligatorio.
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label" for="correoElectronico"
+                  >Correo electrónico*:</label
+                >
+                <input
+                  class="form-control"
+                  id="correoElectronico"
+                  formControlName="correoElectronico"
+                  type="email"
+                  (change)="
+                    setValoresStore(datosGeneralesSocios, 'correoElectronico')
+                  "
+                  [class.is-invalid]="
+                    FormSolicitud.get([
+                      'datosGeneralesSocios',
+                      'correoElectronico'
+                    ])?.touched &&
+                    FormSolicitud.get([
+                      'datosGeneralesSocios',
+                      'correoElectronico'
+                    ])?.invalid
+                  "
+                  required
+                  maxlength="200"
+                />
+                <div
+                  *ngIf="esInvalido('datosGeneralesSocios.correoElectronico')"
+                  class="text-danger"
+                >
+                  <small
+                    *ngIf="FormSolicitud.get(['datosGeneralesSocios','correoElectronico'])?.errors?.['required']"
+                  >
+                    Este campo es obligatorio.
+                  </small>
+                  <small
+                    *ngIf="FormSolicitud.get(['datosGeneralesSocios','correoElectronico'])?.errors?.['pattern']"
+                  >
+                    El correo no cumple con el formato requerido.
+                  </small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label" for="taxId">TAX ID*:</label>
+                <input
+                  class="form-control"
+                  id="taxId"
+                  formControlName="taxId"
+                  type="text"
+                  libUppercase
+                  (change)="setValoresStore(datosGeneralesSocios, 'taxId')"
+                  [class.is-invalid]="
+                    FormSolicitud.get(['datosGeneralesSocios', 'taxId'])
+                      ?.touched &&
+                    FormSolicitud.get(['datosGeneralesSocios', 'taxId'])
+                      ?.invalid
+                  "
+                  required
+                  maxlength="12"
+                />
+                <div
+                  *ngIf="esInvalido('datosGeneralesSocios.taxId')"
+                  class="text-danger"
+                >
+                  <small
+                    *ngIf="FormSolicitud.get(['datosGeneralesSocios','taxId'])?.errors?.['required']"
+                  >
+                    Este campo es obligatorio.
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="camposPersonaMoralExtranjera">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label" for="taxId">TAX ID*:</label>
+                <input
+                  class="form-control"
+                  id="taxId"
+                  formControlName="taxId"
+                  type="text"
+                  libUppercase
+                  (change)="setValoresStore(datosGeneralesSocios, 'taxId')"
+                  [class.is-invalid]="
+                    FormSolicitud.get(['datosGeneralesSocios', 'taxId'])
+                      ?.touched &&
+                    FormSolicitud.get(['datosGeneralesSocios', 'taxId'])
+                      ?.invalid
+                  "
+                  required
+                />
+                <div
+                  *ngIf="esInvalido('datosGeneralesSocios.taxId')"
+                  class="text-danger"
+                >
+                  <small
+                    *ngIf="FormSolicitud.get(['datosGeneralesSocios','taxId'])?.errors?.['required']"
+                  >
+                    Este campo es obligatorio.
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label" for="denominacion"
+                  >Denominación o razón social*:</label
+                >
+                <input
+                  class="form-control"
+                  id="denominacion"
+                  formControlName="denominacion"
+                  type="text"
+                  libUppercase
+                  (change)="
+                    setValoresStore(datosGeneralesSocios, 'denominacion')
+                  "
+                  [class.is-invalid]="
+                    FormSolicitud.get(['datosGeneralesSocios', 'denominacion'])
+                      ?.touched &&
+                    FormSolicitud.get(['datosGeneralesSocios', 'denominacion'])
+                      ?.invalid
+                  "
+                  required
+                  maxlength="254"
+                />
+                <div
+                  *ngIf="esInvalido('datosGeneralesSocios.denominacion')"
+                  class="text-danger"
+                >
+                  <small
+                    *ngIf="FormSolicitud.get(['datosGeneralesSocios','denominacion'])?.errors?.['required']"
+                  >
+                    Este campo es obligatorio.
+                  </small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <app-catalogo-select
+                  [catalogo]="catalogoPaises"
+                  [label]="'País'"
+                  [isDisabled]="esFormularioSoloLectura"
+                  name="pais"
+                  formControlName="pais"
+                  (change)="setValoresStore(datosGeneralesSocios, 'pais')"
+                  [required]="true"
+                  [class.is-invalid]="
+                    FormSolicitud.get(['datosGeneralesSocios', 'pais'])
+                      ?.touched &&
+                    FormSolicitud.get(['datosGeneralesSocios', 'pais'])?.invalid
+                  "
+                >
+                </app-catalogo-select>
+                <div
+                  *ngIf="esInvalido('datosGeneralesSocios.pais')"
+                  class="text-danger"
+                >
+                  <small
+                    *ngIf="FormSolicitud.get(['datosGeneralesSocios','pais'])?.errors?.['required']"
+                  >
+                    Este campo es obligatorio.
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label" for="codigoPostal"
+                  >Código postal*:</label
+                >
+                <input
+                  class="form-control"
+                  id="codigoPostal"
+                  formControlName="codigoPostal"
+                  type="text"
+                  libUppercase
+                  (change)="
+                    setValoresStore(datosGeneralesSocios, 'codigoPostal')
+                  "
+                  [class.is-invalid]="
+                    FormSolicitud.get(['datosGeneralesSocios', 'codigoPostal'])
+                      ?.touched &&
+                    FormSolicitud.get(['datosGeneralesSocios', 'codigoPostal'])
+                      ?.invalid
+                  "
+                  required
+                />
+                <div
+                  *ngIf="esInvalido('datosGeneralesSocios.codigoPostal')"
+                  class="text-danger"
+                >
+                  <small
+                    *ngIf="FormSolicitud.get(['datosGeneralesSocios','codigoPostal'])?.errors?.['required']"
+                  >
+                    Este campo es obligatorio.
+                  </small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label" for="estado">Estado*:</label>
+                <input
+                  class="form-control"
+                  id="estado"
+                  formControlName="estado"
+                  type="text"
+                  libUppercase
+                  (change)="setValoresStore(datosGeneralesSocios, 'estado')"
+                  [class.is-invalid]="
+                    FormSolicitud.get(['datosGeneralesSocios', 'estado'])
+                      ?.touched &&
+                    FormSolicitud.get(['datosGeneralesSocios', 'estado'])
+                      ?.invalid
+                  "
+                  required
+                />
+                <div
+                  *ngIf="esInvalido('datosGeneralesSocios.estado')"
+                  class="text-danger"
+                >
+                  <small
+                    *ngIf="FormSolicitud.get(['datosGeneralesSocios','estado'])?.errors?.['required']"
+                  >
+                    Este campo es obligatorio.
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label" for="correoElectronico"
+                  >Correo electrónico*:</label
+                >
+                <input
+                  class="form-control"
+                  id="correoElectronico"
+                  formControlName="correoElectronico"
+                  type="email"
+                  (change)="
+                    setValoresStore(datosGeneralesSocios, 'correoElectronico')
+                  "
+                  [class.is-invalid]="
+                    FormSolicitud.get([
+                      'datosGeneralesSocios',
+                      'correoElectronico'
+                    ])?.touched &&
+                    FormSolicitud.get([
+                      'datosGeneralesSocios',
+                      'correoElectronico'
+                    ])?.invalid
+                  "
+                  required
+                />
+                <div
+                  *ngIf="esInvalido('datosGeneralesSocios.correoElectronico')"
+                  class="text-danger"
+                >
+                  <small
+                    *ngIf="FormSolicitud.get(['datosGeneralesSocios','correoElectronico'])?.errors?.['required']"
+                  >
+                    Este campo es obligatorio.
+                  </small>
+                  <small
+                    *ngIf="FormSolicitud.get(['datosGeneralesSocios','correoElectronico'])?.errors?.['email']"
+                  >
+                    Ingrese un correo electrónico válido.
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="row mb-5">
+            <div class="col-md-6 col-sm-6"></div>
+            <div class="col-md-6 col-sm-6 text-end">
+              <div class="btn-group">
+                <button
+                  class="btn btn-primary ms-2 d-flex mt-5"
+                  type="button"
+                  [disabled]="esFormularioSoloLectura"
+                  (click)="agregarSocio()"
+                >
+                  Agregar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h6 class="custom-margin">Socios y Accionistas</h6>
+        <h6>Datos de los socios y/o accionistas:</h6>
+        <app-tabla-dinamica
+          [configuracionTabla]="configuracionTabla"
+          [tipoSeleccionTabla]="tablaCasilla"
+          [datos]="datosSocios"
+          [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+        ></app-tabla-dinamica>
+
+        <div class="row">
+          <div class="row mb-5">
+            <div class="col-md-6 col-sm-6"></div>
+            <div class="col-md-6 col-sm-6 text-end">
+              <div class="btn-group">
+                <button
+                  class="btn btn-danger ms-2 d-flex"
+                  type="button"
+                  [disabled]="esFormularioSoloLectura"
+                >
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h6 class="custom-margin">Socios y Accionistas Extranjeros</h6>
+        <h6>Datos de los socios y/o accionistas:</h6>
+        <app-tabla-dinamica
+          [configuracionTabla]="configuracionTabla_Extranjeros"
+          [tipoSeleccionTabla]="tablaCasilla"
+          [datos]="datosExtranjeros"
+          [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+        ></app-tabla-dinamica>
+
+        <form [formGroup]="formularioParaConteoTotal">
+          <div class="text-center">
+            <div>
+              <input
+                class="label-width"
+                id="recuentoTotalDeFilas"
+                formControlName="recuentoTotalDeFilas"
+                aria-labelledby="recuentoTotalDeFilas"
+                [disabled]="true"
+              />
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <div class="row mb-5">
+            <div class="col-md-6 col-sm-6"></div>
+            <div class="col-md-6 col-sm-6 text-end">
+              <div class="btn-group">
+                <button
+                  class="btn btn-danger ms-2 d-flex"
+                  type="button"
+                  [disabled]="esFormularioSoloLectura"
+                >
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </form>
+  </div>
+</div>
+
+@if (alertaNotificacion && alertaNotificacion.cerrar) {
+<section>
+    <lib-notificaciones [notificacionInput]="alertaNotificacion"></lib-notificaciones>
+</section>
+}

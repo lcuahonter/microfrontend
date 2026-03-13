@@ -1,0 +1,65 @@
+<div class="container form-container">
+    <ng-titulo titulo="Datos de la asignacion" />
+    <form [formGroup]="formasignacion" (ngSubmit)="enviarFormulario()">
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label for="especie">Fecha de inicio vigencia de la asignación</label>
+                <input type="text" class="form-control" id="iniVigenciaAmpliacion1" formControlName="especie">
+            </div>
+            <div class="col-md-4">
+                <label for="funcionZootecnica">Fecha de fin vigencia de la asignación</label>
+                <input type="text" class="form-control" id="finVigenciaAmpliacion1" formControlName="funcionZootecnica">
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label for="authorizado">Monto autorizado</label>
+                <input type="text" class="form-control" id="autorizado" formControlName="autorizado">
+                <p>(kilogramo)</p>
+            </div>
+            <div class="col-md-4">
+                <label for="Expendido">Monto expedido</label>
+                <input type="text" class="form-control" id="expendido" formControlName="expendido">
+                <p>(kilogramo)</p>
+            </div>
+            <div class="col-md-4">
+                <label for="disponible">Monto disponible</label>
+                <input type="text" class="form-control" id="disponible" formControlName="disponible">
+                <p>(kilogramo)</p>
+            </div>
+
+            <div *ngIf="asignacionRadioValue==='monto'">
+                <ng-titulo titulo="Monto a ampliar" />
+                <div class="row mt-5">
+                    <div class="col-md-4">
+                        <label for="ampliar" class="form-label">Monto a ampliar*:</label>
+                        <div class="d-flex align-items-center">
+                            <input type="text" class="form-control me-2" id="ampliar" formControlName="ampliar"
+                                (change)="setValoresStore(formasignacion,'ampliar')"
+                                [ngClass]="isValid(formasignacion, 'ampliar') ? 'required' : ''">
+                            <span>(Kilogramo)</span>
+                        </div>
+                        @if (formasignacion.get('ampliar')?.invalid &&
+                        (formasignacion.get('ampliar')?.touched || formasignacion.get('ampliar')?.dirty)) {
+                        <span class="mensaje-error">Este campo es obligatorio.</span>
+                        }
+                    </div>
+                </div>
+            </div>
+            <!-- Periodo a ampliar -->
+            <div *ngIf="asignacionRadioValue==='vigencia'">
+                <ng-titulo titulo="Periodo a ampliar" />
+                <div class="row mt-5">
+                    <div class="col-md-4">
+                        <input-fecha [datos]="fechaFinInput"
+                            (valorCambiado)="cambioFechaPago($event)"></input-fecha>
+                    </div>
+                    <div *ngIf="formasignacion.get('fechaFin')?.invalid && formasignacion.get('fechaFin')?.touched"
+                        class="text-danger">Es un campo requerido</div>
+                </div>
+            </div>
+
+        </div>
+    </form>
+</div>

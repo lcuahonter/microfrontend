@@ -1,0 +1,54 @@
+<div class="Page">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12" *ngIf="!firmarAlert">
+        <h1>Registro de solicitud de Reporte Anual</h1>
+      </div>
+        <div *ngIf="firmarAlert">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="titulo mt-5 mb-5">Firmar</h2>
+                </div>
+            </div>
+              <div class="col-md-12 text-center">
+                <ng-alert [CONTENIDO]="TEXTOS"></ng-alert>
+              </div>
+        </div>
+      <div class="col-12">
+        @if (esFormaValido) {
+        <div
+          class="alert alert-info alert-danger"
+          [innerHTML]="formErrorAlert"
+        ></div>
+        }
+        @if (esFormaValidoDos) {
+          <div
+            class="alert alert-info alert-danger"
+            [innerHTML]="formErrorAlertDos"
+          ></div>
+          }
+          @if (esFormaValidoTres) {
+          <div
+            class="alert alert-info alert-danger"
+            [innerHTML]="formErrorAlertTres"    
+          ></div>
+          }
+
+      </div>
+      <app-wizard [listaPasos]="pantallasPasos"></app-wizard>
+    </div>
+    <div class="row">
+      @switch (indice) { @case (1) {
+      <app-datos #datos (cambioDePestana)="alCambiarPestana()"></app-datos>
+      } @case (2) {
+        <paso-firma [idSolicitud]="guardarIdSolicitud" [procedure]="150102" [procedureUrl]="'reporte-anual/solicitud'"></paso-firma>
+      } }
+    </div>
+    <btn-continuar
+      [datos]="datosPasos"
+      [dePadre]="true"
+      (continuarEvento)="getValorIndice($event)"
+    ></btn-continuar>
+    <ng-alert [CONTENIDO]="PAGO_DE_DERECHOS"></ng-alert>
+  </div>
+</div>

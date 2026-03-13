@@ -1,0 +1,274 @@
+@if (formularioTitulo) {
+  <ng-titulo [titulo]="formularioTitulo"></ng-titulo>
+}
+@if(formularioSubtitulo) {
+  <p class="fw-bold m-0">{{formularioSubtitulo}}</p>
+}
+<form [formGroup]="forma">
+  @for (row of obtenerFilas(); track $index) {
+    <div class="row">
+      @for (item of obtenerControlsPorFilas(row); track item.campo; let i = $index) {
+        @switch(item.tipoInput) {
+            @case ('text') {
+              @if (item.mostrar !== false) {
+                <div [ngClass]="[obtenerClaseResponsiva(item.clase), 'mt-' + item.marginTop]">
+                  <div class="form-group" [ngClass]="{ 'has-error': esValido(item.campo) }">
+                    @if (item.labelNombre) {
+                          <label class="form-label text-left" for="{{ item.id }}">{{ item.labelNombre }}@if (item.esRequerido) {
+                              <span class="require">*</span><span>:</span>
+                            } @else {
+                              <span>:</span>
+                            }
+                            @if (item.tooltipQuestionCircle) {
+                              <span class="p-2" tooltip="{{item.tooltipTxt ? item.tooltipTxt : item.labelNombre}}" placement="top">
+                                <i class="bi bi-question-circle-fill"></i>
+                              </span>
+                            }
+                          </label>
+                          }
+
+                        <input
+                          class="form-control"
+                          type="text"
+                          [id]="item.id"
+                          [placeholder]="item.marcadorDePosicion"
+                          [formControlName]="item.campo"
+                          [required]="item.esRequerido ?? false"
+                          [readonly]="item.soloLectura"
+                          [ngClass]="esValido(item.campo) ? 'required' : ''"
+                          [attr.maxlength]="item.maxlength"
+                          (change)="eventoDeCambioDeValor($event, item.campo)"
+                          (keypress)="filtrarCaracteres($event, item.inputFilter)"
+                        />
+                        <validadores-de-formularios 
+                          [forma]="forma" 
+                          [controlDeFormulario]="item.campo" 
+                          [validadores]="item.validadores ?? []"
+                        ></validadores-de-formularios>
+                      </div>
+                    </div>
+                  }
+                }  @case ('number') {
+                  @if (item.mostrar !== false) {
+                    <div [ngClass]="[obtenerClaseResponsiva(item.clase), 'mt-' + item.marginTop]">
+                      <div class="form-group">
+                        @if (item.labelNombre) {
+                          <label for="{{ item.id }}">{{ item.labelNombre }}@if (item.esRequerido) {
+                              <span class="require">*</span><span>:</span>
+                            } @else {
+                              <span>:</span>
+                            }
+                            @if (item.tooltipQuestionCircle) {
+                              <span class="p-2" tooltip="{{item.tooltipTxt ? item.tooltipTxt : item.labelNombre}}" placement="top">
+                                <i class="bi bi-question-circle-fill"></i>
+                              </span>
+                            }
+                          </label>
+                          }
+
+                        <input
+                          class="form-control"
+                          type="number"
+                          [id]="item.id"
+                          [placeholder]="item.marcadorDePosicion"
+                          [formControlName]="item.campo"
+                          [required]="item.esRequerido ?? false"
+                          [readonly]="item.soloLectura"
+                          [ngClass]="esValido(item.campo) ? 'required' : ''"
+                          [attr.maxlength]="item.maxlength"
+                          (change)="eventoDeCambioDeValor($event, item.campo)"
+                        />
+                        <validadores-de-formularios 
+                          [forma]="forma" 
+                          [controlDeFormulario]="item.campo" 
+                          [validadores]="item.validadores ?? []"
+                        ></validadores-de-formularios>
+                      </div>
+                    </div>
+                  }
+                } @case ('textarea') {
+                  @if (item.mostrar !== false) {
+                    <div [ngClass]="[obtenerClaseResponsiva(item.clase), 'mt-' + item.marginTop]">
+                      @if (item.labelNombre) {
+                      <label class="form-label text-left" for="{{ item.id }}">{{ item.labelNombre }}@if (item.esRequerido) {
+                              <span class="require">*</span><span>:</span>
+                            } @else {
+                              <span>:</span>
+                            }
+                        @if (item.tooltipQuestionCircle) {
+                          <span class="p-2" tooltip="{{item.tooltipTxt ? item.tooltipTxt : item.labelNombre}}" placement="top">
+                            <i class="bi bi-question-circle-fill"></i>
+                          </span>
+                        }
+                      </label>
+                      }
+
+                      <textarea
+                        class="form-control"
+                        name="{{ item.labelNombre }}"
+                        id="{{ item.id }}"
+                        rows="5"
+                        style="height: 100px !important"
+                        [formControlName]="item.campo"
+                        [required]="item.esRequerido ?? false"
+                        [readonly]="item.soloLectura"
+                        [attr.maxlength]="item.maxlength"
+                        [ngClass]="esValido(item.campo) ? 'required' : ''"
+                        (input)="eventoDeCambioDeValor($event, item.campo)"
+                        (blur)="marcarComoTocado(item.campo)"
+                        (keypress)="filtrarCaracteres($event, item.inputFilter)"
+                      ></textarea>
+              
+                        <validadores-de-formularios 
+                          [forma]="forma" 
+                          [controlDeFormulario]="item.campo" 
+                          [validadores]="item.validadores ?? []"
+                        ></validadores-de-formularios>
+                    </div>
+                  }
+                  } @case ('select-catalogos') {
+                    @if (item.mostrar !== false) {
+                      <div [ngClass]="[obtenerClaseResponsiva(item.clase), 'mt-' + item.marginTop]">
+                        <div class="form-group">
+                          <app-catalogo-select
+                          id="{{item.id}}"
+                          [catalogo]="item?.opciones || []" 
+                          [formControlName]="item.campo" 
+                          [label]="item.labelNombre" 
+                          [required]="item.esRequerido ?? false"
+                          [placeholder]="item.marcadorDePosicion || ''" 
+                          [isDisabled]="item.desactivado || soloLectura"
+                          [markTouched]="forma.get(item.campo)?.touched??false"
+                          [tooltipQuestionCircle]="item.tooltipQuestionCircle ?? false"
+                          [tooltipQuestionCircleText]="item.tooltipTxt ?? '' "
+                          name=""
+                          (change)="eventoDeCambioDeValor($event, item.campo)"
+                        ></app-catalogo-select>
+                        </div>
+                      </div>
+                    }
+                  } @case ('checkbox') {
+                    @if (item.mostrar !== false) {
+                      <div
+                      [ngClass]="[obtenerClaseResponsiva(item.clase), 'mt-' + item.marginTop]"
+                        class="formas-checkbox">
+                      <div class="form-group checkbox-group w-100">
+                        <input
+                          type="checkbox"
+                          [id]="item.id"
+                          [formControlName]="item.campo"
+                          [required]="item.esRequerido ?? false"
+                          (change)="eventoDeCambioDeValor($event, item.campo)"
+                        />
+                        <label class="form-label text-left" [for]="item.id" style="margin-left: 10px;" *ngIf="item.labelNombre">
+                          {{ item.labelNombre }}@if (item.esRequerido) {
+                            <span class="require">*</span>
+                          }
+                        </label>
+
+                      </div>
+                    </div>
+                    }
+                  } @case ('button') {
+                    @if (item.mostrar !== false) {
+                      <div [ngClass]="[obtenerClaseResponsiva(item.clase), 'mt-' + item.marginTop]" class="btn-min-height"[ngStyle]="{
+                        'margin-left': item.marginLeft || '5rem',
+                        'width': item.divWidth || '238px'
+                      }">
+                        <div class="form-group">
+                          <input 
+                            [id]="item.id"
+                            type="button" 
+                            class="btn btn-primary" 
+                            [value]="item.labelNombre" 
+                            [disabled]="item.desactivado || soloLectura"
+                            (click)="alHacerClicEnElBoton(item)" 
+                            [ngStyle]="{
+                              'width': item.buttonWidth || '246px'
+                            }"
+                          />
+                        </div>
+                      </div>
+                    }
+                  } @case ('radio') {
+                    @if (item.mostrar !== false) {
+                      <div [ngClass]="[obtenerClaseResponsiva(item.clase), 'mt-' + item.marginTop]">
+                        <div class="form-group">
+                          @if (item.labelNombre) {
+                            <label class="form-label text-left" [for]="item.id">{{item.labelNombre }}@if (item.esRequerido) {
+                                <span class="require">*</span>
+                              }
+                              @if (item.tooltipQuestionCircle) {
+                                <span class="p-2" tooltip="{{item.tooltipTxt ? item.tooltipTxt : item.labelNombre}}" placement="top">
+                                  <i class="bi bi-question-circle-fill"></i>
+                                </span>
+                              }
+                            </label>
+                          }
+                          <app-input-radio
+                            [radioOptions]="item.opciones || []"
+                            id="{{item.id}}"
+                            formControlName="{{item.campo}}"
+                            [layout]="item.layout ? item.layout : 'vertical'"
+                            [gridLayout]="item.gridLayout ? item.gridLayout : false"
+                            [isRequired]="item.esRequerido ?? false"
+                            [gridLayout]="item.gridLayout ? item.gridLayout : false"
+                            (valueChange)="eventoDeCambioDeValor($event, item.campo)"
+                          ></app-input-radio>
+                          
+                        </div>
+                      </div>
+                    }
+                  } @case ('date') {
+                    @if (item.mostrar !== false) {
+                      <div [ngClass]="[obtenerClaseResponsiva(item.clase), 'mt-' + item.marginTop]">
+                        <div class="form-group" [ngClass]="{ 'has-error': esValido(item.campo) }">
+                          <input-fecha
+                            [setFecha]="forma.get(item.campo)?.value"
+                            [datos]="obtenerInformacionDeFecha(item)"
+                            [tooltipQuestionCircle]="item.tooltipQuestionCircle ?? false"
+                            [tooltipQuestionCircleText]="item.tooltipTxt ?? '' "
+                            [isDisabled]="soloLectura"
+                            (valorCambiado)="eventoDeCambioDeValor($event, item.campo, 'date')"
+                          ></input-fecha>
+                          @if (item.campo === 'fechaInicial' && fechaInicial.touched && fechaInicial.errors?.['initialDateRequired']) {
+                            <div class="mensaje-error">
+                              Este campo es obligatorio.
+                            </div>
+                          }
+                          @if (item.campo === 'fechaFinal' && fechaFinal.touched && fechaFinal.errors?.['initialDateRequired']) {
+                            <div class="mensaje-error">
+                              Este campo es obligatorio.
+                            </div>
+                          }
+                          <validadores-de-formularios 
+                            [forma]="forma" 
+                            [controlDeFormulario]="item.campo" 
+                            [validadores]="item.validadores ?? []"
+                          ></validadores-de-formularios>
+                        </div>
+                      </div>
+                    }
+                  } @case ('') {
+                    <div [ngClass]="[obtenerClaseResponsiva(item.clase), 'mt-' + item.marginTop]" class="min-height">
+                    </div>
+                  } @case('custom-html') {
+                    <div [ngClass]="[obtenerClaseResponsiva(item.clase), 'mt-' + item.marginTop]">
+                      @if (item.templateKey && templateMap[item.templateKey]) {
+                        <ng-container *ngTemplateOutlet="templateMap[item.templateKey]"></ng-container>
+                      }
+                    </div>
+                  } @case ('label-only') {
+                    @if (item.mostrar !== false) {
+                      <div [ngClass]="[obtenerClaseResponsiva(item.clase), 'mt-' + item.marginTop]">
+                        <div class="form-group">
+                          <label class="form-label text-left" [for]="item.id">{{item.labelNombre }}</label>
+                        </div>
+                      </div>
+                    }
+                  }
+            }
+    }
+    </div>
+  }
+  </form>

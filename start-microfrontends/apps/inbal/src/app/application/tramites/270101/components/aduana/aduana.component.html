@@ -1,0 +1,118 @@
+<ng-titulo titulo="Aduana" />
+
+<div class="container">
+    <form [formGroup]="forma">
+      <div class="row">
+          <div class="col-md-4">
+              <app-catalogo-select
+              [catalogo]="aduanaData" 
+              formControlName="aduana" 
+              label="Aduana de salida" 
+              [required]="true" 
+              name="aduana"
+              placeholder="Selecciona un valor"
+              [isDisabled]="consultaState.readonly"
+              (change)="eventoDeCambioDeValor($event, 'aduana')"
+              ></app-catalogo-select>
+              <validadores-de-formularios 
+              [forma]="forma" 
+              [controlDeFormulario]="'aduana'" 
+              [validadores]="validadores"
+              ></validadores-de-formularios>
+          </div>
+      </div>
+      <div class="row">
+          <div class="col-md-12 mt-5">
+              <ng-alert [CONTENIDO]="aduanaAlert"></ng-alert>
+          </div>
+      </div>
+      <div class="row">
+          <h6>Itinerario de la exportación y transportación*:</h6>
+          <app-tabla-dinamica
+              [tipoSeleccionTabla]="tablaSeleccion.CHECKBOX"
+              [configuracionTabla]="configuracionTabla"
+              [datos]="configuracionTablaDatos"
+              [disableSeleccionTablaCheckBox]="consultaState.readonly"
+              [desactivarEmitirEvento]="!consultaState.readonly"
+              (listaDeFilaSeleccionada)="listaDeFilaSeleccionada($event)"
+          ></app-tabla-dinamica>
+      </div>
+      <div class="col-md-12 mt-5 d-flex justify-content-end">
+      <button type="button" class="btn btn-default ms-3" [disabled]="consultaState.readonly" (click)="eliminar()">Eliminar</button>
+      <button
+          type="button"
+          class="btn btn-primary ms-3"
+          data-bs-toggle="modal"
+          data-bs-target="#modalAduana"
+          [disabled]="consultaState.readonly"
+          (click)="abrirDialogo()"
+      >
+          Agregar
+      </button>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group checkbox-group w-100">
+            <input
+              type="checkbox"
+              id="extentoPago"
+              formControlName="extentoPago"
+              (change)="eventoDeCambioDeValor($event, 'extentoPago')"
+            />
+            <label class="form-label ml-10" for="extentoPago">Extento de pago</label>
+          </div>
+        </div>
+      </div>
+    </form>
+</div>
+
+<div
+  class="modal fade"
+  id="modalAduana"
+  tabindex="-1"
+  aria-labelledby="modalLabel1"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-body">
+        @if (mostrarError) {
+          <div class="col-12">
+            <ng-alert [CUSTOMECLASS]="'alert-danger'" [CONTENIDO]="formaErrorAlert"></ng-alert>
+          </div>
+        }
+        <form [formGroup]="modalForma">
+          <div class="row">
+            @if(configuracionTablaDatos.length === 0) {
+              <formas-dinamicas formularioTitulo="Itinerario de la exportación y transportación" [forma]="itinerarioFormGroup" [formularioDatos]="itinerarioFormData"></formas-dinamicas>
+            } @else {
+              <formas-dinamicas formularioTitulo="Itinerario de la exportación y transportación" [forma]="itinerarioMaximoFormGroup" [formularioDatos]="itinerarioMaximoFormData"></formas-dinamicas>
+            }
+            
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="col-md-12 mt-5 d-flex justify-content-end">
+            <button type="button" class="btn btn-default ms-3" data-bs-dismiss="modal" #closeModal>Cancelar</button>
+            <button type="button" class="btn btn-primary ms-3" (click)="agregarConfirmarModal()">Agregar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalConfirmacion" data-bs-backdrop="static" tabindex="-1" aria-labelledby="modalConfirmacionLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+      </div>
+      <div class="modal-body">
+        <p>Las fechas deben ser mayor a la fecha fin del ultimo traslado agregado</p>
+        <div class="modal-footer custom-footer">
+          <button type="button" class="btn btn-default" data-bs-dismiss="modal" (click)="cerrarConfirmacionModal()">Acceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

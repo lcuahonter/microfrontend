@@ -1,0 +1,228 @@
+<div class="container">
+  <ng-titulo titulo="Empleados"></ng-titulo>
+  <form [formGroup]="empleadosForm">
+    <div class="row">
+      <div class="col-md-4">
+        <label class="form-label" for="totalDeEmpleados">Total de empleados*:</label>
+        <input class="form-control min-hgt" id="totalDeEmpleados" formControlName="totalDeEmpleados" type="number"
+        [ngClass]="{ 'is-invalid': empleadosForm.get('totalDeEmpleados')?.invalid && empleadosForm.get('totalDeEmpleados')?.touched }"
+          (input)="onInputMaxLength($event, 10, 'totalDeEmpleados')"
+          (change)="setValoresStore(empleadosForm, 'totalDeEmpleados', 'setTotalDeEmpleados')" />
+          <div
+          *ngIf="empleadosForm.get('totalDeEmpleados')?.invalid && (empleadosForm.get('totalDeEmpleados')?.touched || empleadosForm.get('totalDeEmpleados')?.dirty)"
+          class="mensaje-error">
+          Este campo es obligatorio.
+        </div>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-4">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="directos" value="" name="directos"
+            formControlName="directos" (change)="setValoresStore(empleadosForm, 'directos', 'setDirectos')" />
+          <label class="form-check-label" for="regimen_0"> Directos </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="indirectos" value="" name="indirectos"
+            formControlName="indirectos" (change)="setValoresStore(empleadosForm, 'indirectos', 'setIndirectos')" />
+          <label class="form-check-label" for="indirectos"> Indirectos </label>
+        </div>
+      </div>
+    </div>
+    @if(empleadosForm.get('directos')?.value){
+    <div class="row mt-5">
+      <h3>Directos</h3>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-4">
+        <label class="form-label" for="directos">Directos*:</label>
+        <input class="form-control min-hgt" id="directo" formControlName="directo" type="number"
+          (input)="onInputMaxLength($event, 10, 'directo')"
+          (change)="setValoresStore(empleadosForm, 'directo', 'setDirecto')" 
+          [ngClass]="{ 'is-invalid': empleadosForm.get('directo')?.invalid && empleadosForm.get('directo')?.touched }"/>
+        <div
+          *ngIf="empleadosForm.get('directo')?.invalid && (empleadosForm.get('directo')?.touched || empleadosForm.get('directo')?.dirty)"
+          class="mensaje-error">
+          Este campo es obligatorio.
+        </div>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-4">
+        <div class="full-width-select">
+        <app-catalogo-select [catalogo]="cedulasOptions" [label]="'Cédulas de determinación de cuotas'"
+          [required]="true" name="cedulasOptions" formControlName="cedula" [mostrarErrores]="empleadosForm.get('cedula')?.touched || empleadosForm.get('cedula')?.dirty || false"
+          (change)="setValoresStore(empleadosForm, 'cedula', 'setCedula')"></app-catalogo-select>
+        </div>
+        </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <input-fecha [datos]="fetchaDeCedula" [setFecha]="empleadosForm.get('fechaCedula')?.value"
+            (valorCambiado)="cambiofetchaDeCedula($event)" [deshabilitarFuturas]="true"></input-fecha>
+          <div
+            *ngIf="empleadosForm.get('fechaCedula')?.invalid && (empleadosForm.get('fechaCedula')?.touched || empleadosForm.get('fechaCedula')?.dirty)"
+            class="mensaje-error">
+            Este campo es obligatorio.
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+
+
+    @if(empleadosForm.get('indirectos')?.value){
+    <div class="row mt-5">
+      <h3>Indirectos</h3>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-4">
+        <label class="form-label" for="directos">Indirectos*:</label>
+        <input class="form-control min-hgt" id="indirectosDatos" formControlName="indirectosDatos" type="number"
+          (input)="onInputMaxLength($event, 11, 'indirectosDatos')"
+          (change)="setValoresStore(empleadosForm, 'indirectosDatos', 'setIndirectosDatos')" 
+          [ngClass]="{ 'is-invalid': empleadosForm.get('indirectosDatos')?.invalid && empleadosForm.get('indirectosDatos')?.touched }"/>
+        <div
+          *ngIf="empleadosForm.get('indirectosDatos')?.invalid && (empleadosForm.get('indirectosDatos')?.touched || empleadosForm.get('indirectosDatos')?.dirty)"
+          class="mensaje-error">
+          Este campo es obligatorio.
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="contrato">Contrato de prestación de servicios*:</label>
+        <input class="form-control min-hgt" id="contrato" formControlName="contrato" type="text" maxlength="20"
+          (change)="setValoresStore(empleadosForm, 'contrato', 'setContrato')" 
+          [ngClass]="{ 'is-invalid': empleadosForm.get('contrato')?.invalid && empleadosForm.get('contrato')?.touched }"/>
+        <div
+          *ngIf="empleadosForm.get('contrato')?.invalid && (empleadosForm.get('contrato')?.touched || empleadosForm.get('contrato')?.dirty)"
+          class="mensaje-error">
+          Este campo es obligatorio.
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="directos">Objeto del contrato del servicio*:</label>
+        <input class="form-control min-hgt" id="objeto" formControlName="objeto" type="text" maxlength="100"
+          (change)="setValoresStore(empleadosForm, 'objeto', 'setObjeto')" 
+          [ngClass]="{ 'is-invalid': empleadosForm.get('objeto')?.invalid && empleadosForm.get('objeto')?.touched }"/>
+        <div
+          *ngIf="empleadosForm.get('objeto')?.invalid && (empleadosForm.get('objeto')?.touched || empleadosForm.get('objeto')?.dirty)"
+          class="mensaje-error">
+          Este campo es obligatorio.
+        </div>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-4">
+        <div class="form-group">
+          <input-fecha [datos]="fetchaDeFirma" [setFecha]="empleadosForm.get('fechaFirma')?.value"
+            (valorCambiado)="cambiofetchaDeFirma($event)" [deshabilitarFuturas]="true"></input-fecha>
+          <div
+            *ngIf="empleadosForm.get('fechaFirma')?.invalid && (empleadosForm.get('fechaFirma')?.touched || empleadosForm.get('fechaFirma')?.dirty)"
+            class="mensaje-error">
+            Este campo es obligatorio.
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <input-fecha [datos]="fetchaFinVigencia" [setFecha]="empleadosForm.get('fechaFinVigencia')?.value"
+            (valorCambiado)="cambiofechaFinVigencia($event)" [deshabilitarPasadas]="true"></input-fecha>
+          <div
+            *ngIf="empleadosForm.get('fechaFinVigencia')?.invalid && (empleadosForm.get('fechaFinVigencia')?.touched || empleadosForm.get('fechaFinVigencia')?.dirty)"
+            class="mensaje-error">
+            Este campo es obligatorio.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-4">
+        <label class="form-label text-start" for="rfcEmpresa">RFC de la empresa prestadora de servicios*:</label>
+        <input class="form-control min-hgt" id="rfcEmpresa" formControlName="rfcEmpresa" type="text" maxlength="13"
+          (change)="setValoresStore(empleadosForm, 'rfcEmpresa', 'setRfcEmpresa')" (blur)="obtenerRazonSocial()"
+          [ngClass]="{ 'is-invalid': empleadosForm.get('rfcEmpresa')?.invalid && empleadosForm.get('rfcEmpresa')?.touched }"/>
+        <div
+          *ngIf="empleadosForm.get('rfcEmpresa')?.invalid && (empleadosForm.get('rfcEmpresa')?.touched || empleadosForm.get('rfcEmpresa')?.dirty)"
+          class="mensaje-error">
+          Este campo es obligatorio.
+        </div>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-8">
+        <label class="form-label" for="razonSocial">Razón social de la empresa prestadora de servicios*:</label>
+        <input class="form-control min-hgt" id="razonSocial" formControlName="razonSocial" type="text" 
+          (change)="setValoresStore(empleadosForm, 'razonSocial', 'setRazonSocial')" />
+        <div
+          *ngIf="empleadosForm.get('razonSocial')?.invalid && (empleadosForm.get('razonSocial')?.touched || empleadosForm.get('razonSocial')?.dirty)"
+          class="mensaje-error">
+          Este campo es obligatorio.
+        </div>
+      </div>
+    </div>
+    }
+
+    <div class="row mt-5">
+      <div class="col-12 d-flex justify-content-between align-items-center">
+        <p class="mb-0">* Campos obligatorios</p>
+        <div>
+          <button class="btn btn-default me-2" (click)="limpiar()">Limpiar</button>
+          <button class="btn btn-primary" (click)="onAgregarClick()">Agregar</button>
+          
+          <div *ngIf="showSuccessModal" class="custom-modal-backdrop">
+            <div class="custom-modal">
+              <div class="custom-modal-header"></div>
+              <div class="custom-modal-body">
+                <p>La operación se realizó exitosamente.</p>
+              </div>
+              <div class="custom-modal-footer">
+                <button class="btn btn-primary" (click)="closeSuccessModal()">Aceptar</button>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+  
+    <div class="row mt-5">
+      <h6>Directos</h6>
+      <app-tabla-dinamica [configuracionTabla]="directosEncabezado" [tipoSeleccionTabla]="directosTablaSeleccion"
+        [datos]="directosDatos" (listaDeFilaSeleccionada)="onDirectosSeleccionadas($event)"></app-tabla-dinamica>
+    </div>
+    <div class="row mt-5">
+      <div class="col-12 container text-end mt-5">
+        <button class="btn btn-danger me-2" (click)="eliminarDirectos()">Eliminar</button>
+        <button class="btn btn-primary" (click)="editarDirectos()">Editar</button>
+      </div>
+    </div>
+  </form>
+  <div class="row mt-5 my-5">
+    <div class="col-12 container text-end mt-5 mb-5">
+      <button (click)="regrasar()" class="btn btn-default me-2">
+        Regresar a plantas
+      </button>
+    </div>
+  </div>
+</div>
+
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+  </lib-notificaciones>
+</section>
+}
+
+@if (nuevaNotificacionEditor) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacionEditor">
+  </lib-notificaciones>
+</section>
+}
+
+@if (nuevaNotificacionEliminar) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacionEliminar">
+  </lib-notificaciones>
+</section>
+}

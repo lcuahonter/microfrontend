@@ -1,0 +1,37 @@
+<div class="Page">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Solicitud Importación Vehículos para desmantelar</h1>
+            </div>
+            <div class="row mt-5" *ngIf="indice === 2">
+                <div class="col-md-12">
+                    <lib-notificaciones [notificacionInput]="alertaNotificacion"></lib-notificaciones>
+                </div>
+            </div>
+            @if(esFormaValido){
+            <div class="col-md-12">
+                <ng-alert [CONTENIDO]="formErrorAlert" [CUSTOMECLASS]="'alert-danger'"></ng-alert>
+            </div>
+            }
+            <app-wizard [listaPasos]="pantallasPasos"></app-wizard>
+        </div>
+        <div class="row">
+            @switch (indice) {
+            @case (1) {
+            <app-datos></app-datos>
+            }
+            @case (2) {
+            <paso-firma [idSolicitud]="solicitudState.idSolicitud !== null ? +solicitudState.idSolicitud : null" [procedure]="130106"
+                [procedureUrl]="'desmantelar/solicitante'"></paso-firma>
+            }
+            }
+            <btn-continuar [datos]="datosPasos" (continuarEvento)="getValorIndice($event)">
+            </btn-continuar>
+            <div class="mt-5">
+                <ng-alert [CONTENIDO]="avisoPrivacidadAlert"></ng-alert>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,78 @@
+<div class="container">
+  <div class="row">
+    <ul class="nav nav-tabs">
+      @if(consultaState.create === true){
+        <li [ngClass]="indice === 1 ? 'active' : ''">
+          <a data-toggle="tab" (click)="seleccionaTab(1)">Solicitante</a>
+        </li>
+        <li [ngClass]="indice === 2 ? 'active' : ''">
+          <a data-toggle="tab" (click)="seleccionaTab(2)">Constancia del registro</a>
+        </li>
+        @if(mostrarOtraPestana) {
+        <li [ngClass]="indice === 3 ? 'active' : ''">
+          <a data-toggle="tab" (click)="seleccionaTab(3)">Facturas asociadas</a>
+        </li>
+        @if(mostrarEvaluar){
+        <li [ngClass]="indice === 4 ? 'active' : ''">
+          <a data-toggle="tab" (click)="seleccionaTab(4)">Capturar facturas</a>
+        </li>
+        }
+        <li [ngClass]="indice === 5 ? 'active' : ''">
+          <a data-toggle="tab" (click)="seleccionaTab(5)">Histórico de fabricantes</a>
+        </li>
+        <li [ngClass]="indice === 6 ? 'active' : ''">
+          <a data-toggle="tab" (click)="seleccionaTab(6)">Importador en destino</a>
+        </li>
+        }
+      }
+      @if (consultaState.create === false) {
+         <li [ngClass]="indice === 1 ? 'active' : ''">
+          <a data-toggle="tab" (click)="seleccionaTab(1)">Solicitante</a>
+        </li>
+        <li [ngClass]="indice === 2 ? 'active' : ''">
+          <a data-toggle="tab" (click)="seleccionaTab(2)">Datos generales</a>
+        </li>
+        <li [ngClass]="indice === 5 ? 'active' : ''">
+          <a data-toggle="tab" (click)="seleccionaTab(5)">Fabricante</a>
+        </li>
+        <li [ngClass]="indice === 6 ? 'active' : ''">
+          <a data-toggle="tab" (click)="seleccionaTab(6)">Importador en destino</a>
+        </li>
+        }
+
+    </ul>
+
+    <ng-container>
+      @switch (indice) { @case (1) {
+      <solicitante #Solicitante [RFC]="rfc"></solicitante>
+      } @case (2) {
+      @if(esDatosRespuesta){
+      <app-constancia-del-registro #constanciaDelRegistroRef (mostrarTabs)="onMostrarTabs($event)"
+        (errorValidacion)="alErrorDeValidacion($event)" (mensajeError)="onMensajeError($event)"
+        [formularioDeshabilitado]="formularioDeshabilitado" [numeroFolio]="numeroFolio"></app-constancia-del-registro>
+      }
+      } @case (3) {
+      @if(esDatosRespuesta){
+      <app-facturas-asociadas #facturasAsociadasRef [formularioDeshabilitado]="formularioDeshabilitado"
+        [numeroFolio]="numeroFolio"></app-facturas-asociadas>
+      }
+      } @case (4) {
+      @if(esDatosRespuesta){
+      <app-capturar-facturas #capturarFacturasRef
+        [formularioDeshabilitado]="formularioDeshabilitado"></app-capturar-facturas>
+      }
+      } @case (5) {
+      @if(esDatosRespuesta){
+      <app-historico-fabricantes #historicoFabricantesRef [formularioDeshabilitado]="formularioDeshabilitado"
+        [numeroFolio]="numeroFolio"></app-historico-fabricantes>
+      }
+      } @case (6) {
+      @if(esDatosRespuesta){
+      <app-importador-en-destino #importadorEnDestinoRef [formularioDeshabilitado]="formularioDeshabilitado"
+        [numeroFolio]="numeroFolio"></app-importador-en-destino>
+      }
+      }
+      }
+    </ng-container>
+  </div>
+</div>

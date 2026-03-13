@@ -1,0 +1,222 @@
+<div class="container">
+    <ng-titulo titulo="Histórico productores" />
+
+    <form [formGroup]="formulario">
+        <div class="row">
+            <div class="col-md-12">
+                <label for="certificadoTituloDatosConfidencialesProductor">¿Los datos del productor son
+                    confidenciales?</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="checkbox">
+                    <lib-input-check [isDisabled]="esFormularioSoloLectura" [id]="'no'" [label]="'No'"
+                        [required]="false" formControlName="datosConfidencialesProductor"
+                        (change)="setValoresStore('formulario','datosConfidencialesProductor')"></lib-input-check>
+                </div>
+            </div>
+        </div>
+        <div class="row" *ngIf="tramiteState?.datosConfidencialesProductor">
+            <div class="col-md-12">
+                <label for="certificadoTituloDatosConfidencialesProductor">
+                    ¿El exportador y el productor son la misma persona?</label>
+            </div>
+            <div class="col-md-12">
+                <div class="checkbox">
+                    <lib-input-check [isDisabled]="esFormularioSoloLectura" [id]="'no'" [label]="'No'"
+                        [required]="false" formControlName="productorMismoExportador"
+                        (change)="setValoresStore('formulario','productorMismoExportador')"></lib-input-check>
+                </div>
+            </div>
+            <div class="col-md-12" *ngIf="tramiteState?.productorMismoExportador">
+                <h6>Productores por exportador</h6>
+                <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX" [configuracionTabla]="tableColumns"
+                    [datos]="productoresExportador" (listaDeFilaSeleccionada)="obtenerSeleccionadoProductores($event)"
+                    [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"></app-tabla-dinamica>
+                <div class="container text-end mt-5">
+                    <button type="button" name="actualizarProductoresSeleccionados" class="btn btn-default me-2"
+                        (click)="productoresSeleccionados()" [disabled]="esFormularioSoloLectura">
+                        Seleccionar
+                    </button>
+                    <button type="button" name="agregarProductorPorExportador" class="btn btn-primary"
+                        (click)="agregarDatosProductorPorExportador()" [disabled]="esFormularioSoloLectura">
+                        Productor nuevo
+                    </button>
+                </div>
+                <h6>Productores por exportador</h6>
+                <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX" [configuracionTabla]="tableColumns"
+                    [datos]="agregarProductoresExportador"
+                    (listaDeFilaSeleccionada)="obtenerAnadirProductosSeleccionados($event)"
+                    [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"></app-tabla-dinamica>
+                <div class="container text-end mt-5">
+                    <button type="button" name="actualizarProductoresSeleccionados" class="btn btn-danger"
+                        (click)="eliminarProductoresSeleccionados()" [disabled]="esFormularioSoloLectura">
+                        Eliminar
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="table-container mt-5" *ngIf="tramiteState?.datosConfidencialesProductor && tramiteState?.productorMismoExportador && mostrarMercanciasSeleccionadas">
+            <h6>Mercancías Seleccionadas</h6>
+            @if(esTipoDeSeleccionado){
+            <app-tabla-dinamica [configuracionTabla]="mercanciaTablaConfiguracion"
+                [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX" [datos]="mercanciaDatos"
+                (filaSeleccionada)="obtenerSeleccionadoMercancia($event)"
+                [disableSeleccionTablaRadio]="esFormularioSoloLectura"></app-tabla-dinamica>
+            }
+            @else{
+            <app-tabla-dinamica [configuracionTabla]="mercanciaTablaConfiguracion"
+                [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX" [datos]="mercanciaDatos"
+                (listaDeFilaSeleccionada)="obtenerSeleccionadoMercancias($event)"
+                [disableSeleccionTablaRadio]="esFormularioSoloLectura"></app-tabla-dinamica>
+            }
+            <div class="container text-end mt-5">
+                <button type="button" name="agregarMercancia" class="btn btn-primary" (click)="agregarMercancia()"
+                    [disabled]="esFormularioSoloLectura">
+                    Asignar productor
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal fade" id="modalAgregarDatosProductorPorExportador" tabindex="-1"
+    #modalAgregarDatosProductorPorExportador aria-labelledby="modalAgregarDatosProductorPorExportador"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <ng-titulo titulo="Datos productor por exportador" />
+                <form [formGroup]="agregarDatosProductorFormulario">
+                    <div class="col-md-4">
+                        <label class="form-label" for="numeroRegistroFiscal">Número de registro fiscal*:</label>
+                        <input type="text" class="form-control" name="numeroRegistroFiscal" id="numeroRegistroFiscal"
+                            (change)="setValoresStoreAgregarForm('agregarDatosProductorFormulario','numeroRegistroFiscal')"
+                            formControlName="numeroRegistroFiscal"
+                            maxlength="15"
+                            [ngClass]="isValid(agregarDatosProductorFormulario, 'numeroRegistroFiscal') ? 'required' : ''">
+                        <div *ngIf="agregarDatosProductorFormulario.get('numeroRegistroFiscal')?.errors && (agregarDatosProductorFormulario.get('numeroRegistroFiscal')?.touched || agregarDatosProductorFormulario.get('numeroRegistroFiscal')?.dirty)" class="text-danger">
+                          <small *ngIf="agregarDatosProductorFormulario.get('numeroRegistroFiscal')?.errors?.['required']">Este campo es obligatorio.</small>
+                          <small *ngIf="agregarDatosProductorFormulario.get('numeroRegistroFiscal')?.errors?.['maxlength']">No puede exceder 15 caracteres.</small>
+                          <small *ngIf="agregarDatosProductorFormulario.get('numeroRegistroFiscal')?.errors?.['pattern']">Por favor, introduzca solo números y letras.</small>
+                        </div>
+                         <div *ngIf="agregarDatosProductorFormulario.get('numeroRegistroFiscal')?.errors?.['pattern'] && (agregarDatosProductorFormulario.get('numeroRegistroFiscal')?.touched || agregarDatosProductorFormulario.get('numeroRegistroFiscal')?.dirty)"
+        class="text-danger">
+        <small>Por favor, introduzca solo números y letras.</small>
+    </div>
+    <div *ngIf="agregarDatosProductorFormulario.get('numeroRegistroFiscal')?.errors?.['maxlength'] && (agregarDatosProductorFormulario.get('numeroRegistroFiscal')?.touched || agregarDatosProductorFormulario.get('numeroRegistroFiscal')?.dirty)"
+        class="text-danger">
+        <small>Máximo 15 caracteres permitidos.</small>
+    </div>
+
+                    </div>
+                    @if(ocultarFax){
+                    <div class="col-md-4">
+                        <label class="form-label" for="fax">Fax:</label>
+                        <input type="text" class="form-control" name="fax" id="fax" formControlName="fax"
+                            (change)="setValoresStore('agregarDatosProductorFormulario','fax', 'setAgregarDatosProductorFax')"
+                            [ngClass]="isValid(agregarDatosProductorFormulario, 'fax') ? 'required' : ''"
+                            [attr.required]="ocultarFax ? true : null">
+                    </div>
+                    }
+                </form>
+            </div>
+            <div class="modal-footer custom-footer">
+                <button type="button" class="btn btn-default ms-3" data-bs-dismiss="modal" #closeModal>Cancelar</button>
+                <button type="button" class="btn btn-primary" (click)="agregarExportador()">Agregar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if(nuevaNotificacionStatus){
+<lib-notificaciones [notificacionInput]="nuevaNotificacion"></lib-notificaciones>
+}
+
+<div class="modal fade" id="modalMercancia" tabindex="-1" #modalMercancia aria-labelledby="modalMercancia"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <ng-titulo titulo="Datos de la mercancía" />
+                <form [formGroup]="formularioMercancia">
+                    <ng-container>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>Fracción arancelaria:</label>
+                                <input type="text" required="true" class="form-control gray-glass" readonly
+                                    formControlName="fraccionArancelaria"
+                                    (change)="setValoresStore( 'formularioMercancia', 'fraccionArancelaria') " />
+                            </div>
+                            <div class="col-md-8">
+                                <label>Nombre comercial de la mercancía(igual que en la factura):</label>
+                                <input type="text" required="true" class="form-control gray-glass"
+                                    formControlName="nombreComercial" readonly
+                                    (change)="setValoresStore( 'formularioMercancia', 'nombreComercial') " />
+                            </div>
+                        </div>
+                        <div class="row mt-5">
+                            <div class="col-md-8">
+                                <label>Nombre técnico:</label>
+                                <input type="text" required="true" class="form-control gray-glass"
+                                    formControlName="nombreTecnico"
+                                    (change)="setValoresStore( 'formularioMercancia', 'nombreTecnico') " />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Valor de la mercancía(dólares):</label>
+                                <input type="text" required="false" class="form-control"
+                                    formControlName="valorMercancia"
+                                    (change)="setValoresStore( 'formularioMercancia', 'valorMercancia') " />
+                            </div>
+                        </div>
+
+                        <div class="row mt-5">
+                            <div class="col-md-8">
+                                <label>Complemento de la descripción:</label>
+                                <textarea rows="3" class="w-100" formControlName="complemento"
+                                    (change)=" setValoresStore('formularioMercancia', 'complemento') "></textarea>
+                            </div>
+                            <div class="col-md-4">
+                                <label>N° factura:</label>
+                                <input type="text" required="true" class="form-control" formControlName="numeroFactura"
+                                    (change)="setValoresStore( 'formularioMercancia', 'numeroFactura', 'setNumeroFactura' ) " />
+                            </div>
+                        </div>
+
+                        <div class="row mt-5">
+                            <div class="col-md-4">
+                                <app-catalogo-select [isDisabled]="esFormularioSoloLectura"
+                                    [catalogo]="optionsTipoFactura" [label]="'Tipo de factura'" id="tipoFactura"
+                                    formControlName="tipoFactura"
+                                    (change)="setValoresStore('formularioMercancia','tipoFactura')"></app-catalogo-select>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Número de registro fiscal*:</label>
+                                <input type="text" required="false" class="form-control"
+                                    [ngClass]="isValid(formularioMercancia, 'numeroDeRegistroFiscal') ? 'required' : ''"
+                                    formControlName="numeroDeRegistroFiscal"
+                                    (change)="setValoresStore('formularioMercancia','numeroDeRegistroFiscal') "
+                                     />
+                                      @if (formularioMercancia.controls['numeroDeRegistroFiscal'].invalid &&
+                                    (formularioMercancia.controls['numeroDeRegistroFiscal'].touched ||
+                                        formularioMercancia.controls['numeroDeRegistroFiscal'].dirty)) {
+                                    <div class="text-danger mt-1">
+                                    @if (formularioMercancia.controls['numeroDeRegistroFiscal'].errors?.['required']) {
+                                        <small>Este campo es obligatorio.</small>
+                                    }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </ng-container>
+                </form>
+
+            </div>
+            <div class="modal-footer custom-footer mt-4">
+                <button type="button" class="btn btn-default" data-bs-dismiss="modal" #closeModal
+                    [disabled]="esFormularioSoloLectura"> Cancelar </button>
+                <button type="submit" class="btn btn-primary" #modalBuscar data-bs-dismiss="modal"
+                    (click)="mercanciaAgregarSeleccionada()" [disabled]="esFormularioSoloLectura"> Asignar </button>
+            </div>
+        </div>
+    </div>

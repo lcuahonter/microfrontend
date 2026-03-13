@@ -1,0 +1,132 @@
+<div class="page">
+  <div class="container">
+    <div class="row">
+      @if(indice === 1){
+      <div class="col-md-12">
+        <h2>Aviso automático de importación de productos siderúrgicos</h2>
+      </div>
+      <div id="dvMessage" *ngIf="mostrarMensajeServicio">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="alert alert-danger">
+              <p class="text-center mb-2">Corrija los siguientes errores:</p>
+              <ol class="mb-0 mt-2"  class="text-center">
+                <li *ngFor="let error of mensajeErrores" class="text-danger">
+                  {{ error }}
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+      }
+      @if(indice === 2){
+        <div class="col-md-12">
+          <h1>Cargar archivos</h1>
+        </div>
+      }
+       @if(indice === 3){
+        <div class="col-md-12">
+          <h1>Firmar</h1>
+        </div>
+      }
+
+      @if (!esValido) {
+        <ng-alert [CONTENIDO]="ALERTA" [CUSTOMECLASS]="infoError"></ng-alert>
+      }
+
+      <div class="row mt-5" *ngIf="indice === 2">
+      <div class="col-md-12">
+        <lib-notificaciones
+          [notificacionInput]="alertaNotificacion"
+        ></lib-notificaciones>
+      </div>
+    </div>
+
+      <!-- ✅ Agrega #wizard -->
+      <app-wizard #wizard [listaPasos]="pasos"></app-wizard>
+    </div>
+
+    <div class="row">
+      @switch (indice) {
+        @case (1) {
+          <app-paso-uno #pasoUno [rfc]="this.rfcValor"></app-paso-uno>
+        }
+        @case (2) {
+          <app-paso-dos
+          [idTipoTRamite]="'130118'"
+          [datosUsuario]="datosUsuario"
+          [idSolicitud]="solicitudState.idSolicitud!.toString()"
+          [cargaArchivosEvento]="cargarArchivosEvento"
+          (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+          (reenviarCargaRealizada)="cargaRealizada($event)"
+          (cargaEnProgresoChange)="onCargaEnProgresoPadre($event)"></app-paso-dos>
+        }
+        @case (3) {
+          <div class="row">
+            <div class="col-12 offset-md-3">
+            <paso-firma [idSolicitud]="this.solicitudState.idSolicitud" [procedure]="130118" [procedureUrl]="'solicitud'"></paso-firma>
+          </div>
+          </div>
+        }
+      }
+
+     <div class="row">
+      <div class="col-md-12">
+        @if (indice === 1) {
+        <btn-continuar
+          [datos]="datosPasos"
+          (continuarEvento)="getValorIndice($event)"
+        ></btn-continuar>
+        } 
+        @if (indice === 2) {
+        <div class="mt-5 mb-3 d-flex justify-content-end">
+          <button
+            type="button"
+            class="btn btn-default"
+            (click)="anterior()"
+          >
+            Anterior
+          </button>
+
+          <button
+            class="btn btn-primary ms-3"
+            (click)="
+              seccionCargarDocumentos ? onClickCargaArchivos() : siguiente()
+            "
+            [disabled]="(seccionCargarDocumentos && !activarBotonCargaArchivos) || (!seccionCargarDocumentos && cargaEnProgreso)"
+          >
+            {{ seccionCargarDocumentos ? 'Cargar archivos' : 'Continuar' }}
+          </button>
+        </div>
+        }
+
+        @if (indice === 3){
+           <div class="mt-5 mb-3 d-flex justify-content-end">
+            <button
+            type="button"
+            class="btn btn-default  ms-3"
+            (click)="anterior()"
+          >
+            Anterior
+          </button>
+           </div>
+        }
+
+
+      </div>
+    </div>
+
+      @if (indice === 1) {
+        <ng-alert [CONTENIDO]="TEXTOS" [CUSTOMECLASS]="infoAlert"></ng-alert>
+      }
+    </div>
+  </div>
+</div>
+
+@if(nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+  </lib-notificaciones>
+</section>
+}

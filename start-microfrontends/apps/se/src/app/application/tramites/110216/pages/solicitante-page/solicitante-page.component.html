@@ -1,0 +1,62 @@
+<div class="page">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h1>Validar inicialmente el certificado de Japón</h1>
+      </div>
+      <div class="col-md-12">
+        <div 
+          *ngIf="isPeligro" 
+          class="alert alert-danger text-center" 
+          role="alert" 
+            [innerHTML]="peligroTexto"
+
+        >
+        {{peligroTexto}}
+        </div>
+      </div>
+      @if (mostrarBackendError && backendError) {
+          <div 
+            class="alert alert-danger text-center" 
+            role="alert" >
+            <div>Corrija los siguientes errores:</div>
+            <div class="row">
+              <div class="col-md-1 font-red">
+                <p>1.</p>
+              </div>
+              <div class="col-md-11 d-flex justify-content-center font-red">
+                <p [innerHTML]="backendError">/p>
+              </div>
+            </div>
+          </div>
+        }
+      <app-wizard [listaPasos]="pasos"></app-wizard>
+    </div>
+    <div class="row">
+      @switch (indice) { @case (1) {
+      <app-paso-uno #pasoUnoRef [isContinuarTriggered]="isContinuarTriggered"></app-paso-uno> 
+      } @case (2) {
+      <paso-firma [idSolicitud]="solicitudState.idSolicitud ?? null" [procedure]="110216" [procedureUrl]="'inicialmente-certificado-origen/solicitante'"></paso-firma>
+      }
+      }
+      <btn-continuar
+        [datos]="datosPasos"
+        (continuarEvento)="getValorIndice($event)"
+        [dePadre]="true"
+        [btnGuardar]="true" 
+        [btnGuardarVisible]="'visible'"
+        (btnGuardarClicked)="obtenerDatosDelStore()"
+        ></btn-continuar>
+      @if(indice ===1){
+      <ng-alert [CONTENIDO]="TEXTOS.INSTRUCCIONES"></ng-alert>
+      }
+    </div>
+  </div>
+</div>
+
+<lib-notificaciones
+  *ngIf="btnContinuar"
+  [notificacionInput]="nuevaNotificacion"
+  (confirmacionModal)="btnContinuarNotificacion()"
+>
+</lib-notificaciones>

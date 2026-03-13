@@ -1,0 +1,34 @@
+<div class="page">
+  <div class="container">
+    <div class="row mt-5">
+      <div class="col-md-12">
+        <h2 *ngIf="indice === 1">Validar inicialmente el certificado de SGP</h2>
+      </div>
+      @if(esFormaValido){
+      <div class="col-md-12">
+        <ng-alert [CONTENIDO]="formErrorAlert" [CUSTOMECLASS]="'alert-danger'"></ng-alert>
+      </div>
+      }
+      <div class="row mt-5" *ngIf="indice === 2">
+        <div class="col-md-12">
+          <lib-notificaciones [notificacionInput]="alertaNotificacion"></lib-notificaciones>
+        </div>
+      </div>
+      <app-wizard [listaPasos]="pasos"></app-wizard>
+    </div>
+
+    <div class="row">
+      @switch (indice) { @case (1) {
+      <app-paso-uno></app-paso-uno>
+      } @case (2) {
+      <paso-firma [idSolicitud]="solicitudState.idSolicitud" [procedure]="110207"
+        [procedureUrl]="'reportes/solicitud'"></paso-firma>
+      }}
+      <btn-continuar [datos]="datosPasos" (anteriorEvento)="getValorIndice($event)"
+        (continuarEvento)="getValorIndice($event)"></btn-continuar>
+      @if(indice ===1){
+      <ng-alert [CONTENIDO]="TEXTOS.INSTRUCCIONES"></ng-alert>
+      }
+    </div>
+  </div>
+</div>

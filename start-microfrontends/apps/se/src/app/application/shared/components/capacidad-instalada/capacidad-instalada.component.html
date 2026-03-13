@@ -1,0 +1,204 @@
+<div class="container">
+  <ng-titulo titulo="Capacidad Instalada"></ng-titulo>
+  <form [formGroup]="capacidadForm">
+    <div class="form">
+      <div class="row">
+        <div class="col-md-6">
+          
+         <app-catalogo-select [catalogo]="fraccionArancelariaProductoTerminadoCatlogo"
+            [label]="'Fracción arancelaria de producto terminado'" [required]="true"
+            name="fraccionArancelariaProductoTerminado" formControlName="fraccionArancelariaProductoTerminado"
+            (change)="onFraccionArancelariaProductoTerminadoChange();setValoresStore(capacidadForm, 'fraccionArancelariaProductoTerminado', 'setFraccionArancelariaProductoTerminado')"></app-catalogo-select>
+  <div *ngIf="capacidadForm.get('fraccionArancelariaProductoTerminado')?.invalid && capacidadForm.get('fraccionArancelariaProductoTerminado')?.touched" class="text-danger">
+    Debe capturar todos los datos marcados como obligatorios(*)
+  </div>
+</div>
+        <div class="col-md-4">
+          <label class="form-label" for="umt">UMT*:</label>
+          <input class="form-control min-hgt" id="umt" formControlName="umt" type="text"
+            [readonly]="true" (change)="setValoresStore(capacidadForm, 'umt', 'setUmt')" />
+          <div *ngIf="capacidadForm.get('umt')?.invalid && capacidadForm.get('umt')?.touched" class="text-danger">
+            Este campo es obligatorio.
+          </div>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-md-10">
+          <label class="control-label" for="descripsion">Descripción comercial del producto terminado*:</label>
+          <textarea rows="2" class="form-control h-100" id="descripcionComercialProductoTerminado"
+            formControlName="descripcionComercialProductoTerminado" placeholder=""
+            [readonly]="true"
+            (change)="setValoresStore(capacidadForm, 'descripcionComercialProductoTerminado', 'setDescripcionComercialProductoTerminado')"></textarea>
+          <div
+            *ngIf="capacidadForm.get('descripcionComercialProductoTerminado')?.invalid && capacidadForm.get('descripcionComercialProductoTerminado')?.touched"
+            class="text-danger">
+            Este campo es obligatorio.
+          </div>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-md-6 mt-5">
+          <label class="form-label" for="turnos">Turnos*:</label>
+          <input class="form-control min-hgt" id="turnos" formControlName="turnos" type="number"
+            (input)="onInputMaxLength($event, 3, 'turnos')"
+            (change)="setValoresStore(capacidadForm, 'turnos', 'setTurnos')" />
+          <div *ngIf="capacidadForm.get('turnos')?.invalid && capacidadForm.get('turnos')?.touched" class="text-danger">
+            Este campo es obligatorio.
+          </div>
+        </div>
+        <div class="col-md-4 mt-5">
+          <label class="form-label" for="horasPorTurno">Horas por turno*:</label>
+          <input class="form-control min-hgt" id="horasPorTurno" formControlName="horasPorTurno" type="number"
+            (input)="onInputMaxLength($event, 2, 'horasPorTurno')"
+            (change)="setValoresStore(capacidadForm, 'horasPorTurno', 'setHorasPorTurno')" />
+          <div *ngIf="capacidadForm.get('horasPorTurno')?.invalid && capacidadForm.get('horasPorTurno')?.touched"
+            class="text-danger">
+            Este campo es obligatorio.
+          </div>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-md-6">
+          <label class="form-label" for="cantidadEmpleados">Cantidad empleados*:</label>
+          <input class="form-control min-hgt" id="cantidadEmpleados " formControlName="cantidadEmpleados" type="number"
+            (input)="onInputMaxLength($event, 11, 'cantidadEmpleados')"
+            (change)="setValoresStore(capacidadForm, 'cantidadEmpleados', 'setCantidadEmpleados')" />
+          <div
+            *ngIf="capacidadForm.get('cantidadEmpleados')?.invalid && capacidadForm.get('cantidadEmpleados')?.touched"
+            class="text-danger">
+            Este campo es obligatorio.
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label" for="cantidadMaquinaria">Cantidad maquinaria*:</label>
+          <input class="form-control min-hgt" id="cantidadMaquinaria" formControlName="cantidadMaquinaria" type="number"
+            (input)="onInputMaxLength($event, 11, 'cantidadMaquinaria')"
+            (change)="setValoresStore(capacidadForm, 'cantidadMaquinaria', 'setCantidadMaquinaria')" />
+          <div
+            *ngIf="capacidadForm.get('cantidadMaquinaria')?.invalid && capacidadForm.get('cantidadMaquinaria')?.touched"
+            class="text-danger">
+            Este campo es obligatorio.
+          </div>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-md-10">
+          <label class="control-label" for="descripcionMaquinaria">Descripción de la maquinaria*:</label>
+          <textarea rows="2" class="form-control h-100" id="descripcionMaquinaria"
+            formControlName="descripcionMaquinaria" placeholder="" maxlength="300"
+            (change)="setValoresStore(capacidadForm, 'descripcionMaquinaria', 'setDescripcionMaquinaria')"></textarea>
+          <div
+            *ngIf="capacidadForm.get('descripcionMaquinaria')?.invalid && capacidadForm.get('descripcionMaquinaria')?.touched"
+            class="text-danger">
+            Este campo es obligatorio.
+          </div>
+        </div>
+      </div>
+      <br>
+      <div class="row mt-5">
+        <div class="col-md-4">
+          <label class="form-label" for="capacidadInstaladaMensual">Capacidad instalada mensual*:</label>
+          <input class="form-control min-hgt" id="capacidadInstaladaMensual" formControlName="capacidadInstaladaMensual"
+            type="number" (input)="onInputMaxLength($event, 11, 'capacidadInstaladaMensual')"
+            (change)="setValoresStore(capacidadForm, 'capacidadInstaladaMensual', 'setCapacidadInstaladaMensual')" />
+          <div
+            *ngIf="capacidadForm.get('capacidadInstaladaMensual')?.invalid && capacidadForm.get('capacidadInstaladaMensual')?.touched"
+            class="text-danger">
+            Este campo es obligatorio.
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label" for="capacidadInstaladaAnual">
+            Capacidad instalada anual*:</label>
+          <input class="form-control min-hgt" id="capacidadInstaladaAnual" formControlName="capacidadInstaladaAnual"
+            type="number" (input)="onInputMaxLength($event, 16, 'capacidadInstaladaAnual')"
+            (change)="setValoresStore(capacidadForm, 'capacidadInstaladaAnual', 'setCapacidadInstaladaAnual')" />
+          <div
+            *ngIf="capacidadForm.get('capacidadInstaladaAnual')?.invalid && capacidadForm.get('capacidadInstaladaAnual')?.touched"
+            class="text-danger">
+            Este campo es obligatorio.
+          </div>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-md-4">
+          <label class="form-label text-start mb-1" for="capacidadUtilizadaPct">
+            Capacidad efectivamente utilizada (porcentaje)*:
+          </label>
+          <input class="form-control min-hgt w-100 mt-60" id="capacidadUtilizadaPct" formControlName="capacidadUtilizadaPct"
+            type="number" (input)="onInputMaxLength($event, 10, 'capacidadUtilizadaPct')"
+            (change)="setValoresStore(capacidadForm, 'capacidadUtilizadaPct', 'setCapacidadUtilizadaPct')"
+             />
+          <div
+            *ngIf="capacidadForm.get('capacidadUtilizadaPct')?.invalid && capacidadForm.get('capacidadUtilizadaPct')?.touched"
+            class="text-danger">
+            Este campo es obligatorio.
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label" for="calculoCapacidadInstalada">Cálculo de la capacidad instalada*:</label>
+          <p class="text-start mb-2">
+            ((horasTurno*turnos) * empleados/capacidadEfectiva)
+          </p>
+          <input class="form-control min-hgt" id="calculoCapacidadInstalada" formControlName="calculoCapacidadInstalada"
+            type="text"
+            (change)="setValoresStore(capacidadForm, 'calculoCapacidadInstalada', 'setCalculoCapacidadInstalada')" />
+          <div
+            *ngIf="capacidadForm.get('calculoCapacidadInstalada')?.invalid && capacidadForm.get('calculoCapacidadInstalada')?.touched"
+            class="text-danger">
+            Este campo es obligatorio.
+          </div>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-12 container text-end mt-5">
+          <button class="btn btn-default me-2" (click)="limpiar()">Limpiar</button>
+          <button class="btn btn-primary" (click)="agregar()">Agregar</button>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <h5>Capacidad Instalada</h5>
+      </div>
+      <div class="row">
+        <app-tabla-dinamica [configuracionTabla]="capacidadInstaladaEncabezado"
+          [tipoSeleccionTabla]="constructorapacidadInstaladaTablaSeleccion" [datos]="capacidadInstaladaDatos"
+          (listaDeFilaSeleccionada)="onCapacidadInstaladaSeleccionadas($event)"></app-tabla-dinamica>
+      </div>
+
+      <div class="row mt-5">
+        <div class="col-12 container text-end mt-5">
+          <button class="btn btn-danger me-2" (click)="eliminarCapacidadInstalada()">Eliminar</button>
+          <button class="btn btn-primary" (click)="editarCapacidadInstalada()">Editar</button>
+        </div>
+      </div>
+      <div class="row my-5 mt-5">
+        <div class="col-12 container text-end mt-5 mb-5">
+          <button class="btn btn-default me-2" (click)="regrasar()">
+            Regresar a plantas
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+  </lib-notificaciones>
+</section>
+}
+
+@if (nuevaNotificacionEliminar) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacionEliminar">
+  </lib-notificaciones>
+</section>
+}
+@if (notificacionAgregarServicios) {
+<section>
+  <lib-notificaciones 
+    [notificacionInput]="notificacionAgregarServicios">
+  </lib-notificaciones>
+</section>
+}

@@ -1,0 +1,240 @@
+<div class="container">
+
+<div class="mt-5">
+  <ng-titulo titulo="Buscar cupos" />
+</div>
+
+<form [formGroup]="cancelacionForm">
+  <div class="row">
+    <div class="col-md-4">
+      <app-catalogo-select [catalogo]="regimenDatos" [label]="'Régimen aduanero'" [required]="true" name="regimen"
+        formControlName="regimen" [isDisabled]="esFormularioSoloLectura ? true : false"
+        (change)="setValoresStore(cancelacionForm,'regimen', 'setRegimen')">
+      </app-catalogo-select>
+    </div>
+    <div class="col-md-4">
+      <app-catalogo-select [catalogo]="mecanismoDatos" [label]="'Mecanismo de asignación'" [required]="true"
+        name="regime" formControlName="mecanismo" [isDisabled]="esFormularioSoloLectura ? true : false"
+        (change)="setValoresStore(cancelacionForm,'mecanismo', 'setMecanismo')">
+      </app-catalogo-select>
+    </div>
+    <div class="col-md-4">
+      <app-catalogo-select [catalogo]="tratadoDatos" [label]="'Tratado o bloqueo comercial'" [required]="false"
+        name="tratado" formControlName="tratado" [isDisabled]="esFormularioSoloLectura ? true : false"
+        placeholder="Seleccione una opción"
+        (change)="setValoresStore(cancelacionForm,'tratado', 'setTratado')">
+      </app-catalogo-select>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <app-catalogo-select [catalogo]="nombreProductoDatos" [label]="'Nombre de producto'" [required]="false" name="producto"
+        formControlName="producto" [isDisabled]="esFormularioSoloLectura ? true : false"
+        (change)="setValoresStore(cancelacionForm,'producto', 'setProducto')">
+      </app-catalogo-select>
+    </div>
+    <div class="col-md-4">
+      <app-catalogo-select [catalogo]="subProductoDatos" [label]="'Nombre del subproducto'" [required]="false"
+        name="subproducto" formControlName="subproducto" [isDisabled]="esFormularioSoloLectura ? true : false"
+        (change)="setValoresStore(cancelacionForm,'subproducto', 'setSubproducto')">
+      </app-catalogo-select>
+    </div>
+    <div class="col-md-4">
+      <app-catalogo-select [catalogo]="representacionDatos" [label]="'Representación federal'" [required]="false"
+        name="representacion" formControlName="representacion" [isDisabled]="esFormularioSoloLectura  || cancelacionForm.get('mecanismo')?.value === '2' ? true : false"
+        (change)="setValoresStore(cancelacionForm,'representacion', 'setRepresentacion')">
+      </app-catalogo-select>
+    </div>
+  </div>
+  <div class="row" style="padding-top: 20px;text-align: right;">
+    <div>
+      <button type="button" class="btn btn-primary btn-space" [disabled]="esFormularioSoloLectura"
+        (click)="buscarCupoDisponible()">Buscar</button>
+    </div>
+  </div>  
+  <div class="row">
+    <div class="col-md-6">
+      <label for="cuposDisponibles">Cupos disponibles</label>
+    </div>
+      <app-tabla-dinamica [configuracionTabla]="configuracionTabla" [datos]="CuposDisponiblesDatos" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura" (filaClic)="filaClicCuposDisponibles($event)">
+      </app-tabla-dinamica>
+  </div>
+  <div text-align ="center" id="paginGridContenedoresITC">
+    <nav aria-label="Page navigation example">
+      <ul class="pagination d-flex justify-content-center">
+        <li class="page-item"><a class="page-link" href="Javascript:;">1</a></li>
+      </ul>
+    </nav>
+  </div>
+</form>
+
+<div *ngIf="mostrarCertificadosCancelar">
+  
+<ng-titulo titulo="Detalle del cupo" />
+<div>
+  <form [formGroup]="detalleForm">
+      <div class="row" style="padding-bottom: 20px;">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="regimen"> Régimen aduanero:</label>
+            <input class="form-control" id="regimen" formControlName="regimen" type="text">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="descripcion">Descripción del producto:</label>
+            <input class="form-control" id="descripcion" formControlName="descripcion" type="text">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="clasificacion">Clasificación del subproducto:</label>
+            <input class="form-control" id="clasificacion" formControlName="clasificacion" type="text">
+          </div>
+        </div>
+      </div>
+      <div class="row" style="padding-bottom: 20px;">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="unidad"> Unidad de medida:</label>
+            <input class="form-control" id="unidad" formControlName="unidad" type="text">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="mecanismo">Mecanismo de asignación:</label>
+            <input class="form-control" id="mecanismo" formControlName="mecanismo" type="text">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="tratado">Tratado / Acuerdo:</label>
+            <input class="form-control" id="tratado" formControlName="tratado" type="text">
+          </div>
+        </div>
+      </div>
+      <div class="row" style="padding-bottom: 20px;">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label class="form-label" for="fracciones"> Fracciones arancelarias:</label>
+            <textarea class="form-control" id="fracciones" formControlName="fracciones"
+              style="height: 90px;"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="row" style="padding-bottom: 20px;">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label class="form-label" for="paises"> Países:</label>
+            <textarea class="form-control" id="paises" formControlName="paises" style="height: 120px;"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="row" style="padding-bottom: 20px;">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label class="form-label" for="observaciones"> Observaciones:</label>
+            <textarea class="form-control" id="observaciones" formControlName="observaciones"
+              style="height: 120px;"></textarea>
+
+          </div>
+        </div>
+      </div>
+      <div class="row" style="padding-bottom: 20px;">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label class="form-label" for="fundamentos"> Fundamentos:</label>
+            <textarea class="form-control" id="fundamentos" formControlName="fundamentos"
+              style="height: 120px;"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="row" style="padding-bottom: 20px;">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="inicio"> Fecha de inicio de vigencia:</label>
+            <input class="form-control" id="inicio" formControlName="inicio" type="text"
+              placeholder="Selecciona una fecha">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="fecha"> Fecha de fin de vigencia:</label>
+            <input class="form-control" id="fecha" formControlName="fecha" type="text"
+              placeholder="Selecciona una fecha">
+          </div>
+        </div>
+      </div>
+  </form>
+</div>
+
+<ng-titulo titulo="Oficio" />
+<div>
+  <form [formGroup]="oficioForm">
+      <div class="row row-spacing">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="sumaAprobada">Monto asignado:</label>
+            <input class="form-control" id="sumaAprobada" formControlName="sumaAprobada" type="text">
+          </div>
+        </div>
+          <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="montoDisponible">Monto disponible:</label>
+            <input class="form-control" id="montoDisponible" formControlName="montoDisponible" type="text">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="sumaExpedida">Monto expedido:</label>
+            <input class="form-control" id="sumaExpedida" formControlName="sumaExpedida" type="text">
+          </div>
+        </div>
+      </div>
+      <h6>Certificados disponibles</h6>
+      <app-tabla-dinamica [configuracionTabla]="configuracionTablaCertificados"
+        [tipoSeleccionTabla]="TablaSeleccion" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura" (listaDeFilaSeleccionada)="filaSeleccionadaCertificadosDisponibles($event)"></app-tabla-dinamica>
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+          <li class="page-item"><a class="page-link" href="#">1</a></li>
+        </ul>
+      </nav>
+      <div class="row row-spacing text-right">
+        <div>
+          <button type="button" class="btn btn-primary btn-space" [disabled]="esFormularioSoloLectura"
+            (click)="onSeleccionarCertificadosDisponibles()">Seleccionar</button>
+        </div>
+      </div>
+      <h6>Certificados a cancelar</h6>
+        <app-tabla-dinamica [configuracionTabla]="configuracionTablaCertificados" [datos]="CertificadosCancelarDatos"
+        [tipoSeleccionTabla]="TablaSeleccion" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura" (listaDeFilaSeleccionada)="filaSeleccionadaCertificadosCancelar($event)">
+      </app-tabla-dinamica>
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+          <li class="page-item"><a class="page-link" href="#">1</a></li>
+        </ul>
+      </nav>
+      <div class="row row-spacing text-right">
+        <div>
+          <button type="button" class="btn btn-danger btn-space" [disabled]="esFormularioSoloLectura" (click)="onSeleccionarCertificadoEliminar()">Eliminar seleccionado</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label class="form-label" for="denominacionExposicion">Motivo de la cancelación*:</label>
+            <textarea class="form-control custom-textarea" id="denominacionExposicion" style="height: 120px;"
+              disabled>Cancelación a solicitud de la empresa</textarea>
+          </div>
+        </div>
+      </div>
+  </form>
+</div>
+</div>
+</div>
+
+<lib-notificaciones 
+  *ngIf="esHabilitarElDialogo"
+  [notificacionInput]="nuevaNotificacion" 
+  (confirmacionModal)="cerrarModal()">
+</lib-notificaciones>

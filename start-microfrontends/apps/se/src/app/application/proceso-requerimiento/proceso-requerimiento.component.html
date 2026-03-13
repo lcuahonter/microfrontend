@@ -1,0 +1,155 @@
+@if(slectTramite) {
+
+<div class="page">
+  <div class="container">
+    <div class="row">
+      @if(!esAcuse) {
+         @if(indice !== 3){
+        <div class="col-md-12">
+          <h1>Atender requerimiento</h1>
+        </div>
+        }
+        @if(esFormaValido){
+          <div class="col-md-12">
+            <ng-alert [CONTENIDO]="formErrorAlert" [CUSTOMECLASS]="'alert-danger'"></ng-alert>
+          </div>
+        }
+
+         @if(indice === 3 && esAcuse === false) {
+          <div class="row">
+                <div class="col-md-12">
+                    <h2 class="titulo mt-5 mb-5">Firmar</h2>
+                </div>
+            </div>
+          }
+        <app-wizard [listaPasos]="pasos"></app-wizard>
+      }
+    </div>
+    @if(!esAcuse && indice !== 3) {
+    <div class="mb-5">
+      <lib-encabezado-requerimiento [numFolioTramite]="guardarDatos.folioTramite"
+        [tipoTramite]="guardarDatos.tipoDeTramite">
+      </lib-encabezado-requerimiento>
+    </div>
+    }
+
+    @if(esAcuse) {
+        <lib-component-acuse
+      titulo="Acuse de recibo"
+      [txtAlerta]="txtAlerta"
+      [subtitulo]="subtitulo"
+      [folio]="idSolicitud.toString()"
+      [url]="url"
+      [datosTabla]="datosTablaAcuse"
+      [tramite]="tramite"
+    ></lib-component-acuse>
+    }
+
+    @if(indice === 1 && iniciarAtenderRequerimientoData) {
+    <lib-requerimiento-informacion
+      [fechaRequerimiento]="iniciarAtenderRequerimientoData.fecha_generacion || '' "
+      [justificacionRequerimiento]="iniciarAtenderRequerimientoData.justificacion || ''"
+    ></lib-requerimiento-informacion>
+    }
+
+    @if(indice === 2) {
+    <app-paso-carga-documento 
+        [idTipoTRamite]="tramite.toString()"
+        [saltarTarjetaDeTituloParaConsulta]="esMostrarTituloYNotificacion()"
+        [showInstrucciones]="true"
+        [idSolicitud]="+guardarDatos.id_solicitud"
+        [cargaArchivosEvento]="cargarArchivosEvento"
+        (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+        (reenviarCargaRealizada)="cargaRealizada($event)"
+        (cargaEnProgreso)="onCargaEnProgreso($event)"
+        [documentosAdicionales]="iniciarAtenderRequerimientoData.documentos"
+      ></app-paso-carga-documento>
+    }
+
+    @if(indice === 3 && esAcuse === false) {
+      <div class="row justify-content-center">
+          <div class="col-md-6">
+            <firma-electronica 
+            [tipo]="''" 
+            [cadenaOriginal]="cadenaOriginal"
+            [cadenasOriginalesDocumentos]="cadenasOriginalesDocumentos"
+            (datosFirma)="obtieneFirma($event)"
+            (documentosFirmados)="onDocumentosFirmados($event)">
+          </firma-electronica>
+        </div>
+      </div>
+    }
+
+    @if(![2, 3].includes(indice) && esAcuse === false) {
+    <btn-continuar [datos]="datosPasos" (continuarEvento)="getValorIndice($event)" [btnTextVisible]="btnTextVisible"></btn-continuar>
+    }
+
+    @if(indice === 3 && esAcuse === false) {
+    <div class="mt-5 mb-3 d-flex justify-content-end">
+      <button type="button" class="btn btn-default" (click)="anteriorFirmar()">
+        Anterior
+      </button>
+    </div>
+    }
+
+@if(config.isAtencionRequerimientoCampo && indice === 1 && esAcuse === false){
+  <div class="row mt-5 mb-5">
+    <div class="col-md-12">
+      <form [formGroup]="requerimientoForm">
+        <div class="form-group">
+          <label for="atencionRequerimiento" class="form-label">Atención del requerimiento<span 
+            [ngClass]="requerimientoForm.get('atencionRequerimiento')?.invalid && (requerimientoForm.get('atencionRequerimiento')?.touched || requerimientoForm.get('atencionRequerimiento')?.dirty) ? 'text-danger' : ''">*</span>:</label>
+          <textarea id="atencionRequerimiento" class="h-50 form-control text-height" rows="5" cols="110" formControlName="atencionRequerimiento" libUppercase
+            [ngClass]="requerimientoForm.get('atencionRequerimiento')?.invalid && (requerimientoForm.get('atencionRequerimiento')?.touched || requerimientoForm.get('atencionRequerimiento')?.dirty) ? 'is-invalid' : ''" maxlength="2000"></textarea>
+        </div>
+        <div *ngIf="requerimientoForm.get('atencionRequerimiento')?.invalid && (requerimientoForm.get('atencionRequerimiento')?.touched || requerimientoForm.get('atencionRequerimiento')?.dirty)">
+          <div class="mensaje-error" *ngIf="requerimientoForm.get('atencionRequerimiento')?.errors?.['required']">
+            Este campo es obligatorio.
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+}
+    
+    @if(indice === 2) {
+    <div class="mt-5 mb-3 d-flex justify-content-end">
+      <button type="button" class="btn btn-default" (click)="anterior()" *ngIf="seccionCargarDocumentos">
+        Anterior
+      </button>
+    
+      <button class="btn btn-primary ms-3" (click)="onContinuarClick()"
+        [disabled]="(seccionCargarDocumentos && !activarBotonCargaArchivos) || (!seccionCargarDocumentos && cargaEnProgreso)">
+        {{ seccionCargarDocumentos ? 'Cargar archivos' : 'Continuar' }}
+      </button>
+    </div>
+    }
+
+     @if(!esAcuse && indice !== 3) {
+       <div class="row mt-5 mb-5">
+      <app-reviewers-tabs
+        [isAtenderRequerimiento]="true"
+        [viewChild]="viewChild"
+        [tramite]="tramite"
+        [tabs]="tabs"
+        [documentos]="documentosSolicitud"
+        [dictamenes]="dictamenesSolicitud"
+        [requerimientos]="requerimientosSolicitud"
+        [opinion]="opinion"
+        [acusesResolucion]="acusesResolucion"
+        [tareasSolicitud]="tareasSolicitud"
+        [envioDigital]="envioDigital"
+        (viewChildcambioDePestana)="viewChildcambioDePestana($event)"
+        (tabSeleccionado)="onTabSeleccionado($event)"
+      ></app-reviewers-tabs>
+    </div>
+     }
+  </div>
+</div>
+}
+@if(nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+  </lib-notificaciones>
+</section>
+}

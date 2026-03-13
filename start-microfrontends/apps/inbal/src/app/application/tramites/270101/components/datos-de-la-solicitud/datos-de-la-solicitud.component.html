@@ -1,0 +1,178 @@
+<div class="container">
+    <ng-titulo titulo="Datos de la solicitud" />
+    <div class="row">
+        <h6>Informacion obra de arte*:</h6>
+        <app-tabla-dinamica
+            [tipoSeleccionTabla]="tablaSeleccion.CHECKBOX"
+            [configuracionTabla]="configuracionTabla"
+            [datos]="configuracionTablaDatos"
+            [disableSeleccionTablaCheckBox]="consultaState.readonly"
+            [desactivarEmitirEvento]="!consultaState.readonly"
+            (listaDeFilaSeleccionada)="listaDeFilaSeleccionada($event)"
+        ></app-tabla-dinamica>
+    </div>
+    <div class="col-md-12 mt-5 d-flex justify-content-end">
+        <button type="button" class="btn btn-default ms-3" [disabled]="consultaState.readonly" (click)="eliminar()">Eliminar</button>
+        <button
+          type="button"
+          class="btn btn-primary ms-3"
+          data-bs-toggle="modal"
+          data-bs-target="#modalSolicitud"
+          [disabled]="consultaState.readonly"
+          (click)="abrirDialogo()"
+        >
+          Agregar
+        </button>
+      </div>
+</div>
+
+<div
+  class="modal fade"
+  id="modalSolicitud"
+  tabindex="-1"
+  aria-labelledby="modalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form [formGroup]="forma">
+          <div class="row">
+            <formas-dinamicas 
+              formularioTitulo="Información de la obra de arte que se pretende exportar"
+              [forma]="ninoFormGroup"
+              [formularioDatos]="informacionFormData"
+              [estado]="exportarIlustracionesState"
+              (emitirCambioDeValor)="establecerCambioDeValor($event)"
+              ></formas-dinamicas>
+          </div>
+          <div class="row">
+              <div class="col-md-12 mt-5">
+                  <ng-alert [CONTENIDO]="alertInformacion"></ng-alert>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-md-4">
+                  <div class="form-group">
+                      <label class="form-label" for="anoDeCreacion">{{ informacionlabel.ANO_DE_CREACION}}*: </label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        id="anoDeCreacion"
+                        placeholder=""
+                        formControlName="anoDeCreacion"
+                        required="true"
+                        [ngClass]="esValido('anoDeCreacion') ? 'required' : ''"
+                        (change)="cambioEvento($event, 'anoDeCreacion')"
+                      />
+                      <validadores-de-formularios 
+                        [forma]="forma" 
+                        [controlDeFormulario]="'anoDeCreacion'" 
+                        [validadores]="validadores"
+                      ></validadores-de-formularios>
+                    </div>
+              </div>
+              <div class="col-md-4">
+                  <div class="form-group">
+                      <label class="form-label" for="avaluo">{{ informacionlabel.AVALUO}}*: </label>
+                      <input
+                        class="form-control"
+                        type="number"
+                        id="avaluo"
+                        placeholder=""
+                        formControlName="avaluo"
+                        required="true"
+                        [ngClass]="esValido('avaluo') ? 'required' : ''"
+                        (change)="cambioEvento($event, 'avaluo')"
+                      />
+                      <validadores-de-formularios 
+                        [forma]="forma" 
+                        [controlDeFormulario]="'avaluo'" 
+                        [validadores]="validadores"
+                      ></validadores-de-formularios>
+                    </div>
+              </div>
+              <div class="col-md-4">
+                  <app-catalogo-select
+                      [catalogo]="monedaData" 
+                      formControlName="moneda" 
+                      [label]="informacionlabel.MONEDA" 
+                      [required]="true" 
+                      name=""
+                      [placeholder]="'Selecciona un valor'"
+                      (change)="cambioEvento($event, 'moneda')"
+                      ></app-catalogo-select>
+                      <validadores-de-formularios 
+                        [forma]="forma" 
+                        [controlDeFormulario]="'moneda'" 
+                        [validadores]="validadores"
+                      ></validadores-de-formularios>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-md-4">
+                  <div class="form-group">
+                      <label class="form-label" for="propietario">{{ informacionlabel.PROPIETARIO}}*: </label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        id="propietario"
+                        placeholder=""
+                        formControlName="propietario"
+                        required="true"
+                        [ngClass]="esValido('propietario') ? 'required' : ''"
+                        (change)="cambioEvento($event, 'propietario')"
+                      />
+                      <validadores-de-formularios 
+                        [forma]="forma" 
+                        [controlDeFormulario]="'propietario'" 
+                        [validadores]="validadores"
+                      ></validadores-de-formularios>
+                    </div>
+              </div>
+              <div class="col-md-4 ">
+                  <app-catalogo-select
+                  [catalogo]="arancelariaData" 
+                  formControlName="fraccionArancelaria" 
+                  [label]="informacionlabel.FRACCION_ARANCELARIA" 
+                  [required]="true" 
+                  name=""
+                  [placeholder]="'Selecciona un valor'"
+                  (change)="cambioEvento($event, 'fraccionArancelaria')"
+                  ></app-catalogo-select>
+                  <validadores-de-formularios 
+                      [forma]="forma" 
+                      [controlDeFormulario]="'fraccionArancelaria'" 
+                      [validadores]="validadores"
+                  ></validadores-de-formularios>
+              </div>
+              <div class="col-md-4">
+
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-md-8">
+                  <div class="form-group">
+                      <label class="form-label" for="descripcion">{{ informacionlabel.DESCRIPCION}}: </label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        id="descripcion"
+                        placeholder=""
+                        formControlName="descripcion"
+                        (change)="cambioEvento($event, 'descripcion')"
+                      />
+                    </div>
+              </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="col-md-12 mt-5 d-flex justify-content-end">
+            <button type="button" class="btn btn-default ms-3" data-bs-dismiss="modal" #closeModal>Cancelar</button>
+            <button type="button" class="btn btn-primary ms-3" (click)="agregarConfirmarModal()">Agregar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

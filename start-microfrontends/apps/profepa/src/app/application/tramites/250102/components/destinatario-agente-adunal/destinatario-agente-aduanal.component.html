@@ -1,0 +1,453 @@
+<div class="container">
+  <div *ngIf="showTableDiv">
+    <div class="row">
+      <ng-titulo titulo="Datos del destinatario*" />
+
+      <div class="col-md-12">
+        <app-tabla-dinamica
+          [configuracionTabla]="tablaDestinatariosData"
+          [datos]="agregarDestinatariosTablaDatos"
+          [tipoSeleccionTabla]="tablaSeleccionCheckbox"
+          (listaDeFilaSeleccionada)="onSeleccionDestinatario($event)"
+          [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+        >
+        </app-tabla-dinamica>
+      </div>
+      <div class="col-md-12 mt-5 d-flex justify-content-end">
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="eliminarUbicacionDetinatario()"
+          [disabled]="esFormularioSoloLectura"
+        >
+          Eliminar
+        </button>
+        <button
+          type="button"
+          class="btn btn-default ms-3"
+          id="agregarDestinatario"
+          (click)="cambiarDestinatarioSeleccionar()"
+          [disabled]="esFormularioSoloLectura"
+        >
+          Seleccionar
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary ms-3"
+          id="capturarDestinatario"
+          (click)="cambiarDestinatario()"
+          [disabled]="esFormularioSoloLectura"
+        >
+          Agregar
+        </button>
+      </div>
+    </div>
+
+    <div class="row">
+      <ng-titulo titulo="Datos del agente aduanal" />
+
+      <div class="col-md-12">
+        <app-tabla-dinamica
+          [configuracionTabla]="tablaAgenteAduanalData"
+          [datos]="agregarAgenteAduanalTablaDatos"
+          [tipoSeleccionTabla]="tablaSeleccionCheckbox"
+          (listaDeFilaSeleccionada)="onSeleccionAgenteAduanal($event)"
+          [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+        >
+        </app-tabla-dinamica>
+      </div>
+
+      <div class="col-md-12 mt-5 d-flex justify-content-end">
+        <button
+          type="button"
+          class="btn btn-danger"
+          id="eliminarRequisito"
+          (click)="eliminarAgenteAduanal()"
+          [disabled]="esFormularioSoloLectura"
+        >
+          Eliminar
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary ms-3"
+          id="agregarRequisito"
+          (click)="cambiarAgenteAduanal()"
+          [disabled]="esFormularioSoloLectura"
+        >
+          Agregar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-modal [active]="showDestinatarioModal">
+  <div>
+    <ng-titulo titulo="Destinatario" />
+    <form [formGroup]="formDestinatariosModal" id="formDestinatariosModal">
+      <app-input-radio
+        [radioOptions]="destinatarioOpcionDeBotonDeRadio"
+        [isRequired]="true"
+        [layout]="'horizontal'"
+        id="destinatarioRadio"
+        formControlName="destinatarioRadio"
+        name="destinatarioRadio"
+      ></app-input-radio>
+
+      <div class="col-md-8 mt-5">
+        <label class="form-label" for="denominacionRSDestinatario"
+          >Denominación o razón social*:</label
+        >
+        <input
+          type="text"
+          class="form-control"
+          id="denominacionRSDestinatario"
+          formControlName="destinatarioRazonSocial"
+          name="denominacionRSDestinatario"
+          [required]="true"
+        />
+        @if(formDestinatariosModal.controls['destinatarioRazonSocial'].invalid
+        && formDestinatariosModal.controls['destinatarioRazonSocial'].touched){
+        <div class="d-grid">
+          @if(formDestinatariosModal.controls['destinatarioRazonSocial'].errors?.['required'])
+          {
+          <span class="mensaje-error">Este campo es obligatorio</span>
+          }
+          @if(formDestinatariosModal.controls['destinatarioRazonSocial'].errors?.['maxlength'])
+          {
+          <span class="mensaje-error"
+            >No puede exceder los 120 caracteres.</span
+          >
+          }
+        </div>
+        }
+      </div>
+
+      <div class="clearfix"></div>
+
+      <div class="col-md-4 mt-5 dropdown-field">
+        <div class="form-group">
+          <app-catalogo-select
+            [catalogo]="paisData"
+            [label]="'País'"
+            [required]="true"
+            name="paisNacionalDestinatario"
+            id="paisNacionalDestinatario1"
+            formControlName="paisNacionalDestinatario"
+          ></app-catalogo-select>
+        </div>
+      </div>
+
+      <!-- Show Ciudad only if extranjero -->
+      <div class="col-md-4 mt-5 dropdown-field" *ngIf="esExtranjero">
+        <label class="form-label" for="ciudadNacionalDestinatario"
+          >Ciudad:</label
+        >
+        <input
+          type="text"
+          class="form-control"
+          id="ciudadNacionalDestinatario"
+          formControlName="ciudadNacionalDestinatario"
+          name="ciudadNacionalDestinatario"
+          [required]="true"
+        />
+        @if(formDestinatariosModal.controls['ciudadNacionalDestinatario'].invalid
+        &&
+        formDestinatariosModal.controls['ciudadNacionalDestinatario'].touched){
+        <div class="d-grid">
+          @if(formDestinatariosModal.controls['ciudadNacionalDestinatario'].errors?.['required']){
+          <span class="mensaje-error">Este campo es obligatorio</span>
+          }
+          @if(formDestinatariosModal.controls['ciudadNacionalDestinatario'].errors?.['maxlength']){
+          <span class="mensaje-error">No puede exceder los 12 caracteres.</span>
+          }
+        </div>
+        }
+      </div>
+
+      <!-- Show Entidad Federativa only if nacional -->
+      <div class="col-md-4 mt-5 dropdown-field" *ngIf="esNacional">
+        <div class="form-group">
+          <app-catalogo-select
+            [catalogo]="estadoData"
+            [label]="'Entidad Federativa*:'"
+            [required]="true"
+            name="entidadFederativaDestinatario"
+            id="entidadFederativaDestinatario"
+            formControlName="entidadFederativaDestinatario"
+          ></app-catalogo-select>
+        </div>
+        @if(formDestinatariosModal.controls['entidadFederativaDestinatario'].invalid
+        &&
+        formDestinatariosModal.controls['entidadFederativaDestinatario'].touched){
+        <div class="d-grid">
+          @if(formDestinatariosModal.controls['entidadFederativaDestinatario'].errors?.['required']){
+          <span class="mensaje-error">Este campo es obligatorio</span>
+          }
+          @if(formDestinatariosModal.controls['entidadFederativaDestinatario'].errors?.['maxlength']){
+          <span class="mensaje-error"
+            >No puede exceder los 120 caracteres.</span
+          >
+          }
+        </div>
+        }
+      </div>
+
+      <div class="col-md-4 mt-5">
+        <label class="form-label" for="codigoPostalDestinatario"
+          >Código postal o equivalente*:</label
+        >
+        <input
+          type="text"
+          class="form-control"
+          id="codigoPostalDestinatario"
+          formControlName="codigoPostalDestinatario"
+          name="codigoPostalDestinatario"
+          [required]="true"
+        />
+        @if(formDestinatariosModal.controls['codigoPostalDestinatario'].invalid
+        && formDestinatariosModal.controls['codigoPostalDestinatario'].touched){
+        <div class="d-grid">
+          @if(formDestinatariosModal.controls['codigoPostalDestinatario'].errors?.['required'])
+          {
+          <span class="mensaje-error">Este campo es obligatorio</span>
+          }
+          @if(formDestinatariosModal.controls['codigoPostalDestinatario'].errors?.['maxlength'])
+          {
+          <span class="mensaje-error">No puede exceder los 12 caracteres.</span>
+          }
+        </div>
+        }
+      </div>
+
+      <div class="col-md-8 mt-4 dropdown-field">
+        <label class="form-label" for="domicilio">Domicilio*:</label>
+        <input
+          type="text"
+          class="form-control"
+          id="domicilioDestinatario"
+          formControlName="domicilioDestinatario"
+          name="domicilio"
+          [required]="true"
+        />
+        @if(formDestinatariosModal.controls['domicilioDestinatario'].invalid &&
+        formDestinatariosModal.controls['domicilioDestinatario'].touched){
+        <div class="d-grid">
+          @if(formDestinatariosModal.controls['domicilioDestinatario'].errors?.['required'])
+          {
+          <span class="mensaje-error">Este campo es obligatorio</span>
+          }
+          @if(formDestinatariosModal.controls['domicilioDestinatario'].errors?.['maxlength'])
+          {
+          <span class="mensaje-error"
+            >No puede exceder los 100 caracteres.</span
+          >
+          }
+        </div>
+        }
+      </div>
+
+      <div class="col-md-12 mt-5 pb-5 d-flex justify-content-end">
+        <button
+          type="button"
+          class="btn btn-danger"
+          id="cancelarDestinatarioBtn"
+          (click)="cambiarDestinatario()"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="btn btn-default ms-3"
+          id="limpiarDestinatarioBtn"
+          (click)="limparDestinatario()"
+        >
+          Limpiar
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary ms-3"
+          id="registroDestinatarioBtn"
+          (click)="openAceptarModal()"
+        >
+          Agregar
+        </button>
+      </div>
+    </form>
+  </div>
+</app-modal>
+
+<app-modal [active]="showAceptarModal" class="aceptar-modal">
+  <div>
+    <div class="black-top-header"></div>
+    <hr />
+    <p>Agregado correctamente.</p>
+    <div class="d-flex justify-content-end mt-4">
+      <button
+        type="button"
+        class="btn btn-primary ms-3"
+        (click)="confirmAgregar()"
+      >
+        Aceptar
+      </button>
+    </div>
+  </div>
+</app-modal>
+
+<app-modal [active]="showAgenteModal">
+  <div>
+    <ng-titulo titulo="Agente aduanal" />
+    <form [formGroup]="formAgenteAduanal">
+      <div class="col-md-4 mt-5 dropdown-field">
+        <label class="form-label" for="nombreAgente">Nombre(s)*:</label>
+        <input
+          type="text"
+          class="form-control"
+          id="nombreAgente"
+          formControlName="nombreAgenteAduanal"
+          name="nombreAgente"
+          [required]="true"
+        />
+        @if(formAgenteAduanal.controls['nombreAgenteAduanal'].invalid &&
+        formAgenteAduanal.controls['nombreAgenteAduanal'].touched){
+        <div class="d-grid">
+          @if(formAgenteAduanal.controls['nombreAgenteAduanal'].errors?.['required'])
+          {
+          <span class="mensaje-error">Este campo es obligatorio</span>
+          }
+          @if(formAgenteAduanal.controls['nombreAgenteAduanal'].errors?.['maxlength'])
+          {
+          <span class="mensaje-error">No puede exceder los 28 caracteres.</span>
+          }
+        </div>
+        }
+      </div>
+
+      <div class="col-md-4 mt-5 dropdown-field">
+        <label class="form-label" for="apellidoPaternoAgente"
+          >Primer apellido*:</label
+        >
+        <input
+          type="text"
+          class="form-control"
+          id="apellidoPaternoAgente"
+          formControlName="primerApellidoAgenteAduanal"
+          name="apellidoPaternoAgente"
+          [required]="true"
+        />
+        @if(formAgenteAduanal.controls['primerApellidoAgenteAduanal'].invalid &&
+        formAgenteAduanal.controls['primerApellidoAgenteAduanal'].touched){
+        <div class="d-grid">
+          @if(formAgenteAduanal.controls['primerApellidoAgenteAduanal'].errors?.['required'])
+          {
+          <span class="mensaje-error">Este campo es obligatorio</span>
+          }
+          @if(formAgenteAduanal.controls['primerApellidoAgenteAduanal'].errors?.['maxlength'])
+          {
+          <span class="mensaje-error">No puede exceder los 20 caracteres.</span>
+          }
+        </div>
+        }
+      </div>
+
+      <div class="col-md-4 mt-5 dropdown-field">
+        <label class="form-label" for="apellidoMaternoAgente"
+          >Segundo apellido*:</label
+        >
+        <input
+          type="text"
+          class="form-control"
+          id="apellidoMaternoAgente"
+          formControlName="segundoApellidoAgenteAduanal"
+          name="apellidoMaternoAgente"
+          [required]="true"
+        />
+        @if(formAgenteAduanal.controls['segundoApellidoAgenteAduanal'].invalid
+        && formAgenteAduanal.controls['segundoApellidoAgenteAduanal'].touched){
+        <div class="d-grid">
+          @if(formAgenteAduanal.controls['segundoApellidoAgenteAduanal'].errors?.['required'])
+          {
+          <span class="mensaje-error">Este campo es obligatorio</span>
+          }
+          @if(formAgenteAduanal.controls['segundoApellidoAgenteAduanal'].errors?.['maxlength'])
+          {
+          <span class="mensaje-error">No puede exceder los 20 caracteres.</span>
+          }
+        </div>
+        }
+      </div>
+
+      <div class="col-md-8 mt-5 dropdown-field">
+        <label class="form-label" for="patente"
+          >Número de patente de agente aduanal*:</label
+        >
+        <input
+          type="text"
+          class="form-control"
+          id="patente"
+          formControlName="patenteAgenteAduanal"
+          name="patente"
+          [required]="true"
+        />
+        @if(formAgenteAduanal.controls['patenteAgenteAduanal'].invalid &&
+        formAgenteAduanal.controls['patenteAgenteAduanal'].touched){
+        <div class="d-grid">
+          @if(formAgenteAduanal.controls['patenteAgenteAduanal'].errors?.['required'])
+          {
+          <span class="mensaje-error">Este campo es obligatorio</span>
+          }
+          @if(formAgenteAduanal.controls['patenteAgenteAduanal'].errors?.['maxlength'])
+          {
+          <span class="mensaje-error">No puede exceder los 4 caracteres.</span>
+          }
+        </div>
+        }
+      </div>
+
+      <div class="col-md-12 mt-5 d-flex justify-content-end">
+        <button
+          type="button"
+          class="btn btn-danger"
+          id="btnCancelarAgente"
+          (click)="cambiarAgenteAduanal()"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary ms-3"
+          id="btnAgregarAgente"
+          (click)="enviarAgenteAduanalFormulario()"
+        >
+          Agregar
+        </button>
+      </div>
+    </form>
+  </div>
+</app-modal>
+
+<app-modal [active]="showDestinatarioSeleccionarModal">
+  <ng-titulo titulo="Selecciona el destinatario" />
+
+  <app-tabla-dinamica
+    [configuracionTabla]="tablaDestinatariosData"
+    [datos]="agregarDestinatariosTablaDatos"
+    [tipoSeleccionTabla]="tablaSeleccionCheckbox"
+    [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+  >
+  </app-tabla-dinamica>
+  <div class="col-md-12 mt-5 d-flex justify-content-end">
+    <button
+      type="button"
+      class="btn btn-danger"
+      id="btnCancelarAgente"
+      (click)="cambiarDestinatarioSeleccionar()"
+      [disabled]="esFormularioSoloLectura"
+    >
+      Cancelar
+    </button>
+    <button type="button" class="btn btn-primary ms-3" id="btnAgregarAgente">
+      Agregar
+    </button>
+  </div>
+</app-modal>

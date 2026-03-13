@@ -1,0 +1,344 @@
+<div class="container">
+  <ng-titulo titulo="Mercancía o producto a importar" />
+
+  <form [formGroup]="formSolicitud">
+    <div class="row">
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="pantallasActionService.tiposSolicitud" formControlName="tipoSolicitud" [label]="'Tipo de Producto'"
+          [required]="true" [isDisabled]="esFormularioSoloLectura" name="tipoSolicitud" (change)="tipoSolicitudSeleccion()"></app-catalogo-select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <h2>Autorización COFERPRIS</h2>
+      </div>
+      <div class="col-md-6 mt-4">
+        <div class="form-check mt-4">
+          <input class="form-check-input" (click)="seleccioneAutorizacion()" type="checkbox" value="" id="autorizacion"
+            formControlName="autorizacion">
+          <label class="form-check-label" for="autorizacion">No aplica permiso de COFEPRIS
+          </label>
+        </div>
+      </div>
+    </div>
+    @if(!formSolicitud.get('autorizacion')?.value) {
+    <div class="row">
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="pantallasActionService.noDePermisocoferprise" formControlName="noDePermisocoferprise"
+          [label]="'No. de permiso COFERPRIS'" [required]="true" [isDisabled]="esFormularioSoloLectura" name="noDePermisocoferprise"
+          (change)="noDePermisocoferpriseSeleccion()"></app-catalogo-select>
+      </div>
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="nombreComercial">Nombre comercial del permiso COFERPRIS</label>
+          <input class="form-control" id="nombreComercial" formControlName="nombreComercial" type="text">
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8">
+        <label class="form-label" for="cantidadAutorizada">Cantidad autorizada:</label>
+        <input class="form-control" id="cantidadAutorizada" formControlName="cantidadAutorizada" type="text" libUppercase>
+      </div>
+    </div>
+    }
+    <ng-titulo titulo="Datos de la mercancía a importar"/>
+    <ng-alert [CONTENIDO]="TEXTOS.ADJUNTAR" [CUSTOMECLASS]="infoAlert"></ng-alert>
+
+    <div class="row">
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="pantallasActionService.fraccionArancelaria" formControlName="fraccionArancelaria"
+          [label]="'Fracción arancelaria'" [required]="true" name="fraccionArancelaria" [isDisabled]="esFormularioSoloLectura"
+          (change)="fraccionArancelariaSeleccion()" [placeholder]="'Seleccione una opción'"></app-catalogo-select>
+      </div>
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="descripcionDeLaFraccion">Descripción de la fracción arancelaria:<span 
+            class="bi bi-question-circle-fill fs-4 m-1" title="Title" 
+            ata-bs-toggle="tooltip"></span></label>
+          <input class="form-control" id="descripcionDeLaFraccion" formControlName="descripcionDeLaFraccion"
+            type="text">
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="pantallasActionService.numeroCas" formControlName="numeroCas" [label]="'Número C.A.S.'"
+          [required]="true" [isDisabled]="esFormularioSoloLectura" name="numeroCas" (change)="numeroCasSeleccione()"></app-catalogo-select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <label class="form-label" for="descripcionNoArancelaria">Descripción no arancelaria:</label>
+          <input class="form-control min-hgt" id="descripcionNoArancelaria" formControlName="descripcionNoArancelaria" type="text">
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <label class="form-label" for="nombreQuimico">Nombre químico:</label>
+            <input class="form-control min-hgt" id="nombreQuimico" formControlName="nombreQuimico" type="text">
+        </div>
+      </div>
+    </div>
+    @if(!formSolicitud.get('autorizacion')?.value) {
+    <div class="row mt-5">
+      <div class="col-md-12">
+        <div class="pull-right">
+          <button type="button" name="modificarListaDeNumeros" class="btn btn-default" (click)="modificarListaDeNumeros()">
+            Modificar
+          </button>
+          <button type="button" name="eliminarListaDeNumeros" class="btn btn-danger ms-2" (click)="eliminarModal()">
+            Eliminar
+          </button>
+          <button type="button" name="agregarListaDeNumeros" class="btn btn-primary ms-2" (click)="agregarListaDeNumeros()">
+            Agregar
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <h5 class="mt-3">List de Número CAS*:</h5>
+        <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccion" [configuracionTabla]="configuracionSustanciasTabla"
+          [datos]="sustanciasSensiblesTablaDatos"
+          (listaDeFilaSeleccionada)="sustanciasSensiblesSeleccionadas = $event"></app-tabla-dinamica>
+      </div>
+    </div>
+    }
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label" for="nombreDeLaMercancia">Nombre de la mercancía o producto a importar:</label>
+          <input class="form-control" id="nombreDeLaMercancia"
+            type="text" formControlName="nombreDeLaMercancia" maxlength="1000"
+            [ngClass]="isValid(formSolicitud, 'nombreDeLaMercancia') ? 'required' : ''"
+            (change)="setValoresStore(formSolicitud,'nombreDeLaMercancia')">
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label" for="unNumero">Número UN:</label>
+          <input class="form-control" id="unNumero" type="text" formControlName="unNumero"
+            [ngClass]="isValid(formSolicitud, 'unNumero') ? 'required' : ''" 
+            (change)="setValoresStore(formSolicitud,'unNumero')" maxlength="50" pattern="^[A-Za-z0-9]+$">
+            <div class="mensaje-error" *ngIf="formSolicitud.get('unNumero')?.errors?.['pattern'] || formSolicitud.get('unNumero')?.errors?.['maxlength']">
+              Longitud máxima 50 dígitos</div>
+          <div class="mensaje-error" *ngIf="formSolicitud.get('unNumero')?.errors?.['required'] && formSolicitud.get('unNumero')?.touched">
+              Este campo es obligatorio</div>
+        </div>
+      </div>
+    </div>
+
+    @if(formSolicitud.get('autorizacion')?.value) {
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label" for="datosNombreComercial">Nombre comercial *:</label>
+            <input class="form-control" id="datosNombreComercial" type="text"
+              formControlName="datosNombreComercial" maxlength="1000"
+              [ngClass]="isValid(formSolicitud, 'datosNombreComercial') ? 'required' : ''"
+              (change)="setValoresStore(formSolicitud,'datosNombreComercial')">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label" for="datosNumeroComun">Nombre común*:</label>
+            <input class="form-control" id="datosNumeroComun" type="text" maxlength="250"
+              formControlName="datosNumeroComun" [ngClass]="isValid(formSolicitud, 'datosNumeroComun') ? 'required' : ''"
+              (change)="setValoresStore(formSolicitud,'datosNumeroComun')">
+          </div>
+        </div>
+      </div>
+  
+      <div class="row mt-5">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label" for="datosPorcentaje">Porcentaje de concentración*:</label>
+            <input class="form-control" id="datosPorcentaje" type="number"
+              formControlName="datosPorcentaje" [ngClass]="isValid(formSolicitud, 'datosPorcentaje') ? 'required' : ''"
+              (change)="setValoresStore(formSolicitud,'datosPorcentaje')" maxlength="100">
+              <div class="mensaje-error" *ngIf="formSolicitud.get('datosPorcentaje')?.errors?.['maxlength']">
+                Longitud máxima 100 caracteres</div>
+            <div class="mensaje-error" *ngIf="formSolicitud.get('datosPorcentaje')?.errors?.['required'] && formSolicitud.get('datosPorcentaje')?.touched">
+                Este campo es obligatorio</div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label" for="datosComponentes">Componentes:</label>
+            <input class="form-control" id="datosComponentes" type="text"
+              formControlName="datosComponentes" [ngClass]="isValid(formSolicitud, 'datosComponentes') ? 'required' : ''"
+              (change)="setValoresStore(formSolicitud,'datosComponentes')">
+              <div class="mensaje-error" *ngIf="formSolicitud.get('datosComponentes')?.errors?.['maxlength']">
+                Longitud máxima 250 caracteres</div>
+            <div class="mensaje-error" *ngIf="formSolicitud.get('datosComponentes')?.errors?.['required'] && formSolicitud.get('datosComponentes')?.touched">
+                Este campo es obligatorio</div>
+          </div>
+        </div>
+      </div>
+  
+      <div class="row">
+        <div class="col-md-6">
+          <app-catalogo-select [catalogo]="pantallasActionService.clasificacion" formControlName="clasificacion"
+            [label]="'Clasificación toxicológica'" [required]="true" name="clasificacion" [isDisabled]="esFormularioSoloLectura"
+            (change)="clasificacionSeleccione()"></app-catalogo-select>
+        </div>
+        <div class="col-md-6">
+          <app-catalogo-select [catalogo]="pantallasActionService.estadoFisico" formControlName="estadoFisico" [label]="'Estado Físico'"
+            [required]="true" [isDisabled]="esFormularioSoloLectura" name="estadoFisico" (change)="estadoFisicoSeleccione()"></app-catalogo-select>
+        </div>
+      </div>
+  
+      <div class="row mt-3">
+        <div class="col-md-6">
+          <app-catalogo-select [catalogo]="pantallasActionService.datosObjecto" formControlName="datosObjecto"
+            [label]="'Objeto de la importación'" [required]="true" name="datosObjecto" [isDisabled]="esFormularioSoloLectura"
+            (change)="datosObjectoSeleccione()"></app-catalogo-select>
+        </div>
+        <div class="col-md-6">
+          @if(formSolicitud.get('estadoFisico')?.value === '1') {
+            <div class="form-group">
+              <label class="form-label" for="especifique:">Especifique *:</label>
+              <input class="form-control" id="especifique" formControlName="especifique"
+                type="text" maxlength="200">
+                <div class="mensaje-error" *ngIf="formSolicitud.get('especifique')?.errors?.['maxlength']">
+                  Longitud máxima 200 caracteres</div>
+              <div class="mensaje-error" *ngIf="formSolicitud.get('especifique')?.errors?.['required'] && formSolicitud.get('especifique')?.touched">
+                  Este campo es obligatorio</div>
+            </div>
+          }
+        </div>
+      </div>
+      @if(formSolicitud.get('datosObjecto')?.value === '1') {
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-label" for="especifiqueDos">Especifique *:</label>
+              <input class="form-control" id="especifiqueDos" formControlName="especifiqueDos"
+                type="text" maxlength="250">
+                <div class="mensaje-error" *ngIf="formSolicitud.get('especifiqueDos')?.errors?.['maxlength']">
+                  Longitud máxima 250 caracteres</div>
+              <div class="mensaje-error" *ngIf="formSolicitud.get('especifiqueDos')?.errors?.['required'] && formSolicitud.get('especifiqueDos')?.touched">
+                  Este campo es obligatorio</div>
+            </div>
+          </div>
+        </div>
+      }
+  
+  
+      <div class="row mt-5">
+        <div class="col-md-12 mt-5">
+          <crosslist [fechas]="seleccionarOrigenDelPais" [botones]="paisDeProcedenciaBotons"
+            [label]="paisDeProcedenciaLabel"></crosslist>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-md-12 mt-5">
+          <crosslist [fechas]="listaPaisDelProducto" [botones]="paisDelProductoBotons" [label]="paisDelProductoLabel">
+          </crosslist>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-md-12 mt-5">
+          <crosslist [fechas]="listaDeEntradaPersonalizada" [botones]="aduanasDeEntradaBotons"
+            [label]="aduanasDeEntradaLabel"></crosslist>
+        </div>
+      </div>
+    }
+
+    <ng-titulo titulo="Cantidad a importar" />
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="cantidad">Cantidad*:</label>
+          <input class="form-control" id="cantidad" type="text"
+            formControlName="cantidad" [ngClass]="isValid(formSolicitud, 'cantidad') ? 'required' : ''"
+            (change)="setValoresStore(formSolicitud,'cantidad')" (input)="buscarRepresentanteRfc()">
+            
+            <!-- Only show numeric error when field is touched and has numeric validation error -->
+            <div class="mensaje-error" *ngIf="formSolicitud.get('cantidad')?.errors?.['numeric'] && formSolicitud.get('cantidad')?.touched">
+              Por favor, escribe un número entero válido
+            </div>
+            
+            <!-- Show specific error messages when field has other validation errors -->
+            <div class="mensaje-error" *ngIf="formSolicitud.get('cantidad')?.errors?.['maxDigitsDecimals'] && formSolicitud.get('cantidad')?.touched">
+              Este campo permite 12 enteros y tres decimales
+            </div>
+            
+            <div class="mensaje-error" *ngIf="formSolicitud.get('cantidad')?.errors?.['required'] && formSolicitud.get('cantidad')?.touched">
+              Este campo es obligatorio
+            </div>
+            
+            <div class="mensaje-error" *ngIf="formSolicitud.get('cantidad')?.errors?.['min'] && formSolicitud.get('cantidad')?.touched">
+              La cantidad debe ser mayor a 0
+            </div>
+          </div>
+      </div>
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="cantidadLetra">Cantidad(letra)*:</label>
+          <input class="form-control" id="cantidadLetra" formControlName="cantidadLetra" type="text"
+           [ngClass]="isValid(formSolicitud, 'cantidadLetra') ? 'required' : ''">
+           
+          <!-- Show message ONLY when there's a cantidad value and field is disabled -->
+          <div class="mensaje-info" *ngIf="formSolicitud.get('cantidad')?.value && formSolicitud.get('cantidadLetra')?.disabled">
+            Si la cantidad capturada es menor o igual a 400 no es obligatorio anexar la Póliza de seguro y recibo de pago vigentes.
+          </div>
+          
+          <!-- Show message when quantity > 400 and field is enabled but not touched -->
+          <div class="mensaje-info" *ngIf="isCantidadMayorA400() && formSolicitud.get('cantidadLetra')?.enabled && !formSolicitud.get('cantidadLetra')?.touched">
+            Si la cantidad capturada es mayor a 400 es obligatorio capturar la cantidad en letra.
+          </div>
+          
+          <!-- Required error for cantidadLetra when quantity > 400 - show in red when touched -->
+          <div class="mensaje-error" *ngIf="formSolicitud.get('cantidadLetra')?.errors?.['required'] && formSolicitud.get('cantidadLetra')?.touched && isCantidadMayorA400()">
+            Si la cantidad capturada es mayor a 400 es obligatorio capturar la cantidad en letra.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <app-catalogo-select [catalogo]="pantallasActionService.unidadDeMedida" formControlName="unidadDeMedida" [label]="'Unidad de medida'"
+          [required]="true" [isDisabled]="esFormularioSoloLectura" name="unidadDeMedida" (change)="unidadDeMedidaSeleccione()"></app-catalogo-select>
+      </div>
+    </div>
+  </form>
+</div>
+@if(confirmacionAlerta){
+<section>
+  <lib-notificaciones
+    [notificacionInput]="seleccionarFilaNotificacion"
+    (confirmacionModal)="confirmarEliminacionSustancias($event)"
+  >
+  </lib-notificaciones>
+</section>
+}
+
+@if(mostrarAlerta){
+<section>
+  <lib-notificaciones
+    [notificacionInput]="nuevaNotificacion"
+    (confirmacionModal)="mostrarAlerta = false"
+  >
+  </lib-notificaciones>
+</section>
+}
+
+@if(mostrarNotificacion){
+<section>
+  <lib-notificaciones
+    [notificacionInput]="notificacionEliminacionExitosa"
+    (confirmacionModal)="cerrarNotificacionEliminacion($event)"
+  >
+  </lib-notificaciones>
+</section>
+}
