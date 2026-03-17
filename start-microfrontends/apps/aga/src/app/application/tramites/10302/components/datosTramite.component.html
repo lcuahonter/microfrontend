@@ -1,0 +1,507 @@
+<div class="container">
+  <form
+    [formGroup]="tramiteForm"
+    (ngSubmit)="validarDestinatarioFormulario()"
+    class="row mt-5"
+  >
+    <div class="col-md-12">
+      <ng-container formGroupName="exencionImpuestos">
+        <div class="row mt-5">
+          <div class="col-md-8">
+            <app-catalogo-select
+              [catalogo]="aduana"
+              [label]="'Aduana por la que ingresará la mercancía'"
+              formControlName="aduana"
+              [required]="true"
+              (change)="aduanaSeleccion()"
+              name="aduana"
+              [isDisabled]="esFormularioSoloLectura"
+            >
+            </app-catalogo-select>
+          </div>
+
+          <div class="col-md-4" style="margin-top: 35px">
+            <lib-input-check
+              [id]="'organismoPublico'"
+              [label]="'Organismo público'"
+              [required]="true"
+              formControlName="organismoPublico"
+              (change)="organismoPublico()"
+              [isDisabled]="esFormularioSoloLectura"
+            ></lib-input-check>
+          </div>
+        </div>
+        <ng-titulo titulo="Mercancía" />
+        <div class="row">
+          <div class="col-md-6">
+            <label for="usoEspecifico"
+              >Fin al cual se destinará la mercancía*:</label
+            >
+          </div>
+          <div class="col-md-12">
+            <div class="form-group">
+              <textarea
+                class="form-control form-check-input"
+                id="usoEspecifico"
+                required="true"
+                formControlName="usoEspecifico"
+                (change)="
+                  setValoresStore(
+                    exencionImpuestos,
+                    'usoEspecifico',
+                    'setUsoEspecifico')"
+                cols="110"
+                rows="4"
+                [disabled]="esFormularioSoloLectura"
+              ></textarea>
+            </div>
+          </div>
+          <div class="table-container" style="margin-top: 20px">
+            <ng-table
+              [commonTableHeader]="mercanciaHeaderData"
+              [commonTableBody]="mercanciaBodyData"
+            ></ng-table>
+            <div *ngIf="esFormularioSoloLectura" class="disable-overlay"></div>
+          </div>
+          <div class="col-md-12 mt-5 d-flex justify-content-end">
+            <button type="button" class="btn btn-default" [disabled]="esFormularioSoloLectura">Modificar</button>
+            <button type="button" class="btn btn-default ms-3" [disabled]="esFormularioSoloLectura">Eliminar</button>
+            <button
+              type="button"
+              class="btn btn-primary ms-3"
+              data-bs-toggle="modal"
+              data-bs-target="#modalAgregarMercancias"
+              (click)="abrirDialogoMercancias()"
+              [disabled]="esFormularioSoloLectura"
+            >
+              Agregar
+            </button>
+          </div>
+        </div>
+
+        <ng-titulo titulo="Datos del donante" />
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="rfc">RFC*:</label>
+              <span
+                class="bi bi-question-circle-fill"
+                title="Registro Federal de Contribuyentes"
+                data-bs-toggle="tooltip"
+              ></span>
+              <input
+                type="text"
+                id="rfc"
+                formControlName="rfc"
+                maxlength="13"
+                class="form-control"
+                (change)="setValoresStore(exencionImpuestos, 'rfc', 'setRfc')"
+                [disabled]="esFormularioSoloLectura"
+              />
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="form-group">
+              <label for="numeroProgramaImmex">Número de programa Immex*:</label>
+              <span
+                class="bi bi-question-circle-fill"
+                title="Registro Federal de Contribuyentes"
+                data-bs-toggle="tooltip"
+              ></span>
+              <input
+                type="text"
+                id="numeroProgramaImmex"
+                formControlName="numeroProgramaImmex"
+                maxlength="11"
+                class="form-control"
+                (change)="
+                  setValoresStore(
+                    exencionImpuestos,
+                    'numeroProgramaImmex',
+                    'setNumeroProgramaImmex')"
+                [disabled]="esFormularioSoloLectura"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-8">
+            <div class="form-group">
+              <label for="razonSocial">Nombre / Razón Social*:</label>
+              <input
+                type="text"
+                id="razonSocial"
+                formControlName="razonSocial"
+                maxlength="180"
+                readonly
+                class="form-control"
+              />
+            </div>
+          </div>
+        </div>
+
+        <ng-titulo titulo="Domicilio fiscal" />
+        <div class="row">
+          <div class="col-md-4">
+            <app-catalogo-select
+              [catalogo]="pais"
+              [label]="'País'"
+              [required]="true"
+              formControlName="pais"
+              (change)="paisSeleccion()"
+              name="pais" [isDisabled]="true"
+            ></app-catalogo-select>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="codigoPostal">C.P. o zona postal*:</label>
+              <input
+                type="text"
+                id="codigoPostal"
+                formControlName="codigoPostal"
+                maxlength="8"
+                readonly
+                class="form-control"
+              />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="estado">Estado*:</label>
+              <input
+                type="text"
+                id="estado"
+                formControlName="estado"
+                maxlength="30"
+                readonly
+                class="form-control"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="colonia">Colonia*:</label>
+              <input
+                type="text"
+                id="colonia"
+                formControlName="colonia"
+                maxlength="80"
+                readonly
+                class="form-control"
+              />
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="form-group">
+              <label for="calle">Calle*:</label>
+              <input
+                type="text"
+                id="calle"
+                formControlName="calle"
+                maxlength="80"
+                readonly
+                class="form-control"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="numeroExterior">Número y/o letra exterior*:</label>
+              <input
+                type="text"
+                id="numeroExterior"
+                formControlName="numeroExterior"
+                maxlength="40"
+                readonly
+                class="form-control"
+              />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="numeroInterior">Número y/o letra interior:</label>
+              <input
+                type="text"
+                id="numeroInterior"
+                formControlName="numeroInterior"
+                maxlength="30"
+                pattern="\\d(\\d?){9}"
+                class="form-control"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-8">
+            <div class="form-group">
+              <label for="correoElectronico">Correo electrónico:</label>
+              <input
+                type="email"
+                id="correoElectronico"
+                formControlName="correoElectronico"
+                maxlength="50"
+                readonly
+                class="form-control"
+              />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="telefono">Teléfono:</label>
+              <input
+                type="tel"
+                id="telefono"
+                formControlName="telefono"
+                maxlength="30"
+                readonly
+                class="form-control"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-8">
+            <div class="form-group">
+              <label for="correoElectronicoOpcional"
+                >Correo electrónico (opcional):</label
+              >
+              <input
+                type="email"
+                id="correoElectronicoOpcional"
+                formControlName="correoElectronicoOpcional"
+                maxlength="50"
+                class="form-control"
+                (change)="
+                  setValoresStore(
+                    exencionImpuestos,
+                    'correoElectronicoOpcional',
+                    'setCorreoElectronicoOpcional')"
+                [disabled]="esFormularioSoloLectura"
+              />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="telefonoOpcional">Teléfono (opcional):</label>
+              <input
+                type="tel"
+                id="telefonoOpcional"
+                formControlName="telefonoOpcional"
+                maxlength="30"
+                class="form-control"
+                (change)="
+                  setValoresStore(
+                    exencionImpuestos,
+                    'telefonoOpcional',
+                    'setTelefonoOpcional')"
+                [disabled]="esFormularioSoloLectura"
+              />
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </form>
+</div>
+
+<div
+  class="modal fade"
+  id="modalAgregarMercancias"
+  tabindex="-1"
+  aria-labelledby="modalAgregarMercanciasLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form [formGroup]="agregarMercanciasForm">
+          <!--Datos de la mercancía-->
+          <ng-titulo titulo="Datos de la mercancía"></ng-titulo>
+          <ng-container formGroupName="datosMercancia">
+            <div class="row">
+              <div class="col-md-4">
+                <app-catalogo-select
+                  [catalogo]="tipoDeMercancia"
+                  [label]="'Tipo de mercancía'"
+                  formControlName="tipoDeMercancia"
+                  [required]="true"
+                  (change)="tipoDeMercanciaSeleccion()"
+                  name="tipoDeMercancia"
+                ></app-catalogo-select>
+              </div>
+              <div class="col-md-8">
+                <app-catalogo-select
+                  [catalogo]="condicionMercancia"
+                  [label]="'Condición de la mercancía'"
+                  [required]="true"
+                  formControlName="condicionMercancia"
+                  (change)="condicionMercanciaSeleccion()"
+                  name="condicionMercancia" [isDisabled]="true"
+                ></app-catalogo-select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-8">
+                <label for="cantidadComercial">Cantidad*:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="cantidad"
+                  id="cantidad"
+                  maxlength="12"
+                  [required]="true"
+                  (change)="
+                    setValoresStore(
+                      exencionImpuestos,
+                      'datosMercancia.cantidad',
+                      'setCantidad')"
+                />
+              </div>
+              <div class="col-md-4">
+                <app-catalogo-select
+                  [catalogo]="unidadMedida"
+                  [label]="'Unidad de medida'"
+                  [required]="true"
+                  name="unidadMedida"
+                  formControlName="unidadMedida"
+                  (change)="unidadMedidaSeleccion()"
+                ></app-catalogo-select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12" style="margin-top: 15px">
+                <div class="form-group">
+                  <label id="leyenda"
+                    >En su caso (maquinaría y equipo obsoleto)</label
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="marca">Marca:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="marca"
+                    id="marca"
+                    maxlength="100"
+                    (change)="
+                      setValoresStore(
+                        exencionImpuestos,
+                        'datosMercancia.marca',
+                        'setMarca')"
+                  />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <app-catalogo-select
+                  [catalogo]="ano"
+                  [label]="'Año de importación temporal'"
+                  name="ano"
+                  formControlName="ano"
+                  (change)="anoSeleccion()"
+                ></app-catalogo-select>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="modelo">Modelo:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="modelo"
+                    id="modelo"
+                    maxlength="50"
+                    (change)="
+                      setValoresStore(
+                        exencionImpuestos,
+                        'datosMercancia.modelo',
+                        'setModelo')"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-8">
+                <div class="form-group">
+                  <label for="serie">Número de serie:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="serie"
+                    id="serie"
+                    size="50"
+                    maxlength="25"
+                    (change)="
+                      setValoresStore(
+                        exencionImpuestos,
+                        'datosMercancia.serie',
+                        'setSerie')"
+                  />
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </form>
+      </div>
+      <div class="modal-footer custom-footer justify-content-end">
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="limpiarMercancias()"
+        >
+          Limpiar
+        </button>
+        <button
+          type="button"
+          class="btn btn-default"
+          data-bs-dismiss="modal"
+          #closeModal
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+        (click)="agregarConfirmarModal()"
+        >
+          Agregar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  id="confirmarModal"
+  aria-labelledby="confirmarModalLabel"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+  #confirmarModal
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content modalsm">
+      <div class="modal-body">
+        <label>La mercancía fue <br />agregada correctamente.</label>
+      </div>
+      <div class="modal-footer" style="justify-content: center">
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="agregarMercancias()"
+          data-bs-dismiss="modal"
+          #closeConfirmarModal
+        >
+          Acceptar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

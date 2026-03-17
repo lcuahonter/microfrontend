@@ -1,0 +1,47 @@
+<div class="container">
+    <div class="form">
+    <ng-titulo titulo="Agregar destinatario (destino final)"> </ng-titulo>
+    <div class="col-md-12">
+        <div [formGroup]="esModoInstalacion ? formularioAgregarInstalacion : formularioAgregarDestinatario">
+        <label for="tipoPersona" class="form-label">Tipo persona*:</label>
+        <app-input-radio [radioOptions]="tipoPersona" [isRequired]="true" [layout]="'vertical'"
+            [isBold]="true" (valueChange)="establecerCambioDeValor({campo:'tipoPersona', valor:$event})" formControlName="tipoPersona"></app-input-radio>
+        </div>
+    </div>
+</div>
+        @if (!esModoInstalacion) {
+            <formas-dinamicas 
+                [forma]="formularioAgregarDestinatario" 
+                [formularioDatos]="configuracionFormularioDestinatario" 
+                [formularioTitulo]="'Datos personales'"
+                [estado]="estadoSeleccionado.datosDelTerceroDestinatario || {}"
+                (emitirCambioDeValor)="establecerCambioDeValor($event,'datosDelTerceroDestinatario')">
+            </formas-dinamicas>
+        } @else {
+            <formas-dinamicas 
+                [forma]="formularioAgregarInstalacion" 
+                [formularioDatos]="configuracionFormularioInstalacion" 
+                [formularioTitulo]="'Datos personales'"
+                [estado]="estadoSeleccionado.datosDelTerceroInstalacion || {}"
+                (emitirCambioDeValor)="establecerCambioDeValor($event,'datosDelTerceroInstalacion')">
+            </formas-dinamicas>
+        }
+    <div class="row my-5">
+        <div class="col-md-8">
+            <p>* Campos obligatorios</p>
+        </div>
+         <div class="col-md-4 d-flex justify-content-end">
+                <button name="limpiar" class="btn btn-primary me-2"
+                    (click)="formularioAgregarDestinatario.reset()">
+                    Limpiar
+                </button>
+                <button name="cancelar" class="btn btn btn-danger me-2" 
+              data-bs-dismiss="modal" #cerrarModal>
+                    Cancelar
+                </button>
+            <button name="guardar" class="btn btn-primary" (click)="guardarDestinatario()">
+                Guardar
+            </button>
+        </div>
+    </div>
+</div>

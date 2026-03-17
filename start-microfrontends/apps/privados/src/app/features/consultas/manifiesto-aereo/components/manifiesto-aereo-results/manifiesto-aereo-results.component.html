@@ -1,0 +1,59 @@
+<div class="alert alert-danger" *ngIf="displayAlertFullReport()">
+  Debe seleccionar por lo menos una Guía Aerea para generar el reporte completo
+</div>
+
+<div class="alert alert-info" *ngIf="displayAlertFullReportGenerated()">
+  {{ folioMessage() }}
+</div>
+
+<label class="text-normal" *ngIf="displayFilterByManifest()">
+  <input type="checkbox" [(ngModel)]="filterByManifest" (change)="onFilterByManifestChange()" />
+  Filtrar por Manifiesto
+</label>
+
+<div class="alert alert-warning">
+  Solo se podrá generar Reporte Completo de guías que se encuentran en estado "Aceptado"
+</div>
+
+<app-table
+  [tableData]="tableData"
+  [ableSelectRows]="true"
+  title="Datos"
+  [borderedStyle]="true"
+  [ableSelectAllTable]="filterByManifest()"
+  [isLoading]="isLoadingDataTable"
+  [hiddenData]="hiddenData"
+  [hasPagination]="true"
+  [pagination]="paginationInfo"
+  [error]="errorMessagesData"
+  (pageChange)="onPageChange($event)"
+  (onRowsSelected)="rowsSelectedChange($event)"
+/>
+
+<div class="row">
+  <div class="col-md-12 text-right">
+    <gob-button
+      type="button"
+      className="btn-primary"
+      class="mr-1"
+      label="Reporte Completo"
+      [disabled]="tableDataIsEmpty() || !allAreAcepted()"
+      (clicked)="generateFullReport()"
+    ></gob-button>
+    <gob-button
+      label="Exportar"
+      type="button"
+      className="btn-primary"
+      [disabled]="tableDataIsEmpty()"
+      class="mr-1"
+      (clicked)="export()"
+    ></gob-button>
+    <gob-button
+      type="button"
+      className="btn-primary"
+      [disabled]="!isOneRowSelected()"
+      (clicked)="seeDetails()"
+      label="Ver detalles"
+    ></gob-button>
+  </div>
+</div>

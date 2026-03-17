@@ -1,0 +1,53 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-12">
+      <h2 class="mb-4">Consulta autorizaciones LDA</h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <app-expandir-tabla title="Criterios de búsqueda:">
+        <app-criterios-busqueda
+          (buscar)="onBuscar($event)"
+          (exportar)="onExportar($event)"
+        ></app-criterios-busqueda>
+      </app-expandir-tabla>
+    </div>
+  </div>
+  <div class="row mt-4" *ngIf="resultados.length > 0">
+    <div class="col-md-12">
+      <app-expandir-tabla title="Autorizaciones:">
+        <app-tabla-dinamica
+          [configuracionTabla]="configuracionTabla"
+          [datos]="resultados"
+          [totalItems]="totalItems"
+          [itemsPerPage]="itemsPerPage"
+          [currentPage]="currentPage"
+          (pageChange)="onPageChange($event)"
+        ></app-tabla-dinamica>
+        <app-table-pagination
+          [showCurrentPage]="true"
+          (pageChange)="onPageChange($event)"
+        ></app-table-pagination>
+      </app-expandir-tabla>
+    </div>
+  </div>
+  <div class="row mt-4" *ngIf="cargando">
+    <div class="col-md-12 text-center">
+      <p>Cargando...</p>
+    </div>
+  </div>
+  @if (resultados.length > 0) {
+  <div class="row mt-4">
+    <div class="col-md-12 d-flex justify-content-end">
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="onExportarAutorizaciones()"
+      >
+        Exportar excel
+      </button>
+    </div>
+  </div>
+  }
+</div>

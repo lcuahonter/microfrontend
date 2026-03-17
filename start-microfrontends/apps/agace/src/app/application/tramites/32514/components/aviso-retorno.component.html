@@ -1,0 +1,327 @@
+<form [formGroup]="avisoForm" (ngSubmit)="validarDestinatarioFormulario()">
+  <ng-titulo titulo="Datos de residencia" />
+  <div class="col-12">
+    <label
+      >Indique si es residente en territorio nacional o residente en el
+      extranjero :*</label
+    >
+    <app-input-radio
+      [radioOptions]="radioOpcions"
+      [isRequired]="true"
+      [layout]="'horizontal'"
+      formControlName="residenteNacExt"
+      (change)="setValoresStore('residenteNacExt')"
+    ></app-input-radio>
+  </div>
+
+  <div class="row mt-5">
+    <ng-titulo titulo="Tipo de solicitud" />
+    <div class="col-12">
+      <label>Señale el antecedente de la Regla 4.2.20 de las RGCE :*</label>
+      <app-input-radio
+        [radioOptions]="radioTotal"
+        [isRequired]="true"
+        [layout]="'horizontal'"
+        formControlName="tipoSolicitude"
+        (change)="setValoresStore('tipoSolicitude')"
+      ></app-input-radio>
+    </div>
+  </div>
+
+  <div class="row mt-5">
+    <ng-titulo titulo="Datos generales del tipo de solicitud" />
+  </div>
+
+  <div class="row mt-5">
+    <ng-titulo *ngIf="avisoForm.get('tipoSolicitude')?.value === 'numero'"
+      titulo="Datos de la solicitud del permiso de internación temporal de vehículos"
+    />
+    <ng-titulo *ngIf="avisoForm.get('tipoSolicitude')?.value !== 'numero'"
+      titulo="Datos de la solicitud del permiso de importación temporal"
+    />
+
+    <div class="col-md-6">
+      <label>Número de permiso de internación temporal del vehículo:*</label>
+      <input
+        type="text"
+        class="form-control"
+        required
+        formControlName="numeroPermiso"
+        (change)="setValoresStore('numeroPermiso')"
+        maxlength="50"
+        soloLetrasNumeros
+      />
+      <div *ngIf="avisoForm.get('numeroPermiso')?.touched && avisoForm.get('numeroPermiso')?.invalid">
+        <small *ngIf="avisoForm.get('numeroPermiso')?.errors?.['required']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-6">
+        <input-fecha
+          [datos]="fechaInitialInput"
+          [setFecha]="avisoForm.get('fechaEmision')?.value"
+          [isDisabled]="esFormularioSoloLectura"
+        ></input-fecha>
+        <div *ngIf="avisoForm.get('fechaEmision')?.touched && avisoForm.get('fechaEmision')?.invalid">
+        <small *ngIf="avisoForm.get('marca')?.errors?.['fechaEmision']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+      </div>
+      </div>
+      <div class="col-md-6">
+        <input-fecha
+          [datos]="fechaPagoInput"
+          [setFecha]="avisoForm.get('fechaVencimiento')?.value"
+          [isDisabled]="esFormularioSoloLectura"
+        ></input-fecha>
+      </div>
+    </div>
+    <!-- write logic -->
+    <div class="row mt-3" *ngIf="avisoForm.get('tipoSolicitude')?.value === 'numero'">
+      <label
+        >Número del pedimento de importación definitiva a región o franja
+        fronteriza*:
+      </label>
+
+      <div class="col-md-10">
+        <input
+          type="text"
+          class="form-control"
+          required
+          formControlName="numeroFranja"
+          (change)="setValoresStore('numeroFranja')"
+          maxlength="15"
+          libSoloNumeros
+        />
+        <div *ngIf="avisoForm.get('numeroFranja')?.touched && avisoForm.get('numeroFranja')?.invalid">
+        <small *ngIf="avisoForm.get('numeroFranja')?.errors?.['required']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+      </div>
+      </div>
+      <div class="col-md-10">
+        <input-fecha
+          [datos]="fechaFranjo"
+          [setFecha]="avisoForm.get('fechaFranja')?.value"
+          [isDisabled]="esFormularioSoloLectura"
+        ></input-fecha>
+        <div *ngIf="avisoForm.get('fechaFranja')?.touched && avisoForm.get('fechaFranja')?.invalid">
+        <small *ngIf="avisoForm.get('fechaFranja')?.errors?.['required']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+      </div>
+      </div>
+    </div>
+    <div *ngIf="avisoForm.get('tipoSolicitude')?.value === 'permiso'">
+      <div class="col-md-6 mt-3">
+        <app-catalogo-select
+          [catalogo]="anoCatalogo.catalogos"
+          [label]="anoCatalogo.labelNombre"
+          formControlName="numeroPedimento"
+          (change)="setValoresStore('numeroPedimento')"
+          [isDisabled]="esFormularioSoloLectura"
+        ></app-catalogo-select>
+      </div>
+    </div>
+  </div>
+
+  <ng-titulo titulo="Información adicional" />
+  <div class="row mt-5 radios">
+    <label
+      >¿Es la segunda ocasion en la que se presenta el aviso?*:
+    </label>
+
+    <div>
+    <app-input-radio
+      [radioOptions]="radioParcial"
+      [isRequired]="true"
+      [layout]="'horizontal'"
+      formControlName="avisoNacExt"
+      (change)="setValoresStore('avisoNacExt')"
+    ></app-input-radio>
+    </div>
+    <div class="row mt-3" *ngIf="avisoForm.get('avisoNacExt')?.value === 'si'">
+      <div class="col-md-6">
+        <input-fecha
+          [datos]="fechaAcuseRecibo"
+          [setFecha]="avisoForm.get('fechaAcuse')?.value"
+          [isDisabled]="esFormularioSoloLectura"
+        ></input-fecha>
+        <div *ngIf="avisoForm.get('fechaAcuse')?.touched && avisoForm.get('fechaAcuse')?.invalid">
+        <small *ngIf="avisoForm.get('fechaAcuse')?.errors?.['required']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+      </div>
+      </div>
+    </div>
+    <div class="row mt-3" *ngIf="avisoForm.get('avisoNacExt')?.value === 'si'">
+      <label
+        >Señale las razones de fuerza mayor o caso fortuito, por las cuales no
+        se realizó el traslado del vehículo a la franja ao región fronteriza o a
+        la aduana de salida, de conformidad con el primer aviso*:</label
+      >
+      <div class="col-md-6">
+        <input
+        type="text"
+        class="form-control"
+        required
+        formControlName="conformidad"
+        (change)="setValoresStore('conformidad')"
+        maxlength="500"
+      />
+      </div>
+      <div *ngIf="avisoForm.get('conformidad')?.touched && avisoForm.get('conformidad')?.invalid">
+        <small *ngIf="avisoForm.get('conformidad')?.errors?.['required']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+      </div>
+    </div>
+  </div>
+
+  <ng-titulo titulo="Información relacionada con el tramite" />
+  <ng-titulo titulo="Información general del vehículo" />
+
+  <div class="row">
+    <div class="col-4 mt-3">
+      <label>Marca:*</label>
+      <input
+        type="text"
+        class="form-control"
+        required
+        formControlName="marca"
+        (change)="setValoresStore('marca')"
+        maxlength="50"
+        libSoloAlfabetos
+      />
+      <div *ngIf="avisoForm.get('marca')?.touched && avisoForm.get('marca')?.invalid">
+        <small *ngIf="avisoForm.get('marca')?.errors?.['required']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+      </div>
+    </div>
+    <div class="col-4 mt-3">
+      <label>Tipo:*</label>
+      <input
+        type="text"
+        class="form-control"
+        required
+        formControlName="tipo"
+        (change)="setValoresStore('tipo')"
+        maxlength="50"
+        libSoloAlfabetos
+      />
+      <div *ngIf="avisoForm.get('tipo')?.touched && avisoForm.get('tipo')?.invalid">
+        <small *ngIf="avisoForm.get('tipo')?.errors?.['required']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+      </div>
+    </div>
+    <div class="col-4 mt-3">
+      <label>Modelo:*</label>
+      <input
+        type="text"
+        class="form-control"
+        required
+        formControlName="modelo"
+        (change)="setValoresStore('modelo')"
+        maxlength="50"
+        soloLetrasNumeros
+      />
+      <div *ngIf="avisoForm.get('modelo')?.touched && avisoForm.get('modelo')?.invalid">
+        <small *ngIf="avisoForm.get('modelo')?.errors?.['required']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+      </div>
+    </div>
+    <div class="col-4 mt-3">
+      <label>NIV:*</label>
+      <input
+        type="text"
+        class="form-control"
+        required
+        formControlName="niv"
+        (change)="setValoresStore('niv')"
+        maxlength="50"
+        soloLetrasNumeros
+      />
+      <div *ngIf="avisoForm.get('niv')?.touched && avisoForm.get('niv')?.invalid">
+        <small *ngIf="avisoForm.get('niv')?.errors?.['required']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+      </div>
+    </div>
+    <div class="col-4 mt-3">
+      <label>Número de placas:*</label>
+      <input
+        type="text"
+        class="form-control"
+        required
+        formControlName="numeroDePlacas"
+        (change)="setValoresStore('numeroDePlacas')"
+        maxlength="50"
+        soloLetrasNumeros
+      />
+      <div *ngIf="avisoForm.get('numeroDePlacas')?.touched && avisoForm.get('numeroDePlacas')?.invalid">
+        <small *ngIf="avisoForm.get('numeroDePlacas')?.errors?.['required']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+      </div>
+    </div>
+    <div class="col-4 mt-3">
+      <label>Estado que espidió las placas:*</label>
+      <input
+        type="text"
+        class="form-control"
+        required
+        formControlName="estadoPlacas"
+        (change)="setValoresStore('estadoPlacas')"
+        maxlength="50"
+        libSoloAlfabetos
+      />
+      <div *ngIf="avisoForm.get('estadoPlacas')?.touched && avisoForm.get('estadoPlacas')?.invalid">
+        <small *ngIf="avisoForm.get('estadoPlacas')?.errors?.['required']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+      </div>
+    </div>
+    <div class="col-12 mt-3">
+      <label class="mt-4"
+        >¿Declara, bajo protesta de decir verdad, que el vehículo descrito no se
+        encuentra sujeto a ningún PAMA o procesojidicial?*:
+      </label>
+      <app-input-radio
+        [radioOptions]="radioParcial"
+        [isRequired]="true"
+        [layout]="'horizontal'"
+        formControlName="declara"
+        (change)="pamaRadioOption()"
+      ></app-input-radio>
+      <small *ngIf="mostrarError" class="text-danger espaciador-campo-pequeño">Debes de seleccionar "No"</small>
+    </div>
+  </div>
+  <ng-titulo titulo="Medio de transporte que movera la mercancía" />
+  <div class="row">
+    <div class="col-md-8 mt-3">
+      <!-- <label
+        >Indique, en su caso, en medio en que sera transportado dicho
+        vehículos:*</label
+      > -->
+      <app-catalogo-select
+        [catalogo]="fetchVehiculo"
+        [label]="'Indique, en su caso, en medio en que sera transportado dicho vehículos:*'"
+        (change)="setValoresStore('tipoVehiculo')"
+        formControlName="tipoVehiculo"
+        [isDisabled]="esFormularioSoloLectura"
+      ></app-catalogo-select>
+    </div>
+    <div class="col-md-8 mt-3" *ngIf="avisoForm.get('tipoVehiculo')?.value === '1'">
+      <label>Especifique:*</label>
+      <input
+        type="text"
+        class="form-control"
+        required
+        formControlName="especifique"
+        (change)="setValoresStore('especifique')"
+        maxlength="50"
+        soloLetrasNumeros
+      />
+      <div *ngIf="avisoForm.get('especifique')?.touched && avisoForm.get('especifique')?.invalid">
+        <small *ngIf="avisoForm.get('especifique')?.errors?.['required']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+      </div>
+    </div>
+    <div class="col-md-8 mt-3">
+      <label>Número de Serie:*</label>
+      <input
+        type="text"
+        class="form-control"
+        required
+        formControlName="numeroSerie"
+        (change)="setValoresStore('numeroSerie')"
+        maxlength="50"
+        soloLetrasNumeros
+      />
+      <div *ngIf="avisoForm.get('numeroSerie')?.touched && avisoForm.get('numeroSerie')?.invalid">
+        <small *ngIf="avisoForm.get('numeroSerie')?.errors?.['required']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+      </div>
+    </div>
+  </div>
+</form>

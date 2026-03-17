@@ -1,0 +1,59 @@
+<div class="page">
+    <div class="container">
+        <header>
+            <h2 class="titulo titulo-gold mb-5">Consulta trámites Agricultura</h2>
+        </header>
+        <br />
+        @if(alertaVisible){
+        <ng-alert [CONTENIDO]="mensajeAlerta" [CUSTOMECLASS]="claseAlerta"></ng-alert>
+        }
+        <br />
+        <section class="p-5 bg-light">
+            <h5>
+                Criterios de busqueda
+            </h5>
+        </section>
+        <br />
+        <section class="p-5 bg-light">
+            <form [formGroup]="FormBusquedaTramite" class="w-50">
+                <div class="form-group">
+                    <label class="form-label" for="folio">Folio trámite</label>
+                    <input class="form-control" id="folio" type="text" formControlName="folio"
+                        [class.is-invalid]="folio?.invalid && (folio?.dirty || folio?.touched)">
+                    @if (folio?.invalid && (folio?.dirty || folio?.touched)) {
+                    <div class="invalid-feedback">
+                        @if (folio?.hasError('minlength')) {
+                        <div>El folio debe tener al menos 25 dígitos.</div>
+                        }
+
+                        @if (folio?.hasError('pattern')) {
+                        <div>El folio solo debe contener números.</div>
+                        }
+                    </div>
+                    }
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="certificado">No. Certificado</label>
+                    <input class="form-control" id="certificado" type="text" formControlName="certificado"
+                        [class.is-invalid]="certificado?.invalid && (certificado?.dirty || certificado?.touched)" />
+
+                    @if (certificado?.invalid && (certificado?.dirty || certificado?.touched)) {
+                    <div class="invalid-feedback">
+                        @if (certificado?.hasError('pattern')) {
+                        <div>El certificado solo debe contener números.</div>
+                        }
+                    </div>
+                    }
+                </div>
+                <br />
+                <button type="button" (click)="buscarTramite()" class="btn btn-primary">Buscar</button>
+            </form>
+        </section>
+        <br />
+        <section class="p-5 bg-light">
+            <app-tabla-dinamica [configuracionTabla]="configuracionTabla" [datos]="datosConsultaTramite"
+                [mode]="'client'" [totalItems]="datosConsultaTramite.length" [showPagination]="true"
+                [itemsPerPage]="10" />
+        </section>
+    </div>
+</div>

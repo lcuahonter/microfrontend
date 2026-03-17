@@ -1,0 +1,43 @@
+<div class="container terceros-relacionados-container">
+  <div>
+    <!-- title -->
+    <ng-titulo titulo="Terceros relacionados" />
+
+    <!-- alert-box -->
+    <ng-alert [CONTENIDO]="TEXTO_DE_ALERTA"></ng-alert>
+
+    <!-- Fabricante table when on display -->
+    <div class="mt-5">
+      <h5>{{title}}</h5>
+      <div class="table-responsive mt-5">
+        <ng-table [commonTableHeader]="fabricanteHeaderData" [commonTableBody]="fabricanteRowData" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura" (rowSelected)="selectedRow($event)" (rowIndex)="selectedRowIndex($event)"></ng-table>
+      </div>
+
+      <div class="d-flex justify-content-end mt-3">
+        @if (rowSelected) { 
+          <button type="button" class="btn btn-danger me-2" [disabled]="esFormularioSoloLectura" (click)="eliminarConfirmacion()">
+            Eliminar
+          </button>
+          <button type="button" class="btn btn-default me-2" [disabled]="esFormularioSoloLectura" (click)="abrirProcedencia()">
+            Modificar
+          </button>
+        }
+        <button type="button" class="btn btn-primary" (click)="abrirProcedencia()" [disabled]="esFormularioSoloLectura">
+          Agregar
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <div *ngIf="isDatosGeneralesVisible">
+    <app-datos-generales (cancelDatosGenerales)="cerrarProcedencia()" [selectedRowData]="selectedRowData"
+      (formularioGuardar)="agregarTabla($event)" [tramites]="tramites"></app-datos-generales>
+  </div>
+
+  @if(mostrarAlerta) {
+  <section>
+    <lib-notificaciones [notificacionInput]="seleccionarNotificacion" (confirmacionModal)="cerrarModal($event)">
+    </lib-notificaciones>
+  </section>
+  }

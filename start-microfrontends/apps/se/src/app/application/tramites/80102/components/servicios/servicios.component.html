@@ -1,0 +1,260 @@
+<div class="container my-4">
+  <ng-titulo titulo="Servicios" />
+  <div class="row">
+    <div class="col-md-8">
+      <div class="form-group">
+        <form [formGroup]="formulario">
+          <app-catalogo-select
+            [catalogo]="aduanaDeIngreso"
+            [label]="'Servicios IMMEX'"
+            [required]="true"
+            name="aduanaIngreso"
+            formControlName="entidadFederativa"
+            [isDisabled]="esFormularioSoloLectura"
+            (selectionChange)="procesarDatosDelHijo($event)"
+            [placeholder]="'Seleccione una opción'"
+          ></app-catalogo-select>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="pull-right">
+        <button
+          name="eliminarServicio"
+          (click)="eliminarServiciosGrid()"
+          class="btn btn-danger"
+          [disabled]="esFormularioSoloLectura"
+        >
+          Eliminar
+        </button>
+        <button
+          name="agregarServicio"
+          (click)="agregarServiciosAmpliacion()"
+          class="btn btn-primary mx-2"
+          [disabled]="esFormularioSoloLectura"
+        >
+          Agregar
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-8">
+      <div class="form-group">
+        <label for="serviciosImmexServ">Servicios IMMEX:</label>
+      </div>
+    </div>
+  </div>
+  <div class="my-4">
+    <app-tabla-dinamica
+      [tipoSeleccionTabla]="tablaSeleccion.RADIO"
+      (filaSeleccionada)="seleccionarDomicilios($event)"
+      [configuracionTabla]="configuracionTablaServicio"
+      [datos]="datosImmex"
+      [disableSeleccionTablaRadio]="esFormularioSoloLectura"
+    ></app-tabla-dinamica>
+  </div>
+  <div class="row">
+    <ng-titulo
+      titulo="Empresas (Nacionales) a las que se les otorgarán servicios"
+    />
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="rfdecontri">Registro federal de contribuyentes:</label>
+        <input
+          type="text"
+          id="rfcEmpresa"
+          [(ngModel)]="rfcEmpresa"
+          name="rfdecontri"
+          class="form-control"
+          maxlength="13"
+          [disabled]="esFormularioSoloLectura"
+          (ngModelChange)="enCambioDeCampo('rfcEmpresa', $event)"
+        />
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="numeroProgramaImmex">Número del programa IMMEX:</label>
+        <input
+          type="text"
+          id="numeroPrograma"
+          [(ngModel)]="numeroPrograma"
+          name="numeroProgramaImmex"
+          class="form-control"
+          [disabled]="esFormularioSoloLectura"
+          (ngModelChange)="enCambioDeCampo('numeroPrograma', $event)"
+        />
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="tiempoPrograma">Año del programa IMMEX:</label>
+        <input
+          type="text"
+          id="tiempoPrograma"
+          [(ngModel)]="tiempoPrograma"
+          name="tiempoPrograma"
+          class="form-control"
+          [disabled]="esFormularioSoloLectura"
+          (ngModelChange)="enCambioDeCampo('tiempoPrograma', $event)"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="row my-4">
+    <div class="col-md-12">
+      <div class="pull-right">
+        <button
+          name="eliminar"
+          (click)="eliminarEmpresasNacionales()"
+          class="btn btn-danger"
+          [disabled]="esFormularioSoloLectura"
+        >
+          Eliminar
+        </button>
+        <button
+          name="agregar"
+          (click)="actualizaGridEmpresasNacionales()"
+          class="btn btn-primary mx-2"
+          [disabled]="esFormularioSoloLectura"
+        >
+          Agregar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8">
+      <div class="form-group">
+        <label for="serviciosAutorizados"
+          >Empresas (Nacionales) a las que se les otorgarán servicios:</label
+        >
+      </div>
+    </div>
+  </div>
+
+  <app-tabla-dinamica
+    [tipoSeleccionTabla]="tablaSeleccion.RADIO"
+    (filaSeleccionada)="seleccionarEmpresas($event)"
+    [configuracionTabla]="configuracionTabla"
+    [datos]="datos"
+    [disableSeleccionTablaRadio]="esFormularioSoloLectura"
+  ></app-tabla-dinamica>
+
+  <div class="col-12">
+    <ng-titulo titulo="Empresas extranjeras" />
+
+    <form [formGroup]="formularioEmpresaExtranjera" class="row mb-4">
+      @for (item of camposFormulario; track $index) { @if (item.tipo_input ===
+      'text') {
+      <div [ngClass]="item.class">
+        <label for="{{ item.campo }}">{{ item.labelNombre }}:</label>
+        <input
+          class="form-control"
+          type="text"
+          id="{{ item.campo }}"
+          [formControlName]="item.campo"
+          [maxlength]="item.maxlength || null"
+          (input)="item.campo === 'nombreEmpresaExt' ? onInputChange(item.campo, $event) : null"
+          [disabled]="esFormularioSoloLectura"
+        />
+      </div>
+      } @else if (item.tipo_input === 'select') {
+        <div [ngClass]="item.class">
+      <app-select-paises
+        [catalogosPaises]="item?.opciones || []"
+        [label]="item.labelNombre"
+        [required]="item.required"
+        [formControlName]="item.campo"
+        [isDisabled]="esFormularioSoloLectura"
+      ></app-select-paises>
+    </div>
+
+      } @else if (item.tipo_input === 'textarea') {
+      <div [ngClass]="item.class" class="mt-3">
+        <label for="{{ item.campo }}">{{ item.labelNombre }}:</label>
+        <textarea
+          class="form-control"
+          id="{{ item.campo }}"
+          rows="15"
+          [formControlName]="item.campo"
+          [maxlength]="item.maxlength || null"
+          (input)="item.campo === 'direccionEmpresaExtranjera' ? onInputChange(item.campo, $event) : null"
+          [disabled]="esFormularioSoloLectura"
+        ></textarea>
+      </div>
+      } }
+    </form>
+    <div class="row mt-5">
+      <div class="col-md-12">
+        <div class="pull-right">
+          <button
+            name="eliminarServicio"
+            (click)="eliminarEmpresaExtranjera()"
+            class="btn btn-danger"
+            [disabled]="esFormularioSoloLectura"
+          >
+            Eliminar
+          </button>
+          <button
+            name="agregarServicio"
+            (click)="agregarEmpresaExtranjera()"
+            class="btn btn-primary mx-2"
+           [disabled]="esFormularioSoloLectura"
+          >
+            Agregar
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <h5>Empresas extranjeras:</h5>
+      <app-tabla-dinamica
+      [tipoSeleccionTabla]="tablaSeleccion.CHECKBOX"
+      (listaDeFilaSeleccionada)="empresaExtranjeraSeleccionados = $event"
+      [configuracionTabla]="configuracionTablaEmpresaExtranjera"
+      [datos]="(datosEmpresaExtranjera$ | async) || []"
+      [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+      ></app-tabla-dinamica>
+    </div>
+  </div>
+</div>
+<!-- Confirmation Modal for Adding/Deleting Service -->
+@if (mostrarNotificacionAgregar && notificacionAgregarServicio) {
+<section>
+  <lib-notificaciones 
+    [notificacionInput]="notificacionAgregarServicio" 
+    (confirmacionModal)="manejarConfirmacion($event)">
+  </lib-notificaciones>
+</section>
+}
+@if (notificacionAgregarServicios) {
+<section>
+  <lib-notificaciones 
+    [notificacionInput]="notificacionAgregarServicios"    >
+  </lib-notificaciones>
+</section>
+}
+<!-- RFC Validation Notification -->
+@if (nuevaNotificacionRfc) {
+<section>
+  <lib-notificaciones 
+    [notificacionInput]="nuevaNotificacionRfc" 
+    (confirmacionModal)="confirmarNotificacionRfc($event)">
+  </lib-notificaciones>
+</section>
+}
+@if (mostrarEmpresasAgregar) {
+<section>
+  <lib-notificaciones 
+    [notificacionInput]="notificacionAgregarEmpresas" 
+    (confirmacionModal)="manejarEmpresasConfirmacion($event)">
+  </lib-notificaciones>
+</section>
+}

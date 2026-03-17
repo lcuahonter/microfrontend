@@ -1,0 +1,136 @@
+<div class="page">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h1>Solicitar requerimiento</h1>
+      </div>
+      <div class="container">
+        <form [formGroup]="solicitarForm" id="formSolicitud">
+          <h3>Tido de solicitud de requerimiento</h3>
+          <ng-container>
+            <div class="row">
+              <div class="col-md-12">
+                <app-input-radio
+                  [selectedValue]="solicitarForm.get('tipoBusqueda')?.value"
+                  [radioOptions]="requerimientoOpcions"
+                  (valueChange)="cambiarRequerimiento($event)"
+                  id="requerimiento"
+                  formControlName="tipoBusqueda"
+                >
+                </app-input-radio>
+              </div>
+            </div>
+          </ng-container>
+          <ng-container>
+            <ng-alert
+              [CONTENIDO]="TEXTOS.SELECCION_UN_CRITERIO_DE_BUSQUEDA"
+              [CUSTOMECLASS]="infoAlert"
+            ></ng-alert>
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label for="rfc" class="form-label">RFC:</label>
+                <input
+                  class="form-control"
+                  [ngClass]="isValid(solicitarForm, 'rfc') ? 'required' : ''"
+                  type="text"
+                  formControlName="rfc"
+                  name="rfc"
+                  id="rfc"
+                  (change)="setValoresStore(solicitarForm, 'rfc', 'setRfc')"
+                />
+              </div>
+              <div class="col-md-4">
+                <app-catalogo-select
+                  [catalogo]="tramiteList.catalogos"
+                  [label]="tramiteList.labelNombre"
+                  [placeholder]="tramiteList.primerOpcion"
+                  [required]="tramiteList.required"
+                  formControlName="tipoDeTramite"
+                  name="tipoDeTramite"
+                  id="tipoDeTrámite"
+                  (change)="
+                    setValoresStore(
+                      solicitarForm,
+                      'tipoDeTramite',
+                      'setTipoDeTramite'
+                    )
+                  "
+                ></app-catalogo-select>
+              </div>
+              <div class="col-md-4">
+                <label for="rfc" class="form-label">Folio de trámite:</label>
+                <input
+                  class="form-control"
+                  [ngClass]="
+                    isValid(solicitarForm, 'folioDeTramite') ? 'required' : ''
+                  "
+                  type="text"
+                  formControlName="folioDeTramite"
+                  name="folioDeTramite"
+                  id="folioDeTramite"
+                  (change)="
+                    setValoresStore(
+                      solicitarForm,
+                      'folioDeTramite',
+                      'setFolioDeTramite'
+                    )
+                  "
+                />
+              </div>
+            </div>
+            <div id="botonesBuscar" class="mt-5">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group pull-right">
+                    <button
+                      type="button"
+                      name="limpiar"
+                      id="limpiar"
+                      class="btn btn-default me-2"
+                      (click)="limpiarFormulario()"
+                    >
+                      Limpiar
+                    </button>
+                    <button
+                      type="button"
+                      name="buscar"
+                      id="buscar"
+                      class="btn btn-primary ms-4"
+                      (click)="obtenerTablaPoblada()"
+                    >
+                      Buscar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="col-md-12"
+              id="IdGridContenedoresITC"
+              *ngIf="solicitud32401State?.tipoBusqueda === 1 || solicitud32401State?.tipoBusqueda === 2">
+              <br />
+              <div class="table-responsive">
+                <div class="innercontainer">
+                  <app-tabla-dinamica
+                    [configuracionTabla]="encabezadoDeTabla"
+                    [datos]="datosDelContenedor"
+                    (alternarValor)="valorDeAlternancia($event)"
+                  ></app-tabla-dinamica>
+                </div>
+              </div>
+              <div align="center" id="paginGridContenedoresITC">
+                <nav aria-label="Page navigation example">
+                  <ul class="pagination d-flex justify-content-center">
+                    <li class="page-item">
+                      <a class="page-link" href="Javascript:;">1</a>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </ng-container>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

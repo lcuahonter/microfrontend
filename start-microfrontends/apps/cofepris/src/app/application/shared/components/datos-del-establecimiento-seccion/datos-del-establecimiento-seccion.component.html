@@ -1,0 +1,77 @@
+<ng-titulo titulo="Datos del establecimiento"></ng-titulo>
+
+<form [formGroup]="detosEstablecimiento">
+  <div class="col-md-12 mb-5">
+    <div class="pull-right">
+      <button name="establecimiento" class="btn btn-primary" (click)="openEstablecimientoModal()" [disabled]="formularioDeshabilitado ? true : false">
+        Seleccionar establecimiento
+      </button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div id="denominacionRazonSocial" class="col-md-8 mb-3">
+      <label for="establecimientoDenominacionRazonSocial"
+        >Denominación o razón social <span class="require">*</span>:</label
+      >
+
+      <div>
+        <input
+          type="text" maxlength="245" size="68"
+          id="establecimientoDenominacionRazonSocialId"
+          formControlName="establecimientoDenominacionRazonSocial"
+          class="form-control"
+          [ngClass]="{'is-invalid': detosEstablecimiento.get('establecimientoDenominacionRazonSocial')?.invalid && detosEstablecimiento.get('establecimientoDenominacionRazonSocial')?.touched}"
+          (change)="onControlChange('establecimientoDenominacionRazonSocial')"
+        />
+        <div *ngIf="hasError('establecimientoDenominacionRazonSocial', 'required')" class="text-danger mt-1">
+          <small>Este campo es obligatorio</small>
+        </div>
+      </div>
+    </div>
+    <div id="establecimientoCorreoElectronico" class="col-md-4 mb-3">
+      <label for="establecimientoCorreoElectronico"
+        >Correo electrónico <span>*</span>: <span class="bi bi-question-circle-fill require"  tooltip="ejemplo@correo.com"></span></label
+      >
+
+      <div>
+        <input
+          type="text" maxlength="320"
+          id="establecimientoCorreoElectronicoId"
+          formControlName="establecimientoCorreoElectronico"
+          class="form-control"
+          [ngClass]="{'is-invalid': detosEstablecimiento.get('establecimientoCorreoElectronico')?.invalid && detosEstablecimiento.get('establecimientoCorreoElectronico')?.touched}"
+          (change)="onControlChange('establecimientoCorreoElectronico')"
+        />
+        <div *ngIf="hasError('establecimientoCorreoElectronico', 'required')" class="text-danger mt-1">
+          <small>Este campo es obligatorio</small>
+        </div>
+        <div *ngIf="hasError('establecimientoCorreoElectronico', 'email')" class="text-danger mt-1">
+          <small>Por favor, escribe una dirección de correo válida</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+
+<div
+  class="modal fade"
+  #establecimientoModalButton
+
+>
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <form >
+        <div class="modal-body">
+         Por el momento no hay comunicación con el Sistema de COFEPRIS, favor de capturar su establecimiento.
+        </div>
+        <div class="modal-footer mt-5 d-flex justify-content-center">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" [disabled]="formularioDeshabilitado ? true : false">
+            Aceptar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

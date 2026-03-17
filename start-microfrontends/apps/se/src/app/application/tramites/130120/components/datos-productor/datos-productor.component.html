@@ -1,0 +1,170 @@
+<div class="container">
+  <form [formGroup]="datosProductor">
+    <ng-titulo [titulo]="'Datos del productor'"></ng-titulo>
+    <div class="row align-items-end">
+      <!-- Tipo de persona radio -->
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label">
+            Tipo de persona<span
+              [class.label-invalid]="datosProductor.get('persona_tipo')?.invalid && datosProductor.get('persona_tipo')?.touched">*</span>:
+          </label>
+          <div class="d-flex gap-3">
+            <div class="form-check" *ngFor="let opcion of TipoOpcion">
+              <input class="form-check-input" type="radio" [id]="'persona_tipo_' + opcion.value" [value]="opcion.value"
+                [checked]="datosProductor.get('persona_tipo')?.value === opcion.value" formControlName="persona_tipo"
+                (change)="onTipoPersonaProductorChange(opcion.value)" [disabled]="esFormularioSoloLectura">
+              <label class="form-check-label" [for]="'persona_tipo_' + opcion.value">
+                <b>{{ opcion.label }}</b>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FÍSICA -->
+    <div *ngIf="tipoPersonaProductor === 'Física'">
+      <div class="row align-items-end ">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label class="form-label"><b>Datos personales</b></label>
+          </div>
+        </div>
+      </div>
+      <div class="row align-items-end ">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label class="form-label" for="personales_nombre"> Nombre(s)
+              <span
+                [ngClass]="datosProductor.get('personales_nombre')?.errors?.['required'] && datosProductor.get('personales_nombre')?.touched ? 'text-danger' : ''">*</span>:
+            </label>
+            <input
+              [ngClass]="{'is-invalid': datosProductor.get('personales_nombre')?.touched && datosProductor.get('personales_nombre')?.invalid}"
+              class="form-control" type="text" id="personales_nombre" placeholder="" formControlName="personales_nombre"
+              [required]="true" [disabled]="esFormularioSoloLectura" maxlength="200"
+              (change)="setValoresStore(datosProductor, 'personales_nombre', 'setPersonales_nombre')" />
+            <div
+              *ngIf="datosProductor.get('personales_nombre')?.touched && datosProductor.get('personales_nombre')?.invalid">
+              <small *ngIf="datosProductor.get('personales_nombre')?.errors?.['maxlength']"
+                class="text-danger espaciador-campo-pequeño">No puede exceder 200 caracteres.</small>
+            </div>
+          </div>
+          <div
+            *ngIf="datosProductor.get('personales_nombre')?.touched && datosProductor.get('personales_nombre')?.invalid"
+            class="mt-1">
+            <small *ngIf="datosProductor.get('personales_nombre')?.errors?.['required']" class="text-danger">Este campo
+              es
+              obligatorio</small>
+          </div>
+        </div>
+      </div>
+      <div class="row align-items-end espaciador-campo">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label class="form-label" for="primer_apellido"> Primer apellido
+              <span
+                [ngClass]="datosProductor.get('primer_apellido')?.errors?.['required'] && datosProductor.get('primer_apellido')?.touched ? 'text-danger' : ''">*</span>:
+            </label>
+            <input
+              [ngClass]="{'is-invalid': datosProductor.get('primer_apellido')?.touched && datosProductor.get('primer_apellido')?.invalid}"
+              class="form-control" type="text" id="primer_apellido" placeholder="" formControlName="primer_apellido"
+              [disabled]="esFormularioSoloLectura" [required]="true" maxlength="200"
+              (change)="setValoresStore(datosProductor, 'primer_apellido', 'setPrimer_apellido')" />
+            <div
+              *ngIf="datosProductor.get('primer_apellido')?.touched && datosProductor.get('primer_apellido')?.invalid">
+              <small *ngIf="datosProductor.get('primer_apellido')?.errors?.['maxlength']"
+                class="text-danger espaciador-campo-pequeño">No puede exceder 200 caracteres.</small>
+            </div>
+          </div>
+          <div *ngIf="datosProductor.get('primer_apellido')?.touched && datosProductor.get('primer_apellido')?.invalid"
+            class="mt-1">
+            <small *ngIf="datosProductor.get('primer_apellido')?.errors?.['required']" class="text-danger">Este campo es
+              obligatorio</small>
+          </div>
+        </div>
+      </div>
+      <div class="row align-items-end espaciador-campo">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label class="form-label" for="segundo_apellido"> Segundo apellido
+              <span
+                [ngClass]="datosProductor.get('segundo_apellido')?.errors?.['required'] && datosProductor.get('segundo_apellido')?.touched ? 'text-danger' : ''">*</span>:
+            </label>
+            <input
+              [ngClass]="{'is-invalid': datosProductor.get('segundo_apellido')?.touched && datosProductor.get('segundo_apellido')?.invalid}"
+              class="form-control" type="text" id="segundo_apellido" placeholder="" formControlName="segundo_apellido"
+              [required]="true" maxlength="200"
+              (change)="setValoresStore(datosProductor, 'segundo_apellido', 'setSegundo_apellido')" />
+            <div
+              *ngIf="datosProductor.get('segundo_apellido')?.touched && datosProductor.get('segundo_apellido')?.invalid">
+              <small *ngIf="datosProductor.get('segundo_apellido')?.errors?.['maxlength']"
+                class="text-danger espaciador-campo-pequeño">No puede exceder 200 caracteres.</small>
+            </div>
+          </div>
+          <div
+            *ngIf="datosProductor.get('segundo_apellido')?.touched && datosProductor.get('segundo_apellido')?.invalid"
+            class="mt-1">
+            <small *ngIf="datosProductor.get('segundo_apellido')?.errors?.['required']" class="text-danger">Este campo
+              es
+              obligatorio</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MORAL -->
+    <div *ngIf="tipoPersonaProductor === 'Moral'">
+      <div class="row align-items-end espaciador-campo">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label class="form-label" for="denominacion_razon_social">Denominación o razón social
+              <span
+                [ngClass]="datosProductor.get('denominacion_razon_social')?.errors?.['required'] && datosProductor.get('denominacion_razon_social')?.touched ? 'text-danger' : ''">*</span>:
+            </label>
+            <input
+              [ngClass]="{'is-invalid': datosProductor.get('denominacion_razon_social')?.touched && datosProductor.get('denominacion_razon_social')?.invalid}"
+              class="form-control" type="text" id="denominacion_razon_social" [disabled]="esFormularioSoloLectura"
+              [placeholder]="" formControlName="denominacion_razon_social" [required]="true" maxlength="250"
+              (change)="setValoresStore(datosProductor, 'denominacion_razon_social', 'setDenominacion_razon_social')" />
+            <div
+              *ngIf="datosProductor.get('denominacion_razon_social')?.touched && datosProductor.get('denominacion_razon_social')?.invalid">
+              <small *ngIf="datosProductor.get('denominacion_razon_social')?.errors?.['maxlength']"
+                class="text-danger espaciador-campo-pequeño">No puede exceder 250 caracteres.</small>
+            </div>
+            <div
+              *ngIf="datosProductor.get('denominacion_razon_social')?.touched && datosProductor.get('denominacion_razon_social')?.invalid"
+              class="mt-1">
+              <small *ngIf="datosProductor.get('denominacion_razon_social')?.errors?.['required']"
+                class="text-danger">Este campo es
+                obligatorio</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Domicilio - Siempre visible -->
+    <div class="row align-items-end espaciador-campo">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="domicilio">
+            Domicilio<span
+              [class.label-invalid]="datosProductor.get('domicilio')?.invalid && datosProductor.get('domicilio')?.touched">*</span>:
+          </label>
+          <textarea class="form-control text_area" id="domicilio" formControlName="domicilio" rows="3" [required]="true"
+            maxlength="200" [disabled]="esFormularioSoloLectura"
+            (change)="setValoresStore(datosProductor, 'domicilio', 'setDomicilio')"
+            [ngClass]="{'is-invalid': datosProductor.get('domicilio')?.touched && datosProductor.get('domicilio')?.invalid}"></textarea>
+          <div *ngIf="datosProductor.get('domicilio')?.touched && datosProductor.get('domicilio')?.invalid">
+            <small *ngIf="datosProductor.get('domicilio')?.errors?.['maxlength']"
+              class="text-danger espaciador-campo-pequeño">No puede exceder 200 caracteres.</small>
+          </div>
+        </div>
+        <div *ngIf="datosProductor.get('domicilio')?.touched && datosProductor.get('domicilio')?.invalid" class="mt-1">
+          <small *ngIf="datosProductor.get('domicilio')?.errors?.['required']" class="text-danger">Este campo es
+            obligatorio</small>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,48 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+       <h3 *ngIf="indice === 1">Solicitud expedición de certificado de asignación directa persona física.</h3>
+       <h2 *ngIf="indice === 2">Firmar </h2>
+    </div>
+
+    @if(mostrarError) {
+    <ng-alert [CONTENIDO]="ALERTA" [CUSTOMECLASS]="infoError"></ng-alert>
+    }
+
+    @if(mostrarNumFolioAsignacionError) {
+    <ng-alert [CONTENIDO]="ALERTA_NUM_FOLIO_ASIGNACION_ERROR" [CUSTOMECLASS]="infoError"></ng-alert>
+    }
+
+    @if(mostrarAgregarError) {
+    <ng-alert [CONTENIDO]="ALERTA_AGREGAR_ERROR" [CUSTOMECLASS]="infoError"></ng-alert>
+    }
+
+    @if(!esValido) {
+    <ng-alert [CONTENIDO]="ALERTA_BUSCAR_ERROR" [CUSTOMECLASS]="infoError"></ng-alert>
+    }
+
+    <div class="row mt-5" *ngIf="indice === 2">
+      <div class="col-md-12">
+        <lib-notificaciones [notificacionInput]="alertaNotificacion"></lib-notificaciones>
+      </div>
+    </div>
+    <app-wizard [listaPasos]="pantallasPasos"></app-wizard>
+  </div>
+  <div class="row">
+    @switch (indice) {
+    @case (1) {
+    <app-datos #datos (mostrarErrorDirecto)="mostrarErrorDirectoEvento($event)"
+      (mostrarNumFolioAsignacionErrorDirecto)="mostrarNumFolioAsignacionErrorEvento($event)"
+      (mostrarAgregarErrorDirecto)="mostrarAgregarErrorEvento($event)"></app-datos>
+    } @case (2) {
+    <paso-firma [idSolicitud]="solicitudState.idSolicitud !== null ? +solicitudState.idSolicitud : null" [procedure]="120202" [idMecanismo]="idMecanismo"
+      [procedureUrl]="'expedicion-certificado-asignacion/persona-moral'"></paso-firma>
+    }
+    }
+  </div>
+  <btn-continuar [datos]="datosPasos" (continuarEvento)="getValorIndice($event)" (anteriorEvento)="getValorIndice($event)">
+  </btn-continuar>
+  @if (indice === 1) {
+  <ng-alert [CONTENIDO]="TEXTOS" [CUSTOMECLASS]="infoAlert"></ng-alert>
+  }
+</div>

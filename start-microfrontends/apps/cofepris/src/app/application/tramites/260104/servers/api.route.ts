@@ -1,0 +1,25 @@
+/**
+ * Conjunto de rutas de la API para el procedimiento 80101.
+ */
+import { ENVIRONMENT } from "@libs/shared/data-access-user/src/enviroments/enviroment";
+/**
+ * url base de la API
+ */
+const BASE_URL = ENVIRONMENT.API_HOST;
+/**
+ * API nombre
+ */
+const API = ENVIRONMENT.API;
+/**
+ * Procedimiento de la API
+ */
+const PROCEDURE = '/sat-t260104';
+
+/**
+ * Rutas de la API para el procedimiento 110223.
+ * Incluye las rutas para guardar la solicitud y para obtener el catálogo de tipo de factura.
+ */
+export const PROC_260104 = {
+    GUARDAR: `${BASE_URL}${API}${PROCEDURE}/solicitud/guardar`,
+    MOSTRA: (solicitudeId: string): string => `${BASE_URL}${API}${PROCEDURE}/solicitud/mostrar?idSolicitud=${solicitudeId}`, 
+}

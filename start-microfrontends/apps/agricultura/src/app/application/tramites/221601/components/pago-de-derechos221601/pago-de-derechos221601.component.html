@@ -1,0 +1,111 @@
+<div class="container">
+    <ng-titulo titulo="Pago de derechos" />    
+    <form [formGroup]="pagoDerechosForm">
+      <div class="form">        
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="claves">Clave de referencia*:</label>
+              <input class="form-control" id="claves" type="number"
+                formControlName="claves" (change)="setValoresStore(pagoDerechosForm, 'claves', 'setClaves')" />
+            </div>
+            @if(pagoDerechosForm.controls['claves'].invalid && pagoDerechosForm.controls['claves'].touched) {
+              <div class="d-grid">
+                @if(pagoDerechosForm.controls['claves'].errors?.['required']) {
+                  <span class="mensaje-error">Este campo es obligatorio</span>
+                }
+                @if(pagoDerechosForm.controls['claves'].errors?.['maxlength']) {
+                  <span class="mensaje-error">La clave de referencia no puede ser mayor a 14 caracteres</span>
+                }
+              </div>
+            }
+          </div>          
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="dependencia">Cadena de la dependencia*:</label>
+              <input class="form-control" id="dependencia" 
+                type="text" formControlName="dependencia" (change)="setValoresStore(pagoDerechosForm, 'dependencia', 'setDependencia')" />
+            </div>
+            @if(pagoDerechosForm.controls['dependencia'].invalid && pagoDerechosForm.controls['dependencia'].touched) {
+              <div class="d-grid">
+                @if(pagoDerechosForm.controls['dependencia'].errors?.['required']) {
+                  <span class="mensaje-error">Este campo es obligatorio</span>
+                }
+                @if(pagoDerechosForm.controls['dependencia'].errors?.['maxlength']) {
+                  <span class="mensaje-error">La cadena de la dependencia no puede ser mayor a 20 caracteres</span>
+                }
+              </div>
+            }
+          </div>
+          
+          <div class="col-md-4">
+            <div class="form-group">
+              <app-catalogo-select [catalogo]="bancocatalogo" formControlName="banco" [label]="'Banco'" [isDisabled]="esFormularioSoloLectura" [placeholder]="'Seleccione un opción'"
+                [required]="true" name="banco" (change)="setValoresStore(pagoDerechosForm, 'banco', 'setBanco')" >
+              </app-catalogo-select>
+            </div>
+          </div>
+        </div>       
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="llave">Llave de pago<span class="required-field">*</span>:</label>
+              <input class="form-control" id="llave" type="text" [maxlength]="50"
+                formControlName="llave" (change)="setValoresStore(pagoDerechosForm, 'llave', 'setLlave')" />
+            </div>
+            @if(pagoDerechosForm.controls['llave'].invalid && pagoDerechosForm.controls['llave'].touched) {
+              <div class="d-grid">
+                @if(pagoDerechosForm.controls['llave'].errors?.['required']) {
+                  <span class="mensaje-error">Este campo es obligatorio</span>
+                }
+                @if(pagoDerechosForm.controls['llave'].errors?.['maxlength']) {
+                  <span class="mensaje-error">La llave no puede ser mayor a 50 caracteres</span>
+                }
+              </div>
+            }
+          </div>          
+          <div class="col-md-4">
+            <div class="form-group">
+              <input-fecha
+                [datos]="INPUT_FECHA_CONFIG"
+                [setFecha]="pagoDerechosForm.get('fecha')?.value"
+                
+                (valorCambiado)="cambioFechaFinal($event)">
+              </input-fecha>                       
+               </div>
+          <div *ngIf="fechaFuturaSeleccionada" class="text-danger mt-1">
+            La fecha de pago debe ser menor o igual a la fecha actual.
+          </div>
+          </div>          
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="importe">Importe de pago*:</label>
+              <input class="form-control" id="importe" type="number"
+                formControlName="importe" (change)="setValoresStore(pagoDerechosForm, 'importe', 'setImporte')" />
+            </div>
+            @if(pagoDerechosForm.controls['importe'].invalid && pagoDerechosForm.controls['importe'].touched) {
+              <div class="d-grid">
+                @if(pagoDerechosForm.controls['importe'].errors?.['required']) {
+                  <span class="mensaje-error">Este campo es obligatorio</span>
+                }
+                @if(pagoDerechosForm.controls['importe'].errors?.['maxlength']) {
+                  <span class="mensaje-error">El importe no puede ser mayor a 16 caracteres</span>
+                }
+                </div>
+              }
+          </div>
+        </div>        
+      </div>
+       <div class="row mt-5">
+      <div class="col-md-12">
+        <div class="pull-right">
+          <button type="button" class="btn btn-primary ms-2" 
+            [disabled]="esFormularioSoloLectura ? true : false"
+            (click)="borrarDatosPago()">
+            Borrar datos del pago
+          </button>
+        </div>
+      </div>
+    </div>
+    </form>
+  </div>

@@ -1,0 +1,166 @@
+<div class="container">
+  <div class="row mt-3">
+    @if(mostrarSolicitudTabla){
+    <div class="col-md-12">
+      <div class="panel-group ficha-collapse" id="accordion">
+        <div class="panel panel-default">
+          <div
+            class="panel-heading"
+            (click)="mostrar_colapsable()"
+            tabindex="0"
+          >
+            <h4 class="panel-title">
+              <a aria-label="Repeat"
+                ><i class="bi bi-repeat" aria-hidden="true"></i>.</a
+              >
+            </h4>
+            <button type="button" class="collpase-button collapsed" *ngIf="!colapsable"></button>
+            <button type="button" class="collpase-button" *ngIf="colapsable"></button>
+          </div>
+          @if(colapsable){
+          <div class="panel-collapse collapse in" id="panel-01">
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-md-12">
+                  <ng-alert [CONTENIDO]="alertMessage"></ng-alert>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label" for="table">Solicitud</label>
+                </div>
+                <div class="col-md-12">
+                  <app-tabla-dinamica
+                    [tipoSeleccionTabla]="tipoSeleccionsoli"
+                    [configuracionTabla]="configuracionColumnasoli"
+                    [datos]="cuerpoTabla"
+                    [esDobleClick]="true"
+                    (filaClic)="seleccionFila($event)"
+                  >
+                  </app-tabla-dinamica>
+                </div>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+  <form [formGroup]="datosMercanciaFormGroup">
+    <div class="row">
+      <ng-titulo [titulo]="'Datos del trámite a realizar'"></ng-titulo>
+    </div>
+    <div class="row" formGroupName="realizarGroup">
+      <div class="col-md-8">
+        <app-catalogo-select
+          [catalogo]="aduanaDeIngresoList"
+          formControlName="aduanaIngreso"
+          [label]="'Aduana de ingreso'"
+          [required]="true"
+          name="aduanaIngreso"
+          [isDisabled]="esFormularioSoloLectura"
+          (change)="setValoresStore(); catalogoOficinas(datosMercanciaFormGroup);"
+          [markTouched]='markTouched'
+        ></app-catalogo-select>
+      </div>
+      <div class="col-md-8">
+        <app-catalogo-select
+          [catalogo]="oficinaInspeccionList"
+          formControlName="oficinaInspeccion"
+          [label]="'Oficina de inspección de Sanidad Agropecuaria:'"
+          [required]="true"
+          name="oficinaInspeccion"
+          [isDisabled]="esFormularioSoloLectura"
+          (change)="setValoresStore(); obtenerPuntoInspeccion(datosMercanciaFormGroup)"
+          [markTouched]='markTouched'
+        ></app-catalogo-select>           
+      </div>
+      <div class="col-md-8">
+        <app-catalogo-select
+          [catalogo]="puntoInspeccionList"
+          formControlName="puntoInspeccion"
+          [label]="'Punto de inspección'"
+          [required]="true"
+          name="puntoInspeccion"
+          [isDisabled]="esFormularioSoloLectura"
+          (change)="
+          setValoresStore()" 
+          [markTouched]='markTouched'
+          ></app-catalogo-select>          
+      </div>
+      <div class="col-md-4"></div>
+      <div class="col-md-4 form-group">
+        <label class="form-label" for="numeroGuia">Número de guía:</label>
+        <input
+          class="form-control"
+          id="numeroGuia"
+          formControlName="numeroGuia"
+          placeholder=""
+          name="numeroGuia"
+          type="text"
+          maxlength="50"
+          (change)="
+          setValoresStore(
+          )
+        " 
+        />
+      </div>
+      <div class="col-md-4">
+        <app-catalogo-select
+          [catalogo]="regimenList"
+          formControlName="regimen"
+          [label]="'Régimen'"
+          [required]="true"
+          name="regimen"
+          [isDisabled]="esFormularioSoloLectura"
+          (change)="
+          setValoresStore(
+          )
+        " 
+        [tooltipQuestionCircle]="true"
+        [tooltipQuestionCircleText]="'Régimen al que se destinará la mercancía'"
+        [markTouched]='markTouched'
+        ></app-catalogo-select>           
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <label class="form-label" for="tabel">Mercancías</label>
+      </div>
+      <div class="col-md-12">
+        <app-tabla-dinamica
+          [tipoSeleccionTabla]="tipoSeleccion"
+          [configuracionTabla]="configuracionColumnas"
+          [datos]="cuerpoTablaFila"
+          (listaDeFilaSeleccionada)="seleccionTabla($event)"
+          [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+        >
+        </app-tabla-dinamica>
+        <div
+          *ngIf="tableErrorMeassageDispaly && cuerpoTablaFila.length === 0">
+          <small class="mensaje-error">Este campo es obligatorio.</small>
+        </div>
+      </div>
+      <div class="col-md-12 d-flex justify-content-end">
+        <div>
+          <button class="btn btn-default me-2" type="button" [disabled]="listSelectedView.length === 0 ||esFormularioSoloLectura" (click)="modificarFila()">Modificar</button>
+        </div>
+        <div>
+          <button class="btn btn-danger me-2" type="button" [disabled]="listSelectedView.length === 0 ||esFormularioSoloLectura " (click)="eliminarFila()">Eliminar</button>
+        </div>
+        <div>
+          <button class="btn btn-primary  me-2" type="button" (click)="agregarFila()" [disabled]="esFormularioSoloLectura">Agregar</button>
+        </div>
+      </div>
+    </div>
+
+  </form>
+</div>
+  @if(eliminarDatosTabla){
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+      (confirmacionModal)="eliminarPedimentoDatos($event)"></lib-notificaciones>
+    }
+    @if(modalAlert){
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion" (confirmacionModal)="cerrarModal()"></lib-notificaciones>
+    }
+<app-modal #modalRef></app-modal>

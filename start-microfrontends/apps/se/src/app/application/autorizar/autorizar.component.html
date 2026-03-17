@@ -1,0 +1,58 @@
+@if(slectTramite) {
+<div class="container mt-2">
+    <div>
+        <div *ngIf="!firmar && !mostrarObservacion">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="titulo mt-5 mb-5">Bandeja de tareas pendientes</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 mt-3 mb-3">
+                    <lib-encabezado-requerimiento [numFolioTramite]="guardarDatos.folioTramite"
+                        [tipoTramite]="guardarDatos.tipoDeTramite"></lib-encabezado-requerimiento>
+                </div>
+            </div>
+            <div class="row margin-top">
+                <app-generar-dictamen botonDeCancelar="Observaciones" botonGuardar="Autorizar" [mostrarTitulo]="false"
+                    (enviarEvento)="enviarEvento($event)"></app-generar-dictamen>
+            </div>
+
+        </div>
+        <div *ngIf="mostrarObservacion && !firmar">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="titulo mt-5 mb-5">Bandeja de tareas pendientes</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 mt-3 mb-3">
+                    <lib-encabezado-requerimiento [numFolioTramite]="guardarDatos.folioTramite"
+                        [tipoTramite]="guardarDatos.tipoDeTramite"></lib-encabezado-requerimiento>
+                </div>
+            </div>
+            <div class="row margin-top">
+                <app-generar-observacion botonRegresar="Regresar" botonGenerar="Generar Observacion" [mostrarTitulo]="true"
+                    (enviarEvento)="enviarEventoObservacion($event)"></app-generar-observacion>
+            </div>
+        </div>
+        <div *ngIf="firmar">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="titulo mt-5 mb-5">Firmar</h2>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <firma-electronica tipo="" (firma)="obtieneFirma($event)"></firma-electronica>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-5 mt-5">
+            <app-reviewers-tabs [viewChild]="viewChild" [tramite]="tramite"
+                (viewChildcambioDePestana)="viewChildcambioDePestana($event)"></app-reviewers-tabs>
+        </div>
+    </div>
+</div>
+}

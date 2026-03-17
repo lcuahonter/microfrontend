@@ -1,0 +1,126 @@
+<div class="container mt-6">
+  <div class="row">
+    <div class="col-md-12 mt-5">
+      <h5>Permisos a cancelar</h5>
+      <app-tabla-dinamica [tipoSeleccionTabla]="tipoSeleccionSolicitud" [configuracionTabla]="configuracionColumnasSolicitud"
+        [datos]="cuerpoTablaCancelacion"
+        (listaDeFilaSeleccionada)="cuerpoTablaSelectionEliminar($event)"
+        [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"></app-tabla-dinamica>
+
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 d-flex justify-content-end">
+      <button type="button" class="btn btn-danger me-3" (click)="eliminarRegistro()" [disabled]="esFormularioSoloLectura">
+        Eliminar registro
+      </button><button type="button" class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+        aria-controls="offcanvasRight" (click)="showForm()" [disabled]="esFormularioSoloLectura">Búsqueda folio</button>
+    </div>
+  </div>
+  <div *ngIf="datosDePermiso||cuerpoTablaCancelacion.length>0">
+    <form [formGroup]="cancelacionForm">
+      <div class="row mt-3">
+        <div class="col-md-12">
+          <label class="form-label" for="motivoCancelacion">Motivo cancelación<span
+            class="require"
+            [ngClass]="{
+              'text-danger':
+              cancelacionForm.get('motivoCancelacion')?.invalid &&
+              cancelacionForm.get('motivoCancelacion')?.touched
+            }"
+            >*</span
+          >:
+          </label>
+          <textarea rows="3" style="height: 80px" class="form-control" id="motivoCancelacion"
+            formControlName="motivoCancelacion"
+            (change)="motivoCancelacion($event)"
+            [ngStyle]="{
+              borderColor:
+              cancelacionForm.get('motivoCancelacion')?.invalid &&
+              cancelacionForm.get('motivoCancelacion')?.touched
+                  ? 'red'
+                  : ''
+            }"
+            maxlength="250"
+            [disabled]="esFormularioSoloLectura"></textarea>
+        </div>
+        @if(cancelacionForm.controls['motivoCancelacion'].errors?.['required']&& cancelacionForm.controls['motivoCancelacion'].touched) {
+          <span class="mensaje-error">Este campo es obligatorio</span>
+        }
+          <div
+  *ngIf="cancelacionForm.get('motivoCancelacion')?.hasError('maxlength') && cancelacionForm.get('motivoCancelacion')?.touched"
+  class="text-danger"
+>
+  No puede exceder 250 caracteres.
+</div>
+
+      </div>
+    </form>
+
+  </div>
+  <div class="modal fade" id="modalBuscar" tabindex="-1" #modalBuscar aria-labelledby="modalBuscar" aria-hidden="true">
+    <div class="modal-dialog modal-l  modal-dialog-centered">
+    <div class="modal-content">
+        <div class="modal-header d-flex justify-content-between">
+            <h5 class="modal-title" id="exampleModalLabel">Buscar permiso a cancelar</h5>
+           
+          </div>
+        <div class="modal-body">
+
+    <div>
+        <form [formGroup]="busquedaForm">
+            <div class="row mt-5">
+                <div class="col-md-8">
+                    <label class="form-label" for="tramite">Folio trámite*:</label>
+                    <input type="text" class="form-control" id="tramite" formControlName="tramite">
+                    
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            <div class="col-md-8 d-flex justify-content-end"></div>
+        </div>
+        
+    </div>
+    
+
+        
+     </div>
+     <div class="modal-footer">
+     <div class="row mt-5">
+        <div class="col-md-12 d-flex justify-content-end">
+            <button type="button" class="btn btn-default me-3" data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"
+                #closeModal (click)="cerrarModal()">Cancelar</button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"
+                [disabled]="isLoadingBusquedaPermiso"
+                (click)="buscarPermisoCancelacion()">
+                <span *ngIf="isLoadingBusquedaPermiso" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                {{ isLoadingBusquedaPermiso ? 'Buscando...' : 'Buscar' }}
+            </button>
+        </div>
+    </div>
+    </div>
+</div>
+</div>
+</div>
+
+<div class="modal fade" #modifyModal tabindex="-1" aria-labelledby="modifyModalLabel" aria-hidden="true">
+<app-busqueda-folio (cerrarClicado)="cerrarModificarModal()"
+></app-busqueda-folio>
+</div>
+
+
+@if(nuevaNotificacion){
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion" ></lib-notificaciones>
+    
+  } 
+  @if(nuevaNotificacionUno){
+    <lib-notificaciones *ngIf="esRowSelected" [notificacionInput]="nuevaNotificacionUno" (confirmacionModal)="cerrarTabla()"></lib-notificaciones>
+    <lib-notificaciones *ngIf="esEliminarDos" [notificacionInput]="nuevaNotificacionUno" (confirmacionModal)="cerrarEliminarDos($event)"></lib-notificaciones>
+
+ 
+   }
+ 
+  

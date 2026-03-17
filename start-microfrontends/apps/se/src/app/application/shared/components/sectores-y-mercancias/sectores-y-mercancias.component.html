@@ -1,0 +1,77 @@
+<div class="container">
+  <ng-titulo titulo="Datos de la solicitud" />
+  <form [formGroup]="sectoresForm">
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <app-catalogo-select
+          [catalogo]="sectorCatalogo"
+          formControlName="sector"
+          [required]="true"
+          [label]="'Sector'"
+          name="sector"
+          (change)="
+            sectorSeleccion();
+            setValoresStore(sectoresForm, 'sector', 'setSector')
+          "
+          [isDisabled]="esFormularioSoloLectura"
+        >
+        </app-catalogo-select>
+      </div>
+    </div>
+    <div class="row mb-3 mt-3">
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-danger me-3" type="button" [disabled]="esFormularioSoloLectura" (click)="eliminarSector()">
+          Eliminar sector
+        </button>
+        <button type="button" class="btn btn-primary" [disabled]="esFormularioSoloLectura" (click)="agregarSector()">Agregar sector</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <h5>Solicitud PROSEC sector plural*:</h5>
+      </div>
+    </div>
+    <div class="row">
+      <app-tabla-dinamica
+        [configuracionTabla]="configuracionTabla"
+        [datos]="sectores"
+        [tipoSeleccionTabla]="radio"
+        [disableSeleccionTablaRadio]="esFormularioSoloLectura"
+        (filaSeleccionada)="seleccionarSector($event)"
+      >
+      </app-tabla-dinamica>
+    </div>
+    <ng-titulo titulo="Mercancías a producir"></ng-titulo>
+    <ng-alert [CONTENIDO]="TEXTOS.alerta" class="text-center"></ng-alert>
+    <div class="row">
+      <div class="mb-3">
+        <label for="fraccion" class="form-label fw-bold"
+          >Fracción arancelaria*:</label
+        >
+        <input
+          type="text"
+          class="form-control w-25"
+          id="fraccion"
+          formControlName="fraccion"
+          placeholder="Ingresa una fracción"
+          (change)="setValoresStore(sectoresForm, 'fraccion', 'setFraccion')"
+        />
+      </div>
+
+      <div class="d-flex justify-content-end mb-5">
+        <button class="btn btn-danger me-2" [disabled]="esFormularioSoloLectura" (click)="eliminarFraccion()">Eliminar</button>
+        <button class="btn btn-primary" [disabled]="esFormularioSoloLectura" (click)="agregarFraccion()">Agregar</button>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <app-tabla-dinamica
+        [configuracionTabla]="configuracionFraccionTabla"
+        [datos]="fraccion"
+        [tipoSeleccionTabla]="radio"
+        [disableSeleccionTablaRadio]="esFormularioSoloLectura"
+        (filaSeleccionada)="seleccionarFraccion($event)"
+      >
+      </app-tabla-dinamica>
+    </div>
+  </form>
+</div>

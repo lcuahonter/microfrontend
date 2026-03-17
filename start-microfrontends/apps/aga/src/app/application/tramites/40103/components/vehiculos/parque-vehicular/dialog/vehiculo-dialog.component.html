@@ -1,0 +1,262 @@
+<div class="modal-dialog modal-dialog-centered modal-fullscreen">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Datos del parque vehicular</h5>
+            <button type="button" class="btn-close" (click)="cancel.emit()"></button>
+        </div>
+        <div class="modal-body">
+            <div class="container-fluid">
+                <form [formGroup]="vehiculoForm">
+                    @if (contexto === 'alta') {
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>Número de identificación vehicular*:</label><span class="bi bi-question-circle-fill mx-2" tooltip="Número de identificación vehícular (NIV) o serie del vehículo" placement="top"></span>
+                                <input type="text" class="form-control" formControlName="numero" [required]="true"
+                                    maxlength="20" />
+                                @if (vehiculoForm.get('numero')?.invalid && (vehiculoForm.get('numero')?.dirty || vehiculoForm.get('numero')?.touched)) {
+                                    <div class="text-danger">
+                                        @if (vehiculoForm.get('numero')?.errors?.['required']) {
+                                            <small>Este campo es obligatorio.</small>
+                                        } @else if (vehiculoForm.get('numero')?.errors?.['maxlength']) {
+                                            <small>El número no puede tener más de 20 caracteres.</small>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-md-4">
+                                <app-catalogo-select [catalogo]="tipoDeVehiculoCatalogo" [label]="'Tipo de vehiculo'" [required]="true" id="tipoDeVehiculo" formControlName="tipoDeVehiculo"></app-catalogo-select>
+                                @if (vehiculoForm.get('tipoDeVehiculo')?.invalid && vehiculoForm.get('tipoDeVehiculo')?.touched) {
+                                    <div class="text-danger">
+                                        @if (vehiculoForm.get('tipoDeVehiculo')?.errors?.['required']) {
+                                            <small>Este campo es obligatorio.</small>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-md-4">
+                                <label>ID de vehículo*:</label><span class="bi bi-question-circle-fill mx-2" tooltip="Identificador único del vehículo en el sistema" placement="top"></span>
+                                <input type="text" class="form-control" formControlName="idDeVehiculo" />
+                                @if (vehiculoForm.get('idDeVehiculo')?.invalid && (vehiculoForm.get('idDeVehiculo')?.dirty || vehiculoForm.get('idDeVehiculo')?.touched)) {
+                                    <div class="text-danger">
+                                        @if (vehiculoForm.get('idDeVehiculo')?.errors?.['required']) {
+                                            <small>Este campo es obligatorio.</small>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-md-4">
+                                <label for="numeroPlaca" class="form-label">Número de placas*:</label>
+                                <input id="numeroPlaca" type="text" class="form-control" formControlName="numeroPlaca"
+                                    [readonly]="readonly" maxlength="10" />
+                                @if (vehiculoForm.get('numeroPlaca')?.invalid && (vehiculoForm.get('numeroPlaca')?.dirty || vehiculoForm.get('numeroPlaca')?.touched)) {
+                                    <div class="text-danger">
+                                        <small>Este campo es obligatorio.</small>
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-md-4">
+                                <app-catalogo-select [catalogo]="paisEmisorCatalogo" [label]="'País emisor'"
+                                    [required]="true" id="paisEmisor" formControlName="paisEmisor"></app-catalogo-select>
+                                @if (vehiculoForm.get('paisEmisor')?.invalid && vehiculoForm.get('paisEmisor')?.touched) {
+                                    <div class="text-danger">
+                                        <small>Este campo es obligatorio.</small>
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-md-4">
+                                <label for="estado" class="form-label">Estado o provincia*:</label>
+                                <input id="estado" type="text" class="form-control" formControlName="estado"
+                                    [readonly]="readonly" />
+                                @if (vehiculoForm.get('estado')?.invalid && (vehiculoForm.get('estado')?.dirty || vehiculoForm.get('estado')?.touched)) {
+                                    <div class="text-danger">
+                                        <small>Este campo es obligatorio.</small>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    } @else {
+                        <div class="row">
+                            <div class="col-md-8">
+                                <label>Número de identificación vehicular*:</label><span class="bi bi-question-circle-fill mx-2" tooltip="Número de identificación vehícular (NIV) o serie del vehículo" placement="top"></span>
+                                <input type="text" class="form-control" formControlName="numero" [required]="true"
+                                    maxlength="20" />
+                                @if (vehiculoForm.get('numero')?.invalid && (vehiculoForm.get('numero')?.dirty || vehiculoForm.get('numero')?.touched)) {
+                                    <div class="text-danger">
+                                        @if (vehiculoForm.get('numero')?.errors?.['required']) {
+                                            <small>Este campo es obligatorio.</small>
+                                        } @else if (vehiculoForm.get('numero')?.errors?.['maxlength']) {
+                                            <small>El número no puede tener más de 20 caracteres.</small>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-md-4">
+                                <label for="numeroPlaca" class="form-label">Número de placas*:</label>
+                                <input id="numeroPlaca" type="text" class="form-control" formControlName="numeroPlaca"
+                                    [readonly]="readonly" maxlength="10" />
+                                @if (vehiculoForm.get('numeroPlaca')?.invalid && (vehiculoForm.get('numeroPlaca')?.dirty || vehiculoForm.get('numeroPlaca')?.touched)) {
+                                    <div class="text-danger">
+                                        <small>Este campo es obligatorio.</small>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-4">
+                                <label>ID de vehículo*:</label><span class="bi bi-question-circle-fill mx-2" tooltip="Identificador único del vehículo en el sistema" placement="top"></span>
+                                <input type="text" class="form-control" formControlName="idDeVehiculo" />
+                                @if (vehiculoForm.get('idDeVehiculo')?.invalid && (vehiculoForm.get('idDeVehiculo')?.dirty || vehiculoForm.get('idDeVehiculo')?.touched)) {
+                                    <div class="text-danger">
+                                        @if (vehiculoForm.get('idDeVehiculo')?.errors?.['required']) {
+                                            <small>Este campo es obligatorio.</small>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-md-8 d-flex align-items-center justify-content-end">
+                                <button type="button" class="btn btn-primary" (click)="buscarVehiculo()">
+                                    Buscar
+                                </button>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row mt-3">
+                            <div class="col-md-4">
+                                <app-catalogo-select [catalogo]="tipoDeVehiculoCatalogo" [label]="'Tipo de vehiculo'" [required]="true" id="tipoDeVehiculo" formControlName="tipoDeVehiculo"></app-catalogo-select>
+                                @if (vehiculoForm.get('tipoDeVehiculo')?.invalid && vehiculoForm.get('tipoDeVehiculo')?.touched) {
+                                    <div class="text-danger">
+                                        @if (vehiculoForm.get('tipoDeVehiculo')?.errors?.['required']) {
+                                            <small>Este campo es obligatorio.</small>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-md-4">
+                                <app-catalogo-select [catalogo]="paisEmisorCatalogo" [label]="'País emisor'"
+                                    [required]="true" id="paisEmisor" formControlName="paisEmisor"></app-catalogo-select>
+                                @if (vehiculoForm.get('paisEmisor')?.invalid && vehiculoForm.get('paisEmisor')?.touched) {
+                                    <div class="text-danger">
+                                        <small>Este campo es obligatorio.</small>
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-md-4">
+                                <label for="estado" class="form-label">Estado o provincia*:</label>
+                                <input id="estado" type="text" class="form-control" formControlName="estado"
+                                    [readonly]="readonly" />
+                                @if (vehiculoForm.get('estado')?.invalid && (vehiculoForm.get('estado')?.dirty || vehiculoForm.get('estado')?.touched)) {
+                                    <div class="text-danger">
+                                        <small>Este campo es obligatorio.</small>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <label for="marca" class="form-label">Marca*:</label>
+                            <input id="marca" type="text" class="form-control" formControlName="marca"
+                                [readonly]="readonly" maxlength="50" />
+                            @if (vehiculoForm.get('marca')?.invalid && (vehiculoForm.get('marca')?.dirty || vehiculoForm.get('marca')?.touched)) {
+                                <div class="text-danger">
+                                    <small>Este campo es obligatorio.</small>
+                                </div>
+                            }
+                        </div>
+                        <div class="col-md-4">
+                            <label for="modelo" class="form-label">Modelo*:</label>
+                            <input id="modelo" type="text" class="form-control" formControlName="modelo"
+                                [readonly]="readonly" maxlength="50" />
+                            @if (vehiculoForm.get('modelo')?.invalid && (vehiculoForm.get('modelo')?.dirty || vehiculoForm.get('modelo')?.touched)) {
+                                <div class="text-danger">
+                                    <small>Este campo es obligatorio.</small>
+                                </div>
+                            }
+                        </div>
+                        <div class="col-md-4">
+                            <app-catalogo-select [catalogo]="anoCatalogo" [label]="'Año'" [required]="true" id="ano"
+                                formControlName="ano"></app-catalogo-select>
+                            @if (vehiculoForm.get('ano')?.invalid && vehiculoForm.get('ano')?.touched) {
+                                <div class="text-danger">
+                                    <small>Este campo es obligatorio.</small>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <label for="transponder" class="form-label">Transponder*:</label>
+                            <input id="transponder" type="text" class="form-control" formControlName="transponder"
+                                [readonly]="readonly" maxlength="50" />
+                            @if (vehiculoForm.get('transponder')?.invalid && (vehiculoForm.get('transponder')?.dirty || vehiculoForm.get('transponder')?.touched)) {
+                                <div class="text-danger">
+                                    <small>Este campo es obligatorio.</small>
+                                </div>
+                            }
+                        </div>
+                        <div class="col-md-4">
+                            <app-catalogo-select [catalogo]="colorVehiculoCatalogo" [label]="'Color de vehículo'"
+                                [required]="true" id="colorVehiculo"
+                                formControlName="colorVehiculo"></app-catalogo-select>
+                            @if (vehiculoForm.get('colorVehiculo')?.invalid && vehiculoForm.get('colorVehiculo')?.touched) {
+                                <div class="text-danger">
+                                    <small>Este campo es obligatorio.</small>
+                                </div>
+                            }
+                        </div>
+                        <div class="col-md-4">
+                            <label for="numeroEconomico" class="form-label">Número económico*:</label>
+                            <input id="numeroEconomico" type="text" class="form-control"
+                                formControlName="numeroEconomico" [readonly]="readonly" maxlength="50" />
+                            @if (vehiculoForm.get('numeroEconomico')?.invalid && (vehiculoForm.get('numeroEconomico')?.dirty || vehiculoForm.get('numeroEconomico')?.touched)) {
+                                <div class="text-danger">
+                                    <small>Este campo es obligatorio.</small>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <label for="numero2daPlaca" class="form-label">Número 2da placa:</label>
+                            <input id="numero2daPlaca" type="text" class="form-control" formControlName="numero2daPlaca"
+                                [readonly]="readonly" maxlength="20" />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="estado2daPlaca" class="form-label">Estado emisor de 2da placa:</label>
+                            <input id="estado2daPlaca" type="text" class="form-control" formControlName="estado2daPlaca"
+                                [readonly]="readonly" maxlength="50" />
+                        </div>
+                        <div class="col-md-4">
+                            <app-catalogo-select [catalogo]="paisEmisorCatalogo" [label]="'País emisor 2da placa'"
+                                [required]="false" id="paisEmisor2daPlaca"
+                                formControlName="paisEmisor2daPlaca"></app-catalogo-select>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-8">
+                            <label for="descripcion" class="form-label">Descripción del vehículo:</label>
+                            <input id="descripcion" type="text" class="form-control" formControlName="descripcion"
+                                [readonly]="readonly" maxlength="200" />
+                        </div>
+                    </div>
+
+                    <div class="modal-footer custom-footer justify-content-end mt-4">
+                        <button type="button" class="btn btn-primary" (click)="limpiarVehiculoData()">
+                            Limpiar
+                        </button>
+                        <button type="button" class="btn btn-danger" (click)="cerrarModal()"> Cancelar </button>
+                        <button type="button" class="btn btn-primary"
+                            (click)="guardarVehiculoData()"> Guardar </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

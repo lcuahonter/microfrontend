@@ -1,0 +1,76 @@
+<div class="page">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>{{titulo}}</h1>
+                @if(indice === 2) {
+                    <ng-alert [CONTENIDO]="TEXTOS.Importante"></ng-alert>
+                }
+            </div>
+            @if (esFormaValido) {
+                <ng-alert [CONTENIDO]="formErrorAlert" [CUSTOMECLASS]="'alert-danger text-center'"></ng-alert>
+              }
+            <app-wizard [listaPasos]="pantallasPasos"></app-wizard>
+        </div>
+        <div class="row">
+            @switch (indice) {
+            @case (1) {
+            <app-paso-uno #pasoUnoRef [isContinuarTriggered]="isContinuarTriggered" (formValidityChange)="onFormValidityChange($event)"></app-paso-uno>
+            }
+            @case (2) {
+         
+            <app-paso-carga-documento 
+                [idSolicitud]="solicitudState.idSolicitud" 
+                [idTipoTRamite]="'260301'"
+                [cargaArchivosEvento]="cargarArchivosEvento" 
+                (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+                (reenviarCargaRealizada)="cargaRealizada($event)"
+                (cargaEnProgreso)="onCargaEnProgreso($event)"
+                (enBlancoObligatoria)="onBlancoObligatoria($event)">
+            </app-paso-carga-documento>
+            }
+            @case (3) {
+            <paso-firma [idSolicitud]="solicitudState.idSolicitud" [procedure]="260301"
+                [procedureUrl]="'importacion-materias-primas-estupefacientes/contenedor-de-pasos'"></paso-firma>
+            }
+            }
+            <div class="row">
+                <div class="col-md-12">
+                  @if (indice !== 2) {
+                <btn-continuar [datos]="datosPasos" (continuarEvento)="getValorIndice($event)" [dePadre]="true"></btn-continuar>
+                  } @else {
+                  <div class="mt-5 mb-3 d-flex justify-content-end">
+                    <button
+                      type="button"
+                      class="btn btn-default"
+                      (click)="anterior()"
+                      *ngIf="seccionCargarDocumentos"
+                    >
+                      Anterior
+                    </button>
+          
+                   
+          
+                    <button
+                      class="btn btn-primary ms-3"
+                      (click)="
+                        seccionCargarDocumentos ? onClickCargaArchivos() : siguiente()
+                      "
+                      [disabled]="(seccionCargarDocumentos && !activarBotonCargaArchivos) || (!seccionCargarDocumentos && cargaEnProgreso)"
+                    >
+                      {{ seccionCargarDocumentos ? 'Cargar archivos' : 'Continuar' }}
+                    </button>
+                  </div>
+                  }
+                </div>
+              </div>
+        </div>
+    </div>
+</div>
+
+  <!-- @if(paymentInfoRequiredObj.mostrarAlerta) {
+  <section>
+    <lib-notificaciones [notificacionInput]="paymentInfoRequiredObj.seleccionarFilaNotificacion" (confirmacionModal)="cerrarModal($event)">
+    </lib-notificaciones>
+  </section>
+  } -->

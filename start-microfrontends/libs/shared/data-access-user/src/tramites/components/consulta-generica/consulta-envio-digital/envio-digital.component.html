@@ -1,0 +1,129 @@
+<form [formGroup]="envioDigitalForm">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="tipoDocumento" class="form-label"
+          >Tipo de documento</label
+        >
+        <input
+          class="form-control"
+          id="tipoDocumento"
+          placeholder="Tipo de documento"
+          type="text"
+          formControlName="tipoDocumento"
+          libUppercase
+        />
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="pais" class="form-label">País destino</label>
+        <input
+          class="form-control"
+          id="pais"
+          placeholder="País destino"
+          type="text"
+          formControlName="pais"
+          libUppercase
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="row my-3 mb-5">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="numero" class="form-label">Número</label>
+        <input
+          class="form-control"
+          id="numero"
+          placeholder="Número"
+          type="text"
+          formControlName="numero"
+          libUppercase
+        />
+      </div>
+    </div>
+  </div>
+</form>
+<div class="card mt-5">
+  <div class="card-header">
+    <h5 class="card-title">Estado de envío del certificado al país destino</h5>
+  </div>
+  <div class="card-body">
+      <div class="row">
+          <div class="col-md-12">
+            <table class="table table-container">
+              <thead>
+                <tr class="table-header">
+                  @for (item of encabezadoTablaDigital; track $index) {
+                  <th>{{ item.valor }}</th>
+                  }
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="datosTablaDigital.length === 0" class="table-row">
+                  <td
+                    colspan="{{"
+                    encabezadoTablaDigital.length
+                    }}
+                    class="text-center"
+                  >
+                    Sin registros que mostrar
+                  </td>
+                </tr>
+                @for (row of datosTablaDigital; track $index) {
+                <tr class="table-row">
+                  @for (item of encabezadoTablaDigital; let i = $index; track
+                  $index) {
+                  <td>{{ row[item.key] }}</td>
+                  }
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+  </div>
+</div>
+
+<div class="card mt-5">
+  <div class="card-header">
+    <h5 class="card-title">Estado de revisión del certificado en el país destino</h5>
+  </div>
+  <div class="card-body">
+      <div class="row">
+          <div class="col-md-12">
+            <table class="table table-container">
+              <thead>
+                <tr class="table-header">
+                  @for (item of encabezadoTablaDigital; track $index) {
+                  <th>{{ item.valor }}</th>
+                  }
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="datosTablaDigitalRevision.length === 0" class="table-row">
+                  <td
+                    [attr.colspan]="encabezadoTablaDigital.length + 1"
+                    class="text-center"
+                  >
+                    Sin registros que mostrar
+                  </td>
+                </tr>
+
+                @for (row of datosTablaDigitalRevision; track $index) {
+                <tr class="table-row">
+                  @for (item of encabezadoTablaDigital; let i = $index; track
+                  $index) {
+                  <td>{{ row[item.key] }}</td>
+                  }
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+  </div>
+</div>

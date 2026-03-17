@@ -1,0 +1,210 @@
+<ng-titulo titulo="Persona física"></ng-titulo>
+<label for="Persona física extranjero">Persona fisica extranjera:</label>
+<div class="row mt-5">
+  <div class="col-md-12">
+    <app-tabla-dinamica 
+  [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX" 
+  [configuracionTabla]="configuracionParaPFEEncabezadoDeTabla" 
+  [datos]="personaFisicaExtranjeraTabla" 
+  [disableSeleccionTablaCheckBox]="soloLectura"
+  (listaDeFilaSeleccionada)="onFilasSeleccionadas($event)"
+  (filaSeleccionada)="seleccionarRegistro($event)">
+    </app-tabla-dinamica>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="pull-right">
+  <button type="button" name="ModificarPFE" class="btn btn-default" [disabled]="soloLectura || indiceSeleccionado === null" data-bs-toggle="modal" data-bs-target="#modalAgregarPFE" (click)="modificarRegistro()">Modificar</button>
+  <button type="button" name="EliminarPFE" class="btn btn-danger ms-2" [disabled]="soloLectura || (indiceSeleccionado === null && selectedRows.length === 0)" data-bs-toggle="modal" data-bs-target="#confirmarEliminar">Eliminar</button>
+  <ng-container *ngIf="personaFisicaExtranjeraTabla.length === 0; else yaAgregada">
+    <button type="button" name="AgregarPFE" class="btn btn-primary ms-2" [disabled]="soloLectura" data-bs-toggle="modal" data-bs-target="#modalAgregarPFE" (click)="indiceSeleccionado = null">Agregar</button>
+  </ng-container>
+  <ng-template #yaAgregada>
+  <button type="button" class="btn btn-primary ms-2" (click)="enAgregarClic($event)">Agregar</button>
+  </ng-template>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="modalAgregarPFE" tabindex="-1" aria-labelledby="modalAgregarPFELabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div id="dialogoPersonaFisicaExtranjera">
+          <form [formGroup]="personaFisicaExtranjeraForm" id="formPFE" name="formPFE">
+            <ng-titulo titulo="Persona física extranjera"></ng-titulo>
+            <div class="row">
+              <div class="col-md-4">
+                <label class="form-label" for="nombrePFE">Nombre(s)<span [ngClass]="{'text-danger': personaFisicaExtranjeraForm.get('nombrePFE')?.invalid && (personaFisicaExtranjeraForm.get('nombrePFE')?.touched || personaFisicaExtranjeraForm.get('nombrePFE')?.dirty)}">*</span>:</label>
+                <input type="text" class="form-control" size="40" id="nombrePFE" maxlength="200" formControlName="nombrePFE" 
+                       [ngClass]="{'is-invalid': personaFisicaExtranjeraForm.get('nombrePFE')?.errors?.['required'] && personaFisicaExtranjeraForm.get('nombrePFE')?.touched}"
+                       (change)="setValoresStore(personaFisicaExtranjeraForm,'nombrePFE', 'setNombrePFE')">
+                @if (personaFisicaExtranjeraForm.get('nombrePFE')?.errors?.['required'] && personaFisicaExtranjeraForm.get('nombrePFE')?.touched) {
+                  <div class="mensaje-error">Este campo es obligatorio</div>
+                }
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="apellidoPaterno">Primer apellido<span [ngClass]="{'text-danger': personaFisicaExtranjeraForm.get('apellidoPaternoPFE')?.invalid && (personaFisicaExtranjeraForm.get('apellidoPaternoPFE')?.touched || personaFisicaExtranjeraForm.get('apellidoPaternoPFE')?.dirty)}">*</span>:</label>
+                <input type="text" class="form-control" size="40" id="apellidoPaternoPFE" maxlength="200" formControlName="apellidoPaternoPFE" 
+                       [ngClass]="{'is-invalid': personaFisicaExtranjeraForm.get('apellidoPaternoPFE')?.errors?.['required'] && personaFisicaExtranjeraForm.get('apellidoPaternoPFE')?.touched}"
+                       (change)="setValoresStore(personaFisicaExtranjeraForm,'apellidoPaternoPFE', 'setApellidoPaternoPFE')">
+                @if (personaFisicaExtranjeraForm.get('apellidoPaternoPFE')?.errors?.['required'] && personaFisicaExtranjeraForm.get('apellidoPaternoPFE')?.touched) {
+                  <div class="mensaje-error">Este campo es obligatorio</div>
+                }
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="apellidoMaterno">Segundo apellido:</label>
+                <input type="text" class="form-control" name="apellidoMaternoPFE" formControlName="apellidoMaternoPFE" id="apellidoMaternoPFE" maxlength="200" 
+                       [ngClass]="{'is-invalid': personaFisicaExtranjeraForm.get('apellidoMaternoPFE')?.errors?.['required'] && personaFisicaExtranjeraForm.get('apellidoMaternoPFE')?.touched}"
+                       (change)="setValoresStore(personaFisicaExtranjeraForm,'apellidoMaternoPFE', 'setApellidoMaternoPFE')">
+                @if (personaFisicaExtranjeraForm.get('apellidoMaternoPFE')?.errors?.['required'] && personaFisicaExtranjeraForm.get('apellidoMaternoPFE')?.touched) {
+                  <div class="mensaje-error">Este campo es obligatorio</div>
+                }
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-8">
+                <label class="form-label" for="seguroNumero">Número del seguro social<span [ngClass]="{'text-danger': personaFisicaExtranjeraForm.get('seguroNumero')?.invalid && (personaFisicaExtranjeraForm.get('seguroNumero')?.touched || personaFisicaExtranjeraForm.get('seguroNumero')?.dirty)}">*</span>: <span class="bi bi-question-circle-fill mx-2" tooltip="{{ TEXTOS.NUMERO_DE_SEGURO_TITULO_TOOLTIP }}" placement="top"></span></label>
+                <input type="text" class="form-control" size="40" id="nssPFE" maxlength="11" formControlName="seguroNumero" 
+                       [ngClass]="{'is-invalid': personaFisicaExtranjeraForm.get('seguroNumero')?.errors?.['required'] && personaFisicaExtranjeraForm.get('seguroNumero')?.touched}"
+                       (change)="setValoresStore(personaFisicaExtranjeraForm,'seguroNumero', 'setSeguroNumero')">
+                @if (personaFisicaExtranjeraForm.get('seguroNumero')?.errors?.['required'] && personaFisicaExtranjeraForm.get('seguroNumero')?.touched) {
+                  <div class="mensaje-error">Este campo es obligatorio</div>
+                }
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="correoPFE">Correo electrónico<span [ngClass]="{'text-danger': personaFisicaExtranjeraForm.get('correoPFE')?.invalid && (personaFisicaExtranjeraForm.get('correoPFE')?.touched || personaFisicaExtranjeraForm.get('correoPFE')?.dirty)}">*</span>:</label>
+                <input type="text" class="form-control" name="correoPFE" formControlName="correoPFE" maxlength="320" id="correoPFE" 
+                       [ngClass]="{'is-invalid': (personaFisicaExtranjeraForm.get('correoPFE')?.errors?.['required'] || personaFisicaExtranjeraForm.get('correoPFE')?.errors?.['email']) && personaFisicaExtranjeraForm.get('correoPFE')?.touched}"
+                       (change)="setValoresStore(personaFisicaExtranjeraForm,'correoPFE', 'setCorreoPFE')">
+                @if (personaFisicaExtranjeraForm.get('correoPFE')?.errors?.['required'] && personaFisicaExtranjeraForm.get('correoPFE')?.touched) {
+                  <div class="mensaje-error">Este campo es obligatorio</div>
+                }
+                @if (personaFisicaExtranjeraForm.get('correoPFE')?.errors?.['pattern'] && personaFisicaExtranjeraForm.get('correoPFE')?.touched) {
+                  <div class="mensaje-error">Por favor, escribe una dirección de correo válida.</div>
+                }
+              </div>
+            </div>
+            <!-- Domicilios -->
+            <ng-titulo titulo="Domicilio fiscal"></ng-titulo>
+            <div class="row">
+              <div class="col-md-4">
+                <app-catalogo-select [catalogo]="pais" [id]="'paisPFE'" formControlName="paisPFE" [label]="'País'" name="cvePais" (change)="paisSeleccion()" [required]="true" [markTouched]="!!personaFisicaExtranjeraForm.get('paisPFE')?.touched"></app-catalogo-select>
+              </div>
+              <div class="col-md-4 pt-7">
+                <label for="codigoPostal">Código postal<span [ngClass]="{'text-danger': personaFisicaExtranjeraForm.get('codigoPostalPFE')?.invalid && (personaFisicaExtranjeraForm.get('codigoPostalPFE')?.touched || personaFisicaExtranjeraForm.get('codigoPostalPFE')?.dirty)}">*</span>:</label>
+                <input type="text" class="form-control" name="codigoPostalPFE" id="codigoPostalPFE" formControlName="codigoPostalPFE" maxlength="12" 
+                       [ngClass]="{'is-invalid': personaFisicaExtranjeraForm.get('codigoPostalPFE')?.errors?.['required'] && personaFisicaExtranjeraForm.get('codigoPostalPFE')?.touched}"
+                       (change)="setValoresStore(personaFisicaExtranjeraForm,'codigoPostalPFE', 'setCodigoPostalPFE')">
+                @if (personaFisicaExtranjeraForm.get('codigoPostalPFE')?.errors?.['required'] && personaFisicaExtranjeraForm.get('codigoPostalPFE')?.touched) {
+                  <div class="mensaje-error">Este campo es obligatorio</div>
+                }
+              </div>
+              <div class="col-md-4 pt-7">
+                <label for="estado">Estado<span [ngClass]="{'text-danger': personaFisicaExtranjeraForm.get('estadoPFE')?.invalid && (personaFisicaExtranjeraForm.get('estadoPFE')?.touched || personaFisicaExtranjeraForm.get('estadoPFE')?.dirty)}">*</span>:</label>
+                <input type="text" class="form-control" name="estadoPFE" id="entidadFederativaPFE" formControlName="estadoPFE" maxlength="200" 
+                       [ngClass]="{'is-invalid': personaFisicaExtranjeraForm.get('estadoPFE')?.errors?.['required'] && personaFisicaExtranjeraForm.get('estadoPFE')?.touched}"
+                       (change)="setValoresStore(personaFisicaExtranjeraForm,'estadoPFE', 'setEstadoPFE')">
+                @if (personaFisicaExtranjeraForm.get('estadoPFE')?.errors?.['required'] && personaFisicaExtranjeraForm.get('estadoPFE')?.touched) {
+                  <div class="mensaje-error">Este campo es obligatorio</div>
+                }
+              </div>
+            </div>
+            <div class="row pt-7">
+              <div class="col-md-4">
+                <label for="ciudad">Ciudad<span [ngClass]="{'text-danger': personaFisicaExtranjeraForm.get('ciudadPFE')?.invalid && (personaFisicaExtranjeraForm.get('ciudadPFE')?.touched || personaFisicaExtranjeraForm.get('ciudadPFE')?.dirty)}">*</span>:</label>
+                <input type="text" class="form-control" name="ciudadPFE" id="ciudadPFE" formControlName="ciudadPFE" maxlength="120" 
+                       [ngClass]="{'is-invalid': personaFisicaExtranjeraForm.get('ciudadPFE')?.errors?.['required'] && personaFisicaExtranjeraForm.get('ciudadPFE')?.touched}"
+                       (change)="setValoresStore(personaFisicaExtranjeraForm,'ciudadPFE', 'setCiudadPFE')">
+                @if (personaFisicaExtranjeraForm.get('ciudadPFE')?.errors?.['required'] && personaFisicaExtranjeraForm.get('ciudadPFE')?.touched) {
+                  <div class="mensaje-error">Este campo es obligatorio</div>
+                }
+              </div>
+              <div class="col-md-8">
+                <label for="calle">Calle<span [ngClass]="{'text-danger': personaFisicaExtranjeraForm.get('callePFE')?.invalid && (personaFisicaExtranjeraForm.get('callePFE')?.touched || personaFisicaExtranjeraForm.get('callePFE')?.dirty)}">*</span>:</label>
+                <input type="text" class="form-control" name="callePFE" id="callePFE" formControlName="callePFE" maxlength="100" 
+                       [ngClass]="{'is-invalid': personaFisicaExtranjeraForm.get('callePFE')?.errors?.['required'] && personaFisicaExtranjeraForm.get('callePFE')?.touched}"
+                       (change)="setValoresStore(personaFisicaExtranjeraForm,'callePFE', 'setCallePFE')">
+                @if (personaFisicaExtranjeraForm.get('callePFE')?.errors?.['required'] && personaFisicaExtranjeraForm.get('callePFE')?.touched) {
+                  <div class="mensaje-error">Este campo es obligatorio</div>
+                }
+              </div>
+            </div>
+            <div class="row pt-7">
+              <div class="col-md-4">
+                <label for="numeroExterior">Número exterior<span [ngClass]="{'text-danger': personaFisicaExtranjeraForm.get('numeroExteriorPFE')?.invalid && (personaFisicaExtranjeraForm.get('numeroExteriorPFE')?.touched || personaFisicaExtranjeraForm.get('numeroExteriorPFE')?.dirty)}">*</span>:</label>
+                <input type="text" class="form-control" name="numeroExteriorPFE" id="numeroExteriorPFE" formControlName="numeroExteriorPFE" maxlength="55" 
+                       [ngClass]="{'is-invalid': personaFisicaExtranjeraForm.get('numeroExteriorPFE')?.errors?.['required'] && personaFisicaExtranjeraForm.get('numeroExteriorPFE')?.touched}"
+                       (change)="setValoresStore(personaFisicaExtranjeraForm,'numeroExteriorPFE', 'setNumeroExteriorPFE')">
+                @if (personaFisicaExtranjeraForm.get('numeroExteriorPFE')?.errors?.['required'] && personaFisicaExtranjeraForm.get('numeroExteriorPFE')?.touched) {
+                  <div class="mensaje-error">Este campo es obligatorio</div>
+                }
+              </div>
+              <div class="col-md-4">
+                <label for="numeroInterior">Número interior:</label>
+                <input type="text" class="form-control" name="numeroInteriorPFE" id="numeroInteriorPFE" formControlName="numeroInteriorPFE" maxlength="55" 
+                       (change)="setValoresStore(personaFisicaExtranjeraForm,'numeroInteriorPFE', 'setNumeroInteriorPFE')">
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer custom-footer mt-4">
+        <div class="row">
+          <div class="col-md-8 text-muted">
+            <p>* Campos obligatorios</p>
+          </div>
+          <div class="col-md-4 d-flex justify-content-end">
+            <button type="button" class="btn btn-primary" id="limpiarPFE" name="limpiar" (click)="limpiarDatosPFE()" [disabled]="soloLectura">Limpiar</button>
+            <button type="button" class="btn btn-default mx-2" id="cancelarPFE" name="cancelar" data-bs-dismiss="modal" #cerrarModal [disabled]="soloLectura">Cancelar</button>
+            <button type="button" class="btn btn-primary" id="guardarPFE" name="guardar" (click)="agregarPFE(personaFisicaExtranjeraForm.getRawValue())" [disabled]="soloLectura">{{ indiceSeleccionado !== null ? 'Guardar' : 'Agregar' }}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmar Eliminación Modal -->
+<div id="confirmarEliminar" class="modal fade" tabindex="-1"
+  aria-labelledby="confirmarEliminarLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm eliminar-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" aria-label="Close" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <label>¿Desea eliminar el elemento seleccionado?</label>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="eliminarRegistro()"
+          data-bs-dismiss="modal">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmar datos eliminados correctamente Modal -->
+<div id="confirmarEliminados" class="modal fade" tabindex="-1"
+  aria-labelledby="confirmarEliminarLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm eliminar-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" aria-label="Close" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <label>Datos eliminados correctamente</label>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-primary"
+          data-bs-dismiss="modal">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+  @if(alertaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="alertaNotificacion"></lib-notificaciones>
+</section>
+}

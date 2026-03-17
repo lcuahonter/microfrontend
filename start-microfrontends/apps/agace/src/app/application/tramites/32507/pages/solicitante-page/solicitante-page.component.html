@@ -1,0 +1,109 @@
+<div class="page">
+  <div class="container">
+    <div class="row">
+        @switch (indice) {
+          @case (1) {
+            <div class="col-md-8">
+              <h3>Entrega de actas de hechos de destrucción de desperdicios y mermas</h3>
+            </div>
+            <div class="col-md-12">
+              <ng-alert class="text-center" [CONTENIDO]="TEXTO_PASO_UNO"></ng-alert>
+            </div>
+          }
+          @case (2) {
+            <div class="col-md-8">
+              <h3>Cargar archivos</h3>
+            </div>
+            <div class="col-md-12">
+              <ng-alert class="text-center" [CONTENIDO]="MSG_REGISTRO_EXITOSO(idSolicitud)"></ng-alert>
+            </div>
+          }
+          @case (3) {
+            <div class="col-md-8">
+              <h3>Firmar</h3>
+            </div>
+            @if (mostrarAlertaFirma) {
+              <div class="col-md-12">
+                  <ng-alert class="text-center" [CONTENIDO]="ALERTA_FIRMA"></ng-alert>
+              </div>
+            }
+          }
+        }
+      <app-wizard [listaPasos]="pasos"></app-wizard>
+    </div>
+    <div class="row">
+      @switch (indice) {
+      @case (1) {
+      <paso-uno></paso-uno>
+      }
+      @case (2) {
+      <app-paso-dos
+        (cargaRealizada)="onCargaRealizada($event)"
+        (activarBotonCargaArchivos)="onActivarBotonCargaArchivos($event)"
+        (cargaEnProgresoChange)="onCargaEnProgreso($event)"
+        (hayDocumentosOpcionalesChange)="onHayDocumentosOpcionales($event)">
+      </app-paso-dos>
+      }
+
+      @case (3) {
+      <app-paso-tres (esAcuseChange)="onEsAcuseChange($event)"></app-paso-tres>
+      }
+      }
+      <div>
+      </div>
+
+      @if (indice === 1) {
+        <btn-continuar [datos]="datosPasos"
+                       [dePadre]="true"
+                       (continuarEvento)="getBtnGuardarAction($event)"
+                       (anteriorEvento)="getValorIndice($event)"></btn-continuar>
+      }
+      @if (indice === 2) {
+        @if (activarBotonCargaArchivos) {
+            <div class="col-md-12 mb-3 d-flex justify-content-end" style="margin-top: 24px; padding-left: 22px;">
+              <ng-alert class="text-center" [CONTENIDO]="WARN_CARGA_DOCUMENTOS" [CUSTOMECLASS]="'alert-warning'"></ng-alert>
+            </div>
+        }
+        <div class="mt-5 mb-3 d-flex justify-content-end">
+          <!-- Botón "Cargar archivos" - visible solo mientras seccionCargarDocumentos === true -->
+          @if (seccionCargarDocumentos) {
+            <button
+              type="button"
+              class="btn btn-primary me-3"
+              (click)="onClickCargaArchivos()"
+              [disabled]="!activarBotonCargaArchivos || cargaEnProgreso">
+              Cargar archivos
+            </button>
+          }
+
+          <!-- Botón "Continuar" - siempre visible -->
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="siguiente()"
+            [disabled]="cargaEnProgreso">
+            Continuar
+          </button>
+        </div>
+      }
+      @if (indice === 3) {
+        <div class="col-md-12" style="padding: 20px;"></div>
+      }
+    </div>
+    @if(indice === 1) {
+      <div class="row">
+        <div class="col-md-12">
+          <ng-alert [CONTENIDO]="alertText"></ng-alert>
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+@if(nuevaNotificacion){
+  <section>
+    <lib-notificaciones
+      [notificacionInput]="nuevaNotificacion"
+    ></lib-notificaciones>
+  </section>
+}

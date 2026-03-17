@@ -1,0 +1,86 @@
+<div class="page">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-10">
+          <h1>Captura del certificado fitosanitario para importación</h1>
+        </div>
+        @if (esFormaInValido && !llaveDuplicada) {
+        <div class="col-md-12">
+          <ng-alert [CONTENIDO]="FORM_ERROR_ALERT" [CUSTOMECLASS]="'alert-danger'"></ng-alert>
+        </div>
+        } @else if (esFormaInValido && llaveDuplicada) {
+          <div class="col-md-12">
+            <ng-alert [CONTENIDO]="FORM_LLAVE_DUPLICADA_ALERT" [CUSTOMECLASS]="'alert-danger'"></ng-alert>
+          </div>
+        }
+        @if (esPasoUnoCompleto) {
+        <div class="alert alert-info" [innerHTML]="mensajePasos"></div>
+        }
+        <app-wizard [listaPasos]="pasos"></app-wizard>
+      </div>
+  
+      <div class="row">
+        @switch (indice) { @case (1) {
+        <app-paso-uno></app-paso-uno>
+        } @case (2) {
+        <app-paso-dos
+          [idTipoTRamite]="'220202'"
+          [datosUsuario]="datosUsuario"
+          [idSolicitud]="idSolicitud"
+          [cargaArchivosEvento]="cargarArchivosEvento"
+          (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+          (reenviarCargaRealizada)="cargaRealizada($event)"
+          (cargaEnProgresoChange)="onCargaEnProgresoPadre($event)"
+        ></app-paso-dos>
+        } @case (3) {
+          <paso-firma [idSolicitud]="+idSolicitud" [procedure]="220202" [procedureUrl]="'registrofitosanitario'"></paso-firma>
+        }
+        @default {
+          <app-paso-uno></app-paso-uno>
+        }
+        }
+  
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          @if (indice !== 2) {
+            <btn-continuar
+              [datos]="datosPasos"
+              [btnGuardar]="btnGuardar"
+              [btnGuardarVisible]="btnGuardarVisible"
+              (continuarEvento)="getValorIndice($event)"
+              (anteriorEvento)="getValorIndice($event)"
+              [btnHabilitarContinuar] = "true"
+              (btnGuardarClicked)="guardarDatosFormulario()"
+            ></btn-continuar>
+          } @else {
+            <div class="mt-5 mb-3 d-flex justify-content-end">
+              <button type="button" class="btn btn-default" (click)="anterior()" *ngIf="seccionCargarDocumentos">
+                Anterior
+              </button>
+              <button
+                class="btn btn-primary ms-3"
+                (click)="onClickCargaArchivos()"
+                [disabled]="(seccionCargarDocumentos && !activarBotonCargaArchivos) || (!seccionCargarDocumentos && cargaEnProgreso)"
+                *ngIf="seccionCargarDocumentos"
+              >
+                {{ 'Cargar archivos' }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-default ms-3"
+                (click)="siguiente()"
+              >
+                Continuar
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+
+                    <div class="row">
+                      <ng-alert [CONTENIDO]="alertText"></ng-alert>
+                    </div>
+    </div>
+  </div>

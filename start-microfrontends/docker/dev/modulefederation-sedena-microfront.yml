@@ -1,0 +1,39 @@
+services:
+#----------------------------------------------------------------
+  modulefederation-sedena-microfront:
+    image: ghcr.io/vucem30/dockerized-modulefederation-sedena-microfront:1.2.69
+    build: 
+      context: ../../
+      dockerfile: apps/sedena/Dockerfile.dev
+      args:
+        - NODE_ENV=production
+    container_name: modulefederation-sedena-microfront
+    restart: unless-stopped
+    expose:
+      - '4219'
+    ports:
+      - "4219:80"
+    networks:
+      - modulefederation-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - nginx_logs:/var/log/nginx
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+#----------------------------------------------------------------
+networks:
+  modulefederation-network:
+    driver: bridge
+
+volumes:
+  nginx_logs:

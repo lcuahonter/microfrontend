@@ -1,0 +1,162 @@
+<div class="row">
+   <form [formGroup]="inversionGrupo">
+        <div class="row mb-3">
+            <formas-dinamicas 
+                [formularioTitulo]="'Indica el monto aproximado de su inversión en territorio nacional.'"
+                [forma]="inversionFormGroup" 
+                [formularioDatos]="inversionFormDatos"
+                [estado]="solicitudState"
+                [soloLectura]="esFormularioSoloLectura"
+                (emitirCambioDeValor)="establecerCambioDeValor($event)"
+                >
+            </formas-dinamicas>
+            <div class="d-flex justify-content-end mt-2">
+                <button type="button" class="btn btn-primary" [disabled]="esFormularioSoloLectura">Agregar</button>
+            </div>
+        </div>
+        <div class="table-container mt-4">
+            <div class="table-header pb-2">
+                <h5>Datos de la inversión</h5>
+            </div>
+            <app-tabla-dinamica
+                [tipoSeleccionTabla]="tablaSeleccionCheckbox" 
+                [configuracionTabla]="configuracionTabla"
+                [datos]="inversionGrupoDatos">
+            </app-tabla-dinamica>
+             <div class="d-flex justify-content-end mt-2">
+                <button type="button" class="btn btn-default ms-2" [disabled]="esFormularioSoloLectura">Modificar</button>
+                <button type="button" class="btn btn-danger ms-2" [disabled]="esFormularioSoloLectura">Eliminar</button>
+            </div>
+        </div>
+    </form>
+
+    <form [formGroup]="delGrupo">
+        <div class="row mb-3">
+            <formas-dinamicas 
+                [forma]="checkboxFormGroup" 
+                [formularioDatos]="permisoDesistirFormDatos"
+                [estado]="solicitudState"
+                [soloLectura]="esFormularioSoloLectura"
+                [templateMap]="templateMap"
+                (emitirCambioDeValor)="establecerCambioDeValor($event)"
+                >
+            </formas-dinamicas>
+        </div>
+    </form>
+    <form [formGroup]="porcentajeMontoForm">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="form-label" for="telefono">Porcentaje*:</label>
+                <input class="form-control" id="telefono" formControlName="porcentaje" placeholder="" type="text"/>
+                <div *ngIf="porcentajeMontoForm.controls['porcentaje'].invalid && porcentajeMontoForm.controls['porcentaje'].touched">
+                    <div class="mensaje-error" *ngIf="porcentajeMontoForm.controls['porcentaje'].errors?.['required']">
+                      Campo Requerido
+                    </div>
+                    <div class="mensaje-error" *ngIf="porcentajeMontoForm.controls['porcentaje'].errors?.['pattern']">
+                      Existen datos incorrectos que no cumplen con el formato esperado.
+                    </div>
+                    <div class="mensaje-error" *ngIf="porcentajeMontoForm.controls['porcentaje'].errors?.['maxTwenty']">
+                      El porcentaje debe ser igual o menor al 20%
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="form-label" for="telefono">Monto*:</label>
+                <input class="form-control" id="telefono" formControlName="monto" placeholder="" type="text"/>
+                <div *ngIf="porcentajeMontoForm.controls['monto'].invalid && porcentajeMontoForm.controls['monto'].touched">
+                    <div class="mensaje-error" *ngIf="porcentajeMontoForm.controls['monto'].errors?.['required']">
+                      Campo Requerido
+                    </div>
+                    <div class="mensaje-error" *ngIf="porcentajeMontoForm.controls['monto'].errors?.['pattern']">
+                      Existen datos incorrectos que no cumplen con el formato esperado.
+                    </div>
+                    <div class="mensaje-error" *ngIf="porcentajeMontoForm.controls['monto'].errors?.['maxFiveMillion']">
+                      El monto debe ser igual o menor a 5,000,000.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <p class="mt-5">
+        En caso afirmativo, el monto de las resoluciones de improcedencias no deberá representar más del 20% del total de las devoluciones autorizadas en el periodo de seis meses, siempre que el monto negado resultante de la aplicación de dicho porcentaje sea menor o igual a cinco millones de pesos en su conjunto.
+    </p>
+    <form [formGroup]="contadoGrupo">
+        <div class="row mb-3">
+            <formas-dinamicas 
+                [forma]="checkboxDosFormGroup" 
+                [formularioDatos]="predeterminadoSeleccionarDatos"
+                [estado]="solicitudState"
+                [soloLectura]="esFormularioSoloLectura"
+                (emitirCambioDeValor)="establecerCambioDeValor($event)"
+                >
+            </formas-dinamicas>
+        </div>
+    </form>
+    <form [formGroup]="contadoGrupo">
+        <div class="row mb-3">
+            <formas-dinamicas 
+                [formularioTitulo]="'De las siguientes opciones, declare por lo menos una'"
+                [forma]="deLasSiguientesFormGroup" 
+                [formularioDatos]="deLasSiguientesDatos"
+                [templateMap]="templateMap"
+                [estado]="solicitudState"
+                [soloLectura]="esFormularioSoloLectura"
+                (emitirCambioDeValor)="establecerCambioDeValor($event)"
+                >
+            </formas-dinamicas>
+        </div>
+    </form>
+    <form [formGroup]="contadoGrupo">
+        <div class="row mb-3">
+            <formas-dinamicas 
+                [formularioTitulo]="'Pago de derechos'"
+                [forma]="pagoDeDerechosFormGroup" 
+                [formularioDatos]="pagoDeDerechosDatos"
+                [estado]="solicitudState"
+                [soloLectura]="esFormularioSoloLectura"
+                (emitirCambioDeValor)="establecerCambioDeValor($event)"
+                >
+            </formas-dinamicas>
+        </div>
+
+        <ng-template #customTemplate2>
+            <div class="d-flex">
+                <label class="form-label w-100" for="fechaDeOperaciones">Fecha de Operaciones</label>
+                <input class="form-control" type="date" name="fechaDeOperaciones" id="fechaDeOperaciones" formControlName="fechaDeOperaciones" [ngClass]="esValido('fechaDeOperaciones') ? 'required' : ''" (change)="valorCambio($event, 'fechaDeOperaciones')"/>
+            </div>
+        </ng-template>
+
+        <ng-template #customTemplate3>
+            <div class="d-flex">
+                <label class="form-label w-100" for="numeroDeEmpleados">Número de Empleados</label>
+                <input class="form-control" type="text" name="numeroDeEmpleados" id="numeroDeEmpleados" formControlName="numeroDeEmpleados" [ngClass]="esValido('numeroDeEmpleados') ? 'required' : ''" (change)="valorCambio($event, 'numeroDeEmpleados')"/>
+            </div>
+        </ng-template>
+
+        <ng-template #customTemplate4>
+            <div class="d-flex">
+                <label class="form-label w-100" for="total">Total de Maquinaria</label>
+                <input class="form-control" type="text" name="total" id="total" formControlName="total" [ngClass]="esValido('total') ? 'required' : ''" (change)="valorCambio($event, 'total')"/>
+            </div>
+        </ng-template>
+    </form>
+    <div class="d-flex justify-content-end mt-5">
+        <button type="button" class="btn btn-danger" [disabled]="esFormularioSoloLectura">Borrar datos del pago</button>
+    </div>
+</div>
+
+<ng-template #customTemplate1>
+    @if (mostrarCustomSection1) {
+        <div class="alert alert-info mt-3">
+            <div class="form-check">
+                <p>
+                    Anexe documentación que acredite que está al amparo del procedimiento 
+                    previsto en antepenúltimo párrafo de la Regla de Carácter General en 
+                    Materia de Comercio Exterior 5.2.13, o que ha efectuado el pago de los créditos
+                </p>
+            </div>
+        </div>
+    }
+  </ng-template>

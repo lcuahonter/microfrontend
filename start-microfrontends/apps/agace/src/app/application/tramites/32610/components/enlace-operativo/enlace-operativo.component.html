@@ -1,0 +1,305 @@
+<div class="container form-container">
+  <form [formGroup]="enlaceOperativoDataForm">
+    <ng-titulo titulo="Enlace Operativo" />
+    <div class="row mt-5">
+      <div class="col-md-12">
+        <div class="panel-group ficha-collapse" id="accordion">
+          @for(panel of panels; let i = $index; track i) {
+          <div class="panel panel-default mb-3">
+            <div class="panel-heading" (click)="mostrar_colapsable(i)">
+              <h4 class="panel-title">
+                <a>
+                  {{ panel.label }}
+                </a>
+              </h4>
+              <button
+                type="button"
+                class="collpase-button"
+                [class.collapsed]="panel.isCollapsed"
+                [disabled]="esFormularioSoloLectura"
+              ></button>
+            </div>
+            <div
+              class="panel-collapse"
+              [id]="'panel-' + i"
+              [ngClass]="{
+                collapse: panel.isCollapsed,
+                in: !panel.isCollapsed
+              }"
+            >
+              <div class="panel-body">
+                <div class="row" *ngIf="mostrarError && (!enlaceOperativoData || enlaceOperativoData.length === 0)">
+                  <div class="col-md-12 text-danger mt-3">
+                    <b>Se debe agregar por lo menos un enlace operativo</b>
+                  </div>
+                </div>
+                <app-tabla-dinamica
+                  [configuracionTabla]="configuracionTabla"
+                  [datos]="enlaceOperativoData"
+                  [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX"
+                  (listaDeFilaSeleccionada)="manejarFilaSeleccionada($event)"
+                  [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+                >
+                </app-tabla-dinamica>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+
+      <div class="d-flex justify-content-end">
+        <div class="d-flex flex-row flex-wrap gap-3">
+          <button
+            class="btn btn-primary"
+            type="button"
+            [disabled]="esFormularioSoloLectura"
+            (click)="confirmeliminarEnlaceItem()"
+          >
+            Eliminar
+          </button>
+          <button
+            class="btn btn-primary"
+            type="button"
+            [disabled]="esFormularioSoloLectura"
+            (click)="modificarItemEnlace()"
+          >
+            Modificar
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            [disabled]="esFormularioSoloLectura"
+            (click)="agregarDialogoDatos()"
+          >
+            Agregar
+          </button>
+        </div>
+      </div>
+  </form>
+</div>
+
+<div
+  class="modal fade"
+  id="enlaceOperativoElemento"
+  tabindex="-1"
+  aria-labelledby="enlaceOperativoElemento"
+  aria-hidden="true"
+  data-bs-backdrop="static"
+  #enlaceOperativoElemento
+>
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form [formGroup]="enlaceOperativoForm">
+          <h6>
+            <span class="require">*</span>Registro Federal de Contribuyentes:
+          </h6>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <input
+                  class="form-control"
+                  id="registro"
+                  formControlName="registro"
+                  type="text"
+                />
+              </div>
+              @if ( enlaceOperativoForm.controls['registro'].touched &&
+              enlaceOperativoForm.controls['registro'].hasError('required') ) {
+              <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+            </div>
+            <div class="col-md-8">
+              <div class="btn-group">
+                <button
+                  class="btn btn-default"
+                  type="button"
+                  (click)="botonBuscar()"
+                >
+                  Buscar
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="rfc">RFC:</label>
+                <input
+                  class="form-control"
+                  id="rfc"
+                  formControlName="rfc"
+                  type="text"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="nombre">Nombre:</label>
+                <input
+                  class="form-control"
+                  id="nombre"
+                  formControlName="nombre"
+                  type="text"
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="apellidoPaterno"
+                  >Apellido Paterno:</label
+                >
+                <input
+                  class="form-control"
+                  id="apellidoPaterno"
+                  formControlName="apellidoPaterno"
+                  type="text"
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="apellidoMaterno"
+                  >Apellido Materno:</label
+                >
+                <input
+                  class="form-control"
+                  id="apellidoMaterno"
+                  formControlName="apellidoMaterno"
+                  type="text"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8">
+              <div class="form-group">
+                <label class="form-label" for="cuidad"
+                  >Cuidad o Estado de Residencia</label
+                >
+                <input
+                  class="form-control"
+                  id="cuidad"
+                  formControlName="cuidad"
+                  type="text"
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="cargo">Cargo o Puesto</label>
+                <input
+                  class="form-control"
+                  id="cargo"
+                  formControlName="cargo"
+                  type="text"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="telefono">Teléfono:</label>
+                <input
+                  class="form-control"
+                  id="telefono"
+                  formControlName="telefono"
+                  type="text"
+                />
+              </div>
+              @if(enlaceOperativoForm.controls['telefono'].invalid &&
+              enlaceOperativoForm.controls['telefono'].touched) {
+              <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="correoElectronico"
+                  >correo Electrónico:</label
+                >
+                <input
+                  class="form-control"
+                  id="correoElectronico"
+                  formControlName="correoElectronico"
+                  type="text"
+                />
+              </div>
+              @if(enlaceOperativoForm.controls['correoElectronico'].invalid &&
+              enlaceOperativoForm.controls['correoElectronico'].touched) {
+              <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="suplente">Suplente</label>
+                <div class="form-check-input-container">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value=""
+                    id="suplente"
+                    formControlName="suplente"
+                  />
+                </div>
+              </div>
+              @if(enlaceOperativoForm.controls['suplente'].invalid &&
+              enlaceOperativoForm.controls['suplente'].touched) {
+              <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+            </div>
+          </div>
+        </form>
+        <footer class="footer d-flex py-5 gap-3 justify-content-end">
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="modalCancelar()"
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="enviarDialogData()"
+            [disabled]="!enlaceOperativoForm.valid"
+          >
+            Aceptar
+          </button>
+        </footer>
+      </div>
+    </div>
+  </div>
+</div>
+
+<lib-notificaciones
+  *ngIf="confirmEliminarPopupAbierto"
+  [notificacionInput]="nuevaNotificacion"
+  (confirmacionModal)="eliminarEnlaceItem($event)"
+>
+</lib-notificaciones>
+
+<lib-notificaciones
+  *ngIf="tieneValorRfc"
+  [notificacionInput]="nuevaNotificacion"
+  (confirmacionModal)="botonBuscar()"
+>
+</lib-notificaciones>
+
+<lib-notificaciones
+  *ngIf="esFilaSeleccionada"
+  [notificacionInput]="nuevaNotificacion"
+  (confirmacionModal)="modificarItemEnlace()"
+>
+</lib-notificaciones>
+
+<lib-notificaciones
+  *ngIf="multipleSeleccionPopupAbierto"
+  [notificacionInput]="nuevaNotificacion"
+  (confirmacionModal)="confirmeliminarEnlaceItem()"
+>
+</lib-notificaciones>

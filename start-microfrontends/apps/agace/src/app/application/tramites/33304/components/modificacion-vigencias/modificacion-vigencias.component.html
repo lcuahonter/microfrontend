@@ -1,0 +1,82 @@
+<ng-titulo
+  titulo="Modificación de las vigencias con respecto a la última actualización">
+</ng-titulo>
+
+<form [formGroup]="formularioModificacionVigencias">
+  <div class="row mt-3">
+    <div class="col-md-12">
+      <div class="form-group">
+        <label class="form-label">Modificación de vigencias</label>
+        <app-input-radio
+          [radioOptions]="radioOptions"
+          [layout]="'horizontal'"
+          [gap]="'50px'"
+          formControlName="modificacionVigencias"
+          (change)="setValoresStore(formularioModificacionVigencias,'modificacionVigencias')">
+        </app-input-radio>
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="formularioModificacionVigencias.get('modificacionVigencias')?.value === '1'">
+    <div class="row mt-2">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="fechaInicioVigenciaAnterior" class="form-label">Fecha inicial anterior*:</label>
+          <input-fecha
+            id="fechaInicioVigenciaAnterior"
+            class="flex-grow-1"
+            [datos]="fechaInputDatos"
+            [setFecha]="formularioModificacionVigencias.get('fechaInicioVigenciaAnterior')?.value"
+            [isDisabled]="esFormularioSoloLectura"
+            (valorCambiado)="actualizarFecha($event, 'fechaInicioVigenciaAnterior'); setValoresStore(formularioModificacionVigencias,'fechaInicioVigenciaAnterior')">
+          </input-fecha>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="fechaFinVigenciaAnterior" class="form-label">Fecha final anterior*:</label>
+          <input-fecha
+            id="fechaFinVigenciaAnterior"
+            class="flex-grow-1"
+            [datos]="fechaInputDatos"
+            [setFecha]="formularioModificacionVigencias.get('fechaFinVigenciaAnterior')?.value"
+            [isDisabled]="esFormularioSoloLectura"
+            (valorCambiado)="actualizarFecha($event, 'fechaFinVigenciaAnterior'); setValoresStore(formularioModificacionVigencias,'fechaFinVigenciaAnterior')">
+          </input-fecha>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-2">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="fechaInicioVigenciaActual" class="form-label">Fecha inicial actual*:</label>
+          <input-fecha
+            id="fechaInicioVigenciaActual"
+            class="flex-grow-1"
+            [datos]="fechaInputDatos"
+            [setFecha]="formularioModificacionVigencias.get('fechaInicioVigenciaActual')?.value"
+            [isDisabled]="esFormularioSoloLectura"
+            (valorCambiado)="actualizarFecha($event, 'fechaInicioVigenciaActual'); setValoresStore(formularioModificacionVigencias,'fechaInicioVigenciaActual')">
+          </input-fecha>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="fechaFinVigenciaActual" class="form-label">Fecha final actual*:</label>
+          <input-fecha
+            id="fechaFinVigenciaActual"
+            class="flex-grow-1"
+            [datos]="fechaInputDatos"
+            [setFecha]="formularioModificacionVigencias.get('fechaFinVigenciaActual')?.value"
+            [isDisabled]="esFormularioSoloLectura"
+            (valorCambiado)="actualizarFecha($event, 'fechaFinVigenciaActual'); setValoresStore(formularioModificacionVigencias,'fechaFinVigenciaActual')">
+          </input-fecha>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</form>

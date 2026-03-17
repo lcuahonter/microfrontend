@@ -1,0 +1,177 @@
+<ng-titulo titulo='Persona física nacional'></ng-titulo>
+
+<label for="Empresa transportista maritima persona fisica nacional">Empresa transportista maritima persona física
+    nacional:</label>
+
+<div class="row mt-5">
+    <div class="col-md-12">
+        <app-tabla-dinamica  [configuracionTabla]="configuracionParaEncabezadoDeTabla"
+            [datos]="personaFisicaNacionalTabla" [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX"
+            [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+            (listaDeFilaSeleccionada)="onFilasSeleccionadas($event)">
+        </app-tabla-dinamica>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="pull-right">
+            <button (click)="modificarPersona()" type="button" data-bs-toggle="modal" data-bs-target="#modalAgregarPFN" name="ModificarPFN" class="btn btn-default"
+                [disabled]="itemsSeleccionados.size !== 1">
+                Modificar
+            </button>
+            <button type="button" name="EliminarPFN" class="btn btn-danger ms-2"
+                [disabled]="itemsSeleccionados.size === 0" (click)="eliminarPersonaPorId()">
+                Eliminar
+            </button>
+            <button type="button" name="AgregarPFN" (click)="agregarPersona()" class="btn btn-primary ms-2" data-bs-toggle="modal"
+                data-bs-target="#modalAgregarPFN" [disabled]="esFormularioSoloLectura">
+                Agregar
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalAgregarPFN" tabindex="-1" aria-labelledby="modalAgregarPFNLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div id="dialogoPersonaFisicaNacional">
+                    <form [formGroup]="personaFisicaForm" id="formPFN" name="formPFN">
+
+
+                        @if (!esFormValido) {
+                        <div class="alert alert-info alert-danger" [innerHTML]="errorFormulario"></div>
+                        }
+
+                        <ng-titulo titulo="Persona física nacional"></ng-titulo>
+                        <ng-alert [CUSTOMECLASS]="'d-flex justify-content-center'" [CONTENIDO]="TEXTOS.PN"></ng-alert>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="rfc">RFC: <span class="bi bi-question-circle-fill"
+                                        title="{{ TEXTOS.RFC_TITULO_TOOLTIP}}" data-bs-toggle="tooltip"></span><span
+                                        [ngClass]="esControlInvalido('buscarRfcPFN') ?  'has-error' : ''">*</span></label>
+
+                                <input type="text" class="form-control"
+                                    [ngClass]="esControlInvalido('buscarRfcPFN') ? 'required' : ''" size="30"
+                                    id="buscarRfcPFN" maxlength="15" formControlName="buscarRfcPFN">
+                                <div *ngIf="esControlInvalido('buscarRfcPFN')" class="has-error">
+                                    <div [innerHTML]="mensajeCampoObligatorio"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-1 btn-mt">
+                                <button class="btn btn-primary" type="button" name="buscarPFN" id="buscarPFN"
+                                    (click)="buscarContribuyente()">Buscar</button>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="rfcPFN">RFC:</label>
+                                <input type="text" class="form-control" name="rfcPFN" formControlName="rfcPFN"
+                                    id="rfcPFN" maxlength="13" />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label" for="nombrePFN">Nombre(s):</label>
+                                <input type="text" class="form-control" name="nombrePFN" formControlName="nombrePFN"
+                                    maxlength="200" id="nombrePFN" />
+                            </div>
+                            <div class="col-md-4">
+                                <label for="apellidoPaternoPFN" class="form-label">Primer Apellido:</label>
+                                <input type="text" name="apellidoPaternoPFN" id="apellidoPaternoPFN"
+                                    class="form-control" maxlength="200" formControlName="apellidoPaternoPFN" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="apellidoMaternoPFN" class="form-label">Segundo Apellido:</label>
+                                <input type="text" name="apellidoMaternoPFN" id="apellidoMaternoPFN"
+                                    class="form-control" maxlength="200" formControlName="apellidoMaternoPFN" />
+                            </div>
+                        </div>
+
+                        <!-- Domicilios -->
+                        <ng-titulo titulo="Domicilio fiscal"></ng-titulo>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <app-catalogo-select [catalogo]="pais" formControlName="paisPFN" [label]="'País'"
+                                    name="cvePais" [isDisabled]="true"></app-catalogo-select>
+                            </div>
+                            <div class="col-md-4 pt-7">
+                                <label for="codigoPostal">Código postal:</label>
+                                <input type="text" class="form-control" name="codigoPostalPFN" id="codigoPostalPFN"
+                                    formControlName="codigoPostalPFN" maxlength="12" />
+                            </div>
+                            <div class="col-md-4">
+                                <app-catalogo-select [catalogo]="estado" formControlName="estadoPFN" [label]="'Estado'"
+                                    name="cveEstado" [isDisabled]="true"></app-catalogo-select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <app-catalogo-select [catalogo]="municipio" formControlName="municipioPFN"
+                                    [label]="'Municipio o alcaldía'" name="cveMunicipio"
+                                    [isDisabled]="true"></app-catalogo-select>
+                            </div>
+                            <div class="col-md-4 pt-7">
+                                <label for="localidad">Localidad:</label>
+                                <input type="text" class="form-control" name="localidadPFN" id="localidadPFN"
+                                    formControlName="localidadPFN" maxlength="120" />
+                            </div>
+                            <div class="col-md-4">
+                                <app-catalogo-select [catalogo]="colonia" formControlName="coloniaPFN"
+                                    [label]="'Colonia'" name="cveColonia" [isDisabled]="true"></app-catalogo-select>
+                            </div>
+                        </div>
+                        <div class="row pt-7">
+                            <div class="col-md-8">
+                                <label for="calle">Calle:</label>
+                                <input type="text" class="form-control" name="callePFN" id="callePFN"
+                                    formControlName="callePFN" maxlength="100" />
+                            </div>
+                            <div class="col-md-4">
+                                <label for="numeroExterior">Número exterior:</label>
+                                <input type="text" class="form-control" name="numeroExteriorPFN" id="numeroExteriorPFN"
+                                    formControlName="numeroExteriorPFN" maxlength="55" />
+
+                            </div>
+                        </div>
+                        <div class="row pt-7">
+                            <div class="col-md-4">
+                                <label for="numeroInterior">Número interior:</label>
+                                <input type="text" class="form-control" name="numeroInteriorPFN" id="numeroInteriorPFN"
+                                    formControlName="numeroInteriorPFN" maxlength="55">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer custom-footer mt-4">
+                <div class="row">
+                    <div class="col-md-8 text-muted">
+                        <p>* Campos obligatorios</p>
+                    </div>
+                    <div class="col-md-4 d-flex justify-content-end">
+                        <button type="button" class="btn btn-primary" id="limpiarPFN" name="limpiar"
+                            (click)="limpiarDatosPFN()">Limpiar</button>
+                        <button type="button" class="btn btn-default mx-2" id="cancelarPFN" name="cancelar"
+                            data-bs-dismiss="modal" (click)="limpiarDatosPFN()" #closeModal>Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="guardarPFN" name="guardar"
+                            (click)="agregarPFN(personaFisicaForm.getRawValue())">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (mostrarAlerta) {
+<lib-notificaciones [notificacionInput]="nuevaNotificacion" (confirmacionModal)="aceptar()"></lib-notificaciones>
+}
+
+@if (mostrarInfo) {
+<lib-notificaciones [notificacionInput]="nuevaNotificacionInfo"
+    (confirmacionModal)="aceptarInfo($event)"></lib-notificaciones>
+}

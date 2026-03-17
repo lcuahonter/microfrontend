@@ -1,0 +1,174 @@
+<div class="container">
+  <form [formGroup]="datosSolicitudForma">
+    <ng-titulo titulo="Productor"></ng-titulo>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row mt-2">
+          <div class="col-md-12">
+            <label for="certficacion_a">Productor de café*:</label>
+          </div>
+          <div class="col-md-4">
+            <app-input-radio [radioOptions]="radioOpcion" formControlName="exentoDePago" [layout]="'horizontal'"
+              [disabled]="esFormularioSoloLectura"></app-input-radio>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-titulo titulo="Productores de café"></ng-titulo>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="claveControlUnico">Clave del padrón*:</label>
+            <input formControlName="claveDelPadron" class="form-control" id="claveDelPadron" placeholder="" type="text"
+              [disabled]="esFormularioSoloLectura" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-titulo titulo="Regiones de compra"></ng-titulo>
+    <div class="row">
+      <div class="col-md-12 mt-5">
+        <div class="table-container">
+          <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccionCheckbox" [configuracionTabla]="regionesTabla"
+            [datos]="regionesTableDatos" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura" (filaSeleccionada)="seleccionarRegiones($event)"></app-tabla-dinamica>
+        </div>
+      </div>
+      <div class="col-md-12 mt-5">
+        <div class="d-flex justify-content-end">
+          <div class="btn-group">
+            <button (click)="borrarRegiones()" [disabled]="esFormularioSoloLectura" class="btn btn-danger me-2" type="button">
+              Borrar
+            </button>
+            <button (click)="redirigirRegiones()" [disabled]="esFormularioSoloLectura" class="btn btn-primary me-2" type="submit">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-titulo titulo="Beneficios"></ng-titulo>
+    <div class="row">
+      <div class="col-md-12 mt-5">
+        <div class="table-container">
+          <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccionCheckbox" [configuracionTabla]="beneficiosTabla"
+            (filaSeleccionada)="seleccionarBeneficios($event)" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura" [datos]="beneficiosTableDatos"></app-tabla-dinamica>
+        </div>
+      </div>
+      <div class="col-md-12 mt-5">
+        <div class="d-flex justify-content-end">
+          <div class="btn-group">
+            <button (click)="borrarBeneficios()" [disabled]="esFormularioSoloLectura" class="btn btn-danger me-2" type="button">
+              Borrar
+            </button>
+            <button (click)="redirigirBeneficios()" [disabled]="esFormularioSoloLectura" class="btn btn-primary me-2" type="submit">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-titulo titulo="Bodegas"></ng-titulo>
+    <div class="row">
+      <div class="col-md-12 mt-5">
+        <div class="table-container">
+          <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccionCheckbox" [configuracionTabla]="bodegasTabla"
+            (filaSeleccionada)="seleccionarBodega($event)" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura" [datos]="bodegasTableDatos"></app-tabla-dinamica>
+        </div>
+      </div>
+      <div class="col-md-12 mt-5">
+        <div class="d-flex justify-content-end">
+          <div class="btn-group">
+            <button (click)="borrarBodegas()" [disabled]="esFormularioSoloLectura" class="btn btn-danger me-2" type="button">
+              Borrar
+            </button>
+            <button (click)="redirigirBodegas()" [disabled]="esFormularioSoloLectura" class="btn btn-primary me-2" type="submit">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-titulo titulo="Café de exportación"></ng-titulo>
+    <div class="row">
+      <div class="col-md-12 mt-5">
+        <div class="table-container">
+          <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccionCheckbox" [configuracionTabla]="cafeExporacionTabla"
+            (filaSeleccionada)="seleccionarCafe($event)" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura" [datos]="cafeExporacionTableDatos"></app-tabla-dinamica>
+        </div>
+      </div>
+      <div class="col-md-12 mt-5">
+        <div class="d-flex justify-content-end">
+          <div class="btn-group">
+            <button (click)="borrarCafe()" [disabled]="esFormularioSoloLectura" class="btn btn-danger me-2" type="button">
+              Borrar
+            </button>
+            <button (click)=" redirigirCafeExportadores()" [disabled]="esFormularioSoloLectura" class="btn btn-primary me-2" type="submit">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Nota Informativa -->
+    <div class="row" style="margin-top: 30px;">
+      <div class="col-md-12">
+        <div class="alert alert-info">
+          <label style="font-weight: normal; text-align: justify;">
+            Nota: Para este trámite es indispensable enviar a la AMECAFE el catálogo de productos de exportación. Para
+            mayor referencia consulta la guía disponible en: <a href="http://www.amecafe.org.mx"
+              target="_blank" *ngIf="!esFormularioSoloLectura">www.amecafe.org.mx</a>
+              <span *ngIf="esFormularioSoloLectura">www.amecafe.org.mx</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Observaciones -->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <label for="observaciones">Observaciones<span class="require">*</span>:</label>
+          <textarea formControlName="observaciones" cols="60" rows="3" class="form-control required" id="valueTA"
+            [required]="true" [disabled]="esFormularioSoloLectura"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Requiere Inspección Inmediata -->
+    <div class="row mt-5">
+      <div class="col-md-12">
+        <div class="form-group">
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" formControlName="requiereInspeccionInmediata"
+              id="requiereInspeccionInmediata" [disabled]="esFormularioSoloLectura" [required]="true" />
+            <label class="form-check-label" for="requiereInspeccionInmediata">Autorizo que mi información pueda ser
+              utilizada para promoción en publicaciones de carácter público</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Declaraciones bajo protesta de decir verdad -->
+    <div class="row">
+      <div class="col-md-12">
+        <h3>Declaraciones bajo protesta de decir verdad</h3>
+        <hr class="red" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="alert alert-info">
+          <div class="form-check text-left">
+            <input type="checkbox" class="form-check-input pull-left" formControlName="informacionConfidencial"
+              id="informacionConfidencial" [required]="true" [disabled]="esFormularioSoloLectura" />
+            <label class="form-check-label" for="informacionConfidencial"
+              style="margin-left: 10px; font-weight: normal;">Protesto decir verdad</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

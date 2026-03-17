@@ -1,0 +1,103 @@
+<div class="container">
+  <div class="row">
+    <ul class="nav nav-tabs">
+      <li [ngClass]="indice === 1 ? 'active' : ''">
+        <a class="font-weight-bold" data-toggle="tab" (click)="seleccionaTab(1)" (keydown.enter)="seleccionaTab(1)"
+          tabindex="0">Solicitante</a>
+      </li>
+
+      <li [ngClass]="indice === 2 ? 'active' : ''">
+        <a class="font-weight-bold" data-toggle="tab" (click)="seleccionaTab(2)" (keydown.enter)="seleccionaTab(2)"
+          tabindex="1">Tipo de aviso</a>
+      </li>
+      @if (datosInputCheck.foreignClientsSuppliers) {
+
+      <li [ngClass]="indice === 3 ? 'active' : ''">
+        <a class="font-weight-bold" data-toggle="tab" (click)="seleccionaTab(3)" (keydown.enter)="seleccionaTab(3)"
+          tabindex="2">Aviso de modificaciones de clientes y proveedores extranjeros</a>
+      </li>
+      } @if (datosInputCheck.nationalSuppliers) {
+
+      <li [ngClass]="indice === 4 ? 'active' : ''">
+        <a class="font-weight-bold" data-toggle="tab" (click)="seleccionaTab(4)" (keydown.enter)="seleccionaTab(4)"
+          tabindex="3">Aviso de modificaciones de proveedores nacionales
+        </a>
+      </li>
+      } @if (datosInputCheck.changesToLegalDocuments) {
+
+      <li [ngClass]="indice === 6 ? 'active' : ''">
+        <a class="font-weight-bold" data-toggle="tab" (click)="seleccionaTab(6)" (keydown.enter)="seleccionaTab(6)"
+          tabindex="5">Aviso por modificación de uso y goce del inmueble
+        </a>
+      </li>
+      }
+      @if (datosInputCheck.modificationsMembers) {
+
+      <li [ngClass]="indice === 5 ? 'active' : ''">
+        <a class="font-weight-bold" data-toggle="tab" (click)="seleccionaTab(5)" (keydown.enter)="seleccionaTab(5)"
+          tabindex="4">   Aviso por modificación de socios</a>
+      </li>
+      } @if (datosInputCheck.mergerOrSplitNotice) {
+
+      <li [ngClass]="indice === 7 ? 'active' : ''">
+        <a class="font-weight-bold" data-toggle="tab" (click)="seleccionaTab(7)" (keydown.enter)="seleccionaTab(7)"
+          tabindex="6">Aviso por fusión o escisión</a>
+      </li>
+      } @if (datosInputCheck.additionFractions) {
+
+      <li [ngClass]="indice === 8 ? 'active' : ''">
+        <a class="font-weight-bold" data-toggle="tab" (click)="seleccionaTab(8)" (keydown.enter)="seleccionaTab(8)"
+          tabindex="7">Fracciones</a>
+      </li>
+      } @if (datosInputCheck.additionFractions) {
+
+      <li [ngClass]="indice === 9 ? 'active' : ''">
+        <a class="font-weight-bold" data-toggle="tab" (click)="seleccionaTab(9)" (keydown.enter)="seleccionaTab(9)"
+          tabindex="8">Procesos
+        </a>
+      </li>
+      }
+    </ul>
+
+    <ng-container>
+      @switch (indice) { @case (1) {
+      <solicitante></solicitante>
+      } @case (2) { @if(esDatosRespuesta){
+      <app-tipo-de-aviso (tabEnabledData)="getValoreEnable($event)" (onContinue)="continuar()"></app-tipo-de-aviso>
+      } } @case (3) { @if(esDatosRespuesta){
+      <app-proveedor-extranjero [proveedortype]="'extranjero'" (onContinue)="continuar()"></app-proveedor-extranjero>
+      } } @case (4) { @if(esDatosRespuesta){
+      <app-proveedor-extranjero [proveedortype]="'nacionales'" (onContinue)="continuar()"></app-proveedor-extranjero>
+      } } @case (5) { @if(esDatosRespuesta){
+      <app-modificacion-socios (onContinue)="continuar()"></app-modificacion-socios>
+      } } @case (6) {
+      @if(esDatosRespuesta){
+      <app-modificacion-goce-inmueble (onContinue)="continuar()"></app-modificacion-goce-inmueble>
+      }
+      } @case (7) {
+      @if(esDatosRespuesta){
+      <app-fusion-oescision (onContinue)="continuar()"></app-fusion-oescision>
+      }
+      } @case (8) {
+      @if(esDatosRespuesta){
+      <app-adicion-fraccion (onContinue)="continuar()"></app-adicion-fraccion>
+      }
+      } @case (9) {
+      @if(esDatosRespuesta){
+      <app-adicion-procesos (onContinue)="continuar()"></app-adicion-procesos>
+      }
+      } }
+    </ng-container>
+  </div>
+  <div class="text-right" *ngIf="indice ==  1">
+         <div class="pull-left text-muted text-vertical-align-button" id="lblCamposObligatorios">
+              {{ mensajeCamposObligatorios }}
+            </div>
+        <button type="button" class="btn btn-danger me-3">
+            Cancelar
+        </button>
+         <button type="submit"  class="btn btn-primary" (click)="continuar()">
+           Continuar
+        </button>
+    </div>
+</div>

@@ -1,0 +1,60 @@
+<div class="row mt-5">
+  <!-- First column -->
+  <div class="col-md-4 col-sm-4 col-xs-6">
+    <div class="radio">
+      <label>
+        <input type="radio" [(ngModel)]="searchType" [value]="searchTypeEnum.HOUSE" (ngModelChange)="onSearchTypeChange()"/>
+        House
+      </label>
+    </div>
+  </div>
+
+  <!-- Second column -->
+  <div class="col-md-4 col-sm-4 col-xs-6">
+    <div class="radio">
+      <label>
+        <input type="radio" [(ngModel)]="searchType" [value]="searchTypeEnum.MASTER" (ngModelChange)="onSearchTypeChange()"/>
+        Master
+      </label>
+    </div>
+  </div>
+
+  <!-- Third column -->
+  <div class="col-md-4 col-sm-4 col-xs-6">
+    <div class="radio">
+      <label>
+        <input type="radio" [(ngModel)]="searchType" [value]="searchTypeEnum.MANIFEST" (ngModelChange)="onSearchTypeChange()"/>
+        Manifiesto
+      </label>
+    </div>
+  </div>
+</div>
+
+
+@if(searchType === searchTypeEnum.MANIFEST) {
+  <app-manifest-form (onSubmitForm)="displayTable($event)"/>
+} @else if(searchType === searchTypeEnum.MASTER) {
+  <app-master-form  (onSubmitForm)="displayTable($event)"/>
+} @else if(searchType === searchTypeEnum.HOUSE) {
+  <app-house-form (onSubmitForm)="displayTable($event)"/>
+}
+
+@if (!!searchType) {
+  <div class="row">
+    <div class="col-md-12 mt-3 text-right">
+      <gob-button
+        type="button"
+        className="btn-primary"
+        label="Buscar"
+        (clicked)="submitForm()"
+        class="mr-1">
+      </gob-button>
+    </div>
+  </div>
+}
+
+@if (displayData()) {
+  <app-guide-table (notResults)="displayNotResults()" />
+}
+
+<app-dialog [id]="'notResults'" [content]="'No se encontraron resultados'"/>

@@ -1,0 +1,149 @@
+<div class="container">
+  <form [formGroup]="datosExportador">
+    <ng-titulo [titulo]="'Datos del exportador'"></ng-titulo>
+    <div class="row align-items-end">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label">
+            Tipo de persona<span
+              [class.label-invalid]="datosExportador.get('persona_tipo')?.invalid && datosExportador.get('persona_tipo')?.touched">*</span>:
+          </label>
+          <div class="d-flex gap-3">
+            <div class="form-check" *ngFor="let opcion of tipo_opcion">
+              <input class="form-check-input" type="radio" [id]="'persona_tipo_' + opcion.value" [value]="opcion.value"
+                [checked]="datosExportador.get('persona_tipo')?.value === opcion.value" formControlName="persona_tipo"
+                (change)="onTipoPersonaExportadorChange(opcion.value)" [disabled]="esFormularioSoloLectura">
+              <label class="form-check-label" [for]="'persona_tipo_' + opcion.value">
+                <b>{{ opcion.label }}</b>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row align-items-end ">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label"><b>Datos personales</b></label>
+        </div>
+      </div>
+    </div>
+    <!-- FÍSICA -->
+    <div *ngIf="tipoPersonaExportador === 'Física'">
+      <div class="row align-items-end">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label class="form-label">
+              Nombre(s)*:
+            </label>
+            <input class="form-control" type="text" id="personales_nombre" [disabled]="esFormularioSoloLectura"
+              placeholder="" formControlName="personales_nombre" [required]="true" maxlength="200"
+              (change)="setValoresStore(datosExportador, 'personales_nombre', 'setExportadorPersonales_nombre')" />
+          </div>
+          <div
+            *ngIf="datosExportador.get('personales_nombre')?.touched && datosExportador.get('personales_nombre')?.invalid"
+            class="mt-1">
+            <small *ngIf="datosExportador.get('personales_nombre')?.errors?.['required']" class="text-danger">Este campo
+              es
+              obligatorio</small>
+          </div>
+        </div>
+      </div>
+      <div class="row align-items-end espaciador-campo">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label class="form-label">
+              Primer apellido*:
+            </label>
+            <input class="form-control" type="text" [disabled]="esFormularioSoloLectura" id="primer_apellido"
+              placeholder="" formControlName="primer_apellido" [required]="true" maxlength="200"
+              (change)="setValoresStore(datosExportador, 'primer_apellido', 'setExportadorPrimer_apellido')" />
+            <div
+              *ngIf="datosExportador.get('primer_apellido')?.touched && datosExportador.get('primer_apellido')?.invalid"
+              class="mt-1">
+              <small *ngIf="datosExportador.get('primer_apellido')?.errors?.['required']" class="text-danger">Este campo
+                es
+                obligatorio</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row align-items-end espaciador-campo">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label class="form-label">
+              Segundo apellido*:
+            </label>
+            <input class="form-control" type="text" [disabled]="esFormularioSoloLectura" id="segundo_apellido"
+              placeholder="" formControlName="segundo_apellido" [required]="true" maxlength="200"
+              (change)="setValoresStore(datosExportador, 'segundo_apellido', 'setExportadorSegundo_apellido')" />
+          </div>
+          <div
+            *ngIf="datosExportador.get('segundo_apellido')?.touched && datosExportador.get('segundo_apellido')?.invalid"
+            class="mt-1">
+            <small *ngIf="datosExportador.get('segundo_apellido')?.errors?.['required']" class="text-danger">Este campo
+              es
+              obligatorio</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MORAL -->
+    <div *ngIf="tipoPersonaExportador === 'Moral'">
+      <div class="row align-items-end espaciador-campo">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label class="form-label">
+              Denominación o razón social*:
+            </label>
+            <input class="form-control" type="text" [disabled]="esFormularioSoloLectura" id="denominacion_razon_social"
+              placeholder="" formControlName="denominacion_razon_social" [required]="true" maxlength="250"
+              (change)="setValoresStore(datosExportador, 'denominacion_razon_social', 'setExportadorDenominacion_razon_social')" />
+            <div
+              *ngIf="datosExportador.get('denominacion_razon_social')?.touched && datosExportador.get('denominacion_razon_social')?.invalid"
+              class="mt-1">
+              <small *ngIf="datosExportador.get('denominacion_razon_social')?.errors?.['required']"
+                class="text-danger">Este campo es
+                obligatorio</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Campos siempre visibles -->
+    <div class="row align-items-end espaciador-campo">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label">
+            Domicilio<span
+              [class.label-invalid]="datosExportador.get('domicilio')?.invalid && datosExportador.get('domicilio')?.touched">*</span>:
+          </label>
+          <textarea class="form-control text_area" id="domicilio" formControlName="domicilio" rows="3" [required]="true"
+            maxlength="200" [disabled]="esFormularioSoloLectura"
+            (change)="setValoresStore(datosExportador, 'domicilio', 'setExportadorDomicilio')"
+            [ngClass]="{'is-invalid': datosExportador.get('domicilio')?.touched && datosExportador.get('domicilio')?.invalid}"></textarea>
+        </div>
+        <div *ngIf="datosExportador.get('domicilio')?.touched && datosExportador.get('domicilio')?.invalid"
+          class="mt-1">
+          <small *ngIf="datosExportador.get('domicilio')?.errors?.['required']" class="text-danger">Este campo es
+            obligatorio</small>
+        </div>
+      </div>
+    </div>
+    <div class="row align-items-end espaciador-campo">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="observaciones">
+            Observaciones:
+          </label>
+          <textarea class="form-control text_area" id="observaciones" formControlName="observaciones"
+            [disabled]="esFormularioSoloLectura" rows="3" maxlength="4000"
+            (change)="setValoresStore(datosExportador, 'observaciones', 'setExportadorObservaciones')"></textarea>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

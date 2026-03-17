@@ -1,0 +1,214 @@
+<div class="container">
+  <div class="col-md-12">
+    <app-tabla-dinamica
+      [configuracionTabla]="configuracionTabla"
+      [datos]="empresaFusionadasLista"
+      [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX"
+      (listaDeFilaSeleccionada)="manejarFilaSeleccionada($event)"
+      [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+    >
+    </app-tabla-dinamica>
+    <div class="d-flex justify-content-end">
+      <div class="d-flex flex-row flex-wrap gap-3">
+        <button class="btn btn-primary" [disabled]="esFormularioSoloLectura">
+          Eliminar
+        </button>
+        <button
+          class="btn btn-primary"
+          [disabled]="esFormularioSoloLectura"
+          (click)="modificarItemFusionadas()"
+        >
+          Modificar
+        </button>
+        <button
+          class="btn btn-primary"
+          [disabled]="esFormularioSoloLectura"
+          (click)="agregarDialogoDatos()"
+        >
+          Agregar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="fusionadasEmpresasElemento"
+  tabindex="-1"
+  aria-labelledby="fusionadasEmpresasElemento"
+  aria-hidden="true"
+  data-bs-backdrop="static"
+  #fusionadasEmpresasElemento
+>
+  <div class="modal-dialog modal-dialog-centered modal-xxl">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form [formGroup]="fusionadasEmpresasForm">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label
+                  class="form-label text-nowrap"
+                  style="margin: 0; white-space: nowrap"
+                  >Cuenta con registro en el Esquema Integral de
+                  Certificación</label
+                >
+                <app-input-radio
+                  [radioOptions]="registroCertificacionOpciones"
+                  formControlName="registroCertificacion"
+                  [gap]="'493px'"
+                  [isBold]="true"
+                  [labelMargin]="'0px'"
+                  [layout]="'horizontal'"
+                  (change)="setValoresStore(fusionadasEmpresasForm, 'registroCertificacion')"
+                >
+                </app-input-radio>
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="
+            fusionadasEmpresasForm.get('registroCertificacion')?.value === '0'">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label" for="rfc">RFC:*</label>
+                <input class="form-control" id="rfc" type="text" formControlName="rfc"/>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label
+                  class="form-label text-nowrap"
+                  style="margin: 0; white-space: nowrap"
+                  >Denominacion o razon social de la sociedad:*</label
+                >
+                <input
+                  class="form-control"
+                  id="denominacion"
+                  formControlName="denominacion"
+                  type="text"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="container" *ngIf="fusionadasEmpresasForm.get('registroCertificacion')?.value === '1'">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label" for="rfc">RFC:*</label>
+                  <input class="form-control" id="rfc" type="text" formControlName="rfc" />
+                </div>
+              </div>
+              <div class="col-md-6 d-flex">
+                <div class="form-group align-self-start mt-4">
+                  <button class="btn btn-default" type="button" (click)="agregarRegistro()">Aceptar</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label
+                    class="form-label text-nowrap"
+                    style="margin: 0; white-space: nowrap"
+                    >Denominacion o razon social de la sociedad:*</label
+                  >
+                  <input
+                    class="form-control"
+                    id="denominacion"
+                    formControlName="denominacion"
+                    type="text"
+                  />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label" for="folioVucem"
+                    >Folio VUCEM:*</label
+                  >
+                  <input
+                    class="form-control"
+                    id="folioVucem"
+                    formControlName="folioVucem"
+                    type="text"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="fechaInicioVigencia"
+                    >Fecha inicio de vigencia*:</label
+                  >
+                  <input-fecha
+                    class="flex-grow-1"
+                    id="fechaInicioVigencia"
+                    [datos]="fechaInputDatos"
+                    [setFecha]="
+                      fusionadasEmpresasForm.get('fechaInicioVigencia')?.value
+                    "
+                    (valorCambiado)="
+                      actualizarFechaInicio($event, 'fechaInicioVigencia')
+                    "
+                  >
+                  </input-fecha>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="fechaFinVigencia">Fecha fin de vigencia*:</label>
+                  <input-fecha
+                    class="flex-grow-1"
+                    id="fechaFinVigencia"
+                    [datos]="fechaInputDatos"
+                    [setFecha]="
+                      fusionadasEmpresasForm.get('fechaFinVigencia')?.value
+                    "
+                    (valorCambiado)="
+                      actualizarFechaFin($event, 'fechaFinVigencia')
+                    "
+                  >
+                  </input-fecha>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <footer class="footer d-flex py-5 gap-3 justify-content-end">
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="modalCancelar()"
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="enviarDialogData()"
+          >
+            Aceptar
+          </button>
+        </footer>
+      </div>
+    </div>
+  </div>
+</div>
+
+<lib-notificaciones
+  *ngIf="esFilaSeleccionada"
+  [notificacionInput]="nuevaNotificacion"
+  (confirmacionModal)="modificarItemFusionadas()"
+>
+</lib-notificaciones>
+
+<lib-notificaciones
+  *ngIf="esFilaSeleccionada"
+  [notificacionInput]="nuevaNotificacion"
+  (confirmacionModal)="enviarDialogData()"
+>
+</lib-notificaciones>

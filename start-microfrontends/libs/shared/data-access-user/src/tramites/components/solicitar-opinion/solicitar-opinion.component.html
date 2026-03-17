@@ -1,0 +1,46 @@
+<div class="container">
+    <div class="row">
+        <br>
+        <ul class="nav nav-tabs">
+            <li [ngClass]="indiceOpinion === 1 ? 'active' : ''">
+                <a data-toggle="tab" (click)="seleccionaTab(1)" (keydown.enter)="seleccionaTab(1)"
+                    (keydown.space)="seleccionaTab(1)" role="button" tabindex="0">Capturar solicitud de opinión</a>
+            </li>
+            @if(tabRequired) {
+            <li [ngClass]="indiceOpinion === 2 ? 'active' : ''">
+                <a data-toggle="tab" (click)="seleccionaTab(2)" (keydown.enter)="seleccionaTab(2)"
+                    (keydown.space)="seleccionaTab(2)" role="button" tabindex="0">Registrar opinión</a>
+            </li>
+            }
+        </ul>
+        <ng-container>
+            @switch (indiceOpinion) {
+            @case (1) {
+                @if(tramite === 80101 || tramite === 80102 || tramite === 80103 || tramite === 80104) {
+                    <app-capturar-solictud-opinion-801
+                        [tramite]="tramite"
+                        [idSolicitud]="idSolicitud"
+                        [numFolioTramite]="numFolioTramite"
+                        [guardarDatos]="guardarDatos"
+                    >
+                    </app-capturar-solictud-opinion-801>
+                }@else if(tramite === 130113) {
+                    <app-capturar-solictud-opinion-130
+                        [tramite]="tramite"
+                        [idSolicitud]="idSolicitud"
+                        [numFolioTramite]="numFolioTramite"
+                        [guardarDatos]="guardarDatos"
+                        (triggerSubTabs)="emitSubTabs($event)"
+                    >
+                    </app-capturar-solictud-opinion-130>
+                } @else {
+                    <app-capturar-solictud-opinion></app-capturar-solictud-opinion>
+                }
+            }
+            @case (2) {
+            <app-registrar-opinion></app-registrar-opinion>
+            }
+            }
+        </ng-container>
+    </div>
+</div>

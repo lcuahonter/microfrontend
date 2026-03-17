@@ -1,0 +1,52 @@
+<div class="container">
+   @if (nuevaAlertaNotificacion) {
+        <div>
+            <lib-notificaciones [notificacionInput]="nuevaAlertaNotificacion"></lib-notificaciones>
+        </div>
+    }
+  <h3 class="title">Modificar Correo Electrónico</h3>
+
+  <form [formGroup]="emailForm" (ngSubmit)="onSubmit()" class="email-form">
+    <div class="form-group">
+      <label for="currentEmail">Correo anterior:</label>
+      <input 
+        type="email" 
+        id="currentEmail"
+        formControlName="currentEmail"
+        class="form-control"
+        readonly>
+    </div>
+
+    <div class="form-group">
+      <label for="newEmail">Correo electrónico nuevo:</label>
+      <input 
+        type="email" 
+        id="newEmail"
+        formControlName="newEmail"
+        class="form-control"
+        placeholder="Ingrese su nuevo correo">
+      <div class="error-message" *ngIf="emailForm.get('newEmail')?.errors?.['email'] && emailForm.get('newEmail')?.touched">
+        Ingrese un correo electrónico válido
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="confirmEmail">Confirmación del correo electrónico:</label>
+      <input 
+        type="email" 
+        id="confirmEmail"
+        formControlName="confirmEmail"
+        class="form-control"
+        placeholder="Confirme su nuevo correo">
+      <div class="error-message" *ngIf="emailForm.errors?.['emailMismatch'] && emailForm.get('confirmEmail')?.touched">
+        Los correos electrónicos no coinciden
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary me-2" [disabled]="!emailForm.valid ">
+        {{ 'Confirmar' }}
+      </button>
+    </div>
+  </form>
+</div>

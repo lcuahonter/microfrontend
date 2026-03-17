@@ -1,0 +1,71 @@
+<div style="margin: 25px">
+    <ng-titulo titulo="Datos generales original" />
+    <form [formGroup]="formularioGeneral">
+        <div class="row">
+            <div class="col-md-12">
+                <label class="mt-3">Nacionalidad</label>
+                <app-input-radio [radioOptions]="radioPatentes" [layout]="'horizontal'" id="apoderadoPatente"
+                    [selectedValue]="esImportacion() ? radioPatentes[0].value : radioPatentes[1].value"
+                    [disableLabel]="disableLabels()">
+                </app-input-radio>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-4">
+                <label class="mt-3">Código postal o equivalente*:</label>
+                <input class="form-control" id="codigo_postal" type="text" formControlName="codigo_postal"
+                    maxlength="16" [class.is-invalid]="codigoPostal.touched && codigoPostal.invalid">
+                <div *ngIf="utils.esControlInvalido(formularioGeneral,'codigo_postal')"
+                    class="text-danger">
+                    <small *ngIf="codigoPostal.hasError('required')">Este campo es
+                        obligatorio.</small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="datosService.listaPaises()" formControlName="cve_pais" [label]="'País'"
+                    [required]="true" name="cve_pais" [isDisabled]="esImportacion()" [markTouched]="pais.touched">
+                </app-catalogo-select>
+            </div>
+            <div class="col-md-4">
+                @if(esImportacion()){
+                <app-catalogo-select [catalogo]="datosService.listaEntidadesFederativas()"
+                    formControlName="cve_entidad_federativa" [label]="'Estado'" [required]="true"
+                    name="cve_entidad_federativa" [required]="true" [markTouched]="entidadFederativa.touched">
+                </app-catalogo-select>
+                }@else{
+                <label class="mt-3">Ciudad*:</label>
+                <input class="form-control" type="text" maxlength="120" formControlName="ciudad" id="ciudad"
+                    class="form-control" [class.is-invalid]="ciudad.touched && ciudad.invalid" />
+                <div *ngIf="ciudad" class="text-danger">
+                    <small *ngIf="ciudad.hasError('required')">Este campo es
+                        obligatorio.</small>
+                </div>
+                }
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <label class="mt-3">Nombre/razón social y dirección*:</label>
+                <textarea class="form-control" id="domicilio" rows="3" formControlName="domicilio" placeholder=""
+                    maxlength="1000" [class.is-invalid]="domicilio.touched && domicilio.invalid"></textarea>
+                <div *ngIf="utils.esControlInvalido(formularioGeneral,'domicilio')" class="text-danger">
+                    <small *ngIf="domicilio.hasError('required')">Este campo es
+                        obligatorio.</small>
+                    <small *ngIf="domicilio.hasError('maxlength')">Por favor, no
+                        escribas más
+                        de 1000 caracteres.</small>
+                </div>
+            </div>
+        </div>
+        <div class="row my-5">
+            <div class=" col-md-4 d-flex justify-content-start">
+                <p>* Campos obligatorios</p>
+            </div>
+            <div class="col-md-8 d-flex justify-content-end gap-1">
+                <button class="btn btn-default mt-4 mb-4" (click)="cerrarModal()">Cancelar</button>
+                <button class="btn btn-primary mt-4 mb-4" (click)="enviarFormularioGeneral()">Guardar</button>
+            </div>
+        </div>
+    </form>
+</div>

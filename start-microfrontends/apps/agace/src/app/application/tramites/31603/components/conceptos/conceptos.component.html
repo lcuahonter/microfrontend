@@ -1,0 +1,250 @@
+  <div class="row mt-3">
+    <form [formGroup]="conceptosForm">
+    @if (siONo === 'No') {
+          <div class="col-md-4">
+            <p class="fw-bold">
+              Capture el valor total*
+            </p>
+            <input
+              type="text"
+              formControlName="captureElValorTotal"
+              class="form-control"
+              (change)="setValoresStore(conceptosForm,'captureElValorTotal', 'setCaptureElValorTotal')"
+              placeholder=""
+            />
+          </div>
+        }
+      <div [ngClass]="siONo === 'No' ? 'col-md-8' : 'col-md-12'">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Conceptos</th>
+                <th>Valor en moneda nacional</th>
+                <th>Equivalencia en porcentaje</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Transferencias virtuales y/o desperdicios</td>
+                <td>
+                  <input
+                    type="text"
+                    formControlName="transferencias"
+                    class="form-control"
+                    (change)="setValoresStore(conceptosForm,'transferencias', 'setTransferencias')"
+                    placeholder=""
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    formControlName="transferenciasVir"
+                    class="form-control"
+                    (change)="setValoresStore(conceptosForm,'transferenciasVir', 'setTransferenciasVir')"
+                    placeholder=""
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>Retornos</td>
+                <td>
+                  <input
+                    type="text"
+                    formControlName="retornos"
+                    (change)="setValoresStore(conceptosForm,'retornos', 'setRetornos')"
+                    class="form-control"
+                    placeholder=""
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    formControlName="retornosSe"
+                    (change)="setValoresStore(conceptosForm,'retornosSe', 'setRetornosSe')"
+                    class="form-control"
+                    placeholder=""
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>Constancias de transferencia de mercancía CTM</td>
+                <td>
+                  <input
+                    type="text"
+                    formControlName="constancias"
+                    (change)="setValoresStore(conceptosForm,'constancias', 'setConstancias')"
+                    class="form-control"
+                    placeholder="10"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    formControlName="constanciasDe"
+                    (change)="setValoresStore(conceptosForm,'constanciasDe', 'setConstanciasDe')"
+                    class="form-control"
+                    placeholder="10"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>Total</td>
+                <td>
+                  <input
+                    type="text"
+                    formControlName="total"
+                    (change)="setValoresStore(conceptosForm,'total', 'setTotal')"
+                    class="form-control"
+                    placeholder="100"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    formControlName="totalDos"
+                    (change)="setValoresStore(conceptosForm,'totalDos', 'setTotalDos')"
+                    class="form-control"
+                    placeholder="100"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- <div class="col-md-12 mt-3">
+          <p class="fw-bold">
+              Señale si la empresa cuenta con empleados propios
+            </p>
+            <app-input-radio
+                  [radioOptions]="radioOpcions"
+                  [selectedValue]="valorSeleccionado"
+                  (valueChange)="onEmpleadosPropiosCambio($event)"
+                  id="empleadosPropios-si"
+                  [isRequired]="true"
+                  formControlName="empleadosPropios"
+                  (change)="setValoresStore(conceptosForm,'empleadosPropios', 'setEmpleadosPropios')"
+                  [layout]="'horizontal'">
+              </app-input-radio>
+        </div> -->
+        <!-- @if(valorSeleccionado === 'Si') {
+          <div class="row mb-3">
+              <p class="fw-bold">
+                ¿Cuál es el número de empleados propios con los que contó en los
+                últimos tres bimestres anteriores a su solicitud?
+              </p>
+              <div class="col-md-6">
+                <label class="form-label" for="numeroEmpleados"
+                  > Número de empleados <span>*</span>:</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  formControlName="numeroEmpleados"
+                  (change)="setValoresStore(conceptosForm,'numeroEmpleados', 'setNumeroEmpleados')"
+                  id="numeroEmpleados"
+                  placeholder=""
+                />
+                <label class="form-label" for="numeroEmpleados"
+                  >Número de empleados <span>*</span>:</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="numeroEmpleados"
+                  placeholder=""
+                  formControlName="numeroEmpleadosDos"
+                  (change)="setValoresStore(conceptosForm,'numeroEmpleadosDos', 'setNumeroEmpleadosDos')"
+                />
+                <label class="form-label" for="numeroEmpleados"
+                  >Número de empleados <span>*</span>:</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="numeroEmpleados"
+                  placeholder=""
+                  formControlName="numeroEmpleadosTres"
+                  (change)="setValoresStore(conceptosForm,'numeroEmpleadosTres', 'setNumeroEmpleadosTres')"
+                />
+              </div>
+              <div class="col-md-6">
+                <app-catalogo-select
+                  [catalogo]="bimestreUnoCatalogo"
+                  formControlName="comboBimestresUno"
+                  [label]="'Bimestre'"
+                  [isDisabled]="esFormularioSoloLectura"
+                  [required]="true"
+                  (change)="setValoresStore(conceptosForm,'comboBimestresUno', 'setComboBimestresUno')"
+                >
+                </app-catalogo-select>
+                <app-catalogo-select
+                  [catalogo]="bimestreDosCatalogo"
+                  formControlName="comboBimestresDos"
+                  [label]="'Bimestre'"
+                  [isDisabled]="esFormularioSoloLectura"
+                  [required]="true"
+                  (change)="setValoresStore(conceptosForm,'comboBimestresDos', 'setComboBimestresDos')"
+                >
+                </app-catalogo-select>
+                <app-catalogo-select
+                  [catalogo]="bimestreTresCatalogo"
+                  formControlName="comboBimestresTres"
+                  [label]="'Bimestre'"
+                  [isDisabled]="esFormularioSoloLectura"
+                  [required]="true"
+                  (change)="setValoresStore(conceptosForm,'comboBimestresTres', 'setComboBimestresTres')"
+                >
+                </app-catalogo-select>
+              </div>
+            </div>
+        } -->
+        <!-- <div class="col-md-12 mt-3">
+          <p class="fw-bold">
+              ¿Cuenta con empleados subcontratados?
+            </p>
+            <app-input-radio
+                  [radioOptions]="radioOpcions"
+                  [selectedValue]="conEmpleadosSeleccionado"
+                  (valueChange)="onConEmpleados($event)"
+                  id="conEmpleados-si"
+                  [isRequired]="true"
+                  formControlName="conEmpleados"
+                  (change)="setValoresStore(conceptosForm,'conEmpleados', 'setConEmpleados')"
+                  [layout]="'horizontal'">
+              </app-input-radio>
+        </div> -->
+        <!-- @if(conEmpleadosSeleccionado === 'Si') {
+          <app-numero-de-empleados [esFormularioSoloLectura]="esFormularioSoloLectura"></app-numero-de-empleados>
+        } -->
+        <!-- <div class="col-md-12 mt-3">
+          <p class="fw-bold">
+              ¿Cuenta con empleados subcontratados?
+            </p>
+            <app-input-radio
+                  [radioOptions]="radioOpcions"
+                  [selectedValue]="valorSeleccionado"
+                  (valueChange)="onConEmpleados($event)"
+                  id="conEmpleados-si"
+                  [isRequired]="true"
+                  formControlName="conEmpleados"
+                  (change)="setValoresStore(conceptosForm,'conEmpleados', 'setConEmpleados')"
+                  [layout]="'horizontal'">
+              </app-input-radio>
+        </div> -->
+        <!-- <div class="col-md-12 mt-3">
+          <p class="fw-bold">
+              Indique si los socios y accionistas, representante legal, administrador único o miembros del consejo de administración de la empresa declararon ingresos acumulables en la declaración anual de los dos ejercicios previos ante la autoridad fiscal para los fines del ISR
+            </p>
+            <app-input-radio
+                  [radioOptions]="radioOpcions"
+                  [selectedValue]="valorSeleccionado"
+                  (valueChange)="onConEmpleados($event)"
+                  id="conEmpleados-si"
+                  [isRequired]="true"
+                  formControlName="indiqueSiLosSocios"
+                  (change)="setValoresStore(conceptosForm,'indiqueSiLosSocios', 'setIndiqueSiLosSocios')"
+                  [layout]="'horizontal'">
+              </app-input-radio>
+        </div> -->
+  </form>
+  </div>

@@ -1,0 +1,195 @@
+<div class="page">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="form-group">
+        <h5 class="form-label text-start">Fracción arancelaria</h5>
+        <p class="form-label text-start">
+          {{ selectedRow?.encabezadoFraccionArancelaria }}
+        </p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <h5 class="form-label text-start">Anexo II</h5>
+        <p class="form-label text-start">{{ selectedRow?.encabezadoAnexoII }}</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <h5 class="form-label text-start">Tipo</h5>
+        <p class="form-label text-start">{{ selectedRow?.encabezadoTipo }}</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <h5 class="form-label text-start">UMT</h5>
+        <p class="form-label text-start">{{ selectedRow?.encabezadoUmt }}</p> 
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <ng-titulo titulo="Proyecto IMMEX" />
+    </div>
+  </div>
+  <form [formGroup]="proyectoForm">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label for="descripcion" class="form-label text-start"
+            >Descripción comercial*:</label
+          >
+          <textarea
+            id="descripcion"
+            class="form-control txt-area-custom"
+            formControlName="descripcion"
+            (change)="setValoresStore(proyectoForm, 'descripcion', 'setDecripcionComercial')"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-4">
+        <div class="form-group">
+          <app-catalogo-select
+            [catalogo]="documentoCatalogDatos"
+            [label]="'Tipo de documento'"
+            [required]="true"
+            name="paisDestino"
+            formControlName="tipoDeDocumente"
+            (change)="setValoresStore(proyectoForm, 'tipoDeDocumente', 'setTipoDeDocumente')"
+          ></app-catalogo-select>
+        </div>
+      </div>
+       <div class="col-md-4" *ngIf="proyectoForm.get('tipoDeDocumente')?.value === 'TIDPI.OTRO'">
+          <div class="form-group">
+            <label for="descripcionOtroImmex" class="form-label">Descripción Otro*:</label>
+            <input class="form-control min-hgt uppercase" id="descripcionOtroImmex" formControlName="descripcionOtroImmex" type="text" maxlength="60" (change)="setValoresStore(proyectoForm, 'descripcionOtroImmex', 'setDescripcionOtroImmex')" />
+          </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-md-4">
+        <div class="form-group">
+            <input-fecha [datos]="INPUT_FECHA_DE_CONFIGURACION"
+          [setFecha]="proyectoForm.get('fechaDeFirma')?.value"
+          (valorCambiado)="cambioFechaFirma($event)" [deshabilitarFuturas]="true">
+        </input-fecha>          
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="form-group">
+            <input-fecha [datos]="INPUT_FECHA_DE_VIGENCIA"
+          [setFecha]="proyectoForm.get('fechaDeVigencia')?.value"
+          (valorCambiado)="cambioFechaVigencia($event)" [deshabilitarPasadas]="true">
+        </input-fecha>  
+        </div>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="rfcTaxId"
+            >RFC de la parte firmante / Tax ID*:</label
+          >
+          <input
+            class="form-control min-hgt uppercase"
+            id="rfcTaxId"
+            formControlName="rfcTaxId"
+            type="text"
+            maxlength="20"
+            (change)="setValoresStore(proyectoForm, 'rfcTaxId', 'setRfcTaxId')"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="razonSocial"
+            >Razón social de la parte firmante*:</label
+          >
+          <input
+            class="form-control min-hgt uppercase"
+            id="razonSocial"
+            formControlName="razonSocial"
+            type="text"
+            maxlength="180"
+            (change)="setValoresStore(proyectoForm, 'razonSocial', 'setRazonSocial')"
+          />
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="d-flex justify-content-between align-items-center w-100 mt-3">
+    <div class="text-muted" id="lblCamposObligatorios">
+        * Campos obligatorios
+    </div>
+    <div>
+      <button
+        type="button"
+        class="btn btn-danger me-3"
+        (click)="limpar()"
+      >
+        Limpar
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="aggregar()"
+      >
+        Agregar
+      </button>
+    </div>
+  </div>
+
+  <div class="row mt-5">
+    <app-tabla-dinamica
+      [tipoSeleccionTabla]="proyectoImmexConfiguartion.proyectoImmexSeleccionCheckBox"
+      [configuracionTabla]="proyectoImmexConfiguartion.proyectoImmexTabla"
+      [datos]="proyectoImmexTablaLista"
+      (listaDeFilaSeleccionada)="setProyectpLista($event)"
+      [mode]="'client'" [showPagination]="true"
+        [totalItems]="totalItemsproyectoImmexTablaLista"
+    ></app-tabla-dinamica>
+  </div>
+  <div class="row justify-content-end">
+    <button
+      type="button"
+      class="btn btn-danger col-auto mt-3 mr-5 me-3"
+      (click)="elimiar()"
+    >
+      Eliminar
+    </button>
+
+    <button
+      type="button"
+      class="btn btn-primary col-auto pull-right float-end mt-3 me-3"
+      (click)="eidtar()"
+    >
+      Editar
+    </button>
+  </div>
+  <div class="row mt-5">
+    <div class="col-12 d-flex justify-content-end">
+      <button class="btn btn-primary me-2" (click)="regresar()">
+        Regresar Anexo I
+      </button>
+    </div>
+  </div>
+</div>
+@if (agregarNotification) {
+<section>
+    <lib-notificaciones [notificacionInput]="agregarNotification">
+    </lib-notificaciones>
+</section>
+}
+@if (nuevaNotificacion) {
+<section>
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+    </lib-notificaciones>
+</section>
+}

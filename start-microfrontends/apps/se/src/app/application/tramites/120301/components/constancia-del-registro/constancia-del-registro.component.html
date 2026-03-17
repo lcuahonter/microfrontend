@@ -1,0 +1,281 @@
+<div class="container">
+  <form [formGroup]="fitosanitarioForm">
+    @if(visualizarEvaluacion){
+    <div class="row">
+      <ng-titulo titulo="Datos de la constancia de registro"></ng-titulo>
+      <div class="col-md-12 pb-5">
+        <label for="Mostrar">Mostrar:</label>
+      </div>
+      <app-input-radio [radioOptions]="radioOptions" [selectedValue]="selectedValue"
+        (valueChange)="onValueChange($event)" [layout]="'horizontal'" [gap]="'50px'" formControlName="flexRadioRegistro"
+        [disabled]="formularioDeshabilitado" (change)="
+            setValoresStore(
+            fitosanitarioForm,
+            'flexRadioRegistro',
+            'setFlexRadioRegistro'
+            )"></app-input-radio>
+
+      @if(fitosanitarioForm.get('flexRadioRegistro')?.value === 'Especifico') {
+      <div class="row alinear-inferior">
+        <div class="col-md-6">
+          <app-catalogo-select [catalogo]="anios" formControlName="anoDeLaConstancia"
+            [label]="'Año de la constancia de registro'" [required]="true" [isDisabled]="formularioDeshabilitado"
+            [placeholder]="'Seleccione un año'"
+            [markTouched]="fitosanitarioForm.get('anoDeLaConstancia')?.touched??false"></app-catalogo-select>
+        </div>
+
+        <div class="col-md-6">
+          <label for="numeroDeLaConstancia" class="form-label">Número de la constancia de registro<span
+              [ngClass]="{'text-danger': fitosanitarioForm.get('numeroDeLaConstancia')?.invalid && (fitosanitarioForm.get('numeroDeLaConstancia')?.touched || fitosanitarioForm.get('numeroDeLaConstancia')?.dirty)}">*</span>:</label>
+          <input type="text" required="true" class="form-control" formControlName="numeroDeLaConstancia"
+            [disabled]="formularioDeshabilitado" size="30" />
+          @if(fitosanitarioForm.get('numeroDeLaConstancia')?.invalid &&
+          (fitosanitarioForm.get('numeroDeLaConstancia')?.touched || enviada)) {
+          <small class="text-danger">Este campo es obligatorio</small>
+          }
+        </div>
+      </div>
+      }
+
+      <div class="text-end mt-5">
+        <button class="btn btn-primary" [disabled]="formularioDeshabilitado" (click)="buscarEvaluar()">Buscar</button>
+      </div>
+    </div>
+
+    <div class="row alinear-inferior">
+      <app-tabla-dinamica [configuracionTabla]="configuracionTabla" [datos]="configuracionTablaDatos" [styleCenter]="true"
+        (filaClic)="onFilaClic($event)"> 
+      </app-tabla-dinamica>
+    </div>
+    }
+    @if(guardarBandera) {
+    <div class="row">
+      @if(visualizarEvaluacion){
+      <div class="row pb-5">
+        <ng-titulo titulo="Representación federal"></ng-titulo>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="estado">Estado:</label>
+            <input class="form-control" id="estado" placeholder="" type="text" libUppercase name="estado"
+              formControlName="estado" [disabled]="formularioDeshabilitado" (change)="
+                    setValoresStore(
+                    fitosanitarioForm,
+                    'estado',
+                    'setEstado'
+                    )" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="Representacion-federal">Representación federal:</label>
+            <input class="form-control" id="representacionFederal" placeholder="" type="text" libUppercase
+              name="representacionFederal" formControlName="representacionFederal" [disabled]="formularioDeshabilitado"
+              (change)="
+                    setValoresStore(
+                    fitosanitarioForm,
+                    'representacionFederal',
+                    'setRepresentacionFederal'
+                    )" />
+          </div>
+        </div>
+      </div>
+      }
+      <div class="row pb-5">
+        <ng-titulo titulo="Descripción del cupo"></ng-titulo>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="Fraccion-arancelaria">Fracción arancelaria:</label>
+            <input class="form-control" id="fraccionArancelaria" placeholder="" type="text" libUppercase
+              name="fraccionArancelaria" formControlName="fraccionArancelaria" [disabled]="formularioDeshabilitado"
+              (change)="
+                    setValoresStore(
+                    fitosanitarioForm,
+                    'representacionFederal',
+                    'setFraccionArancelaria'
+                    )" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="producto">Descripción del producto:</label>
+            <input value="" class="form-control" id="producto" placeholder="" type="text" libUppercase name="producto"
+              formControlName="descripcionProducto" [disabled]="formularioDeshabilitado" (change)="
+                    setValoresStore(
+                    fitosanitarioForm,
+                    'descripcionProducto',
+                    'setDescripcionProducto'
+                    )" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="tratado">Tratado o bloque:</label>
+            <input value="" class="form-control" id="tratado" placeholder="" type="text" libUppercase name="tratado"
+              formControlName="tratado" [disabled]="formularioDeshabilitado" (change)="
+                    setValoresStore(
+                    fitosanitarioForm,
+                    'tratado',
+                    'setTratado'
+                    )" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="subproducto">Clasificación del subproducto:</label>
+            <input value="" class="form-control" id="subproducto" placeholder="" type="text" libUppercase
+              name="subproducto" formControlName="subproducto" [disabled]="formularioDeshabilitado" (change)="
+                    setValoresStore(
+                    fitosanitarioForm,
+                    'subproducto',
+                    'setSubproducto'
+                    )" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="mecanismo">Mecanismo de asignación:</label>
+            <input value="" class="form-control" id="mecanismo" placeholder="" type="text" libUppercase name="mecanismo"
+              formControlName="mecanismo" [disabled]="formularioDeshabilitado" (change)="
+                    setValoresStore(
+                    fitosanitarioForm,
+                    'mecanismo',
+                    'setMecanismo'
+                    )" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="typoCategoria">Categoría textil:</label>
+            <input value="" class="form-control" id="typoCategoria" placeholder="" type="text" libUppercase
+              name="typoCategoria" formControlName="typoCategoria" [disabled]="formularioDeshabilitado" (change)="
+                    setValoresStore(
+                    fitosanitarioForm,
+                    'typoCategoria',
+                    'setTypoCategoria'
+                    )" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="typoRegimen">Clasificación de régimen:</label>
+            <input value="" class="form-control" id="typoRegimen" placeholder="" type="text" libUppercase
+              name="typoRegimen" formControlName="typoRegimen" [disabled]="formularioDeshabilitado" (change)="
+                    setValoresStore(
+                    fitosanitarioForm,
+                    'typoRegimen',
+                    'setTypoRegimen'
+                    )" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="descripcionCategoriaTextil">Descripción de la categoría textil:</label>
+            <input value="" class="form-control" id="descripcionCategoriaTextil" placeholder="" type="text" libUppercase
+              name="descripcionCategoriaTextil" formControlName="descripcionCategoriaTextil"
+              [disabled]="formularioDeshabilitado" (change)="
+                    setValoresStore(
+                    fitosanitarioForm,
+                    'descripcionCategoriaTextil',
+                    'setDescripcionCategoriaTextil'
+                    )" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="PaisDestino">País destino/origen:</label>
+            <input class="form-control" id="PaisDestino" placeholder="" type="text" libUppercase name="PaisDestino"
+              formControlName="PaisDestino" [disabled]="formularioDeshabilitado" (change)="
+                    setValoresStore(
+                    fitosanitarioForm,
+                    'PaisDestino',
+                    'setPaisDestino'
+                    )" />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label" for="unidadMedidaCategoriaTextil">Unidad de medida categoría textil:</label>
+            <input value="" class="form-control" id="unidadMedidaCategoriaTextil" placeholder="" type="text"
+              libUppercase name="unidadMedidaCategoriaTextil" formControlName="unidadMedidaCategoriaTextil"
+              [disabled]="formularioDeshabilitado" (change)="
+                    setValoresStore(
+                    fitosanitarioForm,
+                    'unidadMedidaCategoriaTextil',
+                    'setUnidadMedidaCategoriaTextil'
+                    )" />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label" for="factorConversionCategoriaTextil">Factor de conversión de la categoría
+              textil:</label>
+            <input value="" class="form-control" id="factorConversionCategoriaTextil" placeholder="" type="text"
+              libUppercase name="factorConversionCategoriaTextil" formControlName="factorConversionCategoriaTextil"
+              [disabled]="formularioDeshabilitado" (change)="
+                    setValoresStore(
+                    fitosanitarioForm,
+                    'factorConversionCategoriaTextil',
+                    'setFactorConversionCategoriaTextil'
+                    )" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="fechaInicioVigencia">Fecha de inicio de vigencia:</label>
+            <input value="" class="form-control" id="fechaInicioVigencia" placeholder="" type="text" libUppercase
+              name="fechaInicioVigencia" formControlName="fechaInicioVigencia" [disabled]="formularioDeshabilitado"
+              (change)="
+                    setValoresStore(
+                    fitosanitarioForm,
+                    'fechaInicioVigencia',
+                    'setFechaInicioVigencia'
+                    )" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="fechaFinVigencia">Fecha de fin de vigencia:</label>
+            <input value="" class="form-control" id="fechaFinVigencia" placeholder="" type="text" libUppercase
+              name="fechaFinVigencia" formControlName="fechaFinVigencia" [disabled]="formularioDeshabilitado" (change)="
+                    setValoresStore(
+                    fitosanitarioForm,
+                    'fechaFinVigencia',
+                    'setFechaFinVigencia'
+                    )" />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <label class="text-label">{{representacionFederalNota}}</label>
+        </div>
+      </div>
+      @if(visualizarEvaluacion){
+      <div class="row pb-5">
+        <div class="text-end mt-5">
+          <button [disabled]="formularioDeshabilitado" (click)="guardarEvaluate()"
+            class="btn btn-primary">Guardar</button>
+        </div>
+      </div>
+      }
+    </div>
+    }
+
+  </form>
+  <!-- Confirmar Buscar Modal -->
+  <div id="confirmarBuscar" class="modal fade" tabindex="-1" aria-labelledby="confirmarBuscarLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" aria-label="Close" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <label>No existen constancias de registros para los datos proporcionados</label>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

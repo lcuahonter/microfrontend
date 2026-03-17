@@ -1,0 +1,57 @@
+<div class="page">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        @if(indice === 3){
+          <h2>Firmar</h2>
+        } @else {
+        <h2>
+          Aviso de importación en diversos momentos de mercancías desmontadas o
+          sin montar - Regla 2 de las Generales para la aplicación de la TIGIE y
+          Regla 3.1.26.
+        </h2>
+      }
+      </div>
+
+      <div class="col-12">
+      
+        @if(esFormaValido){
+        <div class="col-md-12">
+          <ng-alert [CONTENIDO]="formErrorAlert" [CUSTOMECLASS]="'alert-danger'"></ng-alert>
+        </div>
+        }      
+      </div>
+      
+      <div class="=row">
+        <div class="col-md-12">
+          @if(indice === 2 && msgRegistroExitoso){
+            <ng-alert [CONTENIDO]="msgRegistroExitoso" [CUSTOMECLASS]="infoAlert"></ng-alert>
+          } @else {
+            <ng-alert [CONTENIDO]="alerta" [CUSTOMECLASS]="infoAlert"></ng-alert>
+          }          
+        </div>
+      </div>
+      
+      
+      
+      <app-wizard [listaPasos]="pasos"></app-wizard>
+      </div>
+
+    <div class="row">
+      @switch (indice) { @case (1) {
+      <paso-uno #pasoUnoRef></paso-uno>
+      } @case (2) {
+      <app-paso-dos>             
+      </app-paso-dos>
+      } @case (3) {
+      <app-paso-tres></app-paso-tres>
+      } }
+
+      <btn-continuar
+        [datos]="datosPasos"
+        (continuarEvento)="getValorIndice($event)"
+      ></btn-continuar>
+      <ng-alert [CONTENIDO]="AVISO_PRIVACIDAD_ADJUNTAR"  *ngIf="indice === 1"></ng-alert>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,178 @@
+{
+  "name": "inah",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "app",
+  "sourceRoot": "apps/inah/src",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/angular:webpack-browser",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/inah",
+        "index": "apps/inah/src/index.html",
+        "main": "apps/inah/src/main.ts",
+        "polyfills": ["zone.js"],
+        "tsConfig": "apps/inah/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/inah/src/assets/",
+            "output": "./assets/"
+          },
+          { "glob": "favicon.ico", "input": "./", "output": "./" },
+          {
+            "glob": "**/*",
+            "input": "libs/shared/theme/assets/",
+            "output": "./assets/"
+          }
+        ],
+        "styles": [
+             "node_modules/bootstrap/scss/bootstrap.scss",
+              "node_modules/bootstrap-icons/font/bootstrap-icons.css",
+              "node_modules/ngx-toastr/toastr.css",
+             "libs/shared/theme/assets/styles/main.scss"
+            ],
+        "scripts": [
+          "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+          "libs/shared/theme/assets/js/jsrsasign-4.7.0-all-min_sat-fix.js",
+          "libs/shared/theme/assets/js/FielUtil-1.5.js"
+        ],
+        "customWebpackConfig": {
+          "path": "apps/inah/webpack.config.ts"
+        },
+        "allowedCommonJsDependencies": [
+          "node-forge",
+          "moment"
+       ]
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "5mb",
+              "maximumError": "4mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "5mb",
+              "maximumError": "4mb"
+            }
+          ],
+          "outputHashing": "all",
+          "optimization": true,
+          "sourceMap": false,
+          "namedChunks": false,
+          "aot": true,
+          "extractLicenses": true,
+          "vendorChunk": true,
+          "buildOptimizer": true,
+          "customWebpackConfig": {
+            "path": "apps/inah/webpack.config.ts"
+          },
+          "fileReplacements": [
+            {
+              "replace": "apps/inah/src/app/environments/environment.ts",
+              "with": "apps/inah/src/app/environments/environment.prod.ts"
+            }
+          ]
+        },
+        "qa": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ],
+          "outputHashing": "all",
+          "optimization": true,
+          "sourceMap": false,
+          "namedChunks": false,
+          "aot": true,
+          "extractLicenses": true,
+          "vendorChunk": true,
+          "buildOptimizer": true,
+          "customWebpackConfig": {
+            "path": "apps/inah/webpack.config.ts"
+          },
+          "fileReplacements": [
+            {
+              "replace": "apps/inah/src/app/environments/environment.ts",
+              "with": "apps/inah/src/app/environments/environment.qa.ts"
+            }
+          ]
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "serve": {
+      "executor": "@nx/angular:dev-server",
+      "options": {
+        "port": 4221,
+        "publicHost": "/"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "inah:build:production"
+        },
+        "development": {
+          "buildTarget": "inah:build:development"
+        },
+        "qa": {
+          "buildTarget": "inah:build:qa"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "buildTarget": "inah:build"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/inah/jest.config.ts"
+      }
+    },
+    "serve-static": {
+      "executor": "@nx/web:file-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "inah:build",
+        "port": 4221,
+        "watch": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "inah:build:development"
+        },
+        "production": {
+          "buildTarget": "inah:build:production"
+        }
+      }
+    }
+  }
+}

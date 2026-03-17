@@ -1,0 +1,204 @@
+<div class="p-3 mt-4">
+  <h5>Agregar Miembro de la Empresa</h5>
+  <p>
+    <span class="text-danger text-justify">*</span> Opinión positiva vigente del
+    cumplimiento de obligaciones fiscales de la solicitante, los socios,
+    accionistas, representante legal, administrador único o miembros del consejo
+    de administración, según sea el caso.
+  </p>
+  @if (miembroDeLaEmpresaBodyData.length === 0) {
+  <p class="text-danger fw-bold">Se debe agregar por lo menos un miembro de la empresa</p>
+  }
+
+  <h5 class="text-start mt-4">Miembro de la empresa</h5>
+  <app-tabla-dinamica [configuracionTabla]="configuracionTablaAntecesores" [datos]="miembroDeLaEmpresaBodyData"
+    [tipoSeleccionTabla]="seleccionTabla" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+    (listaDeFilaSeleccionada)="obtenerMiembroSeleccionadas($event)"></app-tabla-dinamica>
+  <div class="d-flex justify-content-center" [class.disabled]="esFormularioSoloLectura"
+    [style.pointerEvents]="esFormularioSoloLectura ? 'none' : 'auto'"
+    [style.opacity]="esFormularioSoloLectura ? '0.5' : '1'">
+    <app-table-pagination [totalItems]="totalItems" [itemsPerPage]="itemsPerPage" [currentPage]="currentPage"
+      (pageChange)="onPageChange($event)" (itemsPerPageChange)="onItemsPerPageChange($event)">
+    </app-table-pagination>
+  </div>
+  <div class="d-flex justify-content-end">
+    <button type="button" class="btn btn-primary me-md-3" [disabled]="esFormularioSoloLectura"
+      (click)="openAgregarModal()">Agregar</button>
+    <button type="button" class="btn btn-default me-md-3" (click)="modificarModal()"
+      [disabled]="esFormularioSoloLectura">
+      Modificar
+    </button>
+    <button type="button" class="btn btn-primary me-md-3" [disabled]="esFormularioSoloLectura"
+      (click)="eliminarMiembro()">Eliminar</button>
+
+  </div>
+</div>
+
+<div class="container p-3 mt-4 mb-4">
+  <form [formGroup]="checkBoxesForm" class="form-group">
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" id="checkbox1" formControlName="squemaIntegral"
+        (change)="setValoresStore(checkBoxesForm,'squemaIntegral', 'setSquemaIntegral')" />
+      <label class="form-check-label text-justify" for="checkbox1">
+        <span class="text-danger">*</span> {{textoEstatico.checkbox1}}
+      </label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" id="checkbox2" formControlName="sidoModificadas"
+        (change)="setValoresStore(checkBoxesForm,'sidoModificadas', 'setSidoModificadas')" />
+      <label class="form-check-label text-justify" for="checkbox2">
+        <span class="text-danger">*</span> {{textoEstatico.checkbox2}}
+      </label>
+    </div>
+  </form>
+</div>
+
+<div class="modal fade" tabindex="-1" #Agregar>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Agregar miembro de la empresa</h5>
+      </div>
+      <div class="modal-body p-4  position: relative">
+        <form [formGroup]="agregarMiembroDeLaEmpresaFrom" class="form-group">
+          <div class="col-md-4">
+            <div class="row">
+              <div class="form-group">
+                <app-catalogo-select [label]="'En su carácter de'" [required]="true" [catalogo]="enSuCaracterDeOptions"
+                  formControlName="ensucaracterde" [isDisabled]="esFormularioSoloLectura ? true : false"
+                  (change)="setValoresStore(agregarMiembroDeLaEmpresaFrom,'ensucaracterde', 'setEnsucaracterde')"></app-catalogo-select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group">
+                <label for="obligadoaTributarenMéxico" class="form-label">Obligado a tributar en México*:</label>
+                <app-input-radio [radioOptions]="radioOptions" [isRequired]="true" [layout]="'horizontal'"
+                  [gap]="'50px'" formControlName="obligadoaTributarenMexico"
+                  (change)="setValoresStore(agregarMiembroDeLaEmpresaFrom,'obligadoaTributarenMexico', 'setObligadoaTributarenMexico'); setValidacionesObligadoa()"></app-input-radio>
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="form-group">
+                <app-catalogo-select [label]="'Nacionalidad'" [required]="true" [catalogo]="nacionalidadOptions"
+                  formControlName="nacionalidad"
+                  (change)="setValoresStore(agregarMiembroDeLaEmpresaFrom,'nacionalidad', 'setNacionalidad')"></app-catalogo-select>
+              </div>
+            </div>
+          </div>
+          @if (
+          agregarMiembroDeLaEmpresaFrom.get('obligadoaTributarenMexico')?.value === 'Si'
+          ) {
+          <div class="col-md-8">
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="rfc" class="form-label">RFC*:</label>
+                  <input type="text" id="rfc" formControlName="rfc" class="form-control" formControlName="rfc"
+                    (change)="setValoresStore(agregarMiembroDeLaEmpresaFrom,'rfc', 'setRfc')" />
+                </div>
+              </div>
+              <div class="col-4 mt-4">
+                <div class="form-group mt-4">
+                  <button type="button" class="btn btn-primary" [disabled]="esFormularioSoloLectura">Buscar</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label for="registroFederaldeContribuyentes" class="form-label">Registro Federal de
+                  Contribuyentes*:</label>
+                <input type="text" id="registroFederaldeContribuyentes" class="form-control"
+                  formControlName="registroFederaldeContribuyentes" />
+              </div>
+            </div>
+
+            <div class="col-6">
+              <div class="form-group">
+                <label for="nombreCompleto" class="form-label">Nombre completo*:</label>
+                <input type="text" id="nombreCompleto" class="form-control" formControlName="nombreCompleto" />
+              </div>
+            </div>
+          </div>`
+          }
+          @else if(
+          agregarMiembroDeLaEmpresaFrom.get('obligadoaTributarenMexico')?.value === 'No') {
+
+          <div class="col-md-8">
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group">
+                  <app-catalogo-select [label]="'Tipo de Persona'" [placeholder]="'Seleccione un valor'"
+                    [required]="true" [catalogo]="tipoDePersonaOptions" formControlName="tipoDePersonaMiembro"
+                    (change)="setValidacionestipo()"
+                    (selectionChange)="tipoDePersonaMiembroChange($event)"></app-catalogo-select>
+                </div>
+              </div>
+            </div>
+            @if(agregarMiembroDeLaEmpresaFrom.get('tipoDePersonaMiembro')?.value === '1') {
+            <div class="row">
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="nombreMiembro" class="form-label">Nombre*:</label>
+                  <input type="text" id="nombreMiembro" class="form-control" formControlName="nombreMiembro"
+                    (change)="setValoresStore(agregarMiembroDeLaEmpresaFrom,'nombreMiembro', 'setNombreMiembro')" />
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="apellidoPaternoMiembro" class="form-label">Apellido paterno*:</label>
+                  <input type="text" id="apellidoPaternoMiembro" class="form-control"
+                    formControlName="apellidoPaternoMiembro"
+                    (change)="setValoresStore(agregarMiembroDeLaEmpresaFrom,'apellidoPaternoMiembro', 'setApellidoPaternoMiembro')" />
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="apellidoMaternoMiembro" class="form-label">Apellido materno:</label>
+                  <input type="text" id="apellidoMaternoMiembro" class="form-control"
+                    formControlName="apellidoMaternoMiembro"
+                    (change)="setValoresStore(agregarMiembroDeLaEmpresaFrom,'apellidoMaternoMiembro', 'setApellidoMaternoMiembro')" />
+                </div>
+              </div>
+            </div>
+            }
+            @else if(agregarMiembroDeLaEmpresaFrom.get('tipoDePersonaMiembro')?.value === '2') {
+            <div class="row">
+              <div class="col-8">
+                <div class="form-group">
+                  <label for="nombreDeLaEmpresaMiembro" class="form-label">Nombre de la empresa*:</label>
+                  <input type="text" id="nombreDeLaEmpresaMiembro" class="form-control"
+                    formControlName="nombreDeLaEmpresaMiembro"
+                    (change)="setValoresStore(agregarMiembroDeLaEmpresaFrom,'nombreDeLaEmpresaMiembro', 'setNombreDeLaEmpresaMiembro')" />
+                </div>
+              </div>
+            </div>
+            }
+          </div>
+          }
+
+        </form>
+
+
+      </div>
+      <div class="modal-footer bg-white position-sticky bottom-0">
+        <div class="ms-auto">
+          <button type="submit" class="btn btn-primary me-md-3" [disabled]="esFormularioSoloLectura"
+            (click)="aceptar()">
+            Aceptar
+          </button>
+          <button type="button" class="btn btn-default me-md-3" (click)="closeAgregarModal()"
+            [disabled]="esFormularioSoloLectura">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+@if (alertaNotificacion) {
+<div>
+  <lib-notificaciones [notificacionInput]="alertaNotificacion"
+    (confirmacionModal)="confirmarEliminacion($event)"></lib-notificaciones>
+</div>
+}

@@ -1,0 +1,85 @@
+<div class="container mt-4">
+    <div class="row">
+    <div class="col-12">        
+        <ng-titulo titulo="Carga de detalle de mercancía" />
+
+        <!-- Texto informativo -->
+        <div class="alert alert-info mb-4">
+            <p>Has seleccionado la opción para cargar el detalle de la mercancía desde un archivo. A continuación te presentamos las consideraciones que toma en cuenta el sistema para llevar a cabo la carga de las mismas.</p>
+            <p>El archivo debe de encontrarse en formato .csv o .txt, esto quiere decir que debe contener los valores a subir separados por comas. La primer línea del archivo debe de contener los encabezados de cada uno de los campos que se cargará dentro del sistema.</p>
+            <p>A continuación se define el orden de cada uno de los campos:</p>
+        </div>
+
+        <!-- Tabla de campos -->
+        <div class="table-responsive mb-4">
+            <table class="table table-bordered">
+            <thead>
+                <tr>
+                <th>Posición</th>
+                <th>Dato</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>1</td><td>NÚMERO DE LOTE</td></tr>
+                <tr><td>2</td><td>COLOR/PELAJE</td></tr>
+                <tr><td>3</td><td>EDAD ANIMAL</td></tr>
+                <tr><td>4</td><td>FASE DE DESARROLLO</td></tr>
+                <tr><td>5</td><td>FUNCIÓN ZOOTÉCNICA</td></tr>
+                <tr><td>6</td><td>NOMBRE DE LA MERCANCÍA</td></tr>
+                <tr><td>7</td><td>NÚMERO DE IDENTIFICACIÓN</td></tr>
+                <tr><td>8</td><td>RAZA</td></tr>
+                <tr><td>9</td><td>NOMBRE CIENTÍFICO</td></tr>
+                <tr><td>10</td><td>SEXO</td></tr>
+            </tbody>
+            </table>
+        </div>
+
+        <!-- Nota sobre validación -->
+        <div class="alert alert-warning mb-4">
+            El dato de Clave Sexo se validará contra los catálogos contenidos dentro del sistema, por lo que en el caso de que estos no coincidan, no se permitirá ingresar el detalle de la mercancía.
+        </div>
+
+        <!-- Sección de descarga de layout -->
+        <div class="mb-4">
+            <p>
+            Aquí puede descargar el formato del layout para la carga.
+            <button class="btn btn-primary" (click)="descargarArchivo()">LAYOUT</button>
+            </p>
+        </div>
+
+        <!-- Input para carga de archivo -->
+        <div class="col-md-8">
+            <div class="input-group">
+            <input type="file" #fileInput accept=".txt,.csv" style="display:none" (change)="cargarArchivoMasivo($event)" />
+            <button type="button" class="btn btn-default ms-3" (click)="fileInput.click()">Seleccionar Archivo</button>
+            <span class="input-group-text">Archivo seleccionado:</span>
+            <input type="text" class="form-control" [value]="nombreArchivo" readonly />
+        </div>
+        <p></p>
+        <!-- Botones de acción -->
+        <div class="d-flex justify-content-end gap-2">
+            <button 
+            type="button" 
+            class="btn btn-default ms-3" 
+            (click)="agregarAnimales()"
+            >
+            Agregar
+            </button>
+            <button 
+            type="button" 
+            class="btn btn-primary ms-3" 
+            (click)="cancelar()"
+            >
+            Cerrar
+            </button>
+        </div>
+        <p></p><br>
+        <div class="col-md-12">
+            <div *ngIf="mensajeError" class="alert alert-light border">
+            {{ mensajeError }}
+        </div>
+        </div>
+    </div>
+    <p></p>
+</div>
+</div>

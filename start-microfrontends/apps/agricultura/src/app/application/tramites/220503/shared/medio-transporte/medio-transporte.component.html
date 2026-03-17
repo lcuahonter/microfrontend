@@ -1,0 +1,158 @@
+<fieldset [formGroupName]="claveDeControl">
+  <ng-titulo titulo="Medio de transporte" />
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-field">
+        <app-catalogo-select
+          id="Mediodetransporte"
+          [catalogo]="mediodetransporte.catalogos"
+          [label]="mediodetransporte.labelNombre"
+          [placeholder]="mediodetransporte.primerOpcion"
+          [required]="mediodetransporte.required"
+          formControlName="transporteIdMedio"
+          (selectionChange)="setTransporteIdMedio($event)"
+          [isDisabled]="esFormularioSoloLectura"
+        ></app-catalogo-select>
+           <div *ngIf="grupoFormularioPadre.get(claveDeControl)?.get('transporteIdMedio')?.hasError('required') 
+          && grupoFormularioPadre.get(claveDeControl)?.get('transporteIdMedio')?.touched"
+          class="text-danger">
+          <small>Este campo es obligatorio.</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-field">
+        <label for="puntos" class="form-label"
+          >Identificación del transporte:</label
+        >
+        <input
+          class="form-control"
+          type="text"
+          size="30"
+          formControlName="identificacionTransporte"
+          id="puntos"
+          (change)="setIdentificacionTransporte($event)"
+          [disabled]="esFormularioSoloLectura"
+          [maxLength]="30"
+        />
+        <div
+          *ngIf="grupoFormularioPadre.get(claveDeControl)?.get('identificacionTransporte')?.errors?.['maxlength'] &&
+          grupoFormularioPadre.get(claveDeControl)?.get('identificacionTransporte')?.touched
+  "
+        >
+          Se superó la longitud máxima de 30 caracteres.
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12 mt-5">
+      <label class="form-label" for="solicituddeInspección"
+        >¿La solicitud de Inspección Física es para trámites que arriban por
+        Ferrocarril o por Partes II?*:</label
+      >
+       <div *ngIf="grupoFormularioPadre.get(claveDeControl)?.get('esSolicitudFerros')?.hasError('required') 
+          && grupoFormularioPadre.get(claveDeControl)?.get('esSolicitudFerros')?.touched"
+          class="text-danger">
+          <small>Este campo es obligatorio.</small>
+        </div>
+      <app-input-radio
+        [radioOptions]="opcionDeBotonDeRadio"
+        [isRequired]="true"
+        [selectedValue]="esSolicitudFerrosValor"
+        [layout]="'vertical'"
+        formControlName="esSolicitudFerros"
+        (valueChange)="enCambioDeValor($event)"
+        
+      ></app-input-radio>
+      
+    </div>
+    @if(enCambioValor === 'si') {
+    <div class="col-md-12 mt-2">
+         <ng-alert [CONTENIDO]="ES_SOLICITUD_FERROS_VALOR"></ng-alert>
+    </div>
+     }
+    <div class="col-md-12">
+      <div class="form-field">
+        <label for="Datosdelamercancía" class="form-label"
+          >Datos de la mercancía:</label
+        >
+      </div>
+    </div>
+    <div class="col-md-12 mb100">
+      <app-tabla-dinamica
+        [tipoSeleccionTabla]="tipoSeleccionTabla"
+        [configuracionTabla]="mercanciaConfiguracionColumnas"
+        [datos]="mercanciaLista"
+        [inputSelection]="inputMercanciaSelection"
+        (listaDeFilaSeleccionada)="obtenerMercanciaLista($event)"
+      >
+      </app-tabla-dinamica>
+    </div>
+    @if (solicitud220502State.esSolicitudFerros !== 2 && mercanciaLista.length > 0) {
+    <div class="row">
+      <div class="text-end">
+        <button
+          name="modificarSaldoMercancia"
+          id="btnSaldoMercancia"
+          class="btn btn-primary"
+          (click)="modificarSaldosMercancia()"
+          [disabled]="esFormularioSoloLectura"
+        >
+          Modificar
+        </button>
+      </div>
+    </div>
+    }
+     @if (solicitud220502State.esSolicitudFerros !== 2) {
+    <div class="col-md-4">
+      <div class="form-field">
+        <label for="totalDeGuiasAmparadas" class="form-label"
+          >Total de guías amparadas:
+          <span
+            tooltip="Total de guías amparadas por la parte II, remesa de consolidado ó copia simple"
+            ><i class="bi bi-question-circle-fill"></i
+          ></span>
+        </label>
+        <input
+          class="form-control"
+          type="text"
+          maxlength="50"
+          formControlName="totalDeGuiasAmparadas"
+          id="totalDeGuiasAmparadas"
+          (change)="setTotalDeGuiasAmparadas($event)"
+        />
+      </div>
+    </div>
+    }
+  </div>
+</fieldset>
+
+<!--Agregar Mercancía Popup-->
+<div
+  #modalModificarSaldoMercancia
+  class="modal fade"
+  id="modalModificarSaldoMercancia"
+  tabindex="-1"
+  aria-labelledby="modalModificarSaldoMercanciaLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <app-agregar-mercancia
+          [mercanciasDatos]="mercanciaSeleccionLista"
+          (actualizarMercancia)="actualizarMercanciaEnTabla($event)"
+        ></app-agregar-mercancia>
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones
+    [notificacionInput]="nuevaNotificacion"
+    (confirmacionModal)="eliminarPedimento($event)"
+  >
+  </lib-notificaciones>
+</section>
+}

@@ -1,0 +1,100 @@
+<!-- datosSubcontratista empezar -->
+<form [formGroup]="formularioDatosSubcontratista">
+  <ng-titulo titulo="Empresas submanufactureras" />
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="form-label text-nowrap text-truncate-ellipsis" [title]="'Registro federal de contribuyentes'"
+          for="rfc">Registro federal de contribuyentes*:
+        </label>
+        <input type="text" id="rfc" formControlName="rfc" class="form-control mt-custom" size="30" maxlength="13"
+          (change)="cambiarRFC()" />
+          </div>
+     @if(formularioDatosSubcontratista.controls['rfc'].invalid && formularioDatosSubcontratista.controls['rfc'].touched) {
+              <div class="d-grid">
+                @if(formularioDatosSubcontratista.controls['rfc'].errors?.['required']) {
+                  <span class="mensaje-error">Este campo es obligatorio</span>
+                }              
+                </div>
+              }
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <app-catalogo-select [catalogo]="estadoCatalogo" [label]="'Estado'" [required]="true" [isDisabled]="false" [isDisabled]="esFormularioSoloLectura"
+          name="estado" formControlName="estado" (selectionChange)="cambiarEstado($event)"></app-catalogo-select>
+      </div>
+    </div>
+  </div>
+</form>
+<!-- datosSubcontratista fin -->
+
+<div class="row justify-content-end">
+  <button type="button" class="btn btn-primary col-auto pull-right float-end mt-3" (click)="onBuscar()" [disabled]="esFormularioSoloLectura">
+    Buscar plantas
+  </button>
+</div>
+
+<div class="row mt-5">
+  <div class="col-md-12">
+    <label for="submanufacturerasdisponibles">Submanufactureras disponibles:</label>
+  </div>
+  <div class="col-md-12">
+    <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccion" [configuracionTabla]="configuracionTablaDisponibles"
+      [datos]="datosTablaSubfabricantesDisponibles"
+      (listaDeFilaSeleccionada)="onPlantasDisponiblesSeleccionadas($event)" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"></app-tabla-dinamica>
+  </div>
+
+  <div class="row justify-content-end">
+    <button type="button" class="btn btn-primary col-auto pull-right float-end mt-3" (click)="agregarPlantas()" [disabled]="esFormularioSoloLectura">
+      Agregar plantas
+    </button>
+  </div>
+</div>
+<div class="row mt-5">
+  <div class="col-md-12">
+    <label for="submanufacturerasdisponibles">Plantas submanufatureras seleccionadas:</label>
+  </div>
+  <div class="col-md-12">
+    <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccion" [configuracionTabla]="configuracionTablaSeleccionadas"
+      [datos]="datosTablaSubfabricantesSeleccionadas"
+      (listaDeFilaSeleccionada)="onPlantasSeleccionadas($event)" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"></app-tabla-dinamica>
+  </div>
+
+  <div class="row justify-content-end">
+    <button type="button" class="btn btn-danger col-auto mt-3 complementar-margin-right" (click)="abrirDialogoComplementarPlanta()" [disabled]="esFormularioSoloLectura">
+      Complementar planta
+
+    </button>
+
+    <button type="button" class="btn btn-danger col-auto pull-right float-end mt-3"
+      [disabled]="datosTablaSubfabricantesSeleccionadas.length === 0" (click)="eliminarPlantas()" [disabled]="esFormularioSoloLectura">
+      Eliminar plantas
+    </button>
+  </div>
+
+</div>
+
+<ng-container *ngIf="showDetallesPlanta">
+  <div class="tab-modal-overlay">
+    <div class="tab-modal-content">
+      <app-detalles-plantas (alRegresarPlantas)="cerrarDetallesModal()" (guadarEvent)="onGuardarPlantas()"></app-detalles-plantas>
+    </div>
+  </div>
+</ng-container>
+
+
+@if (NotValidRfcNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="NotValidRfcNotificacion"
+    >
+  </lib-notificaciones>
+</section>
+}
+
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+  </lib-notificaciones>
+</section>
+}

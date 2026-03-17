@@ -1,0 +1,94 @@
+<div class="container">
+    <form [formGroup]="forma">
+      <div class="row">
+        <div class="col-md-12">
+          <ng-titulo titulo="Medio de transporte"></ng-titulo>
+        </div>
+        <div class="col-md-6">
+          <app-catalogo-select
+            placeholder=" Selecciona un valor"
+            [markTouched]='markTouched'
+            [catalogo]="transporteList"
+            formControlName="transporte"
+            [label]="'Medio de transporte'"
+            [required]="true"
+            [isDisabled]="esFormularioSoloLectura"
+            name="transporte"
+            (change)="
+          setValoresStore(
+            forma,
+            'transporte'
+            
+          )
+        "
+          ></app-catalogo-select>
+        </div>
+        <div class="col-md-6 mt-2">
+          <label class="control-label" for="transporte"
+            >Identificación del transporte:</label
+        >
+          <input
+            class="form-control mt-1"
+            id="identificacion"
+            placeholder=""
+            type="text"
+            name="identificacion"
+            formControlName="identificacion"
+            maxlength="30"
+            (change)="
+            setValoresStore(
+              forma,
+              'identificacion'
+            )
+          "
+          />
+        </div>
+        <div class="col-md-12">
+          <app-catalogo-select
+            placeholder=" Selecciona un valor"
+            [catalogo]="puntoList"
+            formControlName="puntoVerificacion"
+            [label]="'Punto de verificación federal'"
+            [required]="false"
+            [isDisabled]="esFormularioSoloLectura"
+            name="puntoVerificacion"
+            [tooltipQuestionCircle]="true"
+            [tooltipQuestionCircleText]="'Es el primer punto de Inspección Federal dentro del territorio nacional por donde cruzará el embarque'"
+            (change)="
+            setValoresStore(
+              forma,
+              'puntoVerificacion'
+            )
+          "
+          ></app-catalogo-select>
+        </div>
+        <div class="col-md-12 mt-2">
+          <label class="control-label" for="empresaTransportista"
+            >Nombre de la empresa transportista*:</label
+          >
+          <input
+            class="form-control mt-1"
+            id="empresaTransportista"
+            name="empresaTransportista"
+            placeholder=""
+            formControlName="empresaTransportista"
+            maxlength="80"
+            type="text"
+            (change)="
+            setValoresStore(
+              forma,
+              'empresaTransportista'
+            )
+          "
+           [class.is-invalid]="forma.get('empresaTransportista')?.invalid && forma.get('empresaTransportista')?.touched"
+          />
+          @if (forma.get('empresaTransportista')?.hasError('required') &&
+          forma.get('empresaTransportista')?.touched) {
+          <div class="text-danger">
+            <small>Este campo es obligatorio</small>
+          </div>
+          }
+        </div>
+      </div>
+    </form>
+  </div>

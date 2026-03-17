@@ -1,0 +1,295 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h3>Detalle del transporte</h3>
+      <hr class="red" />
+      <form [formGroup]="transportForm" (ngSubmit)="onSubmit()" autocomplete="off">
+        <!-- Stage & Mode -->
+        <div class="row">
+          <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+              <label class="control-label">Stage Code*:</label>
+              <app-tooltip text="Calificador del transporte"></app-tooltip>
+              <select
+                class="form-control"
+                formControlName="stageCode"
+                [ngClass]="{
+                  'form-control-error': formUtils.isValidField(transportForm, 'stageCode')
+                }"
+              >
+                <option [ngValue]="null">Selecciona una opción</option>
+                <option *ngFor="let stage of transportationStages" [value]="stage.clave">{{ stage.valor }}</option>
+              </select>
+              <ng-container *ngIf="formUtils.isValidField(transportForm, 'stageCode')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getFieldError(transportForm, 'stageCode') }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+
+          <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+              <label class="control-label">Mode*:</label>
+              <app-tooltip text="Nombre del Medio de transporte"></app-tooltip>
+              <select
+                class="form-control"
+                formControlName="mode"
+                [ngClass]="{
+                  'form-control-error': formUtils.isValidField(transportForm, 'mode')
+                }"
+              >
+                <option [ngValue]="null">Selecciona una opción</option>
+                <option *ngFor="let mode of transportationModes" [value]="mode.clave">{{ mode.valor }}</option>
+              </select>
+              <ng-container *ngIf="formUtils.isValidField(transportForm, 'mode')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getFieldError(transportForm, 'mode') }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+              <date-picker
+                label="Scheduled Occurrence Date*:"
+                formControlName="scheduledOccurrenceDate"
+                [initialValue]="scheduledOccurrenceDate"
+                [hasError]="formUtils.isValidField(transportForm, 'scheduledOccurrenceDate')"
+              ></date-picker>
+              <ng-container *ngIf="formUtils.isValidField(transportForm, 'scheduledOccurrenceDate')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getFieldError(transportForm, 'scheduledOccurrenceDate') }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+
+          <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+              <label class="control-label">Scheduled Occurrence Time*:</label>
+              <app-tooltip text="Hora programada de arribo"></app-tooltip>
+              <input
+                type="text"
+                appTimeFormat
+                placeholder="HH:mm (24 hrs)"
+                class="form-control"
+                formControlName="scheduledOccurrenceTime"
+                [ngClass]="{
+                  'form-control-error': formUtils.isValidField(transportForm, 'scheduledOccurrenceTime')
+                }"
+              />
+              <ng-container *ngIf="formUtils.isValidField(transportForm, 'scheduledOccurrenceTime')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getFieldError(transportForm, 'scheduledOccurrenceTime') }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+        <!-- Arrival Location -->
+        <div class="row mt-3">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="control-label">Arrival Location*:</label>
+              <div>
+                <label class="radio-inline">
+                  <input type="radio" [value]="locationEnum.IATA" formControlName="arrivalLocationType" /> IATA
+                </label>
+                <label class="radio-inline">
+                  <input
+                    type="radio"
+                    [value]="locationEnum.CONTROLLED_PREMISES"
+                    formControlName="arrivalLocationType"
+                  />Recinto Fiscalizado
+                </label>
+              </div>
+              <ng-container *ngIf="formUtils.isValidField(transportForm, 'arrivalLocationType')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getFieldError(transportForm, 'arrivalLocationType') }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+
+          <ng-container *ngIf="radioHasValue('arrivalLocationType')">
+            <div class="col-md-4 col-sm-6 mt-2">
+              <div class="form-group">
+                <label class="control-label">I D*:</label>
+                <app-tooltip text="Lugar programado de arribo (Código)"></app-tooltip>
+                <select
+                  class="form-control"
+                  formControlName="arrivalId"
+                  [ngClass]="{
+                    'form-control-error': formUtils.isValidField(transportForm, 'arrivalId')
+                  }"
+                >
+                  <option [ngValue]="null">Selecciona un valor</option>
+                    <option *ngFor="let id of arrivalIds" [value]="id.valor + '|' + id.clave">{{ id.clave }}</option>
+                </select>
+                <ng-container *ngIf="formUtils.isValidField(transportForm, 'arrivalId')">
+                  <small class="form-text form-text-error">
+                    {{ formUtils.getFieldError(transportForm, 'arrivalId') }}
+                  </small>
+                </ng-container>
+              </div>
+            </div>
+          </ng-container>
+
+          <div class="col-md-4 col-sm-6 mt-2">
+            <div class="form-group">
+              <label class="control-label">Name:</label>
+              <app-tooltip text="Nombre del lugar programado de arribo"></app-tooltip>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="arrivalName"
+                readonly
+                [ngClass]="{
+                  'form-control-error': formUtils.isValidField(transportForm, 'arrivalName')
+                }"
+              />
+              <ng-container *ngIf="formUtils.isValidField(transportForm, 'arrivalName')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getFieldError(transportForm, 'arrivalName') }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4 col-sm-6 mt-2">
+            <div class="form-group">
+              <date-picker
+                label="Scheduled Occurrence Date*:"
+                formControlName="arrivalScheduledDate"
+                [initialValue]="arrivalScheduledDate"
+                [hasError]="formUtils.isValidField(transportForm, 'arrivalScheduledDate')"
+              ></date-picker>
+              <ng-container *ngIf="formUtils.isValidField(transportForm, 'arrivalScheduledDate')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getFieldError(transportForm, 'arrivalScheduledDate') }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+
+          <div class="col-md-4 col-sm-6 mt-2">
+            <div class="form-group">
+              <label class="control-label">Scheduled Occurrence Time*:</label>
+              <app-tooltip text="Hora de salida"></app-tooltip>
+              <input
+                type="text"
+                appTimeFormat
+                placeholder="HH:mm (24 hrs)"
+                class="form-control"
+                formControlName="arrivalScheduledTime"
+                [ngClass]="{
+                  'form-control-error': formUtils.isValidField(transportForm, 'arrivalScheduledTime')
+                }"
+              />
+              <ng-container *ngIf="formUtils.isValidField(transportForm, 'arrivalScheduledTime')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getFieldError(transportForm, 'arrivalScheduledTime') }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+        <!-- Departure Location -->
+        <div class="row mt-3">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="control-label">Departure Location*:</label>
+              <div>
+                <label class="radio-inline">
+                  <input type="radio" [value]="locationEnum.IATA" formControlName="departureLocationType" /> IATA
+                </label>
+                <label class="radio-inline">
+                  <input
+                    type="radio"
+                    [value]="locationEnum.CONTROLLED_PREMISES"
+                    formControlName="departureLocationType"
+                  />Recinto Fiscalizado
+                </label>
+              </div>
+              <ng-container *ngIf="formUtils.isValidField(transportForm, 'departureLocationType')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getFieldError(transportForm, 'departureLocationType') }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+
+          <ng-container *ngIf="radioHasValue('departureLocationType')">
+            <div class="col-md-4 col-sm-6 mt-2">
+              <div class="form-group">
+                <label class="control-label">I D*:</label>
+                <app-tooltip text="Lugar programado de despegue (Código)"></app-tooltip>
+                <select
+                  class="form-control"
+                  formControlName="departureId"
+                  [ngClass]="{
+                    'form-control-error': formUtils.isValidField(transportForm, 'departureId')
+                  }"
+                >
+                  <option [ngValue]="null">Selecciona un valor</option>
+                    <option *ngFor="let id of departureIds" [value]="id.valor + '|' + id.clave">{{ id.clave }}</option>
+                </select>
+                <ng-container *ngIf="formUtils.isValidField(transportForm, 'departureId')">
+                  <small class="form-text form-text-error">
+                    {{ formUtils.getFieldError(transportForm, 'departureId') }}
+                  </small>
+                </ng-container>
+              </div>
+            </div>
+          </ng-container>
+
+          <div class="col-md-4 col-sm-6 mt-2">
+            <div class="form-group">
+              <label class="control-label">Name:</label>
+              <app-tooltip text="Nombre del lugar programado de despegue"></app-tooltip>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="departureName"
+                readonly
+                [ngClass]="{
+                  'form-control-error': formUtils.isValidField(transportForm, 'departureName')
+                }"
+              />
+              <ng-container *ngIf="formUtils.isValidField(transportForm, 'departureName')">
+                <small class="form-text form-text-error">
+                  {{ formUtils.getFieldError(transportForm, 'departureName') }}
+                </small>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="row mt-4">
+          <div class="col-md-12 text-right">
+            <gob-button
+              type="submit"
+              className="btn-primary mr-1"
+              [label]="isUpdating ? 'Modificar' : 'Agregar'"
+            ></gob-button>
+            <gob-button
+              type="button"
+              className="btn-danger"
+              label="Cancelar"
+              (clicked)="onCancel()"
+            ></gob-button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

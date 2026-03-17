@@ -1,0 +1,64 @@
+<div class="row mt-5">
+  <!-- First column -->
+  <div class="col-md-4 col-sm-4 col-xs-6">
+    <div class="radio">
+      <label>
+        <input type="radio" [(ngModel)]="searchType" [value]="searchTypeEnum.DATE_TRANSFER" (ngModelChange)="onSearchTypeChange()"/>
+        Fecha de transmisión
+      </label>
+    </div>
+  </div>
+
+  <!-- Second column -->
+  <div class="col-md-4 col-sm-4 col-xs-6">
+    <div class="radio">
+      <label>
+        <input type="radio" [(ngModel)]="searchType" [value]="searchTypeEnum.MANIFEST_NUMBER" (ngModelChange)="onSearchTypeChange()"/>
+        Número de manifiesto
+      </label>
+    </div>
+  </div>
+</div>
+
+@if(searchType === searchTypeEnum.DATE_TRANSFER) {
+  <app-transfer-date-form/>
+} @else if(searchType === searchTypeEnum.MANIFEST_NUMBER) {
+  <app-manifest-number-form (onSubmitForm)="getManifest()"/>
+}
+
+@if (!!searchType) {
+  <div class="row">
+    <div class="col-md-12 mt-3 text-right">
+      <gob-button
+        type="button"
+        className="btn-primary"
+        label="Buscar"
+        (clicked)="submitForm()"
+        class="mr-1">
+      </gob-button>
+      <gob-button
+        type="button"
+        className="btn-default"
+        label="Limpiar"
+        (clicked)="resetForm()"
+      ></gob-button>
+    </div>
+  </div>
+}
+
+<ng-container *ngIf="hasResults()">
+  <app-detalle-transbordo/>
+</ng-container>
+
+@if(displayWarningAlert()) {
+  <div class="alert alert-warning mt-5">
+    Sin resultados para el manifiesto consultado.
+  </div>
+}
+
+@if(displayErrorAlert()) {
+  <div class="alert alert-danger mt-5">
+    Error al consultar el manifiesto.
+  </div>
+}
+

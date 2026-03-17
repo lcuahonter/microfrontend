@@ -1,0 +1,80 @@
+<div class="container">
+  <ng-titulo titulo="Desistimiento" />
+  <form [formGroup]="desisitimientoForm">
+    <div class="row">
+      <div class="col-md-8">
+        <label>Folio original: </label>
+        <input
+          type="text"
+          required="true"
+          class="form-control"
+          name="folioOriginal"
+          id="folioOriginal"
+          formControlName="folioOriginal"
+          (change)="
+            setValoresStore(
+              desisitimientoForm,
+              'folioOriginal',
+              'setFolioOriginal'
+            )
+          "
+        />
+      </div>
+
+      <div class="col-md-8">
+        <label
+          >Justificación de desistimiento<span
+            [ngClass]="
+              esValido(desisitimientoForm, 'justificacionDelDesistimiento')
+                ? 'require'
+                : ''
+            "
+            >*</span
+          >:</label
+        >
+        <input
+          type="text"
+          required="true"
+          class="form-control"
+          name="justificacionDelDesistimiento"
+          id="justificacionDelDesistimiento"
+          maxlength="1000"
+          [ngClass]="
+            esValido(desisitimientoForm, 'justificacionDelDesistimiento') ? 'required' : ''
+          "
+          formControlName="justificacionDelDesistimiento"
+          (change)="
+            setValoresStore(
+              desisitimientoForm,
+              'justificacionDelDesistimiento',
+              'setJustificacionDelDesistimiento'
+            )
+          "
+        />
+        @if (desisitimientoForm.get('justificacionDelDesistimiento')?.invalid &&
+        (desisitimientoForm.get('justificacionDelDesistimiento')?.dirty ||
+        desisitimientoForm.get('justificacionDelDesistimiento')?.touched)) {
+        <span class="mensaje-error">Este campo es obligatorio</span>
+        }
+      </div>
+    </div>
+    <div class="row" style="margin-top: 30px; margin-bottom: 30px">
+      <div class="form-group">
+        <div class="col-md-12">
+          <div class="pull-left text-muted text-vertical-align-button"></div>
+          <div class="pull-right row">
+            <div class="col-md-5" id="botonGuardar">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                (click)="continuar()"
+              >
+                Continuar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

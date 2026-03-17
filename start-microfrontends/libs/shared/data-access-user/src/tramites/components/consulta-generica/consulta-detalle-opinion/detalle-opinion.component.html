@@ -1,0 +1,181 @@
+<div class="row mt-4 mb-4">
+  <div class="col-md-6">
+    <h5 class="titulo titulo-gold">Solicitud</h5>
+  </div>
+</div>
+
+<form [formGroup]="solicitudForm">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group">
+        <label for="areaSolicitante" class="form-label">Área solicitante</label>
+        <input class="form-control" id="areaSolicitante" type="text" formControlName="areaSolicitante" libUppercase>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="estatus" class="form-label">Estatus</label>
+        <input class="form-control" id="estatus" type="text" formControlName="estatus" libUppercase>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="fechaCreacion" class="form-label">Fecha de creación</label>
+        <input class="form-control" id="fechaCreacion" type="text" formControlName="fechaCreacion" libUppercase>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="fechaSolicitud" class="form-label">Fecha de solicitud</label>
+        <input class="form-control" id="fechaSolicitud" type="text" formControlName="fechaSolicitud" libUppercase>
+      </div>
+    </div>
+  </div>
+  <div class="row mb-5">
+    <div class="col-md-12">
+      <div class="form-group">
+        <label for="justificacionOpinion" class="form-label">Justificación de la opinión</label>
+        <textarea id="justificacionOpinion" class="form-control" formControlName="justificacionOpinion"
+          libUppercase></textarea>
+      </div>
+    </div>
+  </div>
+</form>
+
+<div class="row mt-4 mb-4">
+  <div class="col-md-6">
+    <h5 class="titulo titulo-gold">Opinión</h5>
+  </div>
+</div>
+
+@if([130113].includes(tramiteId)) {
+<form [formGroup]="opinion130Form">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group">
+        <label for="areaResponsable" class="form-label">Dependencia</label>
+        <input class="form-control" id="areaResponsable" type="text" formControlName="dependencia" libUppercase>
+      </div>
+    </div>
+  </div>
+  @if(solicitud.estado_opinion === "Solicitada"){
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="sentido" class="form-label">Sentido</label>
+        <input class="form-control" id="sentido" placeholder="Sentido" type="text" formControlName="sentido"
+          libUppercase>
+      </div>
+    </div>
+  </div>
+  }
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group">
+        <label for="opinion" class="form-label">Opinión</label>
+        <textarea id="opinion" class="form-control" formControlName="opinion" libUppercase></textarea>
+      </div>
+    </div>
+  </div>
+  @if(solicitud.estado_opinion === "Solicitada"){
+   <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="fechaAtencion" class="form-label">Fecha de atención</label>
+        <input class="form-control" id="fechaAtencion" placeholder="Fecha de atención" type="text" formControlName="fechaAtencion"
+          libUppercase>
+      </div>
+    </div>
+  </div>
+  }
+</form>
+}@else {
+<form [formGroup]="opinionForm">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group">
+        <label for="areaResponsable" class="form-label">Área responsable</label>
+        <input class="form-control" id="areaResponsable" placeholder="Area responsable" type="text"
+          formControlName="areaResponsable" libUppercase>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="sentido" class="form-label">Sentido</label>
+        <input class="form-control" id="sentido" placeholder="Sentido" type="text" formControlName="sentido"
+          libUppercase>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="generadoPor" class="form-label">Generado por</label>
+        <input class="form-control" id="generadoPor" placeholder="Generado por" type="text"
+          formControlName="generadoPor" libUppercase>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="fechaGeneracion" class="form-label">Fecha de generación</label>
+        <input class="form-control" id="fechaGeneracion" placeholder="Fecha de generación" type="text"
+          formControlName="fechaGeneracion" libUppercase>
+      </div>
+    </div>
+  </div>
+  <div class="row mb-5">
+    <div class="col-md-12">
+      <div class="form-group">
+        <label for="opinion" class="form-label">Opinión</label>
+        <textarea id="opinion" class="form-control" formControlName="opinion" libUppercase></textarea>
+      </div>
+    </div>
+  </div>
+</form>
+}
+
+@if([130113].includes(tramiteId) && solicitud.estado_opinion === "Solicitada") {
+<div class="card mt-5">
+  <!-- <div class="card-header">
+    <h5 class="card-title">Documentos opiniones</h5>
+  </div> -->
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-12">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              @for (item of encabezadoTablaOpiones; track $index) {
+              <th>{{ item.valor }}</th>
+              }
+              <th class="center">Descargar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="datosTablaOpiniones.length === 0">
+              <td [attr.colspan]="encabezadoTablaOpiones.length + 1" class="text-center">Sin registros que mostrar</td>
+            </tr>
+            @for (row of datosTablaOpiniones; track $index) {
+            <tr>
+              @for (item of encabezadoTablaOpiones; let i = $index; track $index) {
+              <td>{{ row[item.key] }}</td>
+              }
+              <td class="center">
+                <button type="button" class="btn btn-link me-2" id="verPdf" data-bs-toggle="button"
+                  data-bs-placement="top" title="Descargar pdf" (click)="descargarPdfOpinion(row.urlPdf)">
+                  <i class="bi bi-file-earmark-pdf text-danger"></i>
+                </button>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+}

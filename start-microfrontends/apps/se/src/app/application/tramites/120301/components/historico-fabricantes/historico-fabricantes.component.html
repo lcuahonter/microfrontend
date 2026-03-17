@@ -1,0 +1,147 @@
+<div class="container">
+  @if (isFabricantes) {
+  <ng-titulo titulo="Histórico fabricantes" />
+  <form [formGroup]="historicoFabricantesForm">
+    <div class="row">
+      <div class="col-md-12">
+        <label for="Tipo_de_Certificado">¿El exportador y el fabricante son la misma persona?</label>
+      </div>
+    </div>
+    <ng-container>
+      <input class="form-check-input" type="checkbox" id="exportadorFabricanteMismo"
+        formControlName="exportadorFabricanteMismo" (change)="onCheckboxChange($event)">
+      <label class="form-check-label ms-2" for="exportadorFabricanteMismo">No</label>
+    </ng-container>
+
+    @if (isNacional) {
+    <app-input-radio [radioOptions]="radioOptionsNacional"
+      [selectedValue]="historicoFabricantesForm.get('exportadorFabricanteNacional')?.value" [isRequired]="true"
+      (valueChange)="onValueChangeNacional($event)" [layout]="'vertical'" (change)="setValoresStore(
+          historicoFabricantesForm,
+          'exportadorFabricanteNacional',
+          'setExportadorFabricanteNacional'
+          )"></app-input-radio>
+    }
+    @if(isNacionalTabla){
+    <div>
+      <h6>Fabricantes nacionales</h6>
+
+      <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX" [configuracionTabla]="tableColumns"
+        [styleCenter]="true" [datos]="fabricantesNacionales"
+        (listaDeFilaSeleccionada)="onSeleccionFabricantesNacionales($event)"></app-tabla-dinamica>
+      <div class="container text-end mt-5">
+        <button class="btn btn-default me-2" (click)="seleccionarFabricantes()">Seleccionar</button>
+        <button class="btn btn-primary" (click)="fabricanteNuevo()">Fabricante nuevo</button>
+      </div>
+      <h6>Fabricante</h6>
+      <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX" [configuracionTabla]="tableColumns"
+        [styleCenter]="true" [datos]="fabricante"
+        (listaDeFilaSeleccionada)="onSeleccionChange($event)"></app-tabla-dinamica>
+      <div class="row mb-3">
+        <div class="d-flex justify-content-end mt-5">
+          <button type="button" class="btn btn-danger" (click)="eliminarSeleccionados()">Eliminar</button>
+        </div>
+      </div>
+    </div>
+    }
+  </form>
+  }
+  @if(visualizarEvaluacion){
+  <h6>Fabricante</h6>
+  <app-tabla-dinamica [configuracionTabla]="tableColumns" [datos]="fabricanteEvaluacion"
+    (listaDeFilaSeleccionada)="onSeleccionChange($event)"></app-tabla-dinamica>
+  }
+  @if(registraNumeroRegistro){
+  <section>
+    <div [config]="{ show: true, backdrop: 'static' }" (onHidden)="onHidden()" bsModal #modal="bs-modal"
+      class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-auto-name">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 id="dialog-auto-name" class="modal-title pull-left">
+              Datos fabricante nacional
+            </h4>
+          </div>
+          <div class="modal-body">
+            <form [formGroup]="historicoFabricantesForm">
+              <div class="row">
+                <label>Número de registro fiscal*:</label>
+                <input type="text" class="form-control" id="message" placeholder=""
+                  formControlName="numeroRegistroFiscal" maxlength="16" />
+                @if (historicoFabricantesForm.get('numeroRegistroFiscal')?.touched &&
+                historicoFabricantesForm.get('numeroRegistroFiscal')?.invalid) {
+                <div class="text-danger">
+                  <small *ngIf="historicoFabricantesForm.get('numeroRegistroFiscal')?.errors?.['required']">
+                    El número de registro fiscal es obligatorio.
+                  </small>
+                  <small *ngIf="historicoFabricantesForm.get('numeroRegistroFiscal')?.errors?.['pattern']">
+                    El número de registro fiscal no es válido.
+                  </small>
+                  <small *ngIf="historicoFabricantesForm.get('numeroRegistroFiscal')?.errors?.['maxlength']">
+                    El número de registro fiscal no puede exceder los {{
+                    historicoFabricantesForm.get('numeroRegistroFiscal')?.errors?.['maxlength'].requiredLength }}
+                    caracteres.
+                  </small>
+                </div>
+                }
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer custom-footer mt-4 justify-content-end">
+            <div class="row">
+              <div class="col-md-12">
+                <button class="btn btn-primary me-2" type="button" (click)="onSubmitRfc()">
+                  Aceptar
+                </button>
+                <button class="btn btn-default me-2" type="button" data-bs-dismiss="modal" (click)="cancelar()">
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  }
+</div>
+
+@if(eliminarFabricanteModal){
+<section>
+  <div [config]="{ show: true, backdrop: 'static' }" (onHidden)="onHidden()" bsModal #modal="bs-modal"
+    class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-auto-name">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 id="dialog-auto-name" class="modal-title pull-left">
+            Eliminar fabricante
+          </h4>
+        </div>
+        <div class="modal-body">
+          <p>¿Está seguro que desea eliminar el fabricante seleccionado?</p>
+        </div>
+        <div class="modal-footer custom-footer mt-4 justify-content-end">
+          <div class="row">
+            <div class="col-md-12">
+              <button class="btn btn-primary me-2" type="button" (click)="aceptarEliminar()">
+                Aceptar
+              </button>
+              <button class="btn btn-default me-2" type="button" data-bs-dismiss="modal"
+                (click)="cerrarEliminarModal()">
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+}
+
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+  </lib-notificaciones>
+</section>
+}

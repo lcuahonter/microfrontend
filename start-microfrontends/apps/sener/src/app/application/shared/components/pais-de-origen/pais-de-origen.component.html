@@ -1,0 +1,146 @@
+<div class="container">
+  <form [formGroup]="paisForm">
+   
+  <div class="row">
+    <ng-titulo titulo={{titulo}}> </ng-titulo>
+ 
+    <div class="row mb-5">
+      <div class="col-md-4">
+        <app-catalogo-select
+          [catalogo]="elementosDeBloque"
+          [label]="'Bloque'"
+          [isDisabled]="esFormularioSoloLectura"
+          formControlName="bloque"
+          (change)="enCambioDeBloque($event); setValoresStore(paisForm,'bloque')"
+        ></app-catalogo-select>      
+      </div>
+      <div 
+      class="col-md-4 d-flex  align-items-center mt-5"
+      >
+      <button type="button" class="btn-primary btn" [disabled]="esFormularioSoloLectura" name="todos países" (click)="onObtenerCiudades()">Todos los países</button>
+      </div>
+      <div class="col-md-4"></div>
+    </div>
+    <crosslist
+    #crosslistComponent
+    [fechas]="selectRangoDias"
+    [fechasSeleccionadas]="fechaSeleccionada"
+    [showSearchInput1]="true"
+    [showSearchInput2]="true"
+    [isDisabled]="esFormularioSoloLectura"
+    [botonField]="campoDeBotones"
+    (fechasSeleccionadasChange)="onFechasSeleccionadasChange($event)"
+    ></crosslist>
+  </div>
+ 
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="descripcion" class="form-label"
+          >Uso(s) específico(s) de la mercancía<span 
+          [ngStyle]="{
+            color:
+              paisForm.controls['usoEspecifico'].invalid &&
+              paisForm.controls['usoEspecifico'].touched
+                ? 'red'
+                : 'black'
+          }"
+        >*</span>:</label
+        >
+        <textarea
+          class="form-control resize-disable"
+          [ngStyle]="{
+            borderColor:
+              paisForm.controls['usoEspecifico'].invalid &&
+              paisForm.controls['usoEspecifico'].touched
+                ? 'red'
+                : ''
+          }"
+          cols="80" rows="3"
+          id="usoEspecifico"
+          placeholder=""
+          formControlName="usoEspecifico"
+          (change)="setValoresStore(paisForm,'usoEspecifico')"
+        ></textarea>
+        <div *ngIf="esInvalido('usoEspecifico')" class="text-danger">
+        
+        <small *ngIf="paisForm.controls['usoEspecifico'].errors?.['required']"
+          >Este campo es obligatorio.</small
+        >
+        <small *ngIf="paisForm.controls['usoEspecifico'].errors?.['pattern']">
+          Por favor, corrige la descripción/dirección
+        </small>
+        </div>
+      </div>
+    </div>
+ 
+ 
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="justificacionImportacionExportacion" class="form-label"
+          >Justificación y beneficio que se obtiene<span 
+          [ngStyle]="{
+            color:
+              paisForm.controls['justificacionImportacionExportacion'].invalid &&
+              paisForm.controls['justificacionImportacionExportacion'].touched
+                ? 'red'
+                : 'black'
+          }"
+        >*</span>:</label
+        >
+        <textarea
+          class="form-control resize-disable"
+          [ngStyle]="{
+            borderColor:
+              paisForm.controls['justificacionImportacionExportacion'].invalid &&
+              paisForm.controls['justificacionImportacionExportacion'].touched
+                ? 'red'
+                : ''
+          }"
+          cols="80" rows="3"
+          id="justificacionImportacionExportacion"
+          placeholder=""
+          formControlName="justificacionImportacionExportacion"
+          (change)="setValoresStore(paisForm,'justificacionImportacionExportacion')"
+        ></textarea>
+        <div *ngIf="esInvalido('justificacionImportacionExportacion')" class="text-danger">
+        
+        <small *ngIf="paisForm.controls['justificacionImportacionExportacion'].errors?.['required']"
+          >Este campo es obligatorio.</small
+        >
+        <small *ngIf="paisForm.controls['justificacionImportacionExportacion'].errors?.['pattern']">
+          Por favor, corrige la descripción/dirección
+        </small>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <div class="form-group">
+        <label for="Observaciones" class="form-label">Observaciones:</label>
+        <textarea
+          class="form-control resize-disable"
+          cols="80" rows="3"
+          id="Observaciones"
+          [maxLength]="512"
+          placeholder=""
+          formControlName="observaciones"
+          (change)="setValoresStore(paisForm,'observaciones')"
+        ></textarea>
+        <div *ngIf="esInvalido('observaciones')" class="text-danger">
+        
+        <small *ngIf="paisForm.controls['observaciones'].errors?.['pattern']">
+          Por favor, corrige la descripción/dirección
+        </small>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+ 
+  </form>
+</div>
+ 
+ 

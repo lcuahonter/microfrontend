@@ -1,0 +1,161 @@
+<div class="container">
+  <div class="row mt-4">
+    <div class="col-md-6">
+        <strong>Conforme a la regla 7.1.5, fracción II, acredite lo siguiente:</strong>
+    </div>
+  </div>
+  <form [formGroup]="formaAgente">
+    <div class="row mb-2 mt-2">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label">Número de patente aduanal</label>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+             <input type="text" 
+                class="form-control" 
+                formControlName="numeroPatente" 
+                (change)="setValoresStore(formaAgente, 'numeroPatente', 'setNumeroPatente')" />
+            </div>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="indique">Indique la aduana de adscripción del Agente Aduanal:</label>
+            <span class="pt-2">Aduana de adscripción</span>
+          </div>
+        </div>
+        <div class="col-md-6">
+            <app-catalogo-select
+              [catalogo]="indiqueCatalogo"
+              formControlName="indique"
+              [isDisabled]="esFormularioSoloLectura" 
+              (change)="setValoresStore(formaAgente, 'indique', 'setIndique')"
+              [required]="true">
+            </app-catalogo-select>
+        </div>
+      </div>
+  </form>
+  <div class="row mb-2">
+    <p class="fw-bold">Señale si cuenta con aduanas adicionales autorizadas</p>
+  </div>
+      <div class="row mt-2">
+      <div class="col-md-12">
+        <h5>Aduanas Autorizadas*:</h5>
+        <crosslist
+          [id]="'cboAduanasActuar'"
+          [fechas]="seleccionarAduanasEntrada"
+          [fechasSeleccionadas]="seleccionadasAduanasEntradaDatos"
+          [botones]="aduanasEntradaBotons"
+        ></crosslist>
+      </div>
+    </div>
+    <ng-titulo titulo="Permite seleccionar aduanas y agregarlas a la lista de aduanas autorizadas para el agente hasta un máximo de 3."></ng-titulo>
+    <form [formGroup]="formaAgente">
+        <div class="row mt-2">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label">Número de trabajadores registrados ante el IMSS:*</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <input type="text" 
+                        class="form-control" 
+                        formControlName="numeroTrabajadoresIMSS" 
+                        (change)="setValoresStore(formaAgente, 'numeroTrabajadoresIMSS', 'setNumeroTrabajadoresIMSS')" />
+                </div>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label">Número de trabajadores registrados mediante contrato de prestación de
+                        servicios contratistas de quienes reciba servicios especializados o la ejecución de obras
+                        especializadas.:*</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group mt-5">
+                    <input type="text" 
+                    class="form-control" 
+                    formControlName="numeroTrabajadoresContratistas" 
+                    (change)="setValoresStore(formaAgente, 'numeroTrabajadoresContratistas', 'setNumeroTrabajadoresContratistas')" />
+                </div>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-9">
+                <div class="form-group">
+                    <label class="form-label">Describa los servicios adicionales a la gestión aduanera que presta el Agente Aduanal.*</label>
+                    <input type="text" 
+                      class="form-control" 
+                      formControlName="serviciosAdicionales"
+                      (change)="setValoresStore(formaAgente, 'serviciosAdicionales', 'setServiciosAdicionales')" />
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="row mt-2">
+        <div class="col-md-12">
+            <p class="fw-bold"><span>* </span>En caso de haberse incorporado y/o constituido una o más sociedades, de conformidad con la fracción II del artículo 163 de la Ley, derogada mediante Decreto publicado en el DOF, el 25 de junio de 2018, estas deberán encontrarse al corriente en el cumplimiento de obligaciones fiscales. Muestre las sociedades indicando cuales están al corriente en el cumplimiento de sus obligaciones fiscales.</p>
+            <p class="fw-bold"><span>* </span>Modifique las Sociedades del Agente Aduanal asociadas al solicitante bajo la modalidad de Socio Comercial Certificado en el Esquema Integral de Certificación.</p>
+        </div>
+    </div>
+    <app-sociedades-tabla></app-sociedades-tabla>
+    <form [formGroup]="forma">
+      <formas-dinamicas 
+        [forma]="agenteFormGroup" 
+        [formularioDatos]="agenteDatos"
+        [estado]="solicitudeState"
+        [soloLectura]="consultaState.readonly"
+        (emitirCambioDeValor)="emitirCambioDeValor($event)"
+        >
+    </formas-dinamicas>
+    <ng-titulo titulo="Reconocimiento Mutuo"></ng-titulo>
+      <formas-dinamicas 
+        formularioSubtitulo="La adopción de México de las normas establecidas en el Marco Normativo SAFE de la OMA para Asegurar y Facilitar el Comercio Global publicado por la OMA, donde se incorporan prácticas y normas en materia de seguridad, tiene como uno de sus objetivos, alcanzar el Reconocimiento Mutuo con aquellos países que cuentan con un programa similar en materia de seguridad, que cumplen con la condición de Operadores Económicos Autorizados de acuerdo al 'Marco SAFE' y la legislación de cada país. Por lo tanto, como parte de la estrategia para evitar la duplicación de controles de seguridad y contribuir de manera significativa a la facilitación y control de las mercancías que circulan en la cadena de suministro internacional, es necesario contar con la participación de aquellos que logren obtener el Registro en el Esquema de Certificación de Empresas y autorizar el intercambio de información que permita enriquecer los sistemas informáticos, eliminar y/o reducir la redundancia y/o duplicación de esfuerzos en el proceso de inscripción."
+        [forma]="certificacionDeEmpresasFormGroup" 
+        [formularioDatos]="certificacionDeEmpresasDatos"
+        [estado]="solicitudeState"
+        [soloLectura]="consultaState.readonly"
+        (emitirCambioDeValor)="emitirCambioDeValor($event)"
+        >
+    </formas-dinamicas>
+    <formas-dinamicas 
+      formularioTitulo="Listado de Socio Comercial Certificado"
+      formularioSubtitulo="Con la finalidad de crear cadenas de suministros más seguras, se establecerá un listado con las empresas que hayan obtenido la certificación como Socio Comercial, misma que se publicará en el Portal del SAT que incluirá los datos generales que la empresa autorice, así como el estatus de su certificación, mismas que podrán ser consultadas por las empresas que hayan obtenido su inscripción en el Registro de certificación de empresas."
+      [forma]="comercialCertificadoFormGroup" 
+      [formularioDatos]="comercialCertificadoDatos"
+      (change)="seleccionarDatos()"
+      [estado]="solicitudeState"
+      [soloLectura]="consultaState.readonly"
+      (emitirCambioDeValor)="emitirCambioDeValor($event)"
+      >
+    </formas-dinamicas>
+    <formas-dinamicas 
+      formularioTitulo="Clasificación de la Información "
+      [forma]="clasificacionFormGroup" 
+      [formularioDatos]="clasificacionDatos"
+      [estado]="solicitudeState"
+      [soloLectura]="consultaState.readonly"
+      (emitirCambioDeValor)="emitirCambioDeValor($event)"
+      >
+    </formas-dinamicas>
+      <formas-dinamicas 
+          formularioTitulo="Pago de derechos"
+          [forma]="pagoDeDerechosFormGroup" 
+          [formularioDatos]="pagoDeDerechosDatos"
+          [estado]="solicitudeState"
+          [soloLectura]="consultaState.readonly"
+          (emitirCambioDeValor)="emitirCambioDeValor($event)"
+          >
+      </formas-dinamicas>
+    </form>
+     <div class="d-flex justify-content-end mt-5">
+        <button type="button" class="btn btn-danger" [disabled]="esFormularioSoloLectura">Borrar datos del pago</button>
+    </div>
+
+</div>

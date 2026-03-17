@@ -1,0 +1,135 @@
+<div class="container">
+  <ng-titulo titulo="Aviso de transportistas"></ng-titulo>
+
+  <div class="col-md-12">
+   <app-tabla-dinamica [configuracionTabla]="configuracionTabla" [datos]="empresaTransportistaData"
+    [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX" (listaDeFilaSeleccionada)="manejarFilaSeleccionada($event)"
+    [disableSeleccionTablaCheckBox]="esFormularioSoloLectura">
+    </app-tabla-dinamica>
+  <div class="d-flex justify-content-end">
+    <div class="d-flex flex-row flex-wrap gap-3">
+        <button class="btn btn-primary"
+        [disabled]="esFormularioSoloLectura">Eliminar</button>
+        <button class="btn btn-primary"  [disabled]="esFormularioSoloLectura" (click)="modificarItemTransportista()">Modificar</button>
+        <button class="btn btn-primary" [disabled]="esFormularioSoloLectura" (click)="agregarDialogoDatos()">Agregar</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div
+  class="modal fade"
+  id="transportistaElemento"
+  tabindex="-1"
+  aria-labelledby="transportistaElemento"
+  aria-hidden="true"
+  data-bs-backdrop="static"
+  #transportistaElemento
+>
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form [formGroup]="transportistaForm">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                 <label class="form-label" for="rfc">RFC:*</label>
+                <input
+                  class="form-control"
+                  id="rfc"
+                  type="text"
+                />
+              </div>
+            </div>
+          <div class="col-md-4 d-flex">
+            <div class="form-group align-self-start mt-4">
+              <button class="btn btn-default" type="button">
+                Buscar
+              </button>
+            </div>
+          </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="rfc">RFC</label>
+                <input
+                  class="form-control"
+                  id="rfc"
+                  formControlName="rfc"
+                  type="text"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label text-nowrap"
+                  style="margin: 0; white-space: nowrap;">Nombre, denominación o razón social</label>
+                <input
+                  class="form-control"
+                  id="denominacion"
+                  formControlName="denominacion"
+                  type="text"
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="domicilio"
+                  >Domicilio</label
+                >
+                <input
+                  class="form-control"
+                  id="domicilio"
+                  formControlName="domicilio"
+                  type="text"
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="registroCaat"
+                  >Registro CAAT vigente</label
+                >
+                <input
+                  class="form-control"
+                  id="registroCaat"
+                  formControlName="registroCaat"
+                  type="text"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+                <app-catalogo-select
+                  [catalogo]="estatus"
+                  [label]="'Estatus'"
+                  [required]="true"
+                  name="estatus"
+                  formControlName="estatus"
+                ></app-catalogo-select>
+              </div>
+          </div>
+        </form>
+        <footer class="footer d-flex py-5 gap-3 justify-content-end">
+          <button type="button" class="btn btn-primary" (click)="modalCancelar()">
+            Cancelar
+          </button>
+          <button type="button" class="btn btn-primary" (click)="enviarDialogData()">
+            Aceptar
+          </button>
+        </footer>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<lib-notificaciones
+  *ngIf="esFilaSeleccionada"
+  [notificacionInput]="nuevaNotificacion"
+  (confirmacionModal)="modificarItemTransportista()"
+>
+</lib-notificaciones>

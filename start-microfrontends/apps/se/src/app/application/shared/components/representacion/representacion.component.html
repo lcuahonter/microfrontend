@@ -1,0 +1,39 @@
+<div class="container">
+    <ng-titulo titulo="Representación federal"></ng-titulo>
+    <form [formGroup]="frmRepresentacionForm">
+      <div class="row">
+        <div class="col-md-4 form-group">
+          <app-catalogo-select
+            [catalogo]="entidadFederativa"
+            [label]="'Entidad federativa'"
+            [required]="true"
+            formControlName="entidad"
+            [isDisabled]="esFormularioSoloLectura"
+            [hiddenPrimerOption]="hiddenPrimerOption"
+            [disabledPrimerOption]="disabledPrimerOption"
+            [markTouched]="frmRepresentacionForm.get('entidad')?.touched ?? false"
+            (change)="setValoresStore(frmRepresentacionForm, 'entidad')"
+          ></app-catalogo-select>
+        </div>
+        <div class="col-md-4 form-group">
+          <app-catalogo-select
+            [catalogo]="representacionFederal"
+            [label]="'Representación federal'"
+            [required]="true"
+            formControlName="representacion"
+            [isDisabled]="esFormularioSoloLectura"
+            [hiddenPrimerOption]="hiddenPrimerOption"
+            [disabledPrimerOption]="disabledPrimerOption"
+            (change)="setValoresStore(frmRepresentacionForm, 'representacion')"
+            [markTouched]="frmRepresentacionForm.get('representacion')?.touched ?? false"
+          ></app-catalogo-select>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="row mt-4" *ngIf="esRepresentacionFederal">
+    <div class="col-md-8">
+      <ng-alert [CONTENIDO]="instruccionMensaje"></ng-alert>
+    </div>
+  </div>

@@ -1,0 +1,398 @@
+<form [formGroup]="formulario">
+<div id="dvMessage" *ngIf="dvMessageVisible">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="alert alert-danger">Faltan campos por capturar.</div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <h3>Aviso de fusión o escisión</h3>
+    <hr class="text-danger">
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <span
+      id="lblErrorRadioTipoAviso"
+      name="lblErrorRadioTipoAviso"
+      *ngIf="formulario.get('capacidadAlmacenamiento')?.touched && formulario.get('capacidadAlmacenamiento')?.hasError('required')"
+      class="text-danger"
+    >
+      Este campo es requerido.
+    </span>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="form-check">
+      <app-input-radio [radioOptions]="radioOpciones" [layout]="'vertical'"
+      formControlName="capacidadAlmacenamiento" (change)="mostrarFusionada()">
+      </app-input-radio>
+      </div>
+  </div>
+</div>
+
+<div class="row">
+      <div class="col-md-1"></div>
+      <div class="col-md-8">
+        <div class="form-check">
+          <app-input-radio [radioOptions]="fusionEscisionOpciones" [layout]="'horizontal'"
+          formControlName="numeroTotalCarros" (change)="mostrarFusionOEscision()">
+          </app-input-radio>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <span
+          id="tblErrorSubTipo"
+          name="tblErrorSubTipo"
+          *ngIf="formulario.get('numeroTotalCarros')?.touched && formulario.get('numeroTotalCarros')?.hasError('required')"
+          class="text-danger"
+        >
+          Este campo es requerido.
+        </span>
+      </div>
+    </div>
+
+<div class="row">
+  <div class="col-md-12">
+    <span id="tblErrorSubTipo" name="tblErrorSubTipo"></span>
+  </div>
+</div>
+
+<div id="divCompleto" *ngIf="divCompletoVisible">
+  @if(formulario.controls['numeroTotalCarros'].value === '1'){
+  <div class="row" id="tituloFusion">
+    <div class="col-md-12">
+      <h3>Datos de la empresa fusionante</h3>
+      <hr class="text-danger">
+    </div>
+  </div>
+}
+
+@if(formulario.controls['numeroTotalCarros'].value === '0'){
+  <div class="row" id="tituloEscision">
+    <div class="col-md-12">
+      <h3>Datos de la empresa escindente</h3>
+      <hr class="text-danger">
+    </div>
+  </div>
+}
+  <div class="row">
+    <div class="col-md-12">
+      <span id="tblErrorPersonaPrincipal" name="tblErrorPersonaPrincipal"></span>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <label class="form-label">Cuenta con autorización de Despacho de Mercancías</label>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8">
+          <div class="form-check">
+             <app-input-radio [radioOptions]="fusionadaOpciones" [layout]="'horizontal'"
+          formControlName="cantidadBienes" (change)="mostrarCertificacionFusionada()">
+          </app-input-radio>      
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <span
+            id="tblErrorCantidadBienes"
+            name="tblErrorCantidadBienes"
+            *ngIf="formulario.get('cantidadBienes')?.touched && formulario.get('cantidadBienes')?.hasError('required')"
+            class="text-danger"
+          >
+            Este campo es requerido.
+          </span>
+        </div>
+      </div>
+
+  <div id="conCertificacionPrincipal" *ngIf="conCertificacionPrincipalVisible">
+    <div class="row">
+      <div class="col-md-6">
+        <label class="form-label">RFC</label>
+        <span class="text-danger">*</span>
+        <label for="puntos"></label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <input
+          type="text"
+          formControlName="rfc"
+          size="30"
+          id="idRfcBusqueda"
+          class="form-control"
+          (change)="cambioRFC()"
+        />
+        <span
+          *ngIf="formulario.get('rfc')?.touched && formulario.get('rfc')?.hasError('required')"
+          class="text-danger"
+        >
+          Este campo es requerido.
+        </span>
+      </div>
+      <div class="col-md-6">
+        <button
+          type="button"
+          id="btnAceptarDomicilios"
+          class="btn btn-primary"
+          (click)="cargarDatosPersonaFusion()"
+          [disabled]="soloLectura"
+        >
+          Aceptar
+        </button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <label class="form-label">Denominación o razón social de la sociedad</label>
+        <span class="text-danger">*</span>
+        <label for="puntos"></label>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Folio VUCEM</label>
+        <span class="text-danger">*</span>
+        <label for="puntos"></label>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <input
+          type="text"
+          formControlName="razonSocial"
+          size="30"
+          id="idRazonSocialFusionado"
+          class="form-control"
+        />
+        <span
+          *ngIf="formulario.get('razonSocial')?.touched && formulario.get('razonSocial')?.hasError('required')"
+          class="text-danger"
+        >
+          Este campo es requerido.
+        </span>
+      </div>
+      <div class="col-md-6">
+        <input
+          type="text"
+          formControlName="numFolioTramite"
+          size="30"
+          id="idFolioVucemFusionado"
+          class="form-control"
+        />
+        <span
+          *ngIf="formulario.get('numFolioTramite')?.touched && formulario.get('numFolioTramite')?.hasError('required')"
+          class="text-danger"
+        >
+          Este campo es requerido.
+        </span>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <label class="form-label">Fecha inicio de vigencia</label>
+        <span class="text-danger">*</span>
+        <label for="puntos"></label>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Fecha fin de vigencia</label>
+        <span class="text-danger">*</span>
+        <label for="puntos"></label>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <input
+          type="date"
+          formControlName="fechaInicioVigencia"
+          size="30"
+          id="idFechaInicioVigenciaFusionado"
+          class="form-control"
+        />
+        <span
+          *ngIf="formulario.get('fechaInicioVigencia')?.touched && formulario.get('fechaInicioVigencia')?.hasError('required')"
+          class="text-danger"
+        >
+          Este campo es requerido.
+        </span>
+      </div>
+      <div class="col-md-6">
+        <input
+          type="date"
+          formControlName="fechaFinVigencia"
+          size="30"
+          id="idFechaFinVigenciaFusionado"
+          class="form-control"
+        />
+        <span
+          *ngIf="formulario.get('fechaFinVigencia')?.touched && formulario.get('fechaFinVigencia')?.hasError('required')"
+          class="text-danger"
+        >
+          Este campo es requerido.
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div id="sinCertificacionPrincipal" *ngIf="sinCertificacionPrincipalVisible">
+    <div class="row">
+      <div class="col-md-6">
+        <label class="form-label">RFC</label>
+        <span class="text-danger">*</span>
+        <label for="puntos"></label>
+        <input
+          type="text"
+          formControlName="rfc"
+          size="30"
+          id="idRfcBusquedaSC"
+          class="form-control"
+        />
+        <span
+          *ngIf="formulario.get('rfc')?.touched && formulario.get('rfc')?.hasError('required')"
+          class="text-danger"
+        >
+          Este campo es requerido.
+        </span>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Denominación o razón social de la sociedad</label>
+        <span class="text-danger">*</span>
+        <label for="puntos"></label>
+        <input
+        type="text"
+        formControlName="razonSocialSC"
+        size="30"
+        id="idRazonSocialSC"
+        class="form-control"
+        (change)="cambioRazonSocialSC()"
+      />
+      <span
+        *ngIf="formulario.get('razonSocialSC')?.touched && formulario.get('razonSocialSC')?.hasError('required')"
+        class="text-danger"
+      >
+        Este campo es requerido.
+      </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      @if(formulario.controls['numeroTotalCarros'].value === '0'){
+        <label class="form-label" for="fechaFusion">Fecha en que surte efecto la escindente</label>
+      }
+      @else{
+        <label class="form-label" for="fechaFusion">Fecha en que surte efecto la fusion</label>
+      }     
+      <div class="fusion">
+        <input
+          type="date"
+          formControlName="fechaInspeccion"
+          id="fechaFusion"
+          class="form-control"
+          (change)="cambioFechaInspeccion()"
+        >
+        <span>
+          <i class="calendar pull-right" aria-hidden="true"></i>
+        </span>
+      </div>
+      <span
+        *ngIf="formulario.get('fechaInspeccion')?.touched && formulario.get('fechaInspeccion')?.hasError('required')"
+        class="text-danger"
+      >
+        Este campo es requerido.
+      </span>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label fusion-align" for="idFolioFusion">Número de folio del acuse de movimientos de actualización de situación fiscal al RFC*:</label>
+      <input
+        type="text"
+        formControlName="descripcionClobGenerica2"
+        size="30"
+        id="idFolioFusion"
+        class="form-control"
+        (change)="cambioDescClob()"
+      />
+      <span
+        *ngIf="formulario.get('descripcionClobGenerica2')?.touched && formulario.get('descripcionClobGenerica2')?.hasError('required')"
+        class="text-danger"
+      >
+        Este campo es requerido.
+      </span>
+    </div>
+  </div>
+
+  <div class="row" id="subTituloFusion">
+       <div class="col-md-12">
+        @if(formulario.get('numeroTotalCarros')?.value === '0'){
+      <ng-titulo titulo="Datos de las empresas escindidas"></ng-titulo>
+        }
+        @else{
+      <ng-titulo titulo="Datos de las empresas fusionadas"></ng-titulo>
+        }
+      </div>
+      <div class="col-md-12">
+        <app-tabla-dinamica
+          [configuracionTabla]="FUSION_CONFIGURACION_TABLA"
+          [datos]="gridFusionEscisionData"
+          [tipoSeleccionTabla]="tablaSeleccion.CHECKBOX"
+          (listaDeFilaSeleccionada)="getFusionDatos($event)"
+          [tableId]="tableId"
+          [disableSeleccionTablaCheckBox]="soloLectura"
+        >
+        </app-tabla-dinamica>
+      </div>
+  </div>
+
+  
+  <div class="row">
+    <div class="col-md-12">
+      <div class="d-flex justify-content-end">
+        <button
+          type="button"
+          id="btnAgregarPersona"
+          class="btn btn-primary"
+          (click)="abrirModalFusionEscision()"
+          [disabled]="soloLectura"
+        >
+          Agregar
+        </button>
+        <button
+          type="button"
+          id="btnEliminarPersona"
+          class="btn btn-danger"
+          (click)="eliminarFusion()"
+          [disabled]="!gridFusionEscisionData || gridFusionEscisionData.length === 0 || soloLectura"
+        >
+          Eliminar
+        </button>
+        <button
+          type="button"
+          id="btnModificarPersona"
+          class="btn btn-secondary"
+          (click)="modificarFusion()"
+          [disabled]="!gridFusionEscisionData || gridFusionEscisionData.length === 0 || soloLectura"
+        >
+          Modificar
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+</form>

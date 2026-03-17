@@ -1,0 +1,586 @@
+<div class="container">
+  <form [formGroup]="FormSolicitud" (ngSubmit)="validarFormulario()">
+    <ng-container formGroupName="adaceForm">
+      <div class="row mb-3 mt-4">
+        <div class="col-md-4">
+          <label for="adace" class="form-label">ADACE:</label>
+          <input
+            class="form-control"
+            [ngClass]="isValid(adaceForm, 'adace') ? 'required' : ''"
+            type="text"
+            formControlName="adace"
+            name="adace"
+            id="adace"
+          
+          />
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-titulo
+      titulo="Datos del extranjero que realizar&aacute; la importaci&oacute;n"
+    />
+    <ng-container formGroupName="extranjeroAvisoAgace">
+      <div class="row mb-3">
+        <div class="col-md-9">
+          <label for="razonSocial" class="form-label"
+            >Nombre o Raz&oacute;n Social*:</label
+          >
+          <input
+            class="form-control"
+            [class.is-invalid]="
+              extranjeroAvisoAgace.get('razonSocial')?.touched &&
+              extranjeroAvisoAgace.get('razonSocial')?.invalid
+            "
+            type="text"
+            formControlName="razonSocial"
+            name="razonSocial"
+            id="razonSocial"
+            maxlength="250"
+            (change)="setValoresStore(extranjeroAvisoAgace)"
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              extranjeroAvisoAgace.get('razonSocial')?.touched &&
+              extranjeroAvisoAgace.get('razonSocial')?.invalid
+            "
+          >
+            <span
+              *ngIf="
+                extranjeroAvisoAgace.get('razonSocial')?.hasError('required')
+              "
+              >Este campo es obligatorio.</span
+            >
+          </div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label for="rfc" class="form-label">RFC*:</label>
+          <input
+            class="form-control"
+            [class.is-invalid]="
+              extranjeroAvisoAgace.get('rfc')?.touched &&
+              extranjeroAvisoAgace.get('rfc')?.invalid
+            "
+            type="text"
+            formControlName="rfc"
+            name="rfc"
+            id="rfc"
+            maxlength="13"
+            (change)="setValoresStore(extranjeroAvisoAgace)"
+            (blur)="verificarRFC()"
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              extranjeroAvisoAgace.get('rfc')?.touched &&
+              extranjeroAvisoAgace.get('rfc')?.invalid
+            "
+          >
+            <span *ngIf="extranjeroAvisoAgace.get('rfc')?.hasError('required')"
+              >Este campo es obligatorio.</span
+            >
+          </div>
+        </div>
+        <div class="col-md-5">
+          <label for="rfcExtranjero" class="form-label"
+            >Tax ID en el pa&iacute;s de origen del extranjero*:</label
+          >
+          <input
+            class="form-control"
+            [class.is-invalid]="
+              extranjeroAvisoAgace.get('rfcExtranjero')?.touched &&
+              extranjeroAvisoAgace.get('rfcExtranjero')?.invalid
+            "
+            type="text"
+            formControlName="rfcExtranjero"
+            name="rfcExtranjero"
+            id="rfcExtranjero"
+            (change)="setValoresStore(extranjeroAvisoAgace)"
+            maxlength="20"
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              extranjeroAvisoAgace.get('rfcExtranjero')?.touched &&
+              extranjeroAvisoAgace.get('rfcExtranjero')?.invalid
+            "
+          >
+            <span *ngIf="extranjeroAvisoAgace.get('rfcExtranjero')?.hasError('required')"
+              >Este campo es obligatorio.</span
+            >
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-titulo
+      titulo="Datos de la mercanc&iacute;a que se importar&aacute; temporalmente"
+    />
+    <ng-container formGroupName="mercanciaST">
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <app-catalogo-select
+            formControlName="cveFraccionArancelaria"
+            [catalogo]="opcionFraccionArancelaria.catalogos"
+            [label]="opcionFraccionArancelaria.labelNombre"
+            [required]="opcionFraccionArancelaria.required"
+            name="cveFraccionArancelaria"
+            (change)="setValoresStore(mercanciaST)"
+            [isDisabled]="esFormularioSoloLectura"
+          ></app-catalogo-select>
+        </div>
+        <div class="col-md-4">
+          <app-catalogo-select
+            formControlName="reglaFraccion"
+            [catalogo]="opcionRegla422.catalogos"
+            [label]="opcionRegla422.labelNombre"
+            [required]="opcionRegla422.required"
+            name="reglaFraccion"
+            (change)="setValoresStore(mercanciaST)"
+            [isDisabled]="esFormularioSoloLectura"
+            [tooltipQuestionCircle]="true"
+            [tooltipQuestionCircleText]="'Fracción de la regla 4.2.2 a la que corresponde'"
+          ></app-catalogo-select>
+        </div>
+        <div class="col-md-4">
+          <label for="nico" class="form-label">NICO*:</label>
+          <input
+            class="form-control"
+            [class.is-invalid]="
+              mercanciaST.get('nico')?.touched &&
+              mercanciaST.get('nico')?.invalid
+            "
+            type="text"
+            formControlName="nico"
+            name="nico"
+            id="nico"
+            (change)="setValoresStore(mercanciaST)"
+            maxlength="2"
+            (keypress)="permitirSoloNumeros($event)"
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              mercanciaST.get('nico')?.touched &&
+              mercanciaST.get('nico')?.invalid
+            "
+          >
+            <span *ngIf="mercanciaST.get('nico')?.hasError('required')"
+              >Este campo es obligatorio.</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label for="valorUSD" class="form-label">Valor USD*:</label>
+          <input
+            class="form-control"
+            [class.is-invalid]="
+              mercanciaST.get('valorUSD')?.touched &&
+              mercanciaST.get('valorUSD')?.invalid
+            "
+            type="number"
+            formControlName="valorUSD"
+            name="valorUSD"
+            id="valorUSD"
+            (change)="setValoresStore(mercanciaST)"
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              mercanciaST.get('valorUSD')?.touched &&
+              mercanciaST.get('valorUSD')?.invalid
+            "
+          >
+            <span *ngIf="mercanciaST.get('valorUSD')?.hasError('required')"
+              >Este campo es obligatorio.</span
+            >
+          </div>
+        </div>
+        <div class="col-md-4">
+        <label for="marca" class="form-label">Marca*:</label>
+        <input
+          class="form-control"
+          [class.is-invalid]="
+            mercanciaST.get('marca')?.touched &&
+            mercanciaST.get('marca')?.invalid
+          "
+          type="text"
+          formControlName="marca"
+          name="marca"
+          id="marca"
+          (change)="setValoresStore(mercanciaST)"
+          maxlength="250"
+        />
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            mercanciaST.get('marca')?.touched &&
+            mercanciaST.get('marca')?.invalid
+          "
+        >
+          <span *ngIf="mercanciaST.get('marca')?.hasError('required')"
+            >Este campo es obligatorio.</span
+          >
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label for="peso" class="form-label">Peso (Kg)*:</label>
+        <input
+          class="form-control"
+          [class.is-invalid]="
+            mercanciaST.get('peso')?.touched && mercanciaST.get('peso')?.invalid
+          "
+          type="text"
+          formControlName="peso"
+          name="peso"
+          id="peso"
+          (change)="setValoresStore(mercanciaST)"
+          maxlength="16"
+          (keypress)="permitirSoloNumerosDecimal($event)"
+        />
+        @if(mercanciaST.controls['peso'].invalid ) {
+          <div class="d-grid">
+            @if(mercanciaST.controls['peso'].errors?.['required']&& mercanciaST.controls['peso'].touched) {
+              <span class="mensaje-error">Este campo es obligatorio</span>
+            }
+            @if(mercanciaST.get('peso')?.errors?.['pattern'])  {
+              <span class="mensaje-error"> No cumple con el formato esperado 9999999999999.99</span>
+            }
+          </div>   
+        }
+
+
+
+        
+      </div>
+      </div>
+      
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <input-fecha
+            [datos]="fechaInicioInput"
+            [tooltipQuestionCircle]="true"
+            [tooltipQuestionCircleText]="'Fecha aproximada de la importación de la mercancía'"
+            (valorCambiado)="cambioFechaDeIngreso($event)"
+            [setFecha]="mercanciaST.get('fechaInicio')?.value"
+            [deshabilitarPasadas]="true"
+          ></input-fecha>
+          @if (isValid(mercanciaST,'fechaInicio')) {
+          <div class="mensaje-error"><span style="color: red;">Este campo es obligatorio.</span></div>
+          }
+        </div>
+        <div class="col-md-4">
+          <label for="numeroSerie" class="form-label"
+            >N&uacute;mero de serie:</label
+          >
+          <input
+            class="form-control"
+            type="text"
+            formControlName="numeroSerie"
+            name="numeroSerie"
+            id="numeroSerie"
+            (change)="setValoresStore(mercanciaST)"
+          />
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-8">
+          <label for="descripcionMercancia" class="form-label"
+            >Descripci&oacute;n de la mercancía:</label
+          >
+          <textarea
+            cols="60"
+            rows="5"
+            class="form-control"
+            formControlName="descripcionMercancia"
+            id="descripcionMercancia"
+            (change)="setValoresStore(mercanciaST)"
+          ></textarea>
+        </div>
+      </div> 
+    </ng-container>
+
+    <ng-titulo titulo="Datos del domicilio donde se utilizará la mercancía" />
+    <ng-container formGroupName="direccionST">
+      <div class="row mb-3">
+        <div class="col-md-8">
+          <label for="idNomComercial" class="form-label"
+            >Nombre comercial:</label
+          >
+          <input
+            class="form-control"
+            type="text"
+            formControlName="informacionExtra"
+            maxlength="250"
+            name="informacionExtra"
+            id="informacionExtra"
+            (change)="setValoresStore(direccionST)"
+          />
+        </div>
+        <div class="col-md-4">
+          <app-catalogo-select
+            formControlName="entidadFederativa"
+            [catalogo]="opcionEntidadFederativa.catalogos"
+            [label]="opcionEntidadFederativa.labelNombre"
+            [required]="opcionEntidadFederativa.required"
+            name="entidadFederativa"
+            (change)="setValoresStore(direccionST)"
+            (selectionChange)="establecerValoresEnEstado(direccionST, 'entidadFederativa')"
+            [isDisabled]="esFormularioSoloLectura"
+          >
+          </app-catalogo-select>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <app-catalogo-select
+            formControlName="delegacionMunicipio"
+            [catalogo]="opcionDelegacionMunicipio.catalogos"
+            [label]="opcionDelegacionMunicipio.labelNombre"
+            [required]="opcionDelegacionMunicipio.required"
+            name="delegacionMunicipio"
+            (change)="setValoresStore(direccionST)"
+            (selectionChange)="establecerValoresEnEstado(direccionST, 'delegacionMunicipio')"
+            [isDisabled]="esFormularioSoloLectura"
+          ></app-catalogo-select>
+        </div>
+        <div class="col-md-4">
+          <app-catalogo-select
+            formControlName="colonia"
+            [catalogo]="opcionColonia.catalogos"
+            [label]="opcionColonia.labelNombre"
+            [required]="opcionColonia.required"
+            name="colonia"
+            (change)="setValoresStore(direccionST)"
+            [isDisabled]="esFormularioSoloLectura"
+          ></app-catalogo-select>
+        </div>
+        <div class="col-md-4">
+          <label for="calle" class="form-label">Calle*:</label>
+          <input
+            class="form-control"
+            [class.is-invalid]="
+              direccionST.get('calle')?.touched &&
+              direccionST.get('calle')?.invalid
+            "
+            type="text"
+            formControlName="calle"
+            name="calle"
+            id="calle"
+            (change)="setValoresStore(direccionST)"
+            maxlength="250"
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              direccionST.get('calle')?.touched &&
+              direccionST.get('calle')?.invalid
+            "
+          >
+            <span *ngIf="direccionST.get('calle')?.hasError('required')"
+              >Este campo es obligatorio.</span
+            >
+          </div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label for="valorUSD" class="form-label">No. exterior*:</label>
+          <input
+            class="form-control"
+            [class.is-invalid]="
+              direccionST.get('numeroExterior')?.touched &&
+              direccionST.get('numeroExterior')?.invalid
+            "
+            type="text"
+            formControlName="numeroExterior"
+            name="valorUSD"
+            id="valorUSD"
+            (change)="setValoresStore(direccionST)"
+            maxlength="15"
+            
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              direccionST.get('numeroExterior')?.touched &&
+              direccionST.get('numeroExterior')?.invalid
+            "
+          >
+            <span
+              *ngIf="direccionST.get('numeroExterior')?.hasError('required')"
+              >Este campo es obligatorio.</span
+            >
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label for="numeroInterior" class="form-label">No. interior:</label>
+          <input
+            class="form-control"
+            type="text"
+            formControlName="numeroInterior"
+            name="numeroInterior"
+            id="numeroInterior"
+            (change)="setValoresStore(direccionST)"
+            maxlength="15"
+          />
+        </div>
+        <div class="col-md-4">
+          <label for="codigoPostal" class="form-label">Código postal*:</label>
+          <input
+            class="form-control"
+            [class.is-invalid]="
+              direccionST.get('codigoPostal')?.touched &&
+              direccionST.get('codigoPostal')?.invalid
+            "
+            type="text"
+            maxlength="5"
+            formControlName="codigoPostal"
+            name="codigoPostal"
+            id="codigoPostal"
+            (change)="setValoresStore(direccionST)"
+            (keypress)="allowOnlyNumbers($event)"
+           
+          />
+          <div
+  class="invalid-feedback"
+  *ngIf="
+    direccionST.get('codigoPostal')?.touched &&
+    direccionST.get('codigoPostal')?.invalid
+  "
+>
+  <span *ngIf="direccionST.get('codigoPostal')?.hasError('required')">
+    Este campo es obligatorio.
+  </span>
+  
+  <span *ngIf="direccionST.get('codigoPostal')?.hasError('pattern')">
+    Este campo es obligatorio.
+  </span>
+</div>
+
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-titulo titulo="Datos de la operación de importación" />
+    <ng-container formGroupName="pedimentoST">
+      <div class="row mb-3">
+        <div class="col-md-8">
+          <label for="patenteAutorizacion" class="form-label"
+            >Patente o autorización del Agente Aduanal</label
+          >
+          <input
+            class="form-control"
+            type="text"
+            formControlName="patenteAutorizacion"
+            name="patenteAutorizacion"
+            id="patenteAutorizacion"
+            maxlength="4"
+            style="color: red;"
+            (change)="setValoresStore(pedimentoST)"
+            
+          />
+           <div
+            class="invalid-feedback"
+            *ngIf="
+              pedimentoST.get('patenteAutorizacion')?.touched &&
+              pedimentoST.get('patenteAutorizacion')?.invalid
+            "
+          >
+            <span *ngIf="pedimentoST.get('patenteAutorizacion')?.hasError('maxlength')"
+              >Este campo debe tener un máximo de 4 caracteres.</span
+            >
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label for="rfcAgenteAduanal" class="form-label"
+            >RFC del Agente Aduanal:</label
+          >
+          <input
+            class="form-control"
+            type="text"
+            formControlName="rfcAgenteAduanal"
+            name="rfcAgenteAduanal"
+            id="rfcAgenteAduanal"
+            maxlength="13"
+          
+            (change)="setValoresStore(pedimentoST)"
+            (change)="verificarRFCDos()"
+          />
+
+          @if(pedimentoST.controls['rfcAgenteAduanal'].invalid ) {
+            <div class="invalid-feedback">
+              @if(pedimentoST.get('rfcAgenteAduanal')?.errors?.['maxlength'])  {
+                <span class="mensaje-error"> Este campo debe tener un máximo de 12 caracteres.</span>
+              }
+            </div>   
+          }
+          
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label for="numeroPedimento" class="form-label"
+            >Número de pedimento:</label
+          >
+          <input
+            class="form-control"
+            type="text"
+            formControlName="numeroPedimento"
+            name="numeroPedimento"
+            id="numeroPedimento"
+            (change)="setValoresStore(pedimentoST)"
+            maxlength="7"
+            
+          />
+        </div>
+        <div class="col-md-4">
+          <app-catalogo-select
+            formControlName="claveAduana"
+            [catalogo]="opcionAduana.catalogos"
+            [label]="opcionAduana.labelNombre"
+            [required]="opcionAduana.required"
+            name="claveAduana"
+            (change)="setValoresStore(pedimentoST)"
+            [isDisabled]="esFormularioSoloLectura"
+          ></app-catalogo-select>
+        </div>
+       
+      </div>
+      <div class="row mt-3">
+        <div class="col-md-12">
+          <div class="alert alert-info">
+            <div class="form-check text-left">
+              <input type="checkbox" class="form-check-input pull-left" formControlName="informacionConfidencial"
+                id="informacionConfidencial"  [disabled]="esFormularioSoloLectura" (change)="setValoresStore(pedimentoST)"/>
+
+              <label class="form-check-label" for="informacionConfidencial"
+                style="margin-left: 10px; font-weight: normal;">
+                * {{ declaracion }}
+              </label>
+
+            </div>
+          
+          </div>
+          <div>
+            @if( pedimentoST.get('informacionConfidencial')?.touched && pedimentoST.get('informacionConfidencial')?.value === false) { 
+              <span class="mensaje-error" style=" font-size: 0.875em; color: var(--bs-form-invalid-color);">  Este campo es obligatorio.</span>
+            } 
+          </div>
+        </div>
+      </div>
+
+    
+    </ng-container>     
+  </form>
+</div>
+@if(nuevaNotificacion){
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion" ></lib-notificaciones>
+  }  

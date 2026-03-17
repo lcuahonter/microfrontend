@@ -1,0 +1,59 @@
+<div class="container">
+  <form [formGroup]="agregarImmexProgramForm">
+    <div class="row">
+      <div class="col-md-4 mt-4">
+        <label class="form-label mt-5 text-start" for=""
+          >Entidad federativa</label
+        >
+      </div>
+      <div class="col-md-4 mt-4">
+        <app-catalogo-select
+          formControlName="entidadFederativa"
+          [catalogo]="entidadFederativa.catalogos"
+          [label]="entidadFederativa.labelNombre"
+          [placeholder]="entidadFederativa.primerOpcion"
+          [required]="true"
+          [isDisabled]="esFormularioSoloLectura"
+          name="entidadFederativa"
+          id="entidadFederativa"
+          (selectionChange)="seleccionArentidadFederativa($event)"
+        ></app-catalogo-select>
+      </div>
+      <div class="col-md-4 mt-4"></div>
+      <div class="col-md-12 mt-5">
+        <app-tabla-dinamica
+          [tipoSeleccionTabla]="tipoSeleccionTabla"
+          [configuracionTabla]="agregarImmexProgramConfiguracionColumnas"
+          [datos]="domicilioslista"
+          [mode]="'client'"
+          [totalItems]="domicilioslista.length"
+          [showPagination]="true"
+          (listaDeFilaSeleccionada)="seleccionarImmexProgramLista($event)"
+        >
+        </app-tabla-dinamica>
+      </div>
+      <div class="col-md-12">
+        <div class="d-flex justify-content-end">
+          <button
+            type="button"
+            id="Iceptar"
+            class="btn btn-primary ms-3"
+            [disabled]="esFormularioSoloLectura"
+            (click)="agregarImmexProgram()"
+          >
+            Aceptar
+          </button>
+          <button
+            type="button"
+            id="cancelar"
+            [disabled]="esFormularioSoloLectura"
+            class="btn btn-danger ms-3"
+            (click)="cancelarImmexProgram()"
+          >
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,180 @@
+<div class="row">
+  <div class="col-md-12">
+    <h5 class="mb-3">Sociedades</h5>
+        <app-tabla-dinamica
+            [configuracionTabla]="configuracionTabla"
+            [datos]="sociedadesDatos"
+            [tipoSeleccionTabla]="checkbox"
+            (listaDeFilaSeleccionada)="seleccionarlistaSeccionSociedades($event)"
+            >
+        </app-tabla-dinamica>
+         <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-primary me-2" [disabled]="esFormularioSoloLectura" (click)="abrirModal(sociedades,'agregarSociedades')">
+                Agregar
+            </button>
+            <button class="btn btn-danger me-2" type="button" [disabled]="esFormularioSoloLectura || seleccionarlistaSociedades.length !== 1" (click)="abrirModal(sociedades,'modificarSociedades')">
+                Modificar
+            </button>
+            <button class="btn btn-default" type="button" [disabled]="esFormularioSoloLectura || seleccionarlistaSociedades.length === 0" (click)="eliminarSociedades()">
+                Eliminar
+            </button>
+        </div>
+        <ng-titulo titulo="Datos de las instalaciones de la agencia"></ng-titulo>
+        <p class="fw-bold">Es necesario indicar todas las instalaciones pertenecientes al RFC del agente aduanal solicitante y de sus sociedades, asociadas a la aduana de adscripción, así como cada una de las instalaciones asociadas a las aduanas adicionales pertenecientes al agente aduanal solicitante.</p>
+        <app-tabla-dinamica
+            [configuracionTabla]="configuracionDatosTabla"
+            [datos]="instalacionesDatos"
+            [tipoSeleccionTabla]="checkbox"
+            (listaDeFilaSeleccionada)="seleccionarlistaSeccionInstalaciones($event)"
+            >
+        </app-tabla-dinamica>
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-primary me-2" [disabled]="esFormularioSoloLectura" (click)="abrirModal(agregar,'agregarInstalaciones')">
+                Agregar
+            </button>
+            <button class="btn btn-danger me-2" type="button" [disabled]="esFormularioSoloLectura || seleccionarlistaInstalaciones.length !== 1" (click)="abrirModal(modificar,'modificarInstalaciones')">
+                Modificar
+            </button>
+            <button class="btn btn-default" type="button" [disabled]="esFormularioSoloLectura || seleccionarlistaInstalaciones.length === 0" (click)="eliminarInstalaciones()">
+                Eliminar
+            </button>
+        </div>
+  </div>
+</div>
+<formas-dinamicas 
+    [forma]="indiqueSiFormGroup" 
+    [formularioDatos]="indiqueDatos"
+    [estado]="solicitudeState"
+    [soloLectura]="esFormularioSoloLectura"
+    (emitirCambioDeValor)="emitirCambioDeValor($event)"
+    >
+</formas-dinamicas>
+<div class="row mt-2">
+    <div class="col-md-12">
+        <p class="fw-bold"><span>* </span>Indique los mandatarios del agente aduanal y si estos se encuentran al corriente en el cumplimiento de obligaciones fiscales.</p>
+    </div>
+    <div class="col-md-12">
+        <h5 class="mt-2">Mandatarios de agente aduanal</h5>
+        <app-tabla-dinamica
+            [configuracionTabla]="configuracionMandatariosTabla"
+            [datos]="mandatariosDatos"
+            [tipoSeleccionTabla]="checkbox"
+            (listaDeFilaSeleccionada)="seleccionarlistaSeccionMandatarios($event)"
+            >
+        </app-tabla-dinamica>
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-primary me-2" [disabled]="esFormularioSoloLectura" (click)="abrirModal(mandatarios,'agregarMandatarios')">
+                Agregar
+            </button>
+            <button class="btn btn-danger me-2" type="button" [disabled]="esFormularioSoloLectura || seleccionarlistaMandatarios.length !== 1" (click)="abrirModal(mandatarios,'modificarMandatarios')">
+                Modificar
+            </button>
+            <button class="btn btn-default" type="button" [disabled]="esFormularioSoloLectura || seleccionarlistaMandatarios.length === 0" (click)="eliminarMandatarios()">
+                Eliminar
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<ng-template #sociedades>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Agregar Sociedades del Agente Aduanal</h4>
+  </div>
+  <div class="modal-body">
+    <formas-dinamicas 
+        [forma]="agregarSociedadesFormGroup" 
+        [formularioDatos]="agregarSociedadesDatos"
+        (emitirEventoDeClic)="buscarEvento()"
+        >
+    </formas-dinamicas>
+  </div>
+  <div class="modal-footer d-flex justify-content-end">
+    <button type="button" class="btn btn-primary" (click)="aceptar()">
+        Aceptar
+    </button>
+    <button type="button" class="btn btn-default me-2" (click)="limpiarAgregarSociedadesFormulario()">
+        Limpiar
+    </button>
+    <button type="button" class="btn btn-danger" (click)="modalRef?.hide()">
+        Cancelar
+    </button>
+ </div>
+</ng-template>
+
+<ng-template #agregar>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Agregar</h4>
+  </div>
+  <div class="modal-body">
+    <formas-dinamicas 
+        [forma]="agregarFormGroup" 
+        [formularioDatos]="agregarDatos"
+        >
+    </formas-dinamicas>
+    <h5 class="mt-3 fw-bold">Instalaciones</h5>
+    <app-tabla-dinamica
+        [configuracionTabla]="configuracionInstalaciones"
+        [datos]="instalaciones"
+        [tipoSeleccionTabla]="checkbox">
+    </app-tabla-dinamica>
+  </div>
+  <div class="modal-footer d-flex justify-content-end">
+    <button type="button" class="btn btn-primary" (click)="aceptarAgregar()">
+        Aceptar
+    </button>
+    <button type="button" class="btn btn-default me-2" (click)="modalRef?.hide()">
+        Eliminar
+    </button>
+    <button type="button" class="btn btn-danger" (click)="modalRef?.hide()">
+        Cancelar
+    </button>
+ </div>
+</ng-template>
+
+<ng-template #mandatarios>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Agregar mandatarios del Agente Aduanal</h4>
+  </div>
+  <div class="modal-body">
+    <formas-dinamicas 
+        [forma]="mandatariosDelAgenteFormGroup" 
+        [formularioDatos]="mandatariosDelAgenteDatos"
+        (emitirEventoDeClic)="buscarMandatariosEvento()"
+        >
+    </formas-dinamicas>
+  </div>
+  <div class="modal-footer d-flex justify-content-end">
+    <button type="button" class="btn btn-primary" (click)="aceptarMandatarios()">
+        Aceptar
+    </button>
+    <button type="button" class="btn btn-default me-2" (click)="limpiarMandatariosFormulario()">
+        Limpiar
+    </button>
+    <button type="button" class="btn btn-danger" (click)="modalRef?.hide()">
+        Cancelar
+    </button>
+ </div>
+</ng-template>
+
+<ng-template #modificar>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Modificar</h4>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="forma">
+        <formas-dinamicas 
+            [forma]="modificarFormGroup" 
+            [formularioDatos]="modificarDatos"
+            >
+        </formas-dinamicas>
+    </form>
+  </div>
+  <div class="modal-footer d-flex justify-content-end">
+    <button type="button" class="btn btn-primary">
+        Aceptar
+    </button>
+    <button type="button" class="btn btn-danger" (click)="modalRef?.hide()">
+        Cancelar
+    </button>
+ </div>

@@ -1,0 +1,157 @@
+<div class="container">
+  <form [formGroup]="paisForm">
+    
+  <div class="row">
+    <ng-titulo titulo="País(es) procedencia"> </ng-titulo>
+
+    <div class="row mb-5">
+      <div class="col-md-4">
+        <app-catalogo-select
+          [catalogo]="elementosDeBloque"
+          [label]="'Bloque'"
+          formControlName="bloque"
+          [hiddenPrimerOption]="hiddenPrimerOption"
+          [disabledPrimerOption]="disabledPrimerOption"
+          [isDisabled]="esFormularioSoloLectura"
+          (change)="enCambioDeBloque($event); setValoresStore(paisForm,'bloque')"
+        ></app-catalogo-select>       
+      </div>
+      <div
+        class="col-md-4 d-flex justify-content-center align-items-center mt-5 mx-4"
+      >
+        <button type="button" class="btn-primary btn" name="todos países" [disabled]="esFormularioSoloLectura" (click)="seleccionarTodosPaises()">Todos los países</button>
+      </div>
+      <div class="col-md-4"></div>
+    </div>
+    <crosslist
+    [fechas]="selectRangoDias"
+    [showSearchInput1]="true"
+    [showSearchInput2]="true"
+    [botonField]="campoDeBotones"
+    [isDisabled]="esFormularioSoloLectura"
+    [showSearchPlaceholder]="false"
+    [fechasSeleccionadas]="fechasSeleccionadasDatos"
+    [searchInput1Label]="'País disponible:'"
+    [searchInput2Label]="'País seleccionado*:'"
+    (fechasSeleccionadasChange)="fechasSeleccionadasChange($event)"    
+    [markTouched]="paisForm.get('pais')?.errors?.['required'] && paisForm.get('pais')?.touched "
+    ></crosslist>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-md-8">
+      <div class="form-group">
+        <label for="descripcion" class="form-label"
+          >Uso(s) especÍfico(s) de la mercancÍa<span [ngClass]="{'asterisk': esInvalido('usoEspecifico')}">*</span>:</label
+        >
+        <textarea
+          class="form-control"
+          rows="3"
+          cols="80"
+          id="usoEspecifico"
+          formControlName="usoEspecifico"
+          (change)="setValoresStore(paisForm,'usoEspecifico')"
+          [ngClass]="{'textarea-error': esInvalido('usoEspecifico')}"
+        ></textarea>
+        <div *ngIf="esInvalido('usoEspecifico')" class="text-danger">
+          <small *ngIf="paisForm.controls['usoEspecifico'].errors?.['required']"
+            >Este campo es obligatorio</small
+          >
+          <small *ngIf="paisForm.controls['usoEspecifico'].errors?.['validarSinCaracterAnguloDerecho']">
+          Por favor, corrige la descripción/dirección
+        </small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-md-8">
+      <div class="form-group">
+        <label for="justificacionImportacionExportacion" class="form-label d-flex align-items-center">
+          Justificación y beneficio que se obtiene<span [ngClass]="{'asterisk': esInvalido('justificacionImportacionExportacion')}">*</span>:
+            <span class="ms-3"></span>
+            <a *ngIf="esAyuda" href="javascript:void(0)" (click)="abrirAyuda()" class="form-label ms-3" [ngClass]="{ 'ayuda-disabled': esFormularioSoloLectura }">Ayuda</a>
+        </label>
+        <textarea
+          class="form-control"
+          rows="3"
+          cols="80"
+          id="justificacionImportacionExportacion"
+          formControlName="justificacionImportacionExportacion"
+          (change)="setValoresStore(paisForm,'justificacionImportacionExportacion')"
+          [ngClass]="{'textarea-error': esInvalido('justificacionImportacionExportacion')}"
+        ></textarea>
+        <div *ngIf="esInvalido('justificacionImportacionExportacion')"  class="text-danger">
+          <small *ngIf="paisForm.controls['justificacionImportacionExportacion'].errors?.['required']"
+            >Este campo es obligatorio</small
+          >
+          <small *ngIf="paisForm.controls['justificacionImportacionExportacion'].errors?.['validarSinCaracterAnguloDerecho']">
+            Por favor, corrige la descripción/dirección
+        </small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <div class="row mt-4" *ngIf="esNumeroDePermiso">
+    <div class="col-md-8">
+      <div class="form-group">
+        <label for="numeroPermisoImportacion" class="form-label"
+          >Número de permiso de importación:</label
+        >
+        <input type="text"
+          class="form-control"
+          id="numeroPermisoImportacion"
+          formControlName="numeroPermisoImportacion"
+          (change)="setValoresStore(paisForm,'numeroPermisoImportacion')"
+        >
+        <div
+        *ngIf="
+          paisForm.controls['numeroPermisoImportacion'].invalid &&
+          paisForm.controls['numeroPermisoImportacion'].touched
+        "
+        class="text-danger"
+      >
+        <small *ngIf="paisForm.controls['numeroPermisoImportacion'].errors?.['required']"
+          >Este campo es obligatorio.</small
+        >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-md-8">
+      <div class="form-group">
+        <label for="Observaciones" class="form-label">Observaciones:</label>
+        <textarea
+          class="form-control"
+          rows="3"
+          cols="80"
+          id="Observaciones"
+          formControlName="observaciones"
+          (change)="setValoresStore(paisForm,'observaciones')"
+          [ngClass]="{'textarea-error': esInvalido('observaciones')}"
+        ></textarea>
+        <div
+        *ngIf="esInvalido('observaciones')"
+        class="text-danger"
+      >
+        <small *ngIf="paisForm.controls['observaciones'].errors?.['required']"
+          >Este campo es obligatorio.</small
+        >
+        <small *ngIf="paisForm.controls['observaciones'].hasError('maxlength')">
+               Por favor, no escribas más de 512 caracteres
+              </small>
+      </div>
+    </div>
+  </div>
+</div>
+  </form>
+</div>
+<lib-notificaciones
+  *ngIf="mostrarAyuda"
+  [notificacionInput]="notificacionAyuda"
+  (confirmacionModal)="mostrarAyuda = false">
+</lib-notificaciones>

@@ -1,0 +1,484 @@
+<form [formGroup]="aviosForm" class="w-100">
+  <div class="col-md-12 mb-3">
+    <ng-container formGroupName="adaceForm">
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label for="adace">ADACE:</label>
+          <input type="text" class="form-control" style="cursor:not-allowed" value="Occidente" formControlName="adace" [readonly]="true"/>
+        </div>
+      </div>
+      <ng-titulo titulo="Datos del periodo del aviso" />
+      <div class="row align-items-center">
+        <div class="col-md-4">
+          <label for="pais">Mes al que corresponde el aviso*:</label>
+        </div>
+        <div class="col-md-4">
+          <div>
+            <app-catalogo-select class="optionsPais" [catalogo]="optionsPais" [required]="true" id="pais" formControlName="pais" [isDisabled]="soloLectura" [ngClass]="isValid(adaceForm,'pais') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'pais', 'setPais')"></app-catalogo-select>
+          </div>
+        </div>
+      </div>
+      <div class="row align-items-center">
+        <div class="col-md-4">
+          <label for="anio">Año al que corresponde el aviso*:</label>
+        </div>
+        <div class="col-md-4">
+          <div>
+            <app-catalogo-select class="optionsAnio" [catalogo]="optionsAnio" [required]="true" id="anio" formControlName="anio" [isDisabled]="soloLectura" [ngClass]="isValid(adaceForm,'anio') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'anio', 'setAnio')"></app-catalogo-select>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container formGroupName="adaceForm">
+      <div class="row mt-5">
+        <div class="col-md-11">
+          <label>De conformidad con el artículo 8 del Decreto por el que se regula la importación definitiva de vehículos usados, ¿ Declara información para el periodo seleccionado?</label>
+            <app-input-radio 
+              [radioOptions]="radioConfirmidad" 
+              formControlName="confirmidad" 
+              [layout]="'horizontal'" 
+              (change)="setValoresStore(adaceForm, 'confirmidad', 'setConfirmidad');mostrarTipoDeCargaCampos()"
+            ></app-input-radio>
+        </div>
+      </div>
+    </ng-container>
+
+    @if(mostrarTipoDeCarga){
+    <ng-container formGroupName="adaceForm">
+      <ng-titulo titulo="Tipo de carga" />
+      <div class="row">
+        <div class="col-md-12">
+          <div class="col-md-6">
+            <app-input-radio [radioOptions]="radioTipoAviso" formControlName="tipoBusqueda" [layout]="'horizontal'" (change)="setValoresStore(adaceForm, 'tipoBusqueda', 'setTipoBusqueda');mostrarCampos()"></app-input-radio>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container formGroupName="adaceForm" *ngIf="datosDelAvisoVisible">
+      <ng-titulo titulo="Datos del aviso" />
+      <div class="row">
+        <div class="col-md-12">
+          <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX" [configuracionTabla]="tablaDeDatos.encabezadas" [datos]="tablaDeDatos.datos" (listaDeFilaSeleccionada)="filaSeleccionada($event)"></app-tabla-dinamica>
+          <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-primary ms-3" [disabled]="true" (click)="accionesBotones(botonAccionesTipos.ELIMINAR)" [disabled]="soloLectura"> Eliminar </button>
+            <button type="button" class="btn btn-primary ms-3" (click)="accionesBotones(botonAccionesTipos.MODIFICAR)" [disabled]="soloLectura"> Modificar </button>
+            <button type="button" class="btn btn-primary ms-3" [disabled]="false" (click)="datosDelAviso()" [disabled]="soloLectura"> Agregar </button>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    }
+    <ng-container *ngIf="datosCargaMasiva">
+      <app-carga-masiva></app-carga-masiva>
+    </ng-container>
+    <ng-container formGroupName="adaceForm" *ngIf="esPopupAbierto">
+      <div class="modal fade" id="datosAviso" tabindex="-1" #datosAviso aria-labelledby="datosAviso" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+          <div class="modal-content">
+            <div class="modal-body">
+              <ng-titulo titulo="Agregar aviso" />
+              <div class="row align-items-center">
+                <ng-titulo titulo="Tipo de operación" />
+                <div class="row">
+                  <div class="col-md-12 d-flex align-items-center">
+                    <div class="col-md-4"> Datos del tipo de registro*: </div>
+                    <div class="col-md-8">
+                      <app-input-radio [radioOptions]="radioOpcionsAviso" formControlName="tipoBusquedaAviso" [layout]="'horizontal'" (change)="setValoresStore(adaceForm, 'tipoBusquedaAviso', 'setTipoBusquedaAviso');mostrarCamposAviso()"></app-input-radio>
+                    </div>
+                  </div>
+                </div>
+                <br>
+                <br>
+                <ng-container *ngIf="datosFolioVUCEM">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="col-md-8">¿ Cuenta con el I D de transacción de V U C E M del Aviso Inicial de importación? </div>
+                      <div class="col-md-3">
+                        <app-input-radio [radioOptions]="radioOpcions" formControlName="folioTipo" [layout]="'horizontal'" (change)="setValoresStore(adaceForm, 'folioTipo', 'setFolioTipo');mostrarCamposAviso()"></app-input-radio>
+                      </div>
+                      @if (adaceForm.get('folioTipo')?.value === 'Si'){
+                        <div class="col-md-12 my-3">
+                          <label>Identificador de transacción de VUCEM correspondiente al aviso de importación previa relacionado:</label>
+                          <input type="text" class="form-control" id="identificadorTransaccionVucem" formControlName="identificadorTransaccionVucem" maxlength="25"
+                            (change)="setValoresStore(adaceForm, 'identificadorTransaccionVucem', 'setidentificadorTransaccionVucem')" />
+                        </div>
+                        <div class="col-md-4">
+                          <label>NIV o número de serie*:</label>
+                          <input type="text" class="form-control" id="nivNumeroSerie" formControlName="nivNumeroSerie" maxlength="17"
+                            [ngClass]="isValid(adaceForm,'nivNumeroSerie') ? 'required' : ''"
+                            (change)="setValoresStore(adaceForm, 'nivNumeroSerie', 'setnivNumeroSerie')" />
+                            @if (adaceForm.get('nivNumeroSerie')?.invalid && adaceForm.get('nivNumeroSerie')?.touched) {
+                            <div class="text-danger">
+                            @if (adaceForm.get('nivNumeroSerie')?.errors?.['required']) {
+                              <small>Este campo es obligatorio</small>
+                            }
+                        </div>
+                        }
+                        </div>
+                      }
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+              <ng-container *ngIf="datosDelVehiculo">
+                <ng-titulo titulo="Datos del vehículo" />
+                <div class="row">
+                  <div class="col-md-4 mb-3">
+                      <label>NIV o número de serie*:</label>
+                      <input type="text" class="form-control" formControlName="numeroNIV" [disabled]="soloLectura" [ngClass]="isValid(adaceForm,'numeroNIV') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'numeroNIV', 'setNumeroNIV')" />
+                      @if (adaceForm.get('numeroNIV')?.invalid && adaceForm.get('numeroNIV')?.touched) {
+                        <div class="text-danger">
+                          @if (adaceForm.get('numeroNIV')?.errors?.['required']) {
+                            <small>Este campo es obligatorio</small>
+                          }
+                          @if (adaceForm.get('numeroNIV')?.errors?.['maxlength']) {
+                            <small>Por favor, no escribas más de 17 caracteres</small>
+                          }
+                        </div>
+                      }
+                  </div>
+
+                  <div class="col-md-4 mb-3">
+                    <app-catalogo-select 
+                      [label]="'Año modelo'" 
+                      [catalogo]="anoModelo" 
+                      [required]="true" 
+                      formControlName="anoModelo" 
+                      [isDisabled]="soloLectura" 
+                      (change)="setValoresStore(adaceForm, 'anoModelo', 'setAnoModelo')"
+                    ></app-catalogo-select>
+                  </div>
+
+                  <div class="col-md-4 mb-3">
+                      <label>Marca*:</label>
+                      <input type="text" class="form-control" id="marca" formControlName="marca" [disabled]="soloLectura" [ngClass]="isValid(adaceForm,'marca') ? 'required' : ''" (change)=" setValoresStore(adaceForm, 'marca', 'setMarca')" />
+                      @if (adaceForm.get('marca')?.invalid && adaceForm.get('marca')?.touched) {
+                        <div class="text-danger">
+                          @if (adaceForm.get('marca')?.errors?.['required']) {
+                            <small>Este campo es obligatorio</small>
+                          }
+                          @if (adaceForm.get('marca')?.errors?.['maxlength']) {
+                            <small>Por favor, no escribas más de 250 caracteres</small>
+                          }
+                        </div>
+                      }
+                  </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                      <label>Modelo*:</label>
+                      <input type="text" class="form-control" formControlName="modelo" [disabled]="soloLectura" [ngClass]="isValid(adaceForm,'modelo') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'modelo', 'setModelo')" />
+                      @if (adaceForm.get('modelo')?.invalid && adaceForm.get('modelo')?.touched) {
+                        <div class="text-danger">
+                          @if (adaceForm.get('modelo')?.errors?.['required']) {
+                            <small>Este campo es obligatorio</small>
+                          }
+                          @if (adaceForm.get('modelo')?.errors?.['maxlength']) {
+                            <small>Por favor, no escribas más de 250 caracteres</small>
+                          }
+                        </div>
+                      }
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <label>Tipo/Variante/Versión*:</label>
+                      <input type="text" class="form-control" id="tipoVariante" formControlName="tipoVariante" [disabled]="soloLectura" [ngClass]="isValid(adaceForm,'tipoVariante') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'anoModelo','setTipoVariante')" />
+                      @if (adaceForm.get('tipoVariante')?.invalid && adaceForm.get('tipoVariante')?.touched) {
+                        <div class="text-danger">
+                          @if (adaceForm.get('tipoVariante')?.errors?.['required']) {
+                            <small>Este campo es obligatorio</small>
+                          }
+                          @if (adaceForm.get('tipoVariante')?.errors?.['maxlength']) {
+                            <small>Por favor, no escribas más de 250 caracteres</small>
+                          }
+                        </div>
+                      }
+                    </div>
+                    <div class="col-md-4 ">
+                      <app-catalogo-select class="optionCilindros" [label]="'No. de cilindros'" [catalogo]="optionCilindros" [required]="true" id="cilindros" formControlName="cilindros" [isDisabled]="soloLectura" [ngClass]="isValid(adaceForm,'cilindros') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'cilindros', 'setCilindros')"></app-catalogo-select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                      <app-catalogo-select class="optionCilindros" [label]="'No. de puertas'" [catalogo]="optionCilindros" [required]="true" id="cilindros" formControlName="puertas" [isDisabled]="soloLectura" [ngClass]="isValid(adaceForm,'puertas') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'puertas', 'setPuertas')"></app-catalogo-select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <app-catalogo-select class="optionCombustible" [label]="'Tipo de combustible'" [catalogo]="optionCombustible" [required]="true" id="combustible" formControlName="combustible" [isDisabled]="soloLectura" [ngClass]="isValid(adaceForm,'combustible') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'combustible', 'setCombustible')"></app-catalogo-select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <label>No. del título de propiedad*:</label>
+                      <input type="text" class="form-control" formControlName="propiedad" [disabled]="soloLectura" [ngClass]="isValid(adaceForm,'propiedad') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'propiedad', 'setPropiedad')" />
+                      @if (adaceForm.get('propiedad')?.invalid && adaceForm.get('propiedad')?.touched) {
+                        <div class="text-danger">
+                          @if (adaceForm.get('propiedad')?.errors?.['required']) {
+                            <small>Este campo es obligatorio</small>
+                          }
+                          @if (adaceForm.get('propiedad')?.errors?.['maxlength']) {
+                            <small>Por favor, no escribas más de 250 caracteres</small>
+                          }
+                        </div>
+                      }
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                      <label>Nombre en el título de propiedad extranjero o en su caso, nombre de la persona a la que se haya concedido la propiedad*:</label>
+                      <input type="text" class="form-control" formControlName="nombreTitulo" [disabled]="soloLectura" [ngClass]="isValid(adaceForm,'nombreTitulo') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'nombreTitulo', 'setNombreTitulo')" />
+                      @if (adaceForm.get('nombreTitulo')?.invalid && adaceForm.get('nombreTitulo')?.touched) {
+                        <div class="text-danger">
+                          @if (adaceForm.get('nombreTitulo')?.errors?.['required']) {
+                            <small>Este campo es obligatorio</small>
+                          }
+                          @if (adaceForm.get('nombreTitulo')?.errors?.['maxlength']) {
+                            <small>Por favor, no escribas más de 250 caracteres</small>
+                          }
+                        </div>
+                      }
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <app-catalogo-select class="paisIssued" [label]="'País que emitió el título de propiedad'" [catalogo]="paisIssued" [required]="true" id="paisEmitio" formControlName="paisEmitio" [isDisabled]="soloLectura" [ngClass]="isValid(adaceForm,'paisEmitio') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'paisEmitio', 'setPaisEmitio')"></app-catalogo-select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label>Estado o provincia de emisión del título de propiedad*:</label>
+                      <input type="text" class="form-control" formControlName="provinciaEmision" [disabled]="soloLectura" [ngClass]="isValid(adaceForm,'provinciaEmision') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'provinciaEmision', 'setProvinciaEmision')" />
+                      @if (adaceForm.get('provinciaEmision')?.invalid && adaceForm.get('provinciaEmision')?.touched) {
+                        <div class="text-danger">
+                          @if (adaceForm.get('provinciaEmision')?.errors?.['required']) {
+                            <small>Este campo es obligatorio</small>
+                          }
+                          @if (adaceForm.get('provinciaEmision')?.errors?.['maxlength']) {
+                            <small>Por favor, no escribas más de 250 caracteres</small>
+                          }
+                        </div>
+                      }
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label>No. de placas de circulación en el país de procedencia:</label>
+                      <input type="text" class="form-control" formControlName="procedencia" [disabled]="soloLectura" (change)="setValoresStore(adaceForm, 'procedencia', 'setProcedencia')" />
+                      @if (adaceForm.get('procedencia')?.invalid && adaceForm.get('procedencia')?.touched) {
+                        <div class="text-danger">
+                          @if (adaceForm.get('procedencia')?.errors?.['maxlength']) {
+                            <small>Por favor, no escribas más de 250 caracteres</small>
+                          }
+                        </div>
+                      }
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <app-catalogo-select class="paisIssued" [label]="'Forma de adquisición del vehículo importado'" [catalogo]="paisIssued" [required]="true" id="vehiculoImportado" formControlName="paisEmitio" [isDisabled]="soloLectura" [ngClass]="isValid(adaceForm,'vehiculoImportado') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'vehiculoImportado', 'setVehiculoImportado')"></app-catalogo-select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label>No. de documento de exportación*:</label>
+                      <input type="text" class="form-control" formControlName="exportacion" [disabled]="soloLectura" [ngClass]="isValid(adaceForm,'exportacion') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'exportacion', 'setExportacion')" />
+                      @if (adaceForm.get('exportacion')?.invalid && adaceForm.get('exportacion')?.touched) {
+                        <div class="text-danger">
+                          @if (adaceForm.get('exportacion')?.errors?.['required']) {
+                            <small>Este campo es obligatorio</small>
+                          }
+                          @if (adaceForm.get('exportacion')?.errors?.['maxlength']) {
+                            <small>Por favor, no escribas más de 250 caracteres</small>
+                          }
+                        </div>
+                      }
+                    </div>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="datosDelImportacion">
+                <ng-titulo titulo="Datos de la importación" />
+                <div class="row my-3">
+                    <div class="col-md-4">
+                      <app-catalogo-select class="paisIssued" [label]="'Aduana de importación'" [catalogo]="optionAduana" [required]="true" id="aduanaImportacion" formControlName="aduanaImportacion" [isDisabled]="soloLectura" [ngClass]="isValid(adaceForm,'aduanaImportacion') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'aduanaImportacion', 'setAduanaImportacion')"></app-catalogo-select>
+                    </div>
+                    <div class="col-md-4 ">
+                      <label>Patente de importación*:</label>
+                      <input type="text" class="form-control" formControlName="patenteImportacion" [disabled]="soloLectura" [ngClass]="isValid(adaceForm,'patenteImportacion') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'patenteImportacion', 'setPatenteImportacion')" />
+                      @if (adaceForm.get('patenteImportacion')?.invalid && adaceForm.get('patenteImportacion')?.touched) {
+                        <div class="text-danger">
+                          @if (adaceForm.get('patenteImportacion')?.errors?.['required']) {
+                            <small>Este campo es obligatorio</small>
+                          }
+                          @if (adaceForm.get('patenteImportacion')?.errors?.['maxlength']) {
+                            <small>Por favor, no escribas más de 4 caracteres</small>
+                          }
+                        </div>
+                      }
+                    </div>
+                    <div class="col-md-4 ">
+                      <label>Pedimento de importación*:</label>
+                      <input type="text" class="form-control" formControlName="pedimentoImportacion" [disabled]="soloLectura" [ngClass]="isValid(adaceForm,'pedimentoImportacion') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'pedimentoImportacion', 'setPedimentoImportacion')" />
+                      @if (adaceForm.get('pedimentoImportacion')?.invalid && adaceForm.get('pedimentoImportacion')?.touched) {
+                        <div class="text-danger">
+                          @if (adaceForm.get('pedimentoImportacion')?.errors?.['required']) {
+                            <small>Este campo es obligatorio</small>
+                          }
+                          @if (adaceForm.get('pedimentoImportacion')?.errors?.['maxlength']) {
+                            <small>Por favor, no escribas más de 7 caracteres</small>
+                          }
+                        </div>
+                      }
+                    </div>
+                </div>
+                <div class="row my-3">
+                    <div class="col-md-6 ">
+                      <label>Kilometraje a la fecha de la importación*:</label>
+                      <input type="text" class="form-control" formControlName="kilometraje" [disabled]="soloLectura" [ngClass]="isValid(adaceForm,'kilometraje') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'kilometraje', 'setKilometraje')" (input)="adaceForm.get('kilometraje')?.markAsTouched(); adaceForm.get('kilometraje')?.updateValueAndValidity()" />
+                      @if (adaceForm.get('kilometraje')?.invalid && adaceForm.get('kilometraje')?.touched) {
+                        <div class="text-danger">
+                          @if (adaceForm.get('kilometraje')?.errors?.['required']) {
+                            <small>Este campo es obligatorio</small>
+                          } @else if (adaceForm.get('kilometraje')?.errors?.['pattern']) {
+                            <small>Por favor, escribe un número entero válido</small>
+                          } @else if (adaceForm.get('kilometraje')?.errors?.['maxlength']) {
+                            <small>Por favor, no escribas más de 9 caracteres</small>
+                          }
+                        </div>
+                      }
+                    </div>
+                    <div class="col-md-6 ">
+                      <label>Valor en la aduana*:</label>
+                      <input type="text" class="form-control" formControlName="valorAduana" [disabled]="soloLectura" [ngClass]="isValid(adaceForm,'valorAduana') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'valorAduana', 'setValorAduana')" />
+                      @if (adaceForm.get('valorAduana')?.invalid && adaceForm.get('valorAduana')?.touched) {
+                        <div class="text-danger">
+                          @if (adaceForm.get('valorAduana')?.errors?.['required']) {
+                            <small>Este campo es obligatorio</small>
+                          } @else if (adaceForm.get('valorAduana')?.errors?.['pattern']) {
+                            <small>Por favor, escribe un número válido</small>
+                          } @else if (adaceForm.get('valorAduana')?.errors?.['maxlength']) {
+                            <small>Por favor, no escribas más de 11 caracteres</small>
+                          } 
+                        </div>
+                      }
+                    </div>
+                </div>
+                <div class="row my-3">
+                    <div class="col-md-4 ">
+                      <label>Monto de IGI pagado*:</label>
+                      <input type="text" class="form-control" formControlName="montoIGI" [disabled]="soloLectura" [ngClass]="isValid(adaceForm,'montoIGI') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'montoIGI', 'setMontoIGI')" />
+                      @if (adaceForm.get('montoIGI')?.invalid && adaceForm.get('montoIGI')?.touched) {
+                        <div class="text-danger">
+                          @if (adaceForm.get('montoIGI')?.errors?.['required']) {
+                            <small>Este campo es obligatorio</small>
+                          } @else if (adaceForm.get('montoIGI')?.errors?.['pattern']) {
+                            <small>Por favor, escribe un número válido</small>
+                          } @else if (adaceForm.get('montoIGI')?.errors?.['maxlength']) {
+                            <small>Por favor, no escribas más de 9 caracteres</small>
+                          } 
+                        </div>
+                      }
+                    </div>
+                    <div class="col-md-4">
+                      <app-catalogo-select class="paisIssued" [label]="'Forma de pago del IGI'" [catalogo]="optionAduana" [required]="true" id="formaPagoIGI" formControlName="formaPagoIGI" [isDisabled]="soloLectura" [ngClass]="isValid(adaceForm,'formaPagoIGI') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'formaPagoIGI', 'setFormaPagoIGI')"></app-catalogo-select>
+                    </div>
+                    <div class="col-md-4 ">
+                      <label>Monto de DTA pagado*:</label>
+                      <input type="text" class="form-control" formControlName="montoDTA" [disabled]="soloLectura" [ngClass]="isValid(adaceForm,'montoDTA') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'montoDTA', 'setMontoDTA')" />
+                      @if (adaceForm.get('montoDTA')?.invalid && adaceForm.get('montoDTA')?.touched) {
+                        <div class="text-danger">
+                          @if (adaceForm.get('montoDTA')?.errors?.['required']) {
+                            <small>Este campo es obligatorio</small>
+                          } @else if (adaceForm.get('montoDTA')?.errors?.['pattern']) {
+                            <small>Por favor, escribe un número válido</small>
+                          } @else if (adaceForm.get('montoDTA')?.errors?.['maxlength']) {
+                            <small>Por favor, no escribas más de 9 caracteres</small>
+                          }
+                        </div>
+                      }
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 ">
+                      <label>Monto de IVA pagado*:</label>
+                      <input type="text" class="form-control" formControlName="montoIVA" [disabled]="soloLectura" [ngClass]="isValid(adaceForm,'montoIVA') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'montoIVA', 'setMontoIVA')" />
+                      @if (adaceForm.get('montoIVA')?.invalid && adaceForm.get('montoIVA')?.touched) {
+                        <div class="text-danger">
+                          @if (adaceForm.get('montoIVA')?.errors?.['required']) {
+                            <small>Este campo es obligatorio</small>
+                          } @else if (adaceForm.get('montoIVA')?.errors?.['pattern']) {
+                            <small>Por favor, escribe un número válido</small>
+                          } @else if (adaceForm.get('montoIVA')?.errors?.['maxlength']) {
+                            <small>Por favor, no escribas más de 9 caracteres</small>
+                          } 
+                        </div>
+                        }
+                    </div>
+                    <div class="col-md-4 ">
+                      <label>Valor en dólares*:</label>
+                      <input type="text" class="form-control" formControlName="valorDolares" [disabled]="soloLectura" [ngClass]="isValid(adaceForm,'valorDolares') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'valorDolares', 'setValorDolares')" />
+                      @if (adaceForm.get('valorDolares')?.invalid && adaceForm.get('valorDolares')?.touched) {
+                        <div class="text-danger">
+                          @if (adaceForm.get('valorDolares')?.errors?.['required']) {
+                            <small>Este campo es obligatorio</small>
+                          } @else if (adaceForm.get('valorDolares')?.errors?.['pattern']) {
+                            <small>Por favor, escribe un número válido</small>
+                          } @else if (adaceForm.get('valorDolares')?.errors?.['maxlength']) {
+                            <small>Por favor, no escribas más de 9 caracteres</small>
+                          } 
+                        </div>
+                        }
+                    </div>
+                </div>
+                <div class="row my-3">
+                    <div class="col-md-12 ">
+                      <label>Folio del CFDI por el servicio de importación:</label>
+                      <input type="text" class="form-control" formControlName="folioCFDI" [disabled]="soloLectura" [ngClass]="isValid(adaceForm,'folioCFDI') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'folioCFDI', 'setFolioCFDI')" />
+                      @if (adaceForm.get('folioCFDI')?.invalid && adaceForm.get('folioCFDI')?.touched) {
+                        <div class="text-danger">
+                          @if (adaceForm.get('folioCFDI')?.errors?.['maxlength']) {
+                            <small>Por favor, no escribas más de 32 caracteres</small>
+                          }
+                        </div>
+                      }
+                    </div>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="datosDelVenta">
+                <ng-titulo titulo="Datos de la venta en territorio nacional" />
+                <div class="row">
+                    <div class="col-md-6 ">
+                      <label>Folio del CFDI por la venta en territorio nacional*:</label>
+                      <input type="text" class="form-control" formControlName="folioVenta" [disabled]="soloLectura" [ngClass]="isValid(adaceForm,'folioVenta') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'folioVenta', 'setFolioVenta')" />
+                      @if (adaceForm.get('folioVenta')?.invalid && adaceForm.get('folioVenta')?.touched) {
+                        <div class="text-danger">
+                          @if (adaceForm.get('folioVenta')?.errors?.['required']) {
+                            <small>Este campo es obligatorio</small>
+                          }
+                          @if (adaceForm.get('folioVenta')?.errors?.['maxlength']) {
+                            <small>Por favor, no escribas más de 32 caracteres</small>
+                          }
+                        </div>
+                      }
+                    </div>
+                    <div class="col-md-6 ">
+                      <label>Valor de venta en territorio nacional sin IVA*:</label>
+                      <input type="text" class="form-control" formControlName="valorVenta" [disabled]="soloLectura" [ngClass]="isValid(adaceForm,'valorVenta') ? 'required' : ''" (change)="setValoresStore(adaceForm, 'valorVenta', 'setValorVenta')" />
+                      @if (adaceForm.get('valorVenta')?.invalid && adaceForm.get('valorVenta')?.touched) {
+                        <div class="text-danger">
+                          @if (adaceForm.get('valorVenta')?.errors?.['required']) {
+                            <small>Este campo es obligatorio</small>
+                          }
+                          @if (adaceForm.get('valorVenta')?.errors?.['maxlength']) {
+                            <small>Por favor, no escribas más de 13 caracteres</small>
+                          }
+                        </div>
+                      }
+                    </div>
+                </div>
+              </ng-container>
+              <div class="mt-5 d-flex justify-content-end my-5">
+                <button type="button" class="btn btn-danger mx-2" data-bs-dismiss="modal" #closeDomicilio> Cancelar </button>
+                <button type="submit" class="btn btn-primary" (click)="agregarDomicilio()"> Guardar </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> @if (nuevaNotificacion) { <section>
+        <lib-notificaciones [notificacionInput]="nuevaNotificacion"></lib-notificaciones>
+      </section> }
+    </ng-container>
+  </div>
+</form>

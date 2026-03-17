@@ -1,0 +1,267 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 mb-4">
+      <ng-titulo [titulo]="'Aviso de fusión o escisión'"></ng-titulo>
+    </div>
+  </div>
+  <form [formGroup]="formulario" class="form-group">
+    <div class="row">
+      <div class="col-12">
+        <div class="form-group">
+          <app-input-radio [isBold]="true" [radioOptions]="radioOptions" [isRequired]="true" [layout]="'vertical'"
+            [gap]="'50px'" formControlName="capacidadAlmacenamiento"
+            (valueChange)="ocultarEscicion($event)"></app-input-radio>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12 ms-5">
+        <div class="form-group">
+          <app-input-radio [isBold]="true"  [radioOptions]="fusionradioOptions" [isRequired]="true"
+            [layout]="'horizontal'" [gap]="'100px'" formControlName="numeroTotalCarros"
+            (valueChange)="mostrarFusionOEscision($event)"></app-input-radio>
+        </div>
+      </div>
+    </div>
+    @if(divCompletoVisible){
+
+    <div class="row">
+      <div class="col-12">
+        <ng-titulo [titulo]="fusionOescisionTitulo"></ng-titulo>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="form-group">
+          <label for="TipoDomicilio" class="form-label">Cuenta con registro en el Esquema Integral de
+            Certificación</label>
+          <app-input-radio [isBold]="true" [radioOptions]="cantidadBienesOption" [isRequired]="true"
+            [layout]="'horizontal'" [gap]="'100px'" formControlName="cantidadBienes"
+            (valueChange)="mostrarCertificacionFusionada($event)"></app-input-radio>
+        </div>
+      </div>
+    </div>
+    <ng-container formGroupName="personaFusionEscisionDTO">
+      @if(!isSelectFusionEscision){
+      <div class="row">
+        <div class="col-6">
+          <div class="form-group">
+            <label for="idRfcBusqueda" class="form-label">RFC*:</label>
+            <input type="text" id="idRfcBusqueda" formControlName="registroFederalDeContribuyentes" class="form-control" />
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+            <label class="form-label d-block">&nbsp;</label>
+            <button type="button" class="btn btn-primary" (click)="cargarDatosPersonaFusion()"
+              id="btnAceptarDomicilios">
+              Aceptar
+            </button>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+            <label for="denominacionORazonSocial" class="form-label">Denominación o razón social de la sociedad*:</label>
+            <input type="text" id="denominacionORazonSocial" formControlName="denominacionORazonSocial" class="form-control"
+              readonly />
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+            <label for="folioVucemUltimaCertificacion" class="form-label">Folio VUCEM*:</label>
+            <input type="text" id="folioVucemUltimaCertificacion" formControlName="folioVucemUltimaCertificacion" class="form-control"
+              readonly />
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+            <label for="idFechaInicioVigenciaFusionado" class="form-label">Fecha inicio de vigencia*:</label>
+            <input class="form-control" type="date" name="fechaCaducidad" id="idFechaInicioVigenciaFusionado"
+              formControlName="fechaInicioVigenciaUltimaCertificacion" />
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+            <label for="idFechaFinVigenciaFusionado" class="form-label">Fecha fin de vigencia*:</label>
+            <input class="form-control" type="date" name="idFechaFinVigenciaFusionado" id="idFechaFinVigenciaFusionado"
+              formControlName="fechaFinVigenciaUltimaCertificacion" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <div class="form-group mt-4 pt-3">
+              <input-fecha class="font-weight-titulo text-title" [isDisabled]="esFormularioSoloLectura"
+                [datos]="fechaInicioInput"  (valorCambiado)="cambioFechaInicio($event)"></input-fecha>
+
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group">
+              <label for="idFolioFusion" class="form-label text-left">Numero de folio del acuse de movimientos de
+                actualizacion de
+                situacion fiscal al RFC*:</label>
+              <input type="text" id="idFolioFusion" formControlName="descripcionClobGenerica2" class="form-control"
+                [disabled]="esFormularioSoloLectura" />
+            </div>
+          </div>
+        </div>
+      </div>
+      }
+      @if(isSelectFusionEscision){
+      <div class="row">
+        <div class="col-6">
+          <div class="form-group mt-4 pt-3">
+            <input-fecha class="font-weight-titulo text-title" [isDisabled]="esFormularioSoloLectura"
+              [datos]="fechaInicioInput" (valorCambiado)="cambioFechaInicio($event)"></input-fecha>
+
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+            <label for="idFolioFusion" class="form-label text-left">Numero de folio del acuse de movimientos de
+              actualizacion de
+              situacion fiscal al RFC*:</label>
+            <input type="text" id="idFolioFusion" formControlName="descripcionClobGenerica2" class="form-control"
+              [disabled]="esFormularioSoloLectura" (input)="changeDescripcionClobGenerica2()" />
+          </div>
+        </div>
+      </div>
+      }
+    </ng-container>
+    <div class="col-12">
+      <ng-titulo [titulo]="subFusionOescisionTitulo"></ng-titulo>
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-md-12 table table-responsive" id="gridFusionEscision">
+        <app-tabla-dinamica [datos]="fusionEscisionHeader" [tipoSeleccionTabla]="seleccionTabla"
+          [configuracionTabla]="configuracionfusionEscisionHeader"
+          (filaSeleccionada)="seleccionDeFilas($event)"
+          [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"></app-tabla-dinamica>
+        <div class="d-flex justify-content-center">
+          @if (fusionEscisionHeader.length > 0) {
+            <app-table-pagination [showCurrentPage]="true">
+            </app-table-pagination>
+          }
+        </div>
+        <div class="d-flex justify-content-end mt-5">
+          <button type="button" class="btn btn-default me-md-3" id="btnModificarPersona" (click)="modificarSeleccionada(seleccionadasFila!)">
+            Modificar
+          </button>
+          <button type="button" class="btn btn-danger me-md-3" id="btnEliminarPersona" (click)="eliminarSeleccionada(seleccionadasFila?.id!)">
+            Eliminar
+          </button>
+          <button type="button" class="btn btn-primary me-md-3" id="btnAgregarPersona"
+            (click)="abrirModalFusionEscision()">
+            Agregar
+          </button>
+        </div>
+      </div>
+    </div>
+    }
+  </form>
+</div>
+<div class="modal fade" tabindex="-1" #ModificarFusionEscisionModel>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"></h5>
+      </div>
+      <div class="modal-body p-4">
+        <form [formGroup]="modelFormulario" class="form-group">
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+                <label for="TipoDomicilio" class="form-label">Cuenta con registro en el Esquema Integral de
+                  Certificación</label>
+                <app-input-radio [radioOptions]="cantidadBienesOption" [isRequired]="true" [layout]="'horizontal'"
+                  [gap]="'100px'" formControlName="mCantidadBienes"
+                  (valueChange)="mostrarCertificacionFusionada($event,'isModel')"></app-input-radio>
+              </div>
+            </div>
+          </div>
+          <ng-container [formGroup]="personaFusionEscisionModal">
+            @if(sinCertificacionPrincipalVisible){
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="idRfcBusqueda" class="form-label">RFC*:</label>
+                  <input type="text" id="idRfcBusqueda" formControlName="registroFederalDeContribuyentes" class="form-control" />
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label class="form-label d-block">&nbsp;</label>
+                  <button type="button" class="btn btn-primary" (click)="searchRFC()"
+                    id="btnAceptarDomicilios">
+                    Aceptar
+                  </button>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="denominacionORazonSocial" class="form-label">Denominación o razón social de la
+                    sociedad*:</label>
+                  <input type="text" id="denominacionORazonSocial" formControlName="denominacionORazonSocial" class="form-control"
+                     />
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="folioVucemUltimaCertificacion" class="form-label">Folio VUCEM*:</label>
+                  <input type="text" id="folioVucemUltimaCertificacion" formControlName="folioVucemUltimaCertificacion" class="form-control"
+                     />
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="fechaInicioVigenciaUltimaCertificacion" class="form-label">Fecha inicio de vigencia*:</label>
+                  <input class="form-control" type="date" name="fechaCaducidad" id="fechaInicioVigenciaUltimaCertificacion"
+                    formControlName="fechaInicioVigenciaUltimaCertificacion" />
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="fechaFinVigenciaUltimaCertificacion" class="form-label">Fecha fin de vigencia*:</label>
+                  <input class="form-control" type="date" name="idFechaFinVigenciaFusionado"
+                    id="fechaFinVigenciaUltimaCertificacion" formControlName="fechaFinVigenciaUltimaCertificacion" />
+                </div>
+              </div>
+            </div>
+            }
+          </ng-container>
+
+          <div class="button-group d-flex justify-content-center mt-5 me-md-3">
+            <button type="button" class="btn btn-default me-md-3" (click)="closeFusionEscisionModal()">
+              Cancelar
+            </button>
+            <button type="button" class="btn btn-primary"
+              (click)="nuevaFusionEscisionModal(personaFusionEscisionModal)">
+              Aceptar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="text-right">
+         <div class="pull-left text-muted text-vertical-align-button" id="lblCamposObligatorios">
+              {{ mensajeCamposObligatorios }}
+            </div>
+        <button type="button" class="btn btn-danger me-3">
+            Cancelar
+        </button>
+         <button type="submit"  (click)="continuar()" class="btn btn-primary">
+          Continuar
+        </button>
+    </div>
+    
+@if (correctamenteNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="correctamenteNotificacion">
+  </lib-notificaciones>
+</section>
+}

@@ -1,0 +1,205 @@
+<div class="container">
+  <ng-titulo titulo="Terceros" />
+  <form [formGroup]="formularioDestinatario">
+    <label class="row mt-5">Destinatarios*:</label>
+    <div class="row mt-4">
+      <app-tabla-dinamica 
+        [configuracionTabla]="configuracionColumnas" 
+        [datos]="solicitudState.destinatarios"
+        [tipoSeleccionTabla]="tipoSeleccionTabla"
+        [disableSeleccionTablaCheckBox]="soloLectura"
+        (listaDeFilaSeleccionada)="manejarFilaSeleccionada($event)">
+      </app-tabla-dinamica>
+    </div>
+
+    @if(solicitudState.destinatarios.length > 0){
+    <div class="row" style="padding-bottom: 20px; text-align: right">
+      <div class="mt-4">
+        <button type="button" class="btn btn-danger me-2"
+          (click)="eliminarSeleccionados()">
+          Eliminar
+        </button>
+        <button type="button" class="btn btn-primary me-2" (click)="editDataModal(modalAgregarMercancias)">
+          Modificar
+        </button>
+      </div>
+    </div>
+    }
+    @if(solicitudState.destinatarios.length === 0) {
+    <div class="row justify-content-end" style="padding-bottom: 20px; text-align: right">
+      <div class="col-md-6 mt-4">
+        <button type="button" class="btn btn-primary" 
+           (click)="abrirModal(modalAgregarMercancias)">Agregar</button>
+      </div>
+    </div>
+    }
+    <div class="modal" tabindex="-1" role="dialog" [ngClass]="{ show: popupAbierto }"
+      [ngStyle]="{ display: popupAbierto ? 'block' : 'none' }">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content" style="width: fit-content; margin-left: 115px">
+          <div style="background-color: black; height: 55px"></div>
+          <div class="modal-body">
+            <p>No se pueden modificar los datos agregados por el sistema</p>
+          </div>
+          <div class="modal-footer" style="justify-content: center">
+            <button type="button" class="btn btn-primary">
+              Aceptar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-backdrop fade show" *ngIf="popupAbierto"></div>
+  </form>
+</div>
+
+<ng-template #modalAgregarMercancias>
+  <div class="modal-body">
+    <form [formGroup]="agregarMercanciasForm">
+          <div class="row ">
+            <div class="col-md-12">
+              <ng-titulo titulo="Datos generales original"></ng-titulo>
+            </div>
+          </div>
+          <div class="row ">
+            <div class="col-md-6">
+              <label class="form-label" for="nacionalidad">Nacionalidad:</label>
+              <div class="">
+                <app-input-radio [description]="metaInfo.nacionalidad" [showDescription]="true"
+                  [radioOptions]="nacionalidad" id="modoCantidad" [layout]="'horizontal'"
+                  formControlName="nacionalidad" [isRequired]="true">
+                </app-input-radio>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label for="tipoPersona">Tipo de persona*:</label>
+              <app-input-radio
+                [radioOptions]="tipoPersona"
+                id="modoCantidad"
+                [layout]="'horizontal'"
+                formControlName="tipoPersona" 
+                [isRequired]="true" 
+                (valueChange)="onTipoPersonaChange($event)">
+              </app-input-radio>
+
+              <div *ngIf="isInvalid('tipoPersona')" class="mensaje-error">
+                Este campo es obligatorio.
+              </div>
+            </div>
+          </div>
+
+          @if(agregarMercanciasForm.get('tipoPersona')?.value === 'moral'){
+          <div class="row mt-4">
+            <div class="col-md-12">
+              <label for="razonSocial">Denominación o Razón Social*:</label>
+              <input type="text" formControlName="razonSocial" id="razonSocial" maxlength="250"
+                class="form-control" />
+
+              <div *ngIf="isInvalid('razonSocial')" class="mensaje-error">
+                Este campo es obligatorio.
+              </div>
+            </div>
+          </div>
+          }
+
+          @if(agregarMercanciasForm.get('tipoPersona')?.value === 'fisica'){
+          <div class="mt-4">
+            <div class="row">
+              <div class="col-md-4">
+                <label for="nombre">Nombre*:</label>
+                <input type="text" formControlName="nombre" id="nombre" maxlength="200" class="form-control" />
+                <div *ngIf="isInvalid('nombre')" class="mensaje-error">
+                  Este campo es obligatorio.
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label for="apellidoPaterno">Apellido Paterno*:</label>
+                <input type="text" formControlName="apellidoPaterno" id="apellidoPaterno" maxlength="200"
+                  class="form-control" />
+                <div *ngIf="isInvalid('apellidoPaterno')" class="mensaje-error">
+                  Este campo es obligatorio.
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label for="apellidoMaterno">Apellido Materno:</label>
+                <input type="text" formControlName="apellidoMaterno" id="apellidoMaterno" maxlength="200"
+                  class="form-control" />
+              </div>
+            </div>
+          </div>
+          }
+
+          <div class="row my-4">
+            <div class="col-md-4">
+              <label for="codigoPostal">Código postal o equivalente*:</label>
+              <input type="text" formControlName="codigoPostal" maxlength="15" id="codigoPostal"
+                class="form-control" />
+              @if (agregarMercanciasForm.get('codigoPostal')?.invalid && agregarMercanciasForm.get('codigoPostal')?.touched) {
+                <div class="text-danger">
+                  @if (agregarMercanciasForm.get('codigoPostal')?.errors?.['required']) {
+                    <small>Este campo es obligatorio.</small>
+                  }
+                  @if (agregarMercanciasForm.get('codigoPostal')?.errors?.['maxlength']) {
+                  <small>Por favor, no escribas más de 12 caracteres</small>
+                  }
+                </div>
+                }
+            </div>
+
+            <div class="col-md-4">
+              <app-catalogo-select 
+                [catalogo]="paisesDatos" 
+                formControlName="pais" 
+                [label]="'País'" 
+                [required]="true"
+                [markTouched]="agregarMercanciasForm.get('pais')?.touched??false"
+                [isDisabled]="soloLectura">
+              </app-catalogo-select>
+            </div>
+            
+            <div class="col-md-4">
+              <label for="ciudad">Ciudad*:</label>
+              <input type="text" maxlength="120" formControlName="ciudad" id="ciudad" class="form-control" />
+              <div *ngIf="isInvalid('ciudad')" class="mensaje-error">
+                Este campo es obligatorio.
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <label for="domicilio">Domicilio*:</label>
+              <textarea formControlName="domicilio" id="domicilio" class="form-control"></textarea>
+              @if (agregarMercanciasForm.get('domicilio')?.invalid && agregarMercanciasForm.get('domicilio')?.touched) {
+                <div class="text-danger">
+                  @if (agregarMercanciasForm.get('domicilio')?.errors?.['required']) {
+                    <small>Este campo es obligatorio.</small>
+                  }
+                  @if (agregarMercanciasForm.get('domicilio')?.errors?.['maxlength']) {
+                  <small>Por favor, no escribas más de 1000 caracteres</small>
+                  }
+                </div>
+                }
+            </div>
+          </div>
+    </form>
+  </div>
+  <div class="modal-footer mt-5">
+    <div class="col-md-12 d-flex justify-content-end">
+      <button type="button" class="btn btn-danger ms-3" 
+        (click)="cerrarModal()">
+        Cancelar
+      </button>
+      <button type="button" class="btn btn-primary ms-3" 
+        (click)="guardarDestinatario()">
+        Agregar
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+  @if(moduloEmergente){
+    <lib-notificaciones
+      [notificacionInput]="nuevaNotificacion"
+      (confirmacionModal)="eliminarPedimento($event)"
+    ></lib-notificaciones>
+  }

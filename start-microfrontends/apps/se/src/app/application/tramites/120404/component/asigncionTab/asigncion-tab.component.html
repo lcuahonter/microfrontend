@@ -1,0 +1,67 @@
+<div class="container form-container">
+    <form [formGroup]="asignacionForm" class="mt-5">
+        <ng-titulo titulo="Descripción del cupo" />
+        <div class="row mb-3">
+            <div class="col">
+                <div class="form-group">
+                <label for="estimado">Estimado contribuyente, debido a que usted cuenta con una autorización previa para
+                    este trámite, debe seleccionar la modalidad del trámite a requerir*:</label>
+                <app-input-radio [radioOptions]="asignacionRadio" [isRequired]="true" [selectedValue]="selectedValue"
+                    [layout]="'vertical'" formControlName="asignacionRadio"
+                    (change)="setValoresStore(asignacionForm,'asignacionRadio')"></app-input-radio>
+                </div>
+            </div>
+        </div>
+          @if (asignacionForm.get('asignacionRadio')?.touched &&
+      asignacionForm.get('asignacionRadio')?.errors?.['required']) {
+      <div class="col-md-12">
+        <div class="mensaje-error mt-2">
+          Este campo es obligatorio.
+        </div>
+      </div>
+      }
+        <ng-titulo titulo="Número de oficio de asignación" />
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <app-catalogo-select [catalogo]="solicitanteList" [required]="true" name="asignacionSolitud"
+                        [label]="'Año del oficio de asignación'" formControlName="asignacionsolitud"
+                        (change)="setValoresStore(asignacionForm,'asignacionsolitud')"
+                        [isDisabled]="esFormularioSoloLectura"
+                        [markTouched]="!!(asignacionForm.get('asignacionsolitud')?.invalid && asignacionForm.get('asignacionsolitud')?.touched)">
+                    </app-catalogo-select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group custom-clasifi-regimen-catalogo">
+                    <label for="clasificacionRegimen">Número de oficio de asignación*:</label>
+                    <input type="text" class="form-control" formControlName="numTramite" id="numTramite"  maxlength="30"
+                        [class.is-invalid]="isInvalid('numTramite')"
+                        (change)="setValoresStore(asignacionForm,'numTramite')">
+                </div>
+    @if(asignacionForm.controls['numTramite'].invalid && asignacionForm.controls['numTramite'].touched) {
+    <div class="d-grid">
+      @if(asignacionForm.controls['numTramite'].errors?.['required']) {
+        <span class="mensaje-error">Este campo es obligatorio</span>
+      }
+      @if(asignacionForm.controls['numTramite'].errors?.['maxlength']) {
+        <span class="mensaje-error">El número de oficio no puede ser mayor a 30 caracteres</span>
+      }
+      @if(asignacionForm.controls['numTramite'].errors?.['pattern']) {
+        <span class="mensaje-error">Corrija los siguientes errores:<br>El valor {{ asignacionForm.controls['numTramite'].value }} debe ser un número válido</span>
+      }
+    </div>
+  }
+            </div>
+        </div>
+        <div class="row mb-5">
+            <div class="col-md-6"></div>
+            <div class="col-md-6 text-end">
+                    <button class="btn btn-group btn-primary" type="button" (click)="buscar()" [disabled]="esFormularioSoloLectura">Buscar</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div *ngIf="solicitudState.showBuscar">
+<app-solicitantetab [isContinuarTriggered]="isContinuarTriggered"></app-solicitantetab>
+</div>

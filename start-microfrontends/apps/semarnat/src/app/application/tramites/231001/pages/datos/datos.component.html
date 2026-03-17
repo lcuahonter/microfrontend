@@ -1,0 +1,74 @@
+<div class="page">
+  <div class="container">
+    <div class="row">
+      @if(indice === 1){
+      <div class="col-md-12">
+        <h1 class="titulo titulo-gold">Aviso de materiales importados de régimen temporal</h1>
+      </div>
+      }
+      @if (indice === 2) {
+      <div class="col-md-12">
+        <h1 class="titulo titulo-gold">Firmar</h1>
+      </div>
+      }
+      <div class="col-12">
+        @if (!esFormaValido) {
+        <div
+          class="alert alert-info alert-danger"
+          [innerHTML]="formErrorAlert"
+        ></div>
+        }
+      </div>
+
+      <div class="row mt-5" *ngIf="indice === 2">
+        <div class="col-md-12">
+          <lib-notificaciones
+            [notificacionInput]="alertaNotificacion"
+          ></lib-notificaciones>
+        </div>
+      </div>
+
+      <app-wizard #wizard [listaPasos]="pasos"></app-wizard>
+    </div>
+
+    <div class="row">
+      @switch (indice) { @case (1) {
+      <app-solicitante-datos-tabs [rfc]="rfcValor" [esFormValido]="esFormaValido" #pasoUnoRef></app-solicitante-datos-tabs>
+      } @case (2) {
+      <app-paso-tres
+        [procedureUrl]="'datos'"
+        [procedure]="231001"
+      ></app-paso-tres>
+      }}
+
+
+      <div class="row">
+        <div class="col-md-12">
+          @if (indice !== 2) {
+          <btn-continuar
+            [datos]="datosPasos"
+            (continuarEvento)="getValorIndice($event)"
+          ></btn-continuar>
+          } @else {
+          <div class="mt-5 mb-3 d-flex justify-content-end">
+            <button type="button" class="btn btn-default" (click)="anterior()">
+              Anterior
+            </button>
+
+          </div>
+          }
+        </div>
+      </div>
+      @if (indice === 1) {
+      <ng-alert [CONTENIDO]="TEXTOS" [CUSTOMECLASS]="infoAlert"></ng-alert>
+      }
+    </div>
+  </div>
+</div>
+
+@if(nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+  </lib-notificaciones>
+</section>
+}

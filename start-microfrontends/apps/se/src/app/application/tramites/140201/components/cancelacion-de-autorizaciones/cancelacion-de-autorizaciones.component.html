@@ -1,0 +1,68 @@
+<div class="container form-container">
+  <ng-titulo titulo="Datos requeridos"></ng-titulo>
+  <div>
+    <form [formGroup]="cancelacionForm">
+      <label class="required-label">RFC</label>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <input type="text" class="form-control" id="rfcIngresado" formControlName="rfcIngresado" maxlength="13"
+              size="30" (input)="updateRfcIngresado()" />
+          </div>
+          <div *ngIf="cancelacionForm.get('rfcIngresado')?.touched && cancelacionForm.get('rfcIngresado')?.invalid"
+            class="text-danger mt-1">
+            <div *ngIf="cancelacionForm.get('rfcIngresado')?.errors?.['required']">
+              Este campo es obligatorio.
+            </div>
+            <div *ngIf="cancelacionForm.get('rfcIngresado')?.errors?.['maxlength']">
+              Máximo 13 caracteres permitidos.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class=" text-end mt-5">
+        <button type="button" class="btn btn-primary" [disabled]="esFormularioSoloLectura" (click)="buscarProgramas()">Buscar programas</button>
+      </div>
+      <div *ngIf="nuevaNotificacion">
+        <lib-notificaciones [notificacionInput]="nuevaNotificacion"></lib-notificaciones>
+      </div>
+      <div class="table-container">
+        <div class="table-header pb-2">
+          <h3>Elija el programa del que desea realizar el trámite</h3>
+          <button (click)="alternarContenido()" class="toggle-btn">
+            <i class="bi fs-5 m-1" [ngClass]="{
+                  'bi-chevron-down': !mostrarContenido,
+                  'bi-chevron-up': mostrarContenido
+                }">
+            </i>
+          </button>
+        </div>
+
+        <app-tabla-dinamica *ngIf="mostrarContenido" [configuracionTabla]="configuracionTabla" [datos]="cancelacionData"
+          [tipoSeleccionTabla]="TablaSeleccion.RADIO" [disableSeleccionTablaRadio]="esFormularioSoloLectura">
+        </app-tabla-dinamica>
+      </div>
+      <div class="mt-5">
+        <label for="motivoCancelacion" class="required-label">Motivos</label>
+        <textarea class="form-control" formControlName="motivoCancelacion" rows="5" id="motivoCancelacion"
+          style="height: 120px;" (input)="updateMotivoCancelacion()" maxlength="255" required></textarea>
+        <div
+          *ngIf="cancelacionForm.get('motivoCancelacion')?.touched && cancelacionForm.get('motivoCancelacion')?.invalid"
+          class="text-danger mt-1">
+          <div *ngIf="cancelacionForm.get('motivoCancelacion')?.errors?.['required']">
+            Este campo es obligatorio.
+          </div>
+          <div *ngIf="cancelacionForm.get('motivoCancelacion')?.errors?.['maxlength']">
+            Máximo 255 caracteres permitidos.
+          </div>
+        
+        </div>
+        <div *ngIf="cancelacionForm.get('motivoCancelacion')?.touched" class="text-danger mt-1">
+          <div *ngIf="cancelacionForm.get('motivoCancelacion')?.value?.length >= 255">
+            No puede escribir más de 255 caracteres!
+          </div>  
+        </div>
+        </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,58 @@
+<app-anexo-uno
+
+  [anexoConfiguartion]="anexoUnoConfig"
+  [anexoDosConfiguartion]="anexoImportacionConfig"
+  [anexoUnoTablaLista]="anexoUnoTablaLista"
+  [anexoDosTablaLista]="anexoDosTablaLista"
+  (complimentosDatos)="modifierComplimentos($event)"
+  (obtenerAnexoUnoDevolverLaLlamada)="obtenerAnexoUnoDevolverLaLlamada($event)"
+  (obtenerAnexoDosDevolverLaLlamada)="obtenerAnexoDosDevolverLaLlamada($event)"
+  (rutaLaFraccionDeComplemento)="rutaLaFraccionDeComplemento($event)"
+  [formularioDeshabilitado]="formularioDeshabilitado"
+  [formularioDatosSubcontratista]="anexoUnoFormGroup"
+  [formularioDatosSubcontratistaDos]="anexoDosFormGroup"
+  (complimentosDatosDos)="modifierDosComplimentos($event)"
+  (tieneCambioDeDatosDeTabla)="datosDeLaTablaCambiados($event)"
+  [catalogoFraccionSeleccionado]="catalogoFraccionSeleccionado"
+>
+</app-anexo-uno>
+
+<ng-container *ngIf="mostrarComplementarFraccionPopup">
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <app-complementar-fraccion-vista [descripcion]="selectedFraccion ?? ''" (guardarComplementarFraccion)="onGuardarComplementarFraccion($event)" (cerrarPopup)="cerrarComplementarFraccion()" (NotificacionExito)="mostrarNotificacionExito()"
+        (mostrarProyectoImmex)="onMostrarProyectoImmex($event)" ></app-complementar-fraccion-vista>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="mostrarProveedorClientePopup">
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <app-contenedor-proveedor-cliente [proveedorClienteDatosTabla]="proveedorClienteDatosTablaId === 'IMPORT' ? ((proveedorClienteDatosTabla$ | async) || []) : ((proveedorClienteDatosTablaDos$ | async) || [])" (datosActualizadosProveedorClient)="datosActualizadosProveedorCliente($event)" (cerrarPopup)="cerrarContenedorProveedorCliente()"></app-contenedor-proveedor-cliente>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="mostrarProyectoImmexPopup">
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <app-proyecto-immex-vista (cerrarPopup)="cerrarProyectoImmex()"></app-proyecto-immex-vista>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="mostrarProveedorPorArchivoPopup">
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <app-proveedor-por-archivo-vista (cerrarPopup)="cerrarProveedorPorArchivo()"></app-proveedor-por-archivo-vista>
+    </div>
+  </div>
+</ng-container>
+
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+  </lib-notificaciones>
+</section>
+}

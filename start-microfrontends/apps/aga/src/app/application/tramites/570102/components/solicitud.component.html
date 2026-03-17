@@ -1,0 +1,23 @@
+<form [formGroup]="solicitudForm" (ngSubmit)="validarDestinatarioFormulario()">
+  <div class="row mt-5">
+    <label>Desistir Solicitud de Servicios Extraordinarios</label>
+  </div>
+  <div class="row mt-5">
+    <label>Folio VUCEM</label>
+    <input type="text" class="form-control gris-color" formControlName="folio" readonly />
+  </div>
+  <div class="row mt-5">
+    <div class="col-md-4" style="margin-left: -12px;">
+      <label>*Motivo del Desistimiento</label>
+      <div *ngIf="solicitudForm.get('motivoDelDes')?.invalid && solicitudForm.get('motivoDelDes')?.touched"
+        class="text-danger">
+        Este campo es obligatorio
+      </div>
+      <textarea cols="50" rows="5" formControlName="motivoDelDes" maxlength="450"
+        (change)=" setValoresStore( solicitudForm, 'motivoDelDes', 'setMotivoDelDes' ) "></textarea>
+    </div>
+  </div>
+</form>
+<ng-container *ngIf="nombree !== 1">
+  <btn-continuar [datos]="datosPasos" (click)="emitirEventoClick()"></btn-continuar>
+</ng-container>

@@ -1,0 +1,82 @@
+<div class="container">
+    <form [formGroup]="usoEspicificoForm">
+        <ng-titulo titulo="Uso específico de la mercancía" />
+
+        <!-- form -->
+        <div class="row">
+            <div class="col-8">
+                <app-catalogo-select
+                    [label]="'Fracción arancelaria PROSEC (Especificar la fracción arancelaria del producto en el que se utilizará la mercancía a importar)'"
+                    (change)="setValoresStore(usoEspicificoForm,'fraccionArancelariaProsec')"
+                    formControlName="fraccionArancelariaProsec" [required]="true" [markUntouched]="true"
+                    [catalogo]="catalogosProsec" [required]="true" [tooltipQuestionCircle]="true"
+                    [tooltipQuestionCircleText]="'Especifica la fracción arancelaria del producto en el que se utilizará la mercancía a importar'"></app-catalogo-select>
+
+                @if (usoEspicificoForm.controls['fraccionArancelariaProsec'].invalid &&
+                usoEspicificoForm.controls['fraccionArancelariaProsec'].touched) {
+                <div class="text-danger">
+                    @if (usoEspicificoForm.controls['fraccionArancelariaProsec'].errors?.['required']) {
+                    <small>Debe seleccionar un valor.</small>
+                    }
+                </div>
+                }
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-8">
+                <label class="form-label text-start" for="descripcionFraccionProsec">
+                    Descripción fracción PROSEC (Especificar el nombre comercial o técnico del producto en el que se
+                    utilizará la mercancía a importar):*<span class="bi bi-question-circle-fill"
+                        title="Especifica el nombre comercial o técnico del producto en el que se utilizará la mercancía a importar"
+                        data-bs-toggle="tooltip"></span>
+                </label>
+                <textarea id="descripcionFraccionProsec" class="form-control height" rows="8"
+                (change)="setValoresStore(usoEspicificoForm,'descripcionFraccionProsec')"
+                    formControlName="descripcionFraccionProsec"></textarea>
+                @if (usoEspicificoForm.controls['descripcionFraccionProsec'].invalid &&
+                usoEspicificoForm.controls['descripcionFraccionProsec'].touched) {
+                <div class="text-danger">
+                    @if (usoEspicificoForm.controls['descripcionFraccionProsec'].errors?.['required']) {
+                    <small>Descripción es obligatoria.</small>
+                    }
+                    @if (usoEspicificoForm.controls['descripcionFraccionProsec'].errors?.['leadingSpaces']) {
+                    <small>No se permiten espacios al inicio del campo.</small>
+                    }
+                </div>
+                }
+
+            </div>
+        </div>
+
+
+        <div class="container text-end mt-5">
+            <button class="btn btn-primary" (click)="agregar()">Agregar</button>
+        </div>
+
+    </form>
+</div>
+
+<!-- Table -->
+<div class="container mt-5">
+    <div class="row mt-5">
+        <h6>Fracciones arancelarias uso especifico</h6>
+
+        <app-tabla-dinamica [configuracionTabla]="configuracionTabla" [datos]="datosSocios"
+            [disableSeleccionTablaCheckBox]="esFormularioSoloLectura" [tipoSeleccionTabla]="CHECKBOX"
+            [isInvalida]="isInvalidaPartidas"
+            (listaDeFilaSeleccionada)="alCambiarSeleccion($event)"></app-tabla-dinamica>
+
+    </div>
+    <div class="container text-end mt-5">
+        <button class="btn btn-danger" [disabled]="esFormularioSoloLectura" (click)="eliminarSeleccionadas()">Eliminar
+            seleccionado</button>
+    </div>
+</div>
+@if (alertaNotificacion) {
+<div>
+    <lib-notificaciones [notificacionInput]="alertaNotificacion"
+        (confirmacionModal)="onConfirmacionModal($event)"></lib-notificaciones>
+</div>
+}

@@ -1,0 +1,189 @@
+@if(slectTramite) {
+
+<div class="page">
+  <div class="container">
+    <div class="row">
+        @if(indice === 3) {
+        <div class="col-md-12">
+          <h1>Anexar requisitos</h1>
+        </div>
+        } @else {
+          <div class="col-md-12">
+              @if(tramitesCuatroPasos.includes(tramite.toString())) {
+                <div class="col-md-6">
+                  <h2>Solicitud servicios extraordinarios</h2>
+                </div>
+                
+              } @else {
+                <h1>Atender requerimiento</h1>
+              }
+          </div>
+        }
+      <app-wizard [listaPasos]="pasos"></app-wizard>
+    </div>
+    <div class="mb-5"
+  *ngIf="(tipoRequerimiento === tipoRequerimientoEnum.DATOS && (indice !== 2 && indice !== 3))
+      || (!esTramiteEspecial && indice !== 3)
+      || (tipoRequerimiento === tipoRequerimientoEnum.DOCUMENTOS && indice !== 3)
+      || (tipoRequerimiento === tipoRequerimientoEnum.DATOS_DOCUMENTOS && (indice !== 2 && indice !== 3 && indice !== 4))">
+        <lib-encabezado-requerimiento
+        [numFolioTramite]="guardarDatos.folioTramite"
+        [tipoTramite]="guardarDatos.tipoDeTramite"
+        ></lib-encabezado-requerimiento>
+    </div>
+
+    @if(esAcuse) {
+        <lib-component-acuse
+      titulo="Acuse de recibo"
+      [txtAlerta]="txtAlerta"
+      [subtitulo]="subtitulo"
+      [folio]="idSolicitud.toString()"
+      [url]="url"
+      [datosTabla]="datosTablaAcuse"
+      [tramite]="tramite"
+    ></lib-component-acuse>
+    }
+
+    @if(indice === 1 && iniciarAtenderRequerimientoData) {
+    <lib-requerimiento-informacion
+      [fechaRequerimiento]="iniciarAtenderRequerimientoData.fecha_generacion || '' "
+      [justificacionRequerimiento]="iniciarAtenderRequerimientoData.justificacion || ''"
+    ></lib-requerimiento-informacion>
+    }
+
+
+    @if(esTramiteEspecial) {
+      @if((indice === 2 && tipoRequerimiento === tipoRequerimientoEnum.DOCUMENTOS) || (indice === 3 && tipoRequerimiento === tipoRequerimientoEnum.DATOS_DOCUMENTOS)) {
+        <app-paso-carga-documento 
+        [idTipoTRamite]="'5701'"
+        [idSolicitud]="+guardarDatos.id_solicitud"
+        [cargaArchivosEvento]="cargarArchivosEvento"
+        (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+        (reenviarCargaRealizada)="cargaRealizada($event)"
+        (cargaEnProgreso)="onCargaEnProgreso($event)"
+        [documentosAdicionales]="iniciarAtenderRequerimientoData.documentos"
+      ></app-paso-carga-documento>
+      }
+
+    } @else {
+      @if(indice === 2) {
+        <app-paso-carga-documento 
+        [idTipoTRamite]="'5701'"
+        [idSolicitud]="+guardarDatos.id_solicitud"
+        [cargaArchivosEvento]="cargarArchivosEvento"
+        (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+        (reenviarCargaRealizada)="cargaRealizada($event)"
+        (cargaEnProgreso)="onCargaEnProgreso($event)"
+        [documentosAdicionales]="iniciarAtenderRequerimientoData.documentos"
+      ></app-paso-carga-documento>
+      }
+    }
+
+
+    
+    @if((indice === 2 && tipoRequerimiento === tipoRequerimientoEnum.DOCUMENTOS) || (indice === 3 && tipoRequerimiento === tipoRequerimientoEnum.DATOS_DOCUMENTOS)) {
+    <div class="mt-5 mb-3 d-flex justify-content-end">
+      <button type="button" class="btn btn-default" (click)="anterior()" *ngIf="seccionCargarDocumentos && !esAcuse">
+        Anterior
+      </button>
+    
+      <button class="btn btn-primary ms-3" (click)="onContinuarClick()"
+        [disabled]="(seccionCargarDocumentos && !activarBotonCargaArchivos) || (!seccionCargarDocumentos && cargaEnProgreso)">
+        {{ seccionCargarDocumentos ? 'Cargar archivos' : 'Continuar' }}
+      </button>
+    </div>
+    }
+
+    
+
+    @if((indice === 3 && esAcuse === false && tipoRequerimiento !== tipoRequerimientoEnum.DATOS_DOCUMENTOS) || (indice === 4 && esAcuse === false && tipoRequerimiento === tipoRequerimientoEnum.DATOS_DOCUMENTOS)) {
+      <div class="row">
+                <div class="col-md-12">
+                    <h2 class="titulo mt-5 mb-5">Firmar</h2>
+                </div>
+            </div>
+      <div class="row justify-content-center">
+          <div class="col-md-6">
+            <firma-electronica [tipo]="''" [cadenaOriginal]="cadenaOriginal"
+                  (datosFirma)="obtieneFirma($event)"></firma-electronica>
+        </div>
+      </div>
+    }
+    
+    @if(esTramiteEspecial){
+        <div *ngIf="!((indice === 2 && tipoRequerimiento === tipoRequerimientoEnum.DOCUMENTOS) ||  (indice ===3 && tipoRequerimiento === tipoRequerimientoEnum.DATOS_DOCUMENTOS)) && !esAcuse">
+          <btn-continuar
+            [btnGuardarVisible]="indice === 2 && (tipoRequerimiento === tipoRequerimientoEnum.DATOS || tipoRequerimiento === tipoRequerimientoEnum.DATOS_DOCUMENTOS) ? 'visible' : 'hidden'"
+            [btnGuardar]="indice === 2 && (tipoRequerimiento === tipoRequerimientoEnum.DATOS || tipoRequerimiento === tipoRequerimientoEnum.DATOS_DOCUMENTOS)"
+            (btnGuardarClicked)="guardar($event)"
+            [datos]="datosPasos"
+            (continuarEvento)="getValorIndice($event)"
+            (anteriorEvento)="getValorIndice($event)"
+          ></btn-continuar>
+        </div>
+        
+      
+    } @else {
+        @if(indice !== 2 && esAcuse === false) {
+            <btn-continuar
+            [datos]="datosPasos"
+            (continuarEvento)="getValorIndice($event)"
+            (anteriorEvento)="getValorIndice($event)"
+          ></btn-continuar>
+        }
+    }
+
+    
+
+
+
+    <div *ngIf="indice === 2 && (tipoRequerimiento === tipoRequerimientoEnum.DATOS || tipoRequerimiento === tipoRequerimientoEnum.DATOS_DOCUMENTOS) ">
+      <paso-datos>  </paso-datos>
+    </div>
+    
+
+    <div class="row mt-5 mb-5" *ngIf="esAcuse === false && indice !== 2">
+      <app-reviewers-tabs
+        [viewChild]="viewChild"
+        [tramite]="tramite"
+
+        [tabs]="tabs"
+        [isAtenderRequerimiento]="true"
+        [documentos]="documentosSolicitud"
+        [dictamenes]="dictamenesSolicitud"
+        [requerimientos]="requerimientosSolicitud"
+        [opinion]="opinion"
+        [acusesResolucion]="acusesResolucion"
+        [tareasSolicitud]="tareasSolicitud"
+        [envioDigital]="envioDigital"
+        (viewChildcambioDePestana)="viewChildcambioDePestana($event)"
+        (tabSeleccionado)="onTabSeleccionado($event)"
+      ></app-reviewers-tabs>
+    </div>
+
+    @if((indice === 2 && tipoRequerimiento === tipoRequerimientoEnum.DOCUMENTOS) || (indice === 3 && tipoRequerimiento === tipoRequerimientoEnum.DATOS_DOCUMENTOS)) {
+    <div class="row my-5">
+      <div class="col-md-8">
+        <p>* Campos obligatorios</p>
+      </div>
+      <div class="col-md-4 d-flex justify-content-end">
+        <button type="button" class="btn btn-default" (click)="anterior()" *ngIf="seccionCargarDocumentos && !esAcuse">
+          Anterior
+        </button>
+        <button class="btn btn-primary ms-3" (click)="onContinuarClick()"
+          [disabled]="(seccionCargarDocumentos && !activarBotonCargaArchivos) || (!seccionCargarDocumentos && cargaEnProgreso)">
+          {{ seccionCargarDocumentos ? 'Cargar archivos' : 'Continuar' }}
+        </button>
+      </div>
+    </div>
+    }
+
+  </div>
+</div>
+}
+@if(nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+  </lib-notificaciones>
+</section>
+}

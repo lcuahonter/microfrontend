@@ -1,0 +1,525 @@
+<form [formGroup]="masterForm" (ngSubmit)="onSubmit()" autocomplete="off">
+  <h3>Información del Master</h3>
+  <hr class="red" />
+
+  <div class="row">
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Waybill Number*:</label>
+        <app-tooltip text="La estructura del Master es: Código IATA de la aerolinea (3 dígitos) + guion + numero de serie (8 dígitos) Ejemplo: 057-12345675"></app-tooltip>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="waybillNumber"
+          uppercase
+          [readonly]="isUpdating"
+          [appMaxLength]="12"
+          [ngClass]="{
+            'form-control-error': formUtils.isValidField(masterForm, 'waybillNumber')
+          }"
+        />
+        <ng-container *ngIf="formUtils.isValidField(masterForm, 'waybillNumber')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(masterForm, 'waybillNumber') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <date-picker
+          label="Actual Date Time*:"
+          formControlName="actualDateTime"
+          [isDisable]="isUpdating"
+          [initialValue]="actualDateTimeInitialValue"
+          [hasError]="formUtils.isValidField(masterForm, 'actualDateTime')"
+        ></date-picker>
+        <ng-container *ngIf="formUtils.isValidField(masterForm, 'actualDateTime')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(masterForm, 'actualDateTime') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Time*:</label>
+        <app-tooltip text="Hora de Documento de Transporte"></app-tooltip>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="time"
+          placeholder="HH:mm (24 hrs)"
+          appTimeFormat
+          [ngClass]="{
+            'form-control-error': formUtils.isValidField(masterForm, 'time')
+          }"
+        />
+        <ng-container *ngIf="formUtils.isValidField(masterForm, 'time')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(masterForm, 'time') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fila 2 -->
+  <div class="row mt-1">
+    <div class="col-md-12 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Issue Authentication Location*:</label>
+        <div>
+          <label class="radio-inline mr-5">
+            <input type="radio" [value]="locationEnum.IATA" formControlName="issueLocation" /> IATA
+          </label>
+          <label class="radio-inline">
+            <input type="radio" [value]="locationEnum.CONTROLLED_PREMISES" formControlName="issueLocation" /> Recinto Fiscalizado
+          </label>
+        </div>
+        <ng-container *ngIf="formUtils.isValidField(masterForm, 'issueLocation')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(masterForm, 'issueLocation') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+
+    <ng-container *ngIf="radioHasValue('issueLocation')">
+      <div class="col-md-4 col-sm-6">
+        <div class="form-group">
+          <label class="control-label">I D*:</label>
+          <app-tooltip text="Lugar del Contrato"></app-tooltip>
+          <select
+            class="form-control"
+            formControlName="issueId"
+            [ngClass]="{
+              'form-control-error': formUtils.isValidField(masterForm, 'issueId')
+            }"
+          >
+            <option [ngValue]="null">Selecciona un valor</option>
+            <option *ngFor="let issueId of issueIds" [value]="issueId.valor">{{ issueId.clave }}</option>
+          </select>
+          <ng-container *ngIf="formUtils.isValidField(masterForm, 'issueId')">
+            <small class="form-text form-text-error">
+              {{ formUtils.getFieldError(masterForm, 'issueId') }}
+            </small>
+          </ng-container>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Place of contract:</label>
+        <app-tooltip text="Lugar del Contrato"></app-tooltip>
+        <input type="text" class="form-control" formControlName="placeOfContract" readonly/>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Signatory of Issuing Carrier*:</label>
+        <app-tooltip text="Firma Transportista"></app-tooltip>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="signatoryCarrier"
+          [appMaxLength]="17"
+          [ngClass]="{
+            'form-control-error': formUtils.isValidField(masterForm, 'signatoryCarrier')
+          }"
+        />
+        <ng-container *ngIf="formUtils.isValidField(masterForm, 'signatoryCarrier')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(masterForm, 'signatoryCarrier') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fila 3 -->
+  <div class="row">
+    <div class="col-md-12 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Origin*:</label>
+        <div>
+          <label class="radio-inline mr-5">
+            <input type="radio" [value]="locationEnum.IATA" formControlName="originType" /> IATA
+          </label>
+          <label class="radio-inline">
+            <input type="radio" [value]="locationEnum.CONTROLLED_PREMISES" formControlName="originType" /> Recinto Fiscalizado
+          </label>
+        </div>
+        <ng-container *ngIf="formUtils.isValidField(masterForm, 'originType')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(masterForm, 'originType') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+
+    <ng-container *ngIf="radioHasValue('originType')">
+      <div class="col-md-4 col-sm-6">
+        <div class="form-group">
+          <label class="control-label">I D*:</label>
+          <app-tooltip text="Código del lugar de Origen"></app-tooltip>
+          <select
+            class="form-control"
+            formControlName="originId"
+            [ngClass]="{
+              'form-control-error': formUtils.isValidField(masterForm, 'originId')
+            }"
+          >
+            <option [ngValue]="null">Selecciona un valor</option>
+            <option *ngFor="let originId of originIds" [value]="originId.valor">{{ originId.clave }}</option>
+          </select>
+          <ng-container *ngIf="formUtils.isValidField(masterForm, 'originId')">
+            <small class="form-text form-text-error">
+              {{ formUtils.getFieldError(masterForm, 'originId') }}
+            </small>
+          </ng-container>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Name:</label>
+        <app-tooltip text="Nombre del lugar de Origen"></app-tooltip>
+        <input type="text" class="form-control" formControlName="originName" readonly/>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fila 4 -->
+  <div class="row">
+    <div class="col-md-12 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Final Destination*:</label>
+        <div>
+          <label class="radio-inline mr-5">
+            <input type="radio" [value]="locationEnum.IATA" formControlName="finalType" /> IATA
+          </label>
+          <label class="radio-inline">
+            <input type="radio" [value]="locationEnum.CONTROLLED_PREMISES" formControlName="finalType" /> Recinto Fiscalizado
+          </label>
+        </div>
+        <ng-container *ngIf="formUtils.isValidField(masterForm, 'finalType')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(masterForm, 'finalType') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+
+    <ng-container *ngIf="radioHasValue('finalType')">
+      <div class="col-md-4 col-sm-6">
+        <div class="form-group">
+          <label class="control-label">I D*:</label>
+          <app-tooltip text="Código del lugar de Destino"></app-tooltip>
+          <select
+            class="form-control"
+            formControlName="finalId"
+            [ngClass]="{
+              'form-control-error': formUtils.isValidField(masterForm, 'finalId')
+            }"
+          >
+            <option [ngValue]="null">Selecciona un valor</option>
+            <option *ngFor="let finalId of finalIds" [value]="finalId.valor">{{ finalId.clave }}</option>
+          </select>
+          <ng-container *ngIf="formUtils.isValidField(masterForm, 'finalId')">
+            <small class="form-text form-text-error">
+              {{ formUtils.getFieldError(masterForm, 'finalId') }}
+            </small>
+          </ng-container>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Name:</label>
+        <app-tooltip text="Nombre del lugar de Destino"></app-tooltip>
+        <input type="text" class="form-control" formControlName="finalName" readonly/>
+      </div>
+    </div>
+  </div>
+
+  <h3>Detalle de la guía Master</h3>
+  <hr class="red" />
+
+  <!-- Fila 1 -->
+  <div class="row">
+    <!-- Transportation Amount -->
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Transportation Amount*:</label>
+        <app-tooltip text="Valor Declarado para el Transporte"></app-tooltip>
+        <input
+          type="text"
+          class="form-control"
+          numericDecimal
+          [appMaxLength]="20"
+          formControlName="transportationAmount"
+          [ngClass]="{
+            'form-control-error': formUtils.isValidField(masterForm, 'transportationAmount')
+          }"
+        />
+        <ng-container *ngIf="formUtils.isValidField(masterForm, 'transportationAmount')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(masterForm, 'transportationAmount') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Currency Code -->
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Currency Code*:</label>
+        <app-tooltip text="Moneda (Código)"></app-tooltip>
+        <select
+          class="form-control"
+          formControlName="currencyCode"
+          [ngClass]="{
+            'form-control-error': formUtils.isValidField(masterForm, 'currencyCode')
+          }"
+        >
+          <option [ngValue]="null">Selecciona una opción</option>
+          <option *ngFor="let curr of currency" [value]="curr.clave">
+            {{ curr.valor }}
+          </option>
+        </select>
+        <ng-container *ngIf="formUtils.isValidField(masterForm, 'currencyCode')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(masterForm, 'currencyCode') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fila 2 -->
+  <div class="row">
+    <!-- Total Charge Prepaid Indicator -->
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Total Charge Prepaid Indicator*:</label>
+        <app-tooltip text="Identificador del Pago por Peso"></app-tooltip>
+        <select
+          class="form-control"
+          formControlName="totalChargeIndicator"
+          [ngClass]="{
+            'form-control-error': formUtils.isValidField(masterForm, 'totalChargeIndicator')
+          }"
+        >
+          <option [ngValue]="null">Selecciona una opción</option>
+          <option *ngFor="let paymentIndicator of paymentIndicators" [value]="paymentIndicator.clave">
+            {{ paymentIndicator.valor }}
+          </option>
+        </select>
+        <ng-container *ngIf="formUtils.isValidField(masterForm, 'totalChargeIndicator')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(masterForm, 'totalChargeIndicator') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Total Disbursement Prepaid Indicator -->
+    <div class="col-md-8 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Total Disbursement Prepaid Indicator*:</label>
+        <app-tooltip text="Identificador de Otros Pagos"></app-tooltip>
+        <select
+          class="form-control"
+          formControlName="totalDisbursementIndicator"
+          [ngClass]="{
+            'form-control-error': formUtils.isValidField(masterForm, 'totalDisbursementIndicator')
+          }"
+        >
+          <option [ngValue]="null">Selecciona una opción</option>
+          <option *ngFor="let paymentIndicator of paymentIndicators" [value]="paymentIndicator.clave">
+            {{ paymentIndicator.valor }}
+          </option>
+        </select>
+        <ng-container *ngIf="formUtils.isValidField(masterForm, 'totalDisbursementIndicator')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(masterForm, 'totalDisbursementIndicator') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fila 3 -->
+  <div class="row">
+    <!-- Gross Weight -->
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Gross Weight*:</label>
+        <app-tooltip text="Peso Bruto"></app-tooltip>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="grossWeight"
+          numericDecimal
+          [appMaxLength]="7"
+          [ngClass]="{
+            'form-control-error': formUtils.isValidField(masterForm, 'grossWeight')
+          }"
+        />
+        <ng-container *ngIf="formUtils.isValidField(masterForm, 'grossWeight')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(masterForm, 'grossWeight') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Gross Weight Unit -->
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Gross Weight Unit*:</label>
+        <app-tooltip text="Unidad del Peso Bruto"></app-tooltip>
+        <select
+          class="form-control"
+          formControlName="grossWeightUnit"
+          [ngClass]="{
+            'form-control-error': formUtils.isValidField(masterForm, 'grossWeightUnit')
+          }"
+        >
+          <option [ngValue]="null">Selecciona una unidad</option>
+          <option *ngFor="let unit of weightUnits" [value]="unit.clave">
+            {{ unit.valor }}
+          </option>
+        </select>
+        <ng-container *ngIf="formUtils.isValidField(masterForm, 'grossWeightUnit')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(masterForm, 'grossWeightUnit') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Total Piece Quantity -->
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Total Piece Quantity*:</label>
+        <app-tooltip text="Número de piezas"></app-tooltip>
+        <input
+          class="form-control"
+          formControlName="totalPieceQuantity"
+          numericDecimal
+          [appMaxLength]="7"
+          [ngClass]="{
+            'form-control-error': formUtils.isValidField(masterForm, 'totalPieceQuantity')
+          }"
+        />
+        <ng-container *ngIf="formUtils.isValidField(masterForm, 'totalPieceQuantity')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(masterForm, 'totalPieceQuantity') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <h3>Detalle de la mercancía</h3>
+  <hr class="red" />
+  <div class="row">
+    <div class="col-md-12">
+      <ng-container *ngIf="displayWarningCommodity()">
+        <div class="alert alert-warning">
+          <strong>¡Precaución!</strong> Soló se permite un registro
+        </div>
+      </ng-container>
+      <div [ngClass]="{ 'table-error': valueMissingCommodityTable }">
+        <app-table
+          [tableData]="tableCommodityData"
+          [borderedStyle]="true"
+          [isLoading]="isLoadingCommodityData"
+          [error]="errorCommodityData"
+          [hasPagination]="false"
+          [hasRedirect]="true"
+          [ableSelectAllTable]="commodityTableHasValue()"
+          [ableSelectRows]="true"
+          [displayHeader]="false"
+          (onRowsSelected)="commoditySelected($event)"/>
+      </div>
+      <ng-container *ngIf="valueMissingCommodityTable">
+        <small class="text-error">
+          {{ 'Este campo es obligatorio' }}
+        </small>
+      </ng-container>
+      <div class="text-right">
+        <gob-button
+          type="button"
+          className="btn-primary mr-2"
+          label="Agregar"
+          (clicked)="addCommodity()"
+        />
+        <ng-container *ngIf="displayDeleteBtnCommodity()">
+          <gob-button
+            type="button"
+            className="btn-danger"
+            label="Eliminar"
+            (clicked)="removeCommodity()"
+          />
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <h3>Detalle de tarifa</h3>
+  <hr class="red" />
+  <div class="row">
+    <div class="col-md-12">
+      <ng-container *ngIf="displayWarningFee()">
+        <div class="alert alert-warning">
+          <strong>¡Precaución!</strong> Soló se permite un registro
+        </div>
+      </ng-container>
+      <div [ngClass]="{ 'table-error': valueMissingFeeTable }">
+        <app-table
+          [tableData]="tableFeeData"
+          [borderedStyle]="true"
+          [isLoading]="isLoadingFeeData"
+          [error]="errorFeeData"
+          [hasRedirect]="true"
+          [ableSelectAllTable]="feeTableHasValue()"
+          [ableSelectRows]="true"
+          [displayHeader]="false"
+          (onRowsSelected)="feeSelected($event)"/>
+      </div>
+      <ng-container *ngIf="valueMissingFeeTable">
+        <small class="text-error">
+          {{ 'Este campo es obligatorio' }}
+        </small>
+      </ng-container>
+      <div class="text-right">
+        <gob-button
+          type="button"
+          className="btn-primary mr-2"
+          label="Agregar"
+          (clicked)="addFee()"
+        />
+        <ng-container *ngIf="displayDeleteBtnFee()">
+          <gob-button
+            type="button"
+            className="btn-danger"
+            label="Eliminar"
+            (clicked)="removeFee()"
+          />
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</form>
+
+<app-dialog [id]="'registerDeleted'" [content]="'El registro seleccionado fue eliminado correctamente'"/>
+

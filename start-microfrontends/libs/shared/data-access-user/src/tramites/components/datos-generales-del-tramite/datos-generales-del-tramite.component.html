@@ -1,0 +1,67 @@
+<div class="page page-funcionario">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h2 class="fw-bold my-5 titulo-tasks">Datos generales del trámite</h2>
+        <hr class="red">
+      </div>
+    </div>
+    <form [formGroup]="FormTramite">
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label for="folio" class="form-label text-title">Folio del trámite:</label>
+          <input type="text" id="numeroDeTramite" formControlName="numeroDeTramite"
+            class="form-control font-weight-titulo text-title" placeholder="Folio del trámite" />
+        </div>
+
+        <div class="col-md-12">
+          <label for="tipoSolicitud" class="form-label text-title">Tipo de solicitud:</label>
+          <textarea id="tipoSolicitud" formControlName="tipoDeSolicitud"
+            class="form-control font-weight-titulo text-title text-height" placeholder="Tipo de solicitud"></textarea>
+        </div>
+
+        <div class="col-md-6">
+          <label for="diasHabiles" class="form-label text-title">Días hábiles transcurridos:</label>
+          <input type="text" id="diasHabiles" formControlName="diasHabilesTranscurridos"
+            class="form-control font-weight-titulo text-title" placeholder="Días hábiles transcurridos" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <label class="form-label text-title">Tareas activas:</label>
+          <table class="table table-striped table-bordered table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Tarea</th>
+                <th scope="col">Asignado A</th>
+                <th scope="col">Fecha de asignación</th>
+              </tr>
+            </thead>
+            <tbody>
+              @if(tareas.length===0){
+              <tr class="text-center">
+                <td colspan="3">
+                  <p>No existen tareas pendientes</p>
+                </td>
+              </tr>
+              }@else{
+              <tr *ngFor="let tarea of tareas">
+                <td>{{ tarea.action_name }}</td>
+                <td>{{ tarea.current_user }}</td>
+                <td>{{ tarea.fecha_inicio_tarea }}</td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </form>
+    <div class="row mb-5 mt-5">
+      <app-reviewers-tabs [viewChild]="viewChild" [tramite]="tramite" [tabs]="tabs" [documentos]="documentosSolicitud"
+        [tareasSolicitud]="tareasSolicitud" [dictamenes]="dictamenesSolicitud" [envioDigital]="envioDigital"
+        [opinion]="opinion" [requerimientos]="requerimientosSolicitud" [acusesResolucion]="acusesResolucion" [isFechasDetalleDictamenes]="tabsConfig.isFechasDetallesDictamen"
+        (viewChildcambioDePestana)="viewChildcambioDePestana($event)" (tabSeleccionado)="onTabSeleccionado($event)">
+      </app-reviewers-tabs>
+    </div>
+  </div>
+</div>

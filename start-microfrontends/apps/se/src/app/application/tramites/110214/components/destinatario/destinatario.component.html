@@ -1,0 +1,207 @@
+<form [formGroup]="registroFormulario" (ngSubmit)="validarDestinatarioFormulario()">
+  <ng-titulo titulo="Datos del destinatario" />
+  <ng-container formGroupName="grupoReceptor">
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <label>Nombre(s):</label>
+        <input type="text" class="form-control" formControlName="nombre" id="nombre" maxlength="20"
+          (change)="setValoresStore(grupoReceptor, 'nombre', 'setGrupoReceptorNombre')" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label>Primer apellido:</label>
+        <input type="text" class="form-control" id="primerApellido" formControlName="apellidoPrimer" maxlength="20" (click)="onClick()"
+          (change)="setValoresStore(grupoReceptor, 'apellidoPrimer','setGrupoReceptorApellidoPrimer')" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label>Segundo apellido:</label>
+        <input type="text" class="form-control" id="segundoApellido" formControlName="apellidoSegundo" maxlength="20" (change)="
+            setValoresStore(grupoReceptor,    'apellidoSegundo', 'setGrupoReceptorApellidoSegundo')" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <label>Número de registro fiscal*:</label>
+        <input type="text" class="form-control" id="numeroFiscal" formControlName="numeroFiscal" maxlength="30"
+          [ngClass]="isValid(grupoReceptor,'numeroFiscal') ? 'required' : ''"
+          (change)="setValoresStore(grupoReceptor, 'numeroFiscal', 'setGrupoReceptorNumeroFiscal')" />
+          @if (registroFormulario.get('grupoReceptor.numeroFiscal')?.touched && registroFormulario.get('grupoReceptor.numeroFiscal')?.errors?.['required']) {
+            <div class="text-danger">
+              Este campo es obligatorio
+            </div>
+          }          
+      </div>
+      <div class="col-md-8 mb-3">
+        <label>Razón social:</label>
+        <input type="text" class="form-control"
+          [ngClass]="{'gray-glass': registroFormulario.get('grupoReceptor.apellidoPrimer')?.value !== ''}"
+          id="denominacion" [readonly]=" registroFormulario.get('grupoReceptor.apellidoPrimer')?.value !== ''"
+          formControlName="razonSocial"
+          (change)="setValoresStore(grupoReceptor, 'razonSocial', 'setGrupoReceptorRazonSocial')" />
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-titulo titulo="Domicilio del destinatario" />
+  <ng-container formGroupName="grupoDeDirecciones">
+    <div class="row">
+      <div class="col-md-8 mb-3">
+        <label>Ciudad (población, estado o provincia)*:</label>
+        <input type="text" class="form-control" id="ciudad" formControlName="ciudad" maxlength="50"
+          [ngClass]="isValid(grupoDeDirecciones,'ciudad') ? 'required' : ''"
+          (change)="setValoresStore(grupoDeDirecciones, 'ciudad','setGrupoDeDireccionesCiudad')" />
+          @if (registroFormulario.get('grupoDeDirecciones.ciudad')?.touched && registroFormulario.get('grupoDeDirecciones.ciudad')?.errors?.['required']) {
+            <div class="text-danger">
+              Este campo es obligatorio
+            </div>
+          }          
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <label>Calle*:</label>
+        <input type="text" class="form-control" id="nombre" formControlName="calle"
+          [ngClass]="isValid(grupoDeDirecciones,'calle') ? 'required' : ''"
+          (change)="setValoresStore(grupoDeDirecciones, 'calle', 'setGrupoDeDireccionesCalle')" 
+          />
+           @if (registroFormulario.get('grupoDeDirecciones.calle')?.touched && registroFormulario.get('grupoDeDirecciones.calle')?.errors?.['required']) {
+            <div class="text-danger">
+              Este campo es obligatorio
+            </div>
+          }  
+      </div>
+      <div class="col-md-4 mb-3">
+        <label>Número y/o letra*:</label>
+        <input type="text" class="form-control" id="numeroLetra" formControlName="numeroLetra" maxlength="30"
+          [ngClass]="isValid(grupoDeDirecciones,'numeroLetra') ? 'required' : ''"
+          (change)="setValoresStore(grupoDeDirecciones, 'numeroLetra', 'setGrupoDeDireccionesNumeroLetra')" />
+          @if (registroFormulario.get('grupoDeDirecciones.numeroLetra')?.touched && registroFormulario.get('grupoDeDirecciones.numeroLetra')?.errors?.['required']) {
+            <div class="text-danger">
+              Este campo es obligatorio
+            </div>
+          }          
+      </div>
+      <div class="col-md-4 mb-3">
+        <label>Teléfono:</label>
+        <input type="text" class="form-control" id="telefono" formControlName="telefono" maxlength="16"
+          (change)="setValoresStore(grupoDeDirecciones, 'telefono', 'setGrupoDeDireccionesTelefono')" 
+          [ngClass]="{'is-invalid': registroFormulario.get('grupoDeDirecciones.telefono')?.touched && registroFormulario.get('grupoDeDirecciones.telefono')?.errors}"
+          />
+          @if (registroFormulario.get('grupoDeDirecciones.telefono')?.touched && registroFormulario.get('grupoDeDirecciones.telefono')?.errors?.['pattern']) {
+            <div class="text-danger">
+              Por favor, ingrese solo dígitos.
+            </div>
+          }          
+      </div>
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label>Correo electrónico*:</label><span class="bi bi-question-circle-fill" title="ejemplo@dominio.com"
+            data-bs-toggle="tooltip"></span>
+          <input type="text" class="form-control" id="correoElectronico" formControlName="correoElectronico"
+            maxlength="50" 
+            [ngClass]="{
+              'required': isValid(grupoDeDirecciones,'correoElectronico'),
+              'is-invalid': registroFormulario.get('grupoDeDirecciones.correoElectronico')?.touched && registroFormulario.get('grupoDeDirecciones.correoElectronico')?.errors
+            }"
+            (change)="setValoresStore(grupoDeDirecciones,'correoElectronico','setGrupoDeDireccionesCorreoElectronico')" />
+            @if (registroFormulario.get('grupoDeDirecciones.correoElectronico')?.touched && registroFormulario.get('grupoDeDirecciones.correoElectronico')?.errors?.['required']) {
+              <div class="text-danger">
+                Este campo es obligatorio
+              </div>
+            }
+            @if (registroFormulario.get('grupoDeDirecciones.correoElectronico')?.touched && registroFormulario.get('grupoDeDirecciones.correoElectronico')?.errors?.['email']) {
+              <div class="text-danger">
+                Por favor, ingrese un formato de correo electrónico válido
+              </div>
+            }
+            
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-titulo titulo="Datos del representante legal del exportador" />
+  <ng-container formGroupName="grupoRepresentativo">
+    <div class="row">
+      <div class="col-md-8 mb-3">
+        <label>Lugar*:</label>
+        <input type="text" class="form-control" id="lugar" formControlName="lugar" maxlength="70"
+          [ngClass]="isValid(grupoRepresentativo,'lugar') ? 'required' : ''"
+          (change)="setValoresStore(grupoRepresentativo, 'lugar', 'setGrupoRepresentativoLugar')" />
+          @if (registroFormulario.get('grupoRepresentativo.lugar')?.touched && registroFormulario.get('grupoRepresentativo.lugar')?.errors?.['required']) {
+            <div class="text-danger">
+              Este campo es obligatorio
+            </div>
+          }          
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8 mb-3">
+        <label>Nombre del representante legal del exportador*:</label>
+        <input type="text" class="form-control" id="nombreExportador" formControlName="nombreExportador" maxlength="70"
+          [ngClass]="isValid(grupoRepresentativo,'nombreExportador') ? 'required' : ''"
+          (change)="setValoresStore(grupoRepresentativo, 'nombreExportador', 'setGrupoRepresentativoNombreExportador')" />
+          @if (registroFormulario.get('grupoRepresentativo.nombreExportador')?.touched && registroFormulario.get('grupoRepresentativo.nombreExportador')?.errors?.['required']) {
+            <div class="text-danger">
+              Este campo es obligatorio
+            </div>
+          }          
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <label>Empresa*:</label>
+        <input type="text" class="form-control" id="empresa" formControlName="empresa" maxlength="90"
+          [ngClass]="isValid(grupoRepresentativo,'empresa') ? 'required' : ''"
+          (change)="setValoresStore(grupoRepresentativo, 'empresa', 'setGrupoRepresentativoEmpresa')" />
+          @if (registroFormulario.get('grupoRepresentativo.empresa')?.touched && registroFormulario.get('grupoRepresentativo.empresa')?.errors?.['required']) {
+            <div class="text-danger">
+              Este campo es obligatorio
+            </div>
+          }          
+      </div>
+      <div class="col-md-4 mb-3">
+        <label>Cargo*:</label>
+        <input type="text" class="form-control" id="cargo" formControlName="cargo" maxlength="70"
+          [ngClass]="isValid(grupoRepresentativo,'cargo') ? 'required' : ''"
+          (change)="setValoresStore(grupoRepresentativo, 'cargo', 'setGrupoRepresentativoCargo')" />
+          @if (registroFormulario.get('grupoRepresentativo.cargo')?.touched && registroFormulario.get('grupoRepresentativo.cargo')?.errors?.['required']) {
+            <div class="text-danger">
+              Este campo es obligatorio
+            </div>
+          }          
+      </div>
+      <div class="col-md-4 mb-3">
+        <label>Teléfono*:</label>
+        <input type="text" class="form-control" id="telefono" formControlName="telefono" maxlength="16"
+          [ngClass]="isValid(grupoRepresentativo,'telefono') ? 'required' : ''"
+          (change)="setValoresStore(grupoRepresentativo, 'telefono', 'setGrupoRepresentativoTelefono')" />
+          @if (registroFormulario.get('grupoRepresentativo.telefono')?.touched && registroFormulario.get('grupoRepresentativo.telefono')?.errors?.['required']) {
+            <div class="text-danger">
+              Este campo es obligatorio
+            </div>
+          }          
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <label>Correo electrónico*:</label><span class="bi bi-question-circle-fill" title="ejemplo@dominio.com"
+          data-bs-toggle="tooltip"></span>
+        <input type="text" class="form-control" id="correoElectronico" formControlName="correoElectronico" maxlength="50"
+          [ngClass]="{
+            'required': isValid(grupoRepresentativo,'correoElectronico'),
+            'is-invalid': registroFormulario.get('grupoRepresentativo.correoElectronico')?.touched && registroFormulario.get('grupoRepresentativo.correoElectronico')?.errors
+          }"
+          (change)="setValoresStore(grupoRepresentativo,'correoElectronico','setGrupoRepresentativoCorreoElectronico')" />
+          @if (registroFormulario.get('grupoRepresentativo.correoElectronico')?.touched && registroFormulario.get('grupoRepresentativo.correoElectronico')?.errors?.['required']) {
+            <div class="text-danger">
+              Este campo es obligatorio
+            </div>
+          }
+          @if (registroFormulario.get('grupoRepresentativo.correoElectronico')?.touched && registroFormulario.get('grupoRepresentativo.correoElectronico')?.errors?.['email']) {
+            <div class="text-danger">
+              Por favor, ingrese un formato de correo electrónico válido
+            </div>
+          }          
+      </div>
+    </div>
+  </ng-container>

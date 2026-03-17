@@ -1,0 +1,39 @@
+<div class="container">
+  <ng-titulo titulo="Tipo de persona"></ng-titulo>
+  <form [formGroup]="form" class="row">
+    <div class="col-12">
+      <select class="form-select form-control" formControlName="tipoPersona">
+        <option value="" disabled selected>Seleccionar</option>
+        <option *ngFor="let tipo of tiposPersona" [value]="tipo.value">
+          {{ tipo.label }}
+        </option>
+      </select>
+    </div>
+  </form>
+  <div *ngIf="errorMessage" class="mt-2">
+    <span class="text-danger fw-bold">{{ errorMessage }}</span>
+  </div>
+  <div class="mt-4">
+    @switch(selectedTipo) {
+      @case('fisica') {
+        <app-persona-fisica-form (noResults)="$event ? setErrorMessage('El solicitante no está registrado en VU') : setErrorMessage('')"></app-persona-fisica-form>
+      }
+      @case('moral') {
+        <app-persona-moral-form (noResults)="$event ? setErrorMessage('El solicitante no está registrado en VU') : setErrorMessage('')"></app-persona-moral-form>
+      }
+      @case('no_contribuyentes') {
+        <app-no-contribuyente-form (searchError)="setErrorMessage($event)"></app-no-contribuyente-form>
+      }
+      @case('extranjero') {
+        <app-extranjero-form (searchError)="setErrorMessage($event)"></app-extranjero-form>
+      }
+      @case('extranjero_moral') {
+        <app-extranjero-moral-form (searchError)="setErrorMessage($event)"></app-extranjero-moral-form>
+      }
+      @default {
+        <div class="text-muted mt-3">
+        </div>
+      }
+    }
+  </div>
+</div>

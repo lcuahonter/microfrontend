@@ -1,0 +1,1082 @@
+<div class="container">
+  <form [formGroup]="importadorExportadorForm">
+    <div class="row mt-5">
+      <div class="col-md-12">
+        <label class="form-label text-start"
+          >Conforme a la regla 7.1.4 primer párrafo, fracciones I a la IV,
+          acredite lo siguiente:</label
+        >
+      </div>
+    </div>
+    <div class="w-100 p-2">
+      <div class="form-group">
+        <label class="form-label text-left">
+          <span class="text-danger">*</span> Señale si ha realizado operaciones
+          de comercio exterior durante los últimos dos años anteriores a su
+          solicitud e indique la fecha de inicio de operaciones de comercio
+          exterior
+        </label>
+        <app-input-radio
+          [radioOptions]="opcionDeBotonDeRadio"
+          [isRequired]="true"
+          [layout]="'horizontal'"
+          formControlName="comercioExteriorRealizado"
+          (change)="setValoresStore(importadorExportadorForm, 'comercioExteriorRealizado')"
+        ></app-input-radio>
+        <div
+          *ngIf="
+            importadorExportadorForm.get('comercioExteriorRealizado')?.invalid &&
+            importadorExportadorForm.get('comercioExteriorRealizado')?.touched
+          "
+          class="text-danger mt-3"
+        >
+          <b>Respuesta Obligatoria</b>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="importadorExportadorForm.get('comercioExteriorRealizado')?.value === '1'">
+      <div class="col-md-6 mt-4">
+        <input-fecha
+          [datos]="fechaDeFinDeVigencia"
+          [setFecha]="importadorExportadorForm.get('fechaInicioComercio')?.value"
+          (valorCambiado)="actualizarFechaInicioComercio($event);setValoresStore(importadorExportadorForm, 'fechaInicioComercio')"
+          [isDisabled]="esFormularioSoloLectura"
+          >
+        </input-fecha>
+        <div
+          *ngIf="
+            importadorExportadorForm.get('fechaInicioComercio')?.invalid &&
+            importadorExportadorForm.get('fechaInicioComercio')?.touched
+          "
+          class="text-danger mt-3"
+        >
+          <b>Respuesta Obligatoria</b>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="importadorExportadorForm.get('comercioExteriorRealizado')?.value === '0'">
+      <div class="w-100 p-4">
+        <div class="form-group">
+          <label class="form-label text-left">
+            <span class="text-danger">*</span> Señale si forma parte de un mismo
+            grupo, siempre que las empresas de grupo hayan efectuado operaciones
+            de comercio exterior en el plazo referido.
+          </label>
+          <app-input-radio
+            [radioOptions]="opcionDeBotonDeRadio"
+            [isRequired]="true"
+            [layout]="'horizontal'"
+            formControlName="esParteGrupoComercioExterior"
+            (change)="setValoresStore(importadorExportadorForm, 'esParteGrupoComercioExterior')"
+          ></app-input-radio>
+          <div
+            *ngIf="
+              importadorExportadorForm.get('esParteGrupoComercioExterior')?.invalid &&
+              importadorExportadorForm.get('esParteGrupoComercioExterior')?.touched
+            "
+            class="text-danger mt-3"
+          >
+            <b>Respuesta Obligatoria</b>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="importadorExportadorForm.get('esParteGrupoComercioExterior')?.value === '1'">
+      <div class="w-100 p-4">
+        <div class="form-group">
+          <label class="form-label text-left empresaExtranjeraIMMEX">
+            <span class="text-danger">*</span> Agregue un diagrama de la
+            estructura accionaria y corporativa, así como copia de las
+            escrituras públicas, en las que conste la participación accionaria
+            de las empresas que formen parte del grupo.
+          </label>
+        </div>
+
+        <div class="row mt-5">
+          <div class="col-md-12">
+            <div class="panel-group ficha-collapse" id="accordion">
+              @for(panel of panels; let i = $index; track i) {
+              <div class="panel panel-default mb-3">
+                <div class="panel-heading" (click)="mostrar_colapsable(i)">
+                  <h4 class="panel-title">
+                    <a>
+                      {{ panel.label }}
+                    </a>
+                  </h4>
+                  <button
+                    type="button"
+                    class="collpase-button"
+                    [class.collapsed]="panel.isCollapsed"
+                  ></button>
+                </div>
+                <div
+                  class="panel-collapse"
+                  [id]="'panel-' + i"
+                  [ngClass]="{
+                    collapse: panel.isCollapsed,
+                    in: !panel.isCollapsed
+                  }"
+                >
+                  <div class="panel-body">
+                    <app-tabla-dinamica
+                      [configuracionTabla]="tableHeaderDatos"
+                      [datos]="tablaDatos"
+                      [tipoSeleccionTabla]="tablaSeleccionCheckbox"
+                      (filaSeleccionada)="onFilaSeleccionada($event)"
+                    >
+                    </app-tabla-dinamica>
+                     <div 
+                      *ngIf="debeValidarTabla() && tablaDatos.length === 0 && importadorExportadorForm.get('esParteGrupoComercioExterior')?.touched"
+                      class="row mt-3"
+                    >
+                      <div class="col-md-12 text-danger">
+                        <b>Se debe agregar por lo menos una empresa del grupo</b>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end">
+          <button
+            type="button"
+            class="btn btn-primary me-2"
+            (click)="abrirModal(template)"
+          >
+            Agregar
+          </button>
+          <button
+            class="btn btn-danger me-2"
+            type="button"
+            (click)="modificarEmpresa()"
+          >
+            Modificar
+          </button>
+          <button
+            class="btn btn-default"
+            type="button"
+            (click)="eliminarEmpresa()"
+          >
+            Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- on click of NO -->
+    <div class="row" *ngIf="importadorExportadorForm.get('comercioExteriorRealizado')?.value === '0'">
+      <div class="w-100 p-4">
+        <div class="form-group">
+          <label class="form-label text-left">
+            <span class="text-danger">*</span> Señale si su constitución resultó
+            de una fusión o escisión, siempre que las empresas fusionantes o, en
+            su caso, la sociedad escindente, hayan efectuado operaciones de
+            comercio exterior.
+          </label>
+          <app-input-radio
+            [radioOptions]="opcionDeBotonDeRadio"
+            [isRequired]="true"
+            [layout]="'horizontal'"
+            formControlName="fusionEscisionConOperacionExterior"
+            (change)="setValoresStore(importadorExportadorForm, 'fusionEscisionConOperacionExterior')"
+          ></app-input-radio>
+          <div
+            *ngIf="
+              importadorExportadorForm.get('fusionEscisionConOperacionExterior')?.invalid &&
+              importadorExportadorForm.get('fusionEscisionConOperacionExterior')?.touched
+            "
+            class="text-danger mt-3"
+          >
+            <b>Respuesta Obligatoria</b>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group" *ngIf="importadorExportadorForm.get('fusionEscisionConOperacionExterior')?.value === '1'">
+      <label class="form-label text-left empresaExtranjeraIMMEX">
+        <span class="text-danger">*</span> Anexe copia certificada del documento
+        en el que conste la fusión o escisión de la sociedad, o bien, que
+        acrediten que forman parte del mismo grupo, conforme a los establecido
+        en la regla 7.1.7.
+      </label>
+    </div>
+    <!-- -------------- -->
+    <div class="row" *ngIf="importadorExportadorForm.get('comercioExteriorRealizado')?.value === '0'">
+      <div class="w-100 p-4">
+        <div class="form-group">
+          <label class="form-label text-left">
+            <span class="text-danger">*</span> Señale si previo a su
+            constitución ha operado durante los últimos 2 años como empresa
+            extranjera al amparo de otra empresa con Programa IMMEX en la
+            modalidad de albergue.
+          </label>
+          <app-input-radio
+            [radioOptions]="opcionDeBotonDeRadio"
+            [isRequired]="true"
+            [layout]="'horizontal'"
+            formControlName="empresaExtranjeraIMMEX"
+            (change)="setValoresStore(importadorExportadorForm, 'empresaExtranjeraIMMEX')"
+          ></app-input-radio>
+          <div
+            *ngIf="
+              importadorExportadorForm.get('empresaExtranjeraIMMEX')?.invalid &&
+              importadorExportadorForm.get('empresaExtranjeraIMMEX')?.touched
+            "
+            class="text-danger mt-3"
+          >
+            <b>Respuesta Obligatoria</b>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group" *ngIf="importadorExportadorForm.get('empresaExtranjeraIMMEX')?.value === '1'">
+      <label class="form-label text-left empresaExtranjeraIMMEX">
+        <span class="text-danger">*</span> Declaración bajo protesta de decir la
+        verdad, firmada por el representante legal de la empresa, que indique el
+        número de personas que indiquen que cuentan con experiencia en materia
+        de comercio exterior.
+      </label>
+      <label class="form-label text-left empresaExtranjeraIMMEX">
+        <span class="text-danger">*</span> Contrato celebrado por un minimo de 2
+        años con la empresa que cuenta con el programa IMMEX bajo la modalidad
+        de albergue.
+      </label>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 p-3">
+        <div class="w-100 p-2">
+          <div class="form-group">
+            <label class="form-label text-left">
+              <span class="text-danger">*</span> Señale si ha efectuado el pago
+              del derecho correspondiente a la fecha de presentación de la
+              solicitud, a que se refiere el artículo 40, inciso m) de la LFD,
+              en relación con el Anexo 19 de la RMF vigente a la fecha de
+              presentación de la solicitud del registro.
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+          <!-- First row: Fecha de pago -->
+          <div class="row">
+            <div class="col-md-12 mt-4">
+              <div class="row align-items-center">
+                <div class="col-md-4 text-end">
+                  <label class="form-label text-start mb-0"
+                    >Fecha de pago</label
+                  >
+                </div>
+                <div class="col-md-8">
+                  <input-fecha
+                    [datos]="fechaInicioInput"
+                    (valorCambiado)="onFechaCambiada($event);setValoresStore(importadorExportadorForm,'fechaDePago')"
+                    [setFecha]="importadorExportadorForm.get('fechaDePago')?.value"
+                    [isDisabled]="esFormularioSoloLectura"
+                  >
+                  </input-fecha>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Second row: Monto -->
+          <div class="row">
+            <div class="col-md-12 mt-4">
+              <div class="row align-items-center">
+                <div class="col-md-4 text-end">
+                  <label class="form-label text-start mb-0" for="montoOEA"
+                    >Monto</label
+                  >
+                </div>
+                <div class="col-md-8">
+                  <input
+                    class="form-control"
+                    formControlName="monto"
+                    type="text"
+                    id="montoOEA"
+                    name="montoOEA"
+                    maxlength="10"
+                    (blur)="validarCamposPago()"
+                    (keypress)="soloNumeros($event)"
+                    (paste)="pegarSoloNumeros($event, 'monto')"
+                    (change)="setValoresStore(importadorExportadorForm, 'monto')"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Third row: Número de Operación Bancaria -->
+          <div class="d-flex align-items-center mt-4">
+            <label
+              class="form-label mb-0 me-3 text-nowrap numerooperacionbancaria"
+              for="operacionesBancarias"
+            >
+              Número de Operación Bancaria
+            </label>
+            <input
+              class="form-control flex-grow-1"
+              formControlName="operacionesBancarias"
+              type="text"
+              id="operacionesBancarias"
+              name="operacionesBancarias"
+              maxlength="25"
+              (blur)="validarCamposPago()"
+              (keypress)="soloAlfanumericosConEspacios($event)"
+              (paste)="pegarSoloAlfanumericos($event, 'operacionesBancarias')"
+              (change)="setValoresStore(importadorExportadorForm, 'operacionesBancarias')"
+            />
+          </div>
+
+          <!-- Fourth row: Llave de pago -->
+          <div class="row">
+            <div class="col-md-12 mt-4">
+              <div class="row align-items-center">
+                <div class="col-md-4 text-end">
+                  <label class="form-label text-start mb-0" for="llaveOEA"
+                    >Llave de pago</label
+                  >
+                </div>
+                <div class="col-md-8">
+                  <input
+                    class="form-control"
+                    formControlName="llavePago"
+                    type="text"
+                    id="llaveOEA"
+                    name="llaveOEA"
+                    maxlength="25"
+                    (change)="validarLlavePago(); setValoresStore(importadorExportadorForm, 'llavePago')"
+                    (blur)="validarCamposPago()"
+                    (keypress)="soloAlfanumericosConEspacios($event)"
+                    (paste)="pegarSoloAlfanumericos($event, 'llavePago')"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          
+        </div>
+      </div>
+      <!-- Error message row -->
+          <div class="row" *ngIf="mostrarError">
+            <div class="col-md-12 text-danger mt-3">
+                <b>Es requisito obligatorio efectuar el pago de derechos</b>
+              
+            </div>
+          </div>
+      <div class="form-group mt-5">
+        <label class="form-label text-left estructura-accionaria-corporativa">
+          <span class="text-danger">*</span> Reportar el nombre y clave en el
+          RFC de las empresas transportistas autorizadas para efectuar el
+          traslado de las mercancías de comercio exterior.
+        </label>
+      </div>
+      <app-agregar-transportistas #agregarTransportistasRef></app-agregar-transportistas>
+
+      <div class="col-md-12 mt-5">
+        <div class="form-group">
+          <label class="form-label text-left">
+            <span class="text-danger">*</span> Señale si cuenta con un programa IMMEX.
+          </label>
+          <app-input-radio
+            [radioOptions]="opcionDeBotonDeRadio"
+            [isRequired]="true"
+            [layout]="'horizontal'"
+            formControlName="programaIMMEX"
+            (change)="setValoresStore(importadorExportadorForm, 'programaIMMEX')"
+          ></app-input-radio>
+          <div
+            *ngIf="
+              importadorExportadorForm.get('programaIMMEX')?.invalid &&
+              importadorExportadorForm.get('programaIMMEX')?.touched
+            "
+            class="text-danger mt-3"
+          >
+            <b>Respuesta Obligatoria</b>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12 mt-5">
+        <div class="form-group">
+          <label class="form-label text-left">
+            <span class="text-danger">*</span> Señale si cuenta con el Registro en el Esquema de Certificación de Empresas en la Modalidad IVA e IEPS conforme la normatividad vigente.
+          </label>
+          <app-input-radio
+            [radioOptions]="opcionDeBotonDeRadio"
+            [isRequired]="true"
+            [layout]="'horizontal'"
+            formControlName="modalidadIVAAeIEPS"
+            (change)="setValoresStore(importadorExportadorForm, 'modalidadIVAAeIEPS')"
+          ></app-input-radio>
+          <div
+            *ngIf="
+              importadorExportadorForm.get('modalidadIVAAeIEPS')?.invalid &&
+              importadorExportadorForm.get('modalidadIVAAeIEPS')?.touched
+            "
+            class="text-danger mt-3"
+          >
+            <b>Respuesta Obligatoria</b>
+          </div>
+        </div>
+      </div>
+
+      @if(importadorExportadorForm.get('modalidadIVAAeIEPS')?.value === '1') {
+        <div class="row mt-5">
+          <div class="col-md-6">
+            <label class="form-label
+              pull-right"
+              >Modalidad I&nbsp;V&nbsp;A&nbsp;e&nbsp;I&nbsp;E&nbsp;P&nbsp;S</label>
+          </div>
+          <div class="col-md-6">
+            <input type="text"
+              class="form-control"
+              formControlName="modalidadIVAAeIEPSValor"
+              (change)="setValoresStore(importadorExportadorForm, 'modalidadIVAAeIEPSValor')"
+              [disabled]="true"
+              />
+          </div>
+        </div>
+
+        <div class="row mt-5 d-flex">
+          <div class="col-md-6">
+            <label class="form-label
+              pull-right"
+              >Fecha De Registro</label>
+          </div>
+          <div class="col-md-6">
+            <input-fecha
+              class="sin-etiqueta"
+              [datos]="modalidadIVAAeIEPSFecha"
+              [setFecha]="importadorExportadorForm.get('modalidadIVAAeIEPSFecha')?.value"
+              [isDisabled]="true"
+            ></input-fecha>
+          </div>
+        </div>
+
+        <div class="row mt-5 mb-5">
+          <div class="col-md-6">
+            <label class="form-label
+              pull-right"
+              >Número de autorización</label>
+          </div>
+          <div class="col-md-6">
+            <input type="text"
+              class="form-control"
+              formControlName="numeroDeAutorizacion"
+              (change)="setValoresStore(importadorExportadorForm, 'numeroDeAutorizacion')"
+              [disabled]="true"
+              />
+          </div>
+        </div>
+      }
+
+      <div class="col-md-12 mt-5">
+        <div class="form-group">
+          <label class="form-label text-left">
+            <span class="text-danger">*</span> Indique si cuenta con al menos una instalación para la prestación de servicios logísticos y resguardo de la documentación de comercio exterior
+          </label>
+          <app-input-radio
+            [radioOptions]="opcionDeBotonDeRadio"
+            [isRequired]="true"
+            [layout]="'horizontal'"
+            formControlName="documentaciónDeComercioExterior"
+            (change)="setValoresStore(importadorExportadorForm, 'documentaciónDeComercioExterior')"
+          ></app-input-radio>
+          <div
+            *ngIf="
+              importadorExportadorForm.get('documentaciónDeComercioExterior')?.invalid &&
+              importadorExportadorForm.get('documentaciónDeComercioExterior')?.touched
+            "
+            class="text-danger mt-3"
+          >
+            <b>Respuesta Obligatoria</b>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12 mt-5">
+        <div class="form-group">
+          <label class="form-label text-left">
+            <span class="text-danger">*</span> Indique si participa directamente en el manejo de mercancías y gestión de la carga, utilizando su propio transporte, centros de distribución, almacenes y/o consolidación
+          </label>
+          <app-input-radio
+            [radioOptions]="opcionDeBotonDeRadio"
+            [isRequired]="true"
+            [layout]="'horizontal'"
+            formControlName="utilizandoSuPropioTransporte"
+            (change)="setValoresStore(importadorExportadorForm, 'utilizandoSuPropioTransporte')"
+          ></app-input-radio>
+          <div
+            *ngIf="
+              importadorExportadorForm.get('utilizandoSuPropioTransporte')?.invalid &&
+              importadorExportadorForm.get('utilizandoSuPropioTransporte')?.touched
+            "
+            class="text-danger mt-3"
+          >
+            <b>Respuesta Obligatoria</b>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12 mt-5">
+        <div class="form-group">
+          <label class="form-label text-left">
+            <span class="text-danger">*</span> Indique si cuenta con terceros para la prestación de servicios aduaneros, almacenaje, traslado y/o distribución de mercancía de comercio exterior, los cuales deberán contar con el Registro en el Esquema de Certificación de Empresas en la Modalidad Socio Comercial Certificado en cualquiera de sus rubros o CTPAT otorgado por CBP
+          </label>
+          <app-input-radio
+            [radioOptions]="opcionDeBotonDeRadio"
+            [isRequired]="true"
+            [layout]="'horizontal'"
+            formControlName="serviciosTercerosConCertificacion"
+            (change)="setValoresStore(importadorExportadorForm, 'serviciosTercerosConCertificacion')"
+          ></app-input-radio>
+          <div
+            *ngIf="
+              importadorExportadorForm.get('serviciosTercerosConCertificacion')?.invalid &&
+              importadorExportadorForm.get('serviciosTercerosConCertificacion')?.touched
+            "
+            class="text-danger mt-3"
+          >
+            <b>Respuesta Obligatoria</b>
+          </div>
+        </div>
+      </div>
+
+      @if(importadorExportadorForm.get('serviciosTercerosConCertificacion')?.value === '1'){
+        <div class="col-md-12">
+          <ng-titulo titulo="Terceros Contratados" />
+        </div>
+         <div class="panel-group ficha-collapse ps-5 pe-5" id="accordion">
+            @for(panel of panels2; let i = $index; track i) {
+              <div class="panel panel-default mb-3">
+                <div class="panel-heading" (click)="mostrar_colapsable2(i)">
+                  <h4 class="panel-title">
+                    <a>
+                      {{ panel.label }}
+                    </a>
+                  </h4>
+                  <button
+                    type="button"
+                    class="collpase-button"
+                    [class.collapsed]="panel.isCollapsed"
+                  ></button>
+                </div>
+                <div
+                  class="panel-collapse"
+                  [id]="'panel-' + i"
+                  [ngClass]="{
+                    collapse: panel.isCollapsed,
+                    in: !panel.isCollapsed
+                  }"
+                >
+                  <div class="panel-body">
+                    <app-tabla-dinamica
+                      [configuracionTabla]="tableHeaderDatosTC"
+                      [datos]="tablaDatosTC"
+                      [tipoSeleccionTabla]="tablaSeleccionCheckboxTC"
+                      (filaSeleccionada)="onFilaSeleccionadaTC($event)"
+                    >
+                    </app-tabla-dinamica>
+                  </div>
+                </div>
+              </div>
+            }
+        </div>
+
+        <div class="d-flex justify-content-end">
+          <button
+            type="button"
+            class="btn btn-primary me-2"
+            (click)="terceroContratadoModal(templateTC)"
+          >
+            Agregar
+          </button>
+          <button
+            class="btn btn-danger me-2"
+            type="button"
+            (click)="modificarTerceroContratado()"
+          >
+            Modificar
+          </button>
+          <button
+            class="btn btn-default"
+            type="button"
+            (click)="eliminarTerceroContratado()"
+          >
+            Eliminar
+          </button>
+        </div>
+      }
+
+      <div class="col-md-12 mt-5">
+        <ng-titulo titulo="Reconocimiento Mutuo" />
+      </div>
+      <div class="form-group">
+        <label class="form-label text-left">
+          <span class="text-danger">*</span> La adopción de México de las normas
+          establecidas en el Marco Normativo SAFE de la OMA para Asegurar y
+          Facilitar el Comercio Global publicado por la OMA, donde se incorporan
+          prácticas y normas en materia de seguridad, tiene como uno de sus
+          objetivos, alcanzar el Reconocimiento Mutuo" con aquellos países que
+          cuentan con un programa similar en materia de seguridad, que cumplen
+          con la condición de Operadores Económicos Autorizados de acuerdo al
+          "Marco SAFE" y la legislación de cada país.
+        </label>
+        <label class="form-label text-start"
+          >Por lo tanto, como parte de la estrategia para evitar la duplicación
+          de controles de seguridad y contribuir de manera significativa a la
+          facilitación y control de las mercancías que circulan en la cadena de
+          suministro internacional, es necesario contar con la participación de
+          aquellos que logren obtener el Registro en el Esquema de Certificación
+          de Empresas y autorizar el intercambio de información que permita
+          enriquecer los sistemas informáticos, eliminar y/o reducir la
+          redundancia y/o duplicación de esfuerzos en el proceso de
+          inscripción.</label
+        >
+        <label class="form-label text-start mb-4"
+          >Por lo anterior y de conformidad con lo dispuesto en el artículo 117
+          de Ley Federal de Transparencia y Acceso a la Información Pública,
+          autorizo al sujeto obligado denominado SAT, a través de la AGACE, a
+          compartir, difundir o distribuir con otras autoridades nacionales o
+          extranjeras los datos personales y demás información de la empresa que
+          represento, y que se genere durante el transcurso en que la misma se
+          encuentre inscrita en el Registro en el Esquema de Certificación de
+          Empresas</label
+        >
+        <app-input-radio
+          [radioOptions]="registroEsquemaCertificacionOptions"
+          [isRequired]="true"
+          [layout]="'horizontal'"
+          [gap]="'50px'"
+          formControlName="registroEsquemaCertificacion"
+          (change)="setValoresStore(importadorExportadorForm, 'registroEsquemaCertificacion')"
+        ></app-input-radio>
+        <div
+          *ngIf="
+            importadorExportadorForm.get('registroEsquemaCertificacion')?.invalid &&
+            importadorExportadorForm.get('registroEsquemaCertificacion')?.touched
+          "
+          class="text-danger mt-3"
+        >
+          <b>Respuesta Obligatoria</b>
+        </div>
+      </div>
+      <div class="col-md-12 mt-5">
+        <ng-titulo titulo="Clasificación de la Información" />
+      </div>
+      <div class="col-md-12">
+        <label class="form-label text-start"
+          >La información proporcionada, durante este trámite para el Registro
+          de Certificación de Empresas es clasificada por la empresa
+          como:</label
+        >
+        <app-input-radio
+          [radioOptions]="informacionEmpresaOptions"
+          [isRequired]="true"
+          [layout]="'horizontal'"
+          [gap]="'50px'"
+          formControlName="tipoInformacionEmpresa"
+          (change)="setValoresStore(importadorExportadorForm, 'tipoInformacionEmpresa')"
+        ></app-input-radio>
+        <div
+          *ngIf="
+            importadorExportadorForm.get('tipoInformacionEmpresa')?.invalid &&
+            importadorExportadorForm.get('tipoInformacionEmpresa')?.touched
+          "
+          class="text-danger mt-3"
+        >
+          <b>Respuesta Obligatoria</b>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- Modal -->
+<ng-template #template>
+  <div class="modal-header">
+    <h4 class="modal-title">
+      {{ isEditMode ? 'Modificar' : 'Agregar' }} Enlace Operativo
+    </h4>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="agregarEnlaceOperativoForm">
+      <label class="form-label text-left">
+        <span class="text-danger">*</span> RFC
+      </label>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <input
+              class="form-control"
+              id="rfc"
+              formControlName="rfcEnclaveOperativo"
+              type="text"
+              (change)="setValoresStore(agregarEnlaceOperativoForm, 'rfcEnclaveOperativo')"
+            />
+          </div>
+          @if(agregarEnlaceOperativoForm.get('rfcEnclaveOperativo')?.invalid
+          && agregarEnlaceOperativoForm.get('rfcEnclaveOperativo')?.touched)
+          {
+          <div class="mensaje-error">Este campo es obligatorio.</div>
+          }
+        </div>
+        <div class="col-md-8">
+          <div class="btn-group">
+            <button class="btn btn-default" type="button" (click)="buscarRFC()">
+              Buscar
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label class="form-label" for="rfc">RFC:</label>
+            <input
+              class="form-control"
+              id="rfc"
+              formControlName="enlaceOperativorfc"
+              type="text"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label class="form-label" for="denominacionRazonsocial"
+              >Denominación o razón social</label
+            >
+            <input
+              class="form-control"
+              id="denominacionRazonsocial"
+              formControlName="denominacionRazonsocial"
+              type="text"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label class="form-label" for="domicilio">Domicilio</label>
+            <input
+              class="form-control"
+              id="domicilio"
+              formControlName="domicilio"
+              type="text"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <input-fecha
+              [datos]="fechaDeLaUltimaOperacion"
+              [setFecha]="agregarEnlaceOperativoForm.get('inputfechaDeLaUltimaOperacion')?.value"
+              (valorCambiado)="actualizarFechaDeLaUltimaOperacion($event);setValoresStore(agregarEnlaceOperativoForm, 'inputfechaDeLaUltimaOperacion')"
+            ></input-fecha>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer d-flex justify-content-end">
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="aceptarEnlaceOperativo()"
+    >
+      {{ isEditMode ? 'Modificar' : 'Aceptar' }}
+    </button>
+    <button type="button" class="btn btn-primary" (click)="limpiarFormulario()">
+      Limpiar
+    </button>
+    <button type="button" class="btn btn-danger" (click)="cancelarModal()">
+      Cancelar
+    </button>
+  </div>
+</ng-template>
+
+<!-- Modal -->
+<ng-template #templateTC>
+  <div class="modal-header">
+    <h4 class="modal-title">
+      {{ isEditMode ? 'Modificar' : 'Agregar' }} Tercero Contratado
+    </h4>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="terceroContratadoForm">
+      <label class="form-label text-left">
+        <span class="text-danger">*</span> Registro Federal de Contribuyentes
+      </label>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <input
+              class="form-control"
+              id="rfcTerceroContratado"
+              formControlName="rfcTerceroContratado"
+              type="text"
+              (change)="setValoresStore(terceroContratadoForm, 'rfcTerceroContratado')"
+            />
+          </div>
+          @if(terceroContratadoForm.get('rfcTerceroContratado')?.invalid
+          && terceroContratadoForm.get('rfcTerceroContratado')?.touched)
+          {
+          <div class="mensaje-error">Este campo es obligatorio.</div>
+          }
+        </div>
+        <div class="col-md-8">
+          <div class="btn-group">
+            <button class="btn btn-default" type="button" (click)="buscarRFCTC()">
+              Buscar
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label class="form-label" for="rfcTC"
+              >RFC</label
+            >
+            <input
+              class="form-control"
+              id="rfcTC"
+              formControlName="rfcTC"
+              type="text"
+              [disabled]="true"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label class="form-label" for="nombreDenominacionTC">Nombre, denominación o razón social</label>
+            <input
+              class="form-control"
+              id="nombreDenominacionTC"
+              formControlName="nombreDenominacionTC"
+              type="text"
+              [disabled]="true"
+            />
+          </div>
+        </div>
+      </div>
+      <label class="form-label text-left mt-3">
+        Tipo de Registro
+      </label>
+
+      <div class="row">
+        <div class="col-md-12">
+          <label class="form-label text-left">
+            Customs Trade Partnership Against Terrorism (CTРАТ) certificado
+          </label>
+          <div class="form-group">
+            <app-input-radio
+              [radioOptions]="opcionDeBotonDeRadio"
+              [layout]="'horizontal'"
+              formControlName="ctpatCertificadoTC"
+              (change)="setValoresStore(terceroContratadoForm, 'ctpatCertificadoTC')"
+            ></app-input-radio>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <label class="form-label text-left">
+            Señale si cuenta con el Registro en el Esquema de certificación de empresas modalidad Socio Comercial Certificado
+          </label>
+          <div class="form-group">
+            <app-input-radio
+              [radioOptions]="opcionDeBotonDeRadio"
+              [layout]="'horizontal'"
+              formControlName="registroSocioComercialCertificadoTC"
+              (change)="setValoresStore(terceroContratadoForm, 'registroSocioComercialCertificadoTC')"
+            ></app-input-radio>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer d-flex justify-content-end">
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="aceptarTerceroContratado()"
+    >
+      {{ isEditMode ? 'Modificar' : 'Aceptar' }}
+    </button>
+    <button type="button" class="btn btn-primary" (click)="limpiarFormularioTC()">
+      Limpiar
+    </button>
+    <button type="button" class="btn btn-danger" (click)="cancelarModalTC()">
+      Cancelar
+    </button>
+  </div>
+</ng-template>
+
+<!-- Modal de validación de fecha -->
+<ng-template #templateFechaInvalida>
+  <div class="modal-header">
+    <h4 class="modal-title text-danger"></h4>
+  </div>
+  <div class="modal-body">
+    <p class="mb-0">
+      Fecha Inválida. La Fecha actual no puede ser más grande que el día de hoy.
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="cerrarModalFechaInvalida()"
+    >
+      Aceptar
+    </button>
+  </div>
+</ng-template>
+
+<!-- Modal de éxito -->
+<ng-template #templateExito>
+  <div class="modal-header">
+    <h4 class="modal-title text-success"></h4>
+  </div>
+  <div class="modal-body">
+    <p class="mb-0">Datos guardados correctamente.</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="cerrarModalExito()">
+      Aceptar
+    </button>
+  </div>
+</ng-template>
+
+<!-- Modal de RFC duplicado -->
+<ng-template #templateRFCDuplicado>
+  <div class="modal-header">
+    <h4 class="modal-title text-warning"></h4>
+  </div>
+  <div class="modal-body">
+    <p class="mb-0">Ya existe un registro con ese RFC</p>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="cerrarModalRFCDuplicado()"
+    >
+      Aceptar
+    </button>
+  </div>
+</ng-template>
+
+<!-- Modal de datos obligatorios -->
+<ng-template #templateDatosObligatorios>
+  <div class="modal-header">
+    <h4 class="modal-title text-warning"></h4>
+  </div>
+  <div class="modal-body">
+    <p class="mb-0">
+      Debe capturar todos los datos marcados como obligatorios.
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="cerrarModalDatosObligatorios()"
+    >
+      Aceptar
+    </button>
+  </div>
+</ng-template>
+
+<!-- Add the confirmation modal template -->
+<ng-template #templateConfirmacionEliminacion>
+  <div class="modal-header">
+    <h4 class="modal-title text-danger"></h4>
+  </div>
+  <div class="modal-body">
+    <p class="mb-0">¿Está seguro que desea eliminar los registros marcados?</p>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="confirmarEliminacionEmpresa()"
+    >
+      Aceptar
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="cerrarModalConfirmacionEliminacion()"
+    >
+      Cancelar
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #template2ConfirmacionEliminacion>
+  <div class="modal-header">
+    <h4 class="modal-title text-danger"></h4>
+  </div>
+  <div class="modal-body">
+    <p class="mb-0">¿Está seguro que desea eliminar los registros marcados?</p>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="confirmarEliminacionTC()"
+    >
+      Aceptar
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="cerrarModalConfirmacionEliminacion()"
+    >
+      Cancelar
+    </button>
+  </div>
+</ng-template>
+
+<!-- Add selection required modal template -->
+<ng-template #templateSeleccionRequerida>
+  <div class="modal-header">
+    <h4 class="modal-title text-warning"></h4>
+  </div>
+  <div class="modal-body">
+    <p class="mb-0">{{ mensajeSeleccion }}</p>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="cerrarModalSeleccionRequerida()"
+    >
+      Aceptar
+    </button>
+  </div>
+</ng-template>

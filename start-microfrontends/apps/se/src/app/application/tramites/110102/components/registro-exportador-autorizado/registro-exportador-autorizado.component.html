@@ -1,0 +1,60 @@
+<form [formGroup]="formularioRegistroExportador">
+  <div class="form">
+    <ng-titulo [titulo]="'Información opcional para UE y AELC'"></ng-titulo>
+    <div class="row">
+      <div class="col-md-8 form-group">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="solicitaSeparacionContable"
+            formControlName="solicitaSeparacionContable"
+            (change)="establecerValoresEnEstado(formularioRegistroExportador,'solicitaSeparacionContable')" />
+          <label class="form-check-label text-justify" for="solicitaSeparacionContable">
+            ¿Desea usar la opción del método de separación contable?
+          </label>
+        </div>
+      </div>
+      <div class="col-md-8 form-group">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="solicitaExportadorAutorizado"
+            formControlName="solicitaExportadorAutorizado" (change)="alCambiarExportadorAutorizado($event)" />
+          <label class="form-check-label text-justify" for="solicitaExportadorAutorizado">
+            ¿Desea usar la opción de exportador autorizado?
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="mostrarOpcionesExportador">
+      <div class="col-md-12">
+        <label for="exportadorAutorizadoInstrucciones" class="form-label">Instrucciones para Exportador
+          Autorizado</label>
+        <app-input-radio id="exportadorAutorizadoInstrucciones" [radioOptions]="opcionesExportador" [isRequired]="false"
+          [layout]="'vertical'" (valueChange)="establecerValoresEnEstado(this.formularioRegistroExportador, 'condicionExportador')"
+          formControlName="condicionExportador"></app-input-radio>
+      </div>
+    </div>
+  </div>
+  <div class="form">
+    <ng-titulo [titulo]="'Información opcional para Japón'"></ng-titulo>
+    <div class="row">
+      <div class="col-md-8 form-group">
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" formControlName="solicitaExportadorAutorizadoJPN"
+          id="solicitaExportadorAutorizadoJPN" (change)="alCambiarExportadorAutorizadoJapon($event)" />
+        <label class="form-check-label" for="solicitaExportadorAutorizadoJPN">
+          Exportador Autorizado Japón
+        </label>
+      </div>
+    </div>
+    </div>
+    <div class="row" *ngIf="mostrarOpcionesExportadorJapon">
+      <div class="col-md-12">
+        <label for="exportadorAutorizadoJPNInstrucciones" class="form-label">Instrucciones para Exportador Autorizado
+          Japón</label>
+        <app-input-radio id="exportadorAutorizadoJPNInstrucciones" [radioOptions]="opcionesExportadorJapon"
+          [isRequired]="false" [layout]="'vertical'"
+          (valueChange)="establecerValoresEnEstado(this.formularioRegistroExportador, 'condicionExportadorJPN')"
+          formControlName="condicionExportadorJPN"></app-input-radio>
+      </div>
+    </div>
+  </div>
+</form>

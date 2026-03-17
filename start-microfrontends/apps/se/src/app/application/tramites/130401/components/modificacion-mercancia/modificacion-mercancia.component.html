@@ -1,0 +1,122 @@
+<div class="container">
+  <form [formGroup]="mercanciaFormulario">
+    <ng-titulo titulo="Modificación de la descripción de la mercancía" />
+    <div class="row">
+      <div class="col-md-4">
+        <label>Folio resolución:</label>
+        <input
+          type="text"
+          class="form-control"
+          id="numeroFolioResolucion"
+          formControlName="numeroFolioResolucion"
+        />
+      </div>
+      <div class="col-md-4">
+        <label>Cantidad:</label>
+        <span
+          class="bi bi-question-circle-fill"
+          title="Cantidad pendiente a importar/exportar"
+          data-bs-toggle="tooltip"
+        ></span>
+        <input
+          type="text"
+          class="form-control"
+          id="cantidadLibreMercancia"
+          formControlName="cantidadLibreMercancia"
+        />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8">
+        <div>
+          <label>Descripción de la mercancía:</label>
+          <textarea
+            class="form-control height-55"
+            id="descripcion"
+            formControlName="descripcion"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8 mt-3">
+        <div>
+          <label>Modificar la descripción como sigue*:</label>
+          <textarea
+            class="form-control height-80"
+            id="descripcionNuevaMercanciaPexim"
+            formControlName="descripcionNuevaMercanciaPexim"
+            maxlength="250"
+            [ngClass]="
+              isValid(mercanciaFormulario, 'descripcionNuevaMercanciaPexim')
+                ? 'required'
+                : ''
+            "
+            (change)="
+              setValoresStore(
+                mercanciaFormulario,
+                'descripcionNuevaMercanciaPexim',
+                'setDescripcionNuevaMercanciaPexim'
+              )
+            "
+          ></textarea>
+            @if (mercanciaFormulario.get('descripcionNuevaMercanciaPexim')?.invalid && mercanciaFormulario.get('descripcionNuevaMercanciaPexim')?.touched) {
+              <div class="text-danger">
+                @if (mercanciaFormulario.get('descripcionNuevaMercanciaPexim')?.errors?.['required']) {
+                <small>Este campo es obligatorio</small>
+                } @else if (mercanciaFormulario.get('descripcionNuevaMercanciaPexim')?.errors?.['pattern']) {
+                <small>Por favor, corrige la descripción/dirección</small>
+                }
+              </div>
+            }
+        </div>
+      </div>
+    </div>
+    <ng-container class="mt-5">
+      <ng-titulo titulo="Partidas de la mercancía" />
+      <div class="row">
+        <div class="col-md-8">
+          <label class="mb-2">Partidas</label>
+          <app-tabla-dinamica 
+          [configuracionTabla]="mercanciaTablaEncabezados"
+          [tipoSeleccionTabla]="tablaSeleccion.CHECKBOX" 
+          [datos]="mercanciaTablaDatos"
+          [filasSeleccionadas]="filasSeleccionadas" 
+          (listaDeFilaSeleccionada)="seleccionDeFilas($event)"
+          [disableSeleccionTablaCheckBox]="soloLectura"
+          ></app-tabla-dinamica>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 d-flex justify-content-end">
+          <button type="button" class="btn btn-primary ms-3" (click)="cargarMercanciaTabla()" [disabled]="soloLectura">
+            Modificar partida mercancia
+          </button>
+        </div>
+      </div>
+    </ng-container>
+  </form>
+</div>
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones
+    [notificacionInput]="nuevaNotificacion"
+    (confirmacionModal)="eliminarPedimento($event)"
+  >
+  </lib-notificaciones>
+</section>
+}
+<div
+  class="modal fade"
+  id="modificacionMercancia"
+  tabindex="-1"
+  #modificacionMercancia
+  aria-labelledby="modificacionMercancia"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <app-modificacion-mercancia-modelo [mercanciaSeleccionadas]="mercanciaSeleccionadasFila" (emitMercanciaSeleccionadas)="emitMercanciaSeleccionadas($event)"></app-modificacion-mercancia-modelo>
+    </div>
+  </div>
+</div>

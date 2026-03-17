@@ -1,0 +1,48 @@
+<div class="tree-node" [style.padding-left.px]="level * 24">
+  <div class="tree-node-content">
+    <span class="tree-toggle" (click)="toggleNode($event)">
+      @if (node.loading) {
+        <div class="spinner-border spinner-border-sm text-primary" role="status">
+          <span class="visually-hidden">...</span>
+        </div>
+      } @else if (node.level! < 3) {
+        <i [class]="node.expanded ? 'bi bi-dash-square' : 'bi bi-plus-square'"></i>
+      } @else {
+        <span class="tree-spacer"></span>
+      }
+    </span>
+
+    <input
+      type="checkbox"
+      class="form-check-input"
+      [checked]="isSelected()"
+      (change)="onCheckboxChange($event)"
+      [id]="'checkbox-' + node.id"
+      (click)="$event.stopPropagation()"
+    />
+
+    <label
+      [for]="'checkbox-' + node.id"
+      class="tree-label"
+      (click)="onLabelClick($event)"
+      [title]="node.descripcion"
+    >
+      {{ node.clave }} - {{ node.descripcion }}
+    </label>
+  </div>
+
+  @if (node.expanded && node.children && node.children.length > 0) {
+    <div class="tree-children">
+      @for (child of node.children; track child.id) {
+        <app-tree-node-item
+          [node]="child"
+          [level]="level + 1"
+          [selectedNodes]="selectedNodes"
+          (nodeToggled)="nodeToggled.emit($event)"
+          (nodeSelected)="nodeSelected.emit($event)"
+        >
+        </app-tree-node-item>
+      }
+    </div>
+  }
+</div>

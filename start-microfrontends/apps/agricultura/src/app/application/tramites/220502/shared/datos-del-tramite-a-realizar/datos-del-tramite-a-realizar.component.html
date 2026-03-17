@@ -1,0 +1,99 @@
+<fieldset [formGroupName]="claveDeControl">
+  <ng-titulo titulo="Datos del trámite a realizar" />
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-field">
+        <app-catalogo-select
+          id="certificadosAutorizados"
+          [catalogo]="certificadosAutorizados.catalogos"
+          [label]="certificadosAutorizados.labelNombre"
+          [required]="certificadosAutorizados.required"
+          formControlName="certificadosAutorizados"
+          [isDisabled]="formularioDeshabilitado"
+          [markTouched]="grupoFormularioPadre.get(this.claveDeControl)?.get('certificadosAutorizados')?.touched ?? false"
+          (selectionChange)="onCertificadosAutorizadosChange($event)"
+        ></app-catalogo-select>
+      </div>
+    </div>
+    @if (procedimiento === 220501 || procedimiento === 220502) {
+      <div class="col-md-4">
+        <div class="form-field" >
+          <input-fecha
+            formControlName="fechaInspeccion"
+            [datos]="configuracionFechaInspeccion"
+            (valorCambiado)="cambioFechaInspeccion($event)"
+            [isDisabled]="false"
+        [setFecha]="procedimiento === 220501 ? solicitud220501State.fechaInspeccion 
+          : procedimiento === 220502 ? solicitud220502State.fechaInspeccion 
+          : ''"
+          ></input-fecha>
+           <span
+      *ngIf="
+        grupoFormularioPadre
+          .get(claveDeControl + '.fechaInspeccion')
+          ?.hasError('required') &&
+        grupoFormularioPadre
+          .get(claveDeControl + '.fechaInspeccion')?.touched
+      "
+      class="mensaje-error"
+      >Este campo es obligatorio</span
+    >
+        </div>
+      </div>
+    }
+    <div class="col-md-4">
+      <div class="form-field">
+        <app-catalogo-select
+          id="horaDeInspeccion"
+          [catalogo]="horaDeInspeccion.catalogos"
+          [label]="horaDeInspeccion.labelNombre"
+          [required]="horaDeInspeccion.required"
+          formControlName="horaDeInspeccion"
+          [isDisabled]="formularioDeshabilitado"
+          [markTouched]="grupoFormularioPadre.get(this.claveDeControl)?.get('horaDeInspeccion')?.touched ?? false"
+          (selectionChange)="setHoraDeInspeccion($event)"
+        ></app-catalogo-select>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-field">
+        <app-catalogo-select
+          id="aduanaDeIngreso"
+          [catalogo]="aduanaDeIngreso.catalogos"
+          [label]="aduanaDeIngreso.labelNombre"
+          [required]="aduanaDeIngreso.required"
+          formControlName="aduanaDeIngreso"
+          [isDisabled]="true"
+          (selectionChange)="setAduanaDeIngreso($event)"
+        ></app-catalogo-select>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="form-field">
+        <app-catalogo-select
+          id="sanidadAgropecuaria"
+          [catalogo]="sanidadAgropecuaria.catalogos"
+          [label]="sanidadAgropecuaria.labelNombre"
+          [required]="sanidadAgropecuaria.required"
+          formControlName="sanidadAgropecuaria"
+          [isDisabled]="true"
+          (selectionChange)="setSanidadAgropecuaria($event)"
+        ></app-catalogo-select>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-field">
+        <app-catalogo-select
+          id="puntoDeInspeccion"
+          [catalogo]="puntoDeInspeccion.catalogos"
+          [label]="puntoDeInspeccion.labelNombre"
+          [required]="puntoDeInspeccion.required"
+          formControlName="puntoDeInspeccion"
+          [markTouched]="grupoFormularioPadre.get(this.claveDeControl)?.get('puntoDeInspeccion')?.touched ?? false"
+          [isDisabled]="formularioDeshabilitado"
+          (selectionChange)="setPuntoDeInspeccion($event)"
+        ></app-catalogo-select>
+      </div>
+    </div>
+  </div>
+</fieldset>

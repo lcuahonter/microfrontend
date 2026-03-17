@@ -1,0 +1,976 @@
+<ng-titulo titulo="Tipo de servicio extraordinario" />
+
+<form [formGroup]="FormSolicitud" *ngIf="formularioInicializado && FormSolicitud">
+  <div class="row">
+    <div class="col-md-4">
+      <app-catalogo-select
+        [catalogo]="tiposSolicitud"
+        formControlName="tipoSolicitud"
+        [label]="'Tipo de solicitud'"
+        [required]="true"
+        [primerOptionValue]="SIN_VALOR"
+        [hiddenPrimerOption]="false"
+        [disabledPrimerOption]="false"
+        name="tipoSolicitud"
+        [isDisabled]="!editable"
+        (change)="tipoSolicitudSeleccion()"
+      ></app-catalogo-select>
+    </div>
+  </div>
+
+  @if(tipoSolicitudSeleccionada > 0) {
+  <ng-titulo titulo="Datos del importador/exportador" />
+  <div formGroupName="datosImportadorExportador">
+    @if (isApoderado && masDeUnaPatente) {
+    <!-- Sección Apoderado elegir patente -->
+    <div class="row">
+      <div class="col-md-12">
+        <h6>
+          Debes seleccionar una patente para la solicitud del servicio
+          extraordinario
+        </h6>
+      </div>
+      <app-input-radio
+        [radioOptions]="radioPatentes"
+        [layout]="'horizontal'"
+        (change)="patenteApoderado()"
+        id="apoderadoPatente"
+        formControlName="apoderadoPatente"
+      >
+      </app-input-radio>
+    </div>
+
+    <!-- Sección RFC y Nombre  -->
+    <div class="row">
+      <div class="col-md-4">
+        <app-catalogo-select
+          [catalogo]="rfcs"
+          formControlName="empresaApoderado"
+          [label]="'RFC'"
+          [id]="'empresaApoderado'"
+          [required]="true"
+          name="empresaApoderado"
+          [primerOptionValue]="SIN_VALOR"
+          [hiddenPrimerOption]="false"
+          [disabledPrimerOption]="false"
+        ></app-catalogo-select>
+      </div>
+
+      @if (isApoderado && masDeUnaEmpresa) {
+      <div class="col-md-4">
+        <app-catalogo-select
+          [catalogo]="rfcs"
+          formControlName="empresasApoderado"
+          [label]="'RFC'"
+          [id]="'empresasApoderado'"
+          [required]="true"
+          name="empresasApoderado"
+          [primerOptionValue]="SIN_VALOR"
+          [hiddenPrimerOption]="false"
+          [disabledPrimerOption]="false"
+        ></app-catalogo-select>
+        <span
+          id="errorEmpresasApoderado"
+          name="errorEmpresasApoderado"
+          class="text-danger"
+        ></span>
+      </div>
+      }
+    </div>
+
+    } @else {
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="RFCImpExp">RFC<span [ngClass]="isRequired(datosImportadorExportador, 'RFCImpExp') ? 'required' : ''">*</span>:</label>
+          <input
+            class="form-control"
+            id="rfc"
+            placeholder=""
+            type="text"
+            formControlName="RFCImpExp"
+            maxlength="13"
+            libUppercase
+            (blur)="validaRfc()"
+            (input)="cambiosInput('RFCImpExp', datosImportadorExportador)"
+          />
+
+          <div
+            *ngIf="isRequired(datosImportadorExportador, 'RFCImpExp')"
+            class="mensaje-error"
+          >
+            Este campo es obligatorio.
+          </div>
+
+          <div
+            *ngIf="isErrorPattern(datosImportadorExportador, 'RFCImpExp')"
+            class="mensaje-error"
+          >
+            {{ ERR_RFC_NO_VALIDO }}
+          </div>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="nombre">Nombre:</label>
+          <input
+            class="form-control"
+            id="nombre"
+            formControlName="nombre"
+            placeholder=""
+            type="text"
+            appUppercase
+          />
+        </div>
+      </div>
+    </div>
+    }
+
+    <!-- Aqui se debe ocultar si el rfc es un rfc generico -->
+    <section id="seccion-certificaciones">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="desNumeroRegistro"
+              >Número de registro o programa:</label
+            >
+            <input
+              class="form-control"
+              id="desNumeroRegistro"
+              placeholder=""
+              type="text"
+              formControlName="desNumeroRegistro"
+              maxlength="25"
+              [ngClass]="
+                isValid(datosImportadorExportador, 'desNumeroRegistro')
+                  ? 'required'
+                  : ''
+              "
+              (change)="
+                setValoresStore(
+                  datosImportadorExportador,
+                  'desNumeroRegistro',
+                  'setDescripcionNumeroRegistro'
+                )
+              "
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <lib-check-input-text
+            #programaFomento
+            [checkboxValor]="solicitudState?.programa || false"
+            [textoValor]="solicitudState?.descripcionProgramaFomento || ''"
+            [idCheckbox]="'programa'"
+            [idInputTexto]="'desProgramaFomento'"
+            [label]="'Programa de fomento:'"
+            [required]="false"
+            [reverse]="true"
+            [hidden]="false"
+            [isDisabled]="!editable"
+            [maxLengthValidacion]="300"
+            [tipo]="'visible'"
+            (checkboxChange)="checkPrograma($event)"
+          ></lib-check-input-text>
+        </div>
+
+        <div class="col-md-4">
+          <lib-check-input-text
+            #programaImmex
+            [checkboxValor]="solicitudState?.checkIMMEX || false"
+            [textoValor]="solicitudState?.descripcionImmex || ''"
+            [idCheckbox]="'checkIMMEX'"
+            [idInputTexto]="'desImmex'"
+            [label]="'IMMEX (Número/aaaa):'"
+            [required]="false"
+            [reverse]="true"
+            [hidden]="false"
+            [isDisabled]="!editable"
+            [maxLengthValidacion]="300"
+            (checkboxChange)="checkImmex($event)"
+          ></lib-check-input-text>
+        </div>
+
+        <div class="col-md-4">
+          <lib-check-input-text
+            #industriaAutomotriz
+            [checkboxValor]="solicitudState?.industriaAutomotriz || false"
+            [textoValor]="solicitudState?.descripcionIndustrialAutomotriz || ''"
+            [idCheckbox]="'industriaAutomotriz'"
+            [idInputTexto]="'desIndustrialAutomotriz'"
+            [label]="'Industria automotriz:'"
+            [required]="false"
+            [reverse]="true"
+            [hidden]="false"
+            [maxLengthValidacion]="25"
+            (checkboxChange)="checkAutomotriz($event)"
+          ></lib-check-input-text>
+        </div>
+      </div>
+
+      <div class="row mt-2">
+        <div class="col-md-12">
+          <label for="tipoEmpresa">Tipo de empresa certificada:</label>
+        </div>
+
+        <div class="col-md-6">
+          <lib-input-check
+            [id]="'tipoEmpresaCertificadaA'"
+            [label]="'I.V.A e I.E.P.S Certificación A'"
+            [required]="false"
+            [isDisabled]="tipoEmpresaCertificadaADisabled || !editable"
+            formControlName="tipoEmpresaCertificadaA"
+            (change)="onTipoEmpresaChange('a', 'tipoEmpresaCertificadaA')"
+          ></lib-input-check>
+          
+          <lib-input-check
+            [id]="'tipoEmpresaCertificadaAA'"
+            [label]="'I.V.A e I.E.P.S Certificación AA'"
+            [required]="false"
+            [isDisabled]="tipoEmpresaCertificadaAADisabled || !editable"
+            formControlName="tipoEmpresaCertificadaAA"
+            (change)="onTipoEmpresaChange('aa', 'tipoEmpresaCertificadaAA')"
+          ></lib-input-check>
+          
+          <lib-input-check
+            [id]="'tipoEmpresaCertificadaAAA'"
+            [label]="'I.V.A e I.E.P.S Certificación AAA'"
+            [required]="false"
+            [isDisabled]="tipoEmpresaCertificadaAAADisabled || !editable"
+            formControlName="tipoEmpresaCertificadaAAA"
+            (change)="onTipoEmpresaChange('aaa', 'tipoEmpresaCertificadaAAA')"
+          ></lib-input-check>
+        </div>
+
+        <div class="col-md-6">
+          <lib-input-check
+            [id]="'socioComercial'"
+            [label]="'Socio comercial'"
+            [required]="false"
+            [isDisabled]="!editable"
+            formControlName="socioComercial"
+            (change)="checkIdSocioComercial()"
+          ></lib-input-check>
+
+          <lib-input-check
+            [id]="'certificacionOEA'"
+            [label]="'Operador económico autorizado'"
+            [required]="false"
+            [isDisabled]="certificacionOEADisabled || !editable"
+            formControlName="certificacionOEA"
+            (change)="
+              setValoresStore(
+                datosImportadorExportador,
+                'certificacionOEA',
+                'setCertificacionOEA'
+              )
+            "
+          ></lib-input-check>
+
+          <lib-input-check
+            [id]="'revision'"
+            [label]="'Revisión en origen'"
+            [required]="false"
+            [isDisabled]="revisionDisabled || !editable"
+            formControlName="revision"
+            (change)="
+              setValoresStore(
+                datosImportadorExportador,
+                'revision',
+                'setRevision'
+              )
+            "
+          ></lib-input-check>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="idSocioComercial"
+              >ID socio comercial @if (solicitudState?.socioComercial)
+              {*}:</label
+            >
+            <input
+              class="form-control"
+              id="idSocioComercial"
+              formControlName="idSocioComercial"
+              placeholder=""
+              type="text"
+              maxlength="30"
+              [ngClass]="
+                isValid(datosImportadorExportador, 'idSocioComercial')
+                  ? 'required'
+                  : ''
+              "
+              (blur)="validarIDSocioComercial()"
+            />
+            <div
+              *ngIf="isRequired(datosImportadorExportador, 'idSocioComercial')"
+              class="mensaje-error"
+            >
+              Este campo es obligatorio.
+            </div>
+            <div
+              *ngIf="
+                isErrorPattern(datosImportadorExportador, 'idSocioComercial')
+              "
+              class="mensaje-error"
+            >
+              Por favor, ingresa caracteres alfanuméricos.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <ng-titulo titulo="Datos del servicio" />
+  <div formGroupName="datosServicio">
+    <div class="row">
+      <div class="col-md-4">
+        <label for="fechaInicio" class="form-label">Fecha inicio<span [ngClass]="isRequired(datosServicio, 'fechaInicio') ? 'required' : ''">*</span>:</label>
+        <input
+          class="form-control"
+          type="date"
+          name="fechaInicio"
+          id="fechaInicio"
+          formControlName="fechaInicio"
+          placeholder="dd/mm/yyyy"
+          autofocus="false"
+          (change)="changeFechaInicio(); limpiarFechas()"
+          (blur)="limpiarFechas()"
+          (keydown)="$event.preventDefault()"
+        />
+        <div
+          *ngIf="isRequired(datosServicio, 'fechaInicio')"
+          class="mensaje-error"
+        >
+          Este campo es obligatorio.
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <label for="fechaInicio" class="form-label">Hora Inicio<span [ngClass]="isRequired(datosServicio, 'horaInicio') ? 'required' : ''">*</span>:</label>
+        <input-hora
+          #horaInicio
+          formControlName="horaInicio"
+          [required]="true"
+          [inputId]="'horaInicio'"
+          [ngClass]="isValid(datosServicio, 'horaInicio') ? 'is-invalid' : ''"
+          [disabled]="!editable"
+          (change)="changeHoraInicio()"
+        ></input-hora>
+        <div
+          *ngIf="isRequired(datosServicio, 'horaInicio')"
+          class="mensaje-error"
+        >
+          Este campo es obligatorio.
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <label for="fechaFinal" class="form-label">Fecha final<span [ngClass]="isRequired(datosServicio, 'fechaFinal') ? 'required' : ''">*</span>:</label>
+        <input
+          class="form-control"
+          type="date"
+          name="fechaFinal"
+          id="fechaFinal"
+          autofocus="false"
+          formControlName="fechaFinal"
+          (change)="changeFechaFinal()"
+          (blur)="limpiarFechas()"
+          (keydown)="$event.preventDefault()"
+        />
+        <div
+          *ngIf="isRequired(datosServicio, 'fechaFinal')"
+          class="mensaje-error"
+        >
+          Este campo es obligatorio.
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <label for="horaFin" class="form-label">Hora final<span [ngClass]="isRequired(datosServicio, 'horaFinal') ? 'required' : ''">*</span>:</label>
+        <input-hora
+          #horaFinal
+          formControlName="horaFinal"          
+          [required]="true"
+          [inputId]="'horaFinal'"
+          [disabled]="!editable"
+          (change)="changeHoraFinal()"
+        ></input-hora>
+        <div
+          *ngIf="isRequired(datosServicio, 'horaFinal')"
+          class="mensaje-error"
+        >
+          Este campo es obligatorio.
+        </div>
+      </div>
+    </div> 
+
+    <div class="row mt-5" *ngIf="(mostrarRangoFechas || (solicitudState?.fechasSeleccionadas && solicitudState.fechasSeleccionadas.length > 0)) && tipoSolicitudSeleccionada !== 1">
+      <div class="col-md-12">
+        <div class="panel-group ficha-collapse" id="accordion">
+          <div class="panel panel-default">
+            <div class="panel-heading" (click)="mostrarColapsable()">
+              <h4 class="panel-title">
+                <a>
+                  Especifique los días que se utilizarán dentro del periodo*:
+                </a>
+              </h4>
+              <button
+                type="button"
+                class="collpase-button"
+                [ngClass]="(colapsable || (solicitudState?.fechasSeleccionadas && solicitudState.fechasSeleccionadas.length > 0)) ? '' : 'collapsed'"
+                title="Colapsable"
+              ></button>
+            </div>
+            @if(colapsable || (solicitudState?.fechasSeleccionadas && solicitudState.fechasSeleccionadas.length > 0)){
+            <div class="panel-collapse collapse in" id="panel-01">
+              <div class="panel-body">
+                <crosslist
+                  [fechas]="selectRangoDias"
+                  [fechasSeleccionadas]="fechasSeleccionadasCrosslist"
+                  [label]="LABEL_CROSSLIST_FECHAS"
+                  [mensajeAlerta]="MENSAJE_ALERTA_CROSSLIST"
+                  [isDisabled]="!editable"
+                  (fechasSeleccionadasChange)="changeCrosslist($event)"
+                ></crosslist>
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-titulo titulo="Datos del despacho para el servicio extraordinario" />
+  <div formGroupName="despacho">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="lda"
+            (click)="showConfirmDialogLDA_DD('lda')"
+            formControlName="lda"
+            maxlength="13"
+          />
+          <label class="form-check-label" for="lda">Despacho LDA</label>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="dd"
+            (click)="showConfirmDialogLDA_DD('dd')"
+            formControlName="dd"
+            maxlength="13"
+          />
+          <label class="form-check-label" for="dd">Despacho DD</label>
+        </div>
+      </div>
+    </div>
+
+    @if(despachoSeleccionado) {
+    <div
+      class="row"
+      *ngIf="despacho.get('lda')?.value || despacho.get('dd')?.value"
+    >
+      @if (despacho.get('lda')?.value) {
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="tipo" class="form-label">RFC autorización LDA*:</label>
+          <input
+            type="text"
+            id="rfcDespachoLDA"
+            class="form-control"
+            formControlName="rfcDespachoLDA"
+            placeholder=""
+            (input)="cambiosInput('rfcDespachoLDA', despacho)"
+            (blur)="changeRfcAutorizacionLDA()"
+            maxlength="13"
+            [ngClass]="isValid(despacho, 'rfcDespachoLDA') ? 'required' : ''"
+          />
+          <div
+            *ngIf="isRequired(despacho, 'rfcDespachoLDA')"
+            class="mensaje-error"
+          >
+            Este campo es obligatorio.
+          </div>
+        </div>
+      </div>
+      } @else if (despacho.get('dd')?.value) {
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="tipo" class="form-label">Autorización DDEX*:</label>
+          <input
+            type="text"
+            id="folioDDEX"
+            class="form-control"
+            formControlName="folioDDEX"
+            placeholder=""
+            (blur)="changeFolioDDEX()"
+            (input)="cambiosInput('folioDDEX', despacho)"
+            maxlength="16"
+            [ngClass]="isValid(despacho, 'folioDDEX') ? 'required' : ''"
+          />
+
+          <div *ngIf="isRequired(despacho, 'folioDDEX')" class="mensaje-error">
+            Este campo es obligatorio.
+          </div>
+
+          <div
+            *ngIf="isErrorPattern(despacho, 'folioDDEX')"
+            class="mensaje-error"
+          >
+            Formato incorrecto.
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+    }
+
+    <div class="row">
+      <div class="col-md-4">
+        <label class="form-label" for="">Aduana<span [ngClass]="isErrorNoMenosUno(despacho, 'idAduanaDespacho') ? 'required' : ''">*</span>:</label>
+        <select
+          class="form-select form-control"
+          formControlName="idAduanaDespacho"
+          (change)="changeAduana()"
+        >
+          <option value="-1">Seleccione una opción</option>
+          <option
+            *ngFor="let aduana of aduanas"
+            [title]="aduana.title"
+            [value]="aduana.clave"
+          >
+            {{ aduana.descripcion }}
+          </option>
+        </select>
+        <div
+          *ngIf="isErrorNoMenosUno(despacho, 'idAduanaDespacho')"
+          class="mensaje-error"
+        >
+          Este campo es obligatorio.
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="">Sección aduanera:</label>
+        <select
+          class="form-select form-control"
+          formControlName="idSeccionDespacho"
+          (change)="changeSeccionAduanera()"
+          [required]="false"
+        >
+          <option value="-2" hidden>
+            No cuenta con sección aduanera
+          </option>
+          <option value="-1">Seleccione una opción</option>
+          <option
+            *ngFor="let seccion of seccionAduanera"
+            [title]="seccion.title"
+            [value]="seccion.clave"
+          >
+            {{ seccion.descripcion }}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      @if (!mostarSelectTipoDespacho) {
+      <div class="col-md-4">
+        <label class="form-label" for="">Nombre del recinto:</label>
+        <select
+          class="form-select form-control"
+          formControlName="nombreRecinto"
+          (change)="changeRecinto()"
+          [required]="false"
+          [disabled]="!editable"
+        >
+          <option value="-2" hidden>
+            No cuenta con recinto fiscalizado
+          </option>
+          <option value="-1">Seleccione una opción</option>
+          <option
+            *ngFor="let recinto of recintoCatalogo"
+            [title]="recinto.title"
+            [value]="recinto.id_recinto_fiscalizado"
+          >
+            {{ recinto.descripcion }}
+          </option>
+        </select>
+      </div>
+      } @else {
+      <div class="col-md-4">
+        <app-catalogo-select
+          [catalogo]="selectCatalogoDespacho"
+          formControlName="tipoDespacho"
+          [label]="'Tipo despacho'"
+          [required]="tipoDespachoRequired"
+          [isDisabled]="activarCatalogoDespacho"
+          [primerOptionValue]="SIN_VALOR"
+          [hiddenPrimerOption]="false"
+          [disabledPrimerOption]="false"
+          (change)="changeTipoDespacho()"
+        ></app-catalogo-select>
+      </div>
+      }
+      <div class="col-md-4">
+        <app-catalogo-select
+          [catalogo]="tipoOperacion"
+          formControlName="tipoOperacion"
+          [label]="'Tipo de operación'"
+          [required]="true"
+          [isDisabled]="!activarCatalogoTipoOperacion || !editable"
+          [primerOptionValue]="SIN_VALOR"
+          [hiddenPrimerOption]="false"
+          [disabledPrimerOption]="false"
+          (change)="changeTipoOperacion()"
+        ></app-catalogo-select>
+        <div
+          *ngIf="isErrorNoMenosUno(despacho, 'tipoOperacion')"
+          class="mensaje-error"
+        >
+          Este campo es obligatorio.
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <label for="patente" class="form-label"
+          >Patente/Número de autorización:</label
+        >
+        <input
+          class="form-control"
+          type="text"
+          name="patente"
+          id="patente"
+          formControlName="patente"
+        />
+      </div>
+      <div class="col-md-4 checks">
+        <lib-input-check
+          [id]="'relacionSociedad'"
+          [label]="'Relación de sociedad'"
+          [required]="false"
+          [reverse]="true"
+          formControlName="relacionSociedad"
+          [isDisabled]="!activarRelacionSociedad"
+          (change)="
+            setValoresStore(despacho, 'relacionSociedad', 'setRelacionSociedad')
+          "
+        ></lib-input-check>
+
+        <lib-input-check
+          [id]="'encargoConferido'"
+          [label]="'Encargo conferido'"
+          [required]="false"
+          [reverse]="true"
+          formControlName="encargoConferido"
+          [isDisabled]="!activarEncargoConferido"
+          (change)="
+            setValoresStore(despacho, 'encargoConferido', 'setEncargoConferido')
+          "
+        ></lib-input-check>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="despachoSeleccionado">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="domicilioDespacho"
+            >Indica el domicilio<span [ngClass]="isRequired(despacho, 'domicilioDespacho') ? 'required' : ''">*</span>:</label
+          >
+          <textarea
+            class="form-control h-25"
+            id="exampleFormControlTextarea1"
+            rows="5"
+            cols="10"
+            maxlength="200"
+            formControlName="domicilioDespacho"
+            id="domicilioDespacho"
+            placeholder=""
+            title="Domicilio"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if (individual()) {
+  <ng-titulo titulo="Datos del pedimento" />
+
+  <c-pedimento
+    [validacion]="validacionPedimento"
+    [datosNroPedimento]="datosPedimentoComponente"
+    [tablaPedimento]="solicitudState?.pedimentos || []"
+    [numeroPatente]="solicitudState?.patente?.patente || ''"
+    [mostrarMensajeError]="mostrarErrorPedimentos"
+    (validaCampos)="validaCampoPedimento()"
+    (datosTablaPedimento)="changeAgregarPedimento($event)"
+    [editable]="editable"
+  ></c-pedimento>
+  }
+
+  <ng-titulo titulo="Mercancía" />
+  <div formGroupName="mercancia">
+    <div class="row">
+      <div class="col-md-4">
+        <app-select-paises
+          [catalogosPaises]="paisesOrigen"
+          formControlName="paisOrigen"
+          [label]="'País de origen'"
+          [required]="true"
+          [isDisabled]="!editable"
+          (change)="onPaisOrigenChange($event)"
+        ></app-select-paises>
+        <div
+          *ngIf="isErrorNoMenosUno(mercancia, 'paisOrigen')"
+          class="mensaje-error"
+        >
+          Este campo es obligatorio.
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <app-select-paises
+          [catalogosPaises]="paisesProcedencia"
+          formControlName="paisProcedencia"
+          [label]="'País de procedencia'"
+          [required]="true"
+          [isDisabled]="!editable"
+          (change)="onPaisProcedenciaChange($event)"
+        ></app-select-paises>
+        <div
+          *ngIf="isErrorNoMenosUno(mercancia, 'paisProcedencia')"
+          class="mensaje-error"
+        >
+          Este campo es obligatorio.
+        </div>
+      </div>
+
+      <div class="col-md-8">
+        <div class="form-group">
+          <label for="descripcionGenerica" class="form-label"
+            >Descripción genérica*:</label
+          >
+          <textarea
+            class="form-control h-25"
+            rows="5"
+            cols="10"
+            id="descripcionGenerica"
+            formControlName="descripcionGenerica"
+            maxlength="500"
+            (change)="
+              setValoresStore(
+                mercancia,
+                'descripcionGenerica',
+                'setDescripcionGenerica'
+              )
+            "
+          ></textarea>
+          <div
+            *ngIf="isErrorWhitespace(mercancia, 'descripcionGenerica')"
+            class="mensaje-error"
+          >
+            Este campo es obligatorio.
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-8">
+        <div class="form-group">
+          <label for="justificacion" class="form-label">Justificación*:</label>
+          <textarea
+            class="form-control h-25"
+            rows="5"
+            cols="10"
+            id="justificacion"
+            formControlName="justificacion"
+            maxlength="1000"
+            (change)="
+              setValoresStore(mercancia, 'justificacion', 'setJustificacion')
+            "
+          ></textarea>
+          <div
+            *ngIf="isErrorWhitespace(mercancia, 'justificacion')"
+            class="mensaje-error"
+          >
+            Este campo es obligatorio.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if (individual()) {
+  <ng-titulo titulo="Datos del vehículo de como se presentará al despacho" />
+
+  <lib-transporte
+    [catalogoTransporte]="tipoVehiculo"
+    [tipoTransporteSeleccionado]="solicitudState?.tipoTransporte || ''"
+    [tablaTransporte]="solicitudState?.transporte || []"
+    [tituloModalPersonalizado]="'Datos del vehículo de como se presentará al despacho'"
+    (seleccionTipoTransporte)="changeSeleccionTipoTransporte($event)"
+    (datosTabla)="changeAgregarVehiculo($event, 'vehiculo')"
+    [editable]="editable"
+  ></lib-transporte>
+
+  <ng-titulo titulo="Datos del transporte de arribo/salida (al/del país)" />
+  <lib-transporte
+    [catalogoTransporte]="tipoTransporte"
+    [tipoTransporteSeleccionado]="solicitudState?.tipoTransporteArriboSalida || ''"
+    [tablaTransporte]="solicitudState?.transporteArriboDatos || []"
+    [tituloModalPersonalizado]="'Datos del transporte de arribo/salida (al/del país)'"
+    (seleccionTipoTransporte)="changeSeleccionTipoVehiculo($event)"
+    (datosTabla)="changeAgregarVehiculo($event, 'transporte')"
+    [editable]="editable"
+  ></lib-transporte>
+  }
+
+  <ng-titulo [titulo]="editable ? 'Personas responsables del despacho (máximo 5)' : 'Personas responsables del despacho '" />
+
+  <agrega-personas
+    [personasResponsablesDespachoSeleccionados]="
+      solicitudState?.personasResponsablesDespacho || []
+    "
+    [isDisabled]="!editable"
+    [mostrarMensajeError]="mostrarErrorPersonasResponsables"
+    (responsablesDespachoChange)="changeResponsablesDespacho($event)"
+  />
+
+  <ng-titulo titulo="Pagos" />
+  <div formGroupName="pagoCaptura">
+    <div class="row rf" *ngIf="editable">
+      <div class="col-md-4 form-group">
+        <label class="form-label" for="montoPagar">Monto a pagar:</label>
+        <input
+          class="form-control"
+          id="montoPagar"
+          placeholder=""
+          type="text"
+          formControlName="montoAPagar"
+          (change)="
+            setValoresStore(pagoCaptura, 'montoAPagar', 'setMontoPagar')
+          "
+        />
+      </div>
+    </div>
+
+    <div class="row" *ngIf="editable">
+      <div class="col-md-4 form-group">
+        <label class="form-label" for="lineaCaptura">Línea de captura*:</label>
+        <input
+          class="form-control"
+          id="lineaCaptura"
+          placeholder=""
+          type="text"
+          formControlName="lineaCaptura"
+          maxlength="20"
+          (change)="
+            setValoresStore(pagoCaptura, 'lineaCaptura', 'setLineaCaptura')
+          "
+        />
+      </div>
+      <div class="col-md-4 form-group">
+        <label class="form-label" for="monto">Monto*:</label>
+        <input
+          class="form-control"
+          id="monto"
+          placeholder=""
+          type="text"
+          formControlName="monto"
+          maxlength="12"
+          (change)="setValoresStore(pagoCaptura, 'monto', 'setMonto')"
+          libSoloNumeros
+        />
+      </div>
+    </div>
+
+    <div class="row" *ngIf="editable">
+      <div class="col-md-8"></div>
+      <div class="col-md-4">
+        <div class="btn-group">
+          <button
+            class="btn btn-primary me-2"
+            type="button"
+            [disabled]="!editable"
+            (click)="agregarPagoSea()"
+          >
+            Consultar
+          </button>
+          <button
+            class="btn btn-danger"
+            type="button"
+            [disabled]="!editable"
+            (click)="eliminarLineaCaptura()"
+          >
+            Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-3 mb-5" *ngIf="editable">
+      <p class="p-bold">
+        A través del siguiente vinculo puedes ingresar a la página para generar
+        la línea de captura de la constancia que se solicita:
+      </p>
+      <p>
+        <a class="link" [href]="linkGeneraLineaCapturaSeguro" target="_blank"
+          >Generar línea de captura</a
+        >
+      </p>
+    </div>
+
+    <div class="row">
+      <div class="col-md-2"></div>
+      <div class="col-md-8">
+        <app-tabla-dinamica
+          [tipoSeleccionTabla]="tablaSeleccionPagos.CHECKBOX"
+          [configuracionTabla]="encabezadoDeTablaPagos"
+          [datos]="datosTablaPagos"
+          [itemsPerPage]="10"
+          [tableId]="'tablaPagos'"
+          [showPagination]="true" [mode]="'client'"
+          (listaDeFilaSeleccionada)="lineaCapturaSeleccionados = $event"
+          
+        >
+        </app-tabla-dinamica>
+        
+      </div>
+    </div>
+  </div>
+  }
+</form>
+
+<div class="row mt-5" *ngIf="editarSolicitud">
+  <div class="col-md12">
+    <button type="button" class="btn btn-danger" [disabled]="!editable" (click)="eliminarSolicitud()">
+      Eliminar Solicitud Pendiente
+    </button>
+  </div>
+</div>
+
+@if(nuevaNotificacion) {
+<section>
+  <lib-notificaciones
+    [notificacionInput]="nuevaNotificacion"
+    [forma]="datosServicio"
+    (confirmacionModal)="confirmacionModal($event)"
+  >
+  </lib-notificaciones>
+</section>
+}

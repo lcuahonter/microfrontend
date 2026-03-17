@@ -1,0 +1,108 @@
+name: CI/CD - Microfront Dashboard
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ QA ]
+    paths:
+      - 'apps/**'
+      - 'libs/**'
+      - 'package*.json'
+      - 'Dockerfile'
+      - 'docker/**'
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    env:
+      NX_SKIP_POSTINSTALL: 1   # Evita la ejecución del postinstall de Nx
+    steps:
+      # Obtiene el código de tu repositorio.
+      - name: Checkout repository
+        uses: actions/checkout@v1
+
+      #  Configura la versión de Node.js requerida (22.14.0).
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '22.14.0'
+          
+      - name: Instalar NX globalmente
+        run: npm install -g nx@19.3.1
+        
+      # Instala el módulo nativo requerido para Linux.
+      - name: Install native binding for Nx on Linux
+        run: npm install @nx/nx-linux-x64-gnu
+        
+      # Instala el binding nativo de SWC para Linux (necesario para la compilación)
+      - name: Install SWC native binding for Linux
+        run: npm install @swc/core-linux-x64-gnu
+        
+
+      # 3. Instala las dependencias usando --force, tal como lo haces localmente.
+      - name: Install dependencies
+        run: |
+          npm install --force
+    
+      - name: Listar archivos
+        run: ls -la
+        
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to GitHub Packages
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor  }}
+          password: ${{secrets.GHCR_PAT}}
+
+      - name: Push Docker image to GHCR
+        run: |
+          docker compose -f ./docker/modulefederation-dashboard.yml build && docker compose -f ./docker/modulefederation-dashboard.yml push
+          docker compose -f ./docker/modulefederation-login-microfront.yml build && docker compose -f ./docker/modulefederation-login-microfront.yml push
+          docker compose -f ./docker/modulefederation-aga-microfront.yml build && docker compose -f ./docker/modulefederation-aga-microfront.yml push
+          docker compose -f ./docker/modulefederation-agricultura-microfront.yml build && docker compose -f ./docker/modulefederation-agricultura-microfront.yml push
+          docker compose -f ./docker/modulefederation-amecafe-microfront.yml build && docker compose -f ./docker/modulefederation-amecafe-microfront.yml push
+          docker compose -f ./docker/modulefederation-cofepris-microfront.yml build && docker compose -f ./docker/modulefederation-cofepris-microfront.yml push
+          docker compose -f ./docker/modulefederation-crt-microfront.yml build && docker compose -f ./docker/modulefederation-crt-microfront.yml push
+          docker compose -f ./docker/modulefederation-inah-microfront.yml build && docker compose -f ./docker/modulefederation-inah-microfront.yml push
+          docker compose -f ./docker/modulefederation-inbal-microfront.yml build && docker compose -f ./docker/modulefederation-inbal-microfront.yml push
+          docker compose -f ./docker/modulefederation-profepa-microfront.yml build && docker compose -f ./docker/modulefederation-profepa-microfront.yml push
+          docker compose -f ./docker/modulefederation-se-microfront.yml build && docker compose -f ./docker/modulefederation-se-microfront.yml push
+          docker compose -f ./docker/modulefederation-se-microfront.yml build && docker compose -f ./docker/modulefederation-se-microfront.yml push
+          docker compose -f ./docker/modulefederation-sedena-microfront.yml build && docker compose -f ./docker/modulefederation-sedena-microfront.yml push
+          docker compose -f ./docker/modulefederation-semarnat-microfront.yml build && docker compose -f ./docker/modulefederation-semarnat-microfront.yml push
+          docker compose -f ./docker/modulefederation-sener-microfront.yml build && docker compose -f ./docker/modulefederation-sener-microfront.yml push
+          docker compose -f ./docker/modulefederation-stps-microfront.yml build && docker compose -f ./docker/modulefederation-stps-microfront.yml push
+          docker compose -f ./docker/modulefederation-funcionario-microfront.yml build && docker compose -f ./docker/modulefederation-funcionario-microfront.yml push
+          docker compose -f ./docker/modulefederation-bandejas-microfront.yml build && docker compose -f ./docker/modulefederation-bandejas-microfront.yml push
+          docker compose -f ./docker/modulefederation-privados-microfront.yml build && docker compose -f ./docker/modulefederation-privados-microfront.yml push
+      - name: Execute remote command (last one)
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.REMOTE_SRV_IP }}
+          username: ${{ secrets.REMOTE_SRV_USER }}
+          key: ${{ secrets.REMOTE_SRV_PRIV_KEY }}
+          port: 22
+          script: |
+            cd /home/ubuntu/v30
+            microk8s kubectl rollout restart deployment modulefederation-dashboard-deployment-dev -n default
+            microk8s kubectl rollout restart deployment modulefederation-login-microfront-deployment-dev -n default
+            microk8s kubectl rollout restart deployment modulefederation-aga-microfront-deployment-dev -n default
+            microk8s kubectl rollout restart deployment modulefederation-amecafe-microfront-deployment-dev -n default
+            microk8s kubectl rollout restart deployment modulefederation-cofepris-microfront-deployment-dev -n default
+            microk8s kubectl rollout restart deployment modulefederation-crt-microfront-deployment-dev -n default
+            microk8s kubectl rollout restart deployment modulefederation-inah-microfront-deployment-dev -n default
+            microk8s kubectl rollout restart deployment modulefederation-inbal-microfront-deployment-dev -n default
+            microk8s kubectl rollout restart deployment modulefederation-profepa-microfront-deployment-dev -n default
+            microk8s kubectl rollout restart deployment modulefederation-se-microfront-deployment-dev -n default
+            microk8s kubectl rollout restart deployment modulefederation-sedena-microfront-deployment-dev -n default
+            microk8s kubectl rollout restart deployment modulefederation-semarnat-microfront-deployment-dev -n default
+            microk8s kubectl rollout restart deployment modulefederation-sener-microfront-deployment-dev -n default
+            microk8s kubectl rollout restart deployment modulefederation-stps-microfront-deployment-dev -n default
+            microk8s kubectl rollout restart deployment modulefederation-funcionario-microfront-deployment-dev -n default
+            microk8s kubectl rollout restart deployment modulefederation-bandejas-microfront-deployment-dev -n default
+            microk8s kubectl rollout restart deployment modulefederation-agricultura-microfront-deployment-dev -n default
+            microk8s kubectl rollout restart deployment modulefederation-privados-microfront-deployment-dev -n default

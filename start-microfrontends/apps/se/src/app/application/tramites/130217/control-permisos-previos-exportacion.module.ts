@@ -1,0 +1,45 @@
+import { AlertComponent, BtnContinuarComponent, CrosslistComponent, InicioSesionService, InputRadioComponent, NotificacionesComponent, PasoCargaDocumentoComponent, PasoFirmaComponent, SolicitanteComponent, TablaDinamicaComponent, TituloComponent, WizardComponent } from '@libs/shared/data-access-user/src';
+import { CommonModule } from '@angular/common';
+import { ControlPermisosPreviosExportacionComponent } from './pages/control-permisos-previos-exportacion/control-permisos-previos-exportacion.component';
+import { ControlPermisosPreviosExportacionRoutingModule } from './control-permisos-previos-exportacion-routing.module';
+import { DatosDeLaMercanciaComponent } from '../../shared/components/datos-de-la-mercancia/datos-de-la-mercancia.component';
+import { DatosDelTramiteComponent } from '../../shared/components/datos-del-tramite/datos-del-tramite.component';
+import { NgModule } from '@angular/core';
+import { PaisProcendenciaComponent } from '../../shared/components/pais-procendencia/pais-procendencia.component';
+import { PartidasDeLaMercanciaComponent } from '../../shared/components/partidas-de-la-mercancia/partidas-de-la-mercancia.component';
+import { PasoUnoComponent } from './pages/paso-uno/paso-uno.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { RepresentacionComponent } from '../../shared/components/representacion/representacion.component';
+import { SolicitudComponent } from './components/solicitud/solicitud.component';
+import { ToastrService } from 'ngx-toastr';
+
+@NgModule({
+  declarations: [
+    ControlPermisosPreviosExportacionComponent,
+    PasoUnoComponent,
+    SolicitudComponent
+  ],
+  imports: [
+    CommonModule,
+    ControlPermisosPreviosExportacionRoutingModule,
+    WizardComponent,
+    BtnContinuarComponent,
+    TituloComponent,
+    InputRadioComponent,
+    SolicitanteComponent,
+    ReactiveFormsModule,
+    DatosDelTramiteComponent,
+    DatosDeLaMercanciaComponent,
+    PartidasDeLaMercanciaComponent ,
+    TablaDinamicaComponent,
+    PaisProcendenciaComponent,
+    RepresentacionComponent,
+    CrosslistComponent,
+    NotificacionesComponent,
+    AlertComponent,
+    PasoCargaDocumentoComponent,
+    PasoFirmaComponent
+  ],
+  providers:[ToastrService, InicioSesionService]
+})
+export class ControlPermisosPreviosExportacionModule { }

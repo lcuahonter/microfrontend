@@ -1,0 +1,192 @@
+<div class="container">
+  <form [formGroup]="formRegistroMuestras">
+    <div class="row">
+      <div class="col-md-12 mt-5">
+        <ng-alert [CONTENIDO]="TEXTOS.Importante"></ng-alert>
+      </div>
+      <div class="col-md-12 mt-3">
+        <div class="form-group">
+          <app-catalogo-select
+            formControlName="opcionDeImportador"
+            [catalogo]="opcionDeImportador.catalogos"
+            [label]="opcionDeImportador.labelNombre"
+            [required]="opcionDeImportador.required"
+            name="opcionDeImportador"
+            [isDisabled]="esFormularioSoloLectura"
+            (selectionChange)="mostrarOcultarPanelTramite($event)"
+          ></app-catalogo-select>
+        </div>
+      </div>
+    </div>
+    @if (panelDespachoOrMercancia) {
+    <div class="row">
+      <div class="col-md-12 mt-3">
+        <ng-titulo [titulo]="'Información de la muestra en despacho'" />
+      </div>
+      <div class="col-md-8">
+        <div class="form-group text-left">
+          <app-catalogo-select
+            formControlName="tomaMuestraDespacho"
+            [id]="'comboMuestraDespacho'"
+            [catalogo]="tomaMuestraDespacho.catalogos"
+            [label]="tomaMuestraDespacho.labelNombre"
+            [required]="tomaMuestraDespacho.required"
+            name="tomaMuestraDespacho"
+            [isDisabled]="esFormularioSoloLectura"
+            (selectionChange)="cambiaEstadoMotivo($event)"
+          ></app-catalogo-select>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group" id="selectLugarTomaMuestra">
+          <label for="textMotivoFaltaMuestra">Folio anterior* :</label>
+          <input
+            type="text"
+            formControlName="descMotivoFaltaMuestra"
+            id="textMotivoFaltaMuestra"
+            class="form-control"
+            (change)="setDescMotivoFaltaMuestra()"
+          />
+        </div>
+      </div>
+    </div>
+    } @else {
+    <div class="row">
+      <div class="col-md-12 mt-3">
+        <ng-titulo [titulo]="'Información de la mercancía'" />
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <app-catalogo-select
+            formControlName="comboFraccionConcatenada"
+            [id]="'fraccionArancelaria'"
+            [catalogo]="fraccionArancelariaAga.catalogos"
+            [label]="fraccionArancelariaAga.labelNombre"
+            [placeholder]="fraccionArancelariaAga.primerOpcion"
+            [required]="fraccionArancelariaAga.required"
+            name="comboFraccionConcatenada"
+            (selectionChange)="mostrarDescFraccArancelaria($event)"
+            [isDisabled]="esFormularioSoloLectura"
+          ></app-catalogo-select>
+          @if (isInvalidComboFraccionField) {
+          <div class="invalid-feedback d-block">Este campo es obligatorio.</div>
+          }
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="form-group">
+          <label for="fracciondescripcion" class="form-label"
+            >Descripción:</label
+          >
+          <textarea
+            class="form-control no-resize"
+            rows="3"
+            id="fracciondescripcion"
+            formControlName="fracciondescripcion"
+            (change)="setFracciondescripcion()"
+          ></textarea>
+        </div>
+      </div>
+      <div class="col-md-4 mt-4">
+        <div class="form-group">
+          <app-catalogo-select
+            formControlName="comboNicos"
+            [id]="'comboNicos'"
+            [catalogo]="nico.catalogos"
+            [label]="nico.labelNombre"
+            [required]="nico.required"
+            name="comboNicos"
+            [placeholder]="nico.primerOpcion"
+            [isDisabled]="esFormularioSoloLectura"
+            (selectionChange)="setNino($event)"
+          ></app-catalogo-select>
+          @if (isInvalidComboNicosField) {
+          <div class="invalid-feedback d-block">Este campo es obligatorio.</div>
+          }
+        </div>
+      </div>
+      <div class="col-md-8 mt-4">
+        <div class="form-group">
+          <label for="descNico" class="form-label">Descripción:</label>
+          <textarea
+            class="form-control"
+            rows="3"
+            id="descNico"
+            formControlName="nicoDescripcion"
+            (change)="setNicoDescripcion()"
+          ></textarea>
+        </div>
+      </div>
+      <div class="col-md-4 mt-4">
+        <div class="form-group">
+          <label for="textNombreQuimico" class="form-label"
+            >Nombre químico*:</label
+          >
+          <textarea
+            class="form-control no-resize"
+            rows="1"
+            id="textNombreQuimico"
+            formControlName="nombreQuimico"
+            (change)="setNombreQuimico()"
+          ></textarea>
+        </div>
+      </div>
+      <div class="col-md-8 mt-4">
+        <div class="form-group">
+          <label for="textNombreComercial" class="form-label"
+            >Nombre comercial*:</label
+          >
+          <textarea
+            class="form-control no-resize"
+            rows="1"
+            id="textNombreComercial"
+            formControlName="nombreComercial"
+          ></textarea>
+        </div>
+      </div>
+      <div class="col-md-8 mt-4">
+        <div class="form-group">
+          <label for="textNumeroCas" class="form-label"
+            >Número de Chemical Abstracts Substance (CAS)*:</label
+          >
+          <textarea
+            class="form-control no-resize"
+            rows="1"
+            id="textNumeroCas"
+            formControlName="numeroCAS"
+            (change)="setNombreComercial()"
+          ></textarea>
+        </div>
+      </div>
+      <div class="col-md-4 mt-4">
+        <div class="form-group">
+          <app-catalogo-select
+            [catalogo]="ideGenerica.catalogos"
+            [label]="ideGenerica.labelNombre"
+            [required]="ideGenerica.required"
+            name="ideGenerica1"
+            formControlName="ideGenerica"
+            [isDisabled]="true"
+          ></app-catalogo-select>
+        </div>
+      </div>
+      <div class="col-md-8 mt-4">
+        <div class="form-group">
+          <label for="textDescClobGenerica1" class="form-label text-left"
+            >Descripción del recipiente para su transporte y
+            conservación*:</label
+          >
+          <textarea
+            class="form-control no-resize"
+            rows="3"
+            id="textDescClobGenerica1"
+            formControlName="descClobGenerica"
+            style="height: 80px"
+          ></textarea>
+        </div>
+      </div>
+      <div class="col-md-4 mt-4"></div>
+    </div>
+    }
+  </form>
+</div>

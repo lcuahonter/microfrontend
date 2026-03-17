@@ -1,0 +1,66 @@
+<div class="row mt-5">
+  <div class="col-md-12">
+    <div class="panel-group ficha-collapse" id="accordion">
+      <div class="panel panel-default">
+       <!-- Encabezado de panel plegable -->
+        <div
+          class="panel-heading"
+          (click)="mostrarColapsable()"
+          (keyup.enter)="mostrarColapsable()"
+          tabindex="0"
+        >
+          <h4 class="panel-title">
+            <a aria-label="Repeat"
+              ><i class="bi bi-repeat" aria-hidden="true"></i
+            ></a>
+          </h4>
+          <!-- Botón de alternar contraer -->
+          <button
+            type="button"
+            class="collpase-button collapsed"
+            (keydown)="mostrarColapsable()"
+          > </button>
+        </div>
+         <!-- Cuerpo del panel plegable -->
+        @if(colapsable && !esFormularioSoloLectura)  {
+        <div class="panel-collapse collapse in" id="panel-01">
+          <div class="panel-body">
+            <!-- Componente de alerta que muestra texto -->
+            <ng-alert [CONTENIDO]="TEXTOS.TEXTOS_SOLICITUD"></ng-alert>
+            <!-- Etiqueta para la tabla -->
+            <div class="col-md-12 mr-0">
+              <label for="solicitud">Solicitud</label>
+            </div>
+            <!-- Tabla responsiva para mostrar solicitudes -->
+            <div class="col-md-12">
+     
+    
+                 <table class="table table-responsive table-striped">
+                <thead>
+                  <tr>
+                 
+                    @for (item of configuracionColumnaSolicitud; track $index) {
+                    <th>{{ item?.encabezado }}</th>
+                    }
+                  </tr>
+                </thead>
+                <tbody>
+                
+                  @for (item of tablaFilaDatos; let i = $index; track i) {
+                  <tr (dblclick)="alClicFila(item?.id_solicitud??0  )">
+                    <td>{{ item.fechaCreacion }}</td>
+                    <td>{{ item.mercancia }}</td>
+                    <td>{{ item.cantidad }}</td>
+                    <td>{{ item.proovedor }}</td>
+                  </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

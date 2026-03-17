@@ -1,0 +1,156 @@
+<form [formGroup]="detalleForm">
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="estatus" class="form-label">Estatus</label>
+                <input class="form-control" id="estatus"  type="text" formControlName="estatus"
+                    libUppercase>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="sentidoDictamen" class="form-label">Sentido del dictamen</label>
+                <input class="form-control" id="sentidoDictamen"  type="text"
+                    formControlName="sentidoDictamen" libUppercase>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="fechaCreacion" class="form-label">Fecha de creación</label>
+                <input class="form-control" id="fechaCreacion"  type="text"
+                    formControlName="fechaCreacion" libUppercase>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="dictaminadoPor" class="form-label">Dictaminado por</label>
+                <input class="form-control" id="dictaminadoPor"  type="text"
+                    formControlName="dictaminadoPor" libUppercase>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="fechaGeneracion" class="form-label">Fecha de generación</label>
+                <input class="form-control" id="fechaGeneracion"  type="text"
+                    formControlName="fechaGeneracion" libUppercase>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="verificadoPor" class="form-label">Verificado por</label>
+                <input class="form-control" id="verificadoPor"  type="text"
+                    formControlName="verificadoPor" libUppercase>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="fechaVerificacion" class="form-label">Fecha de verificación</label>
+                <input class="form-control" id="fechaVerificacion" type="text"
+                    formControlName="fechaVerificacion" libUppercase>
+            </div>
+        </div>
+    </div>
+     
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="autorizadoPor" class="form-label">Autorizado por</label>
+                <input class="form-control" id="autorizadoPor"  type="text"
+                    formControlName="autorizadoPor" libUppercase>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="fechaAutorizacion" class="form-label">Fecha de autorización</label>
+                <input class="form-control" id="fechaAutorizacion" type="text"
+                    formControlName="fechaAutorizacion" libUppercase>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <label for="justificacionDictamen" class="form-label">Justificación del dictamen</label>
+            <textarea id="justificacionDictamen" class="form-control text-height" formControlName="justificacion"
+                libUppercase></textarea>
+        </div>
+    </div>
+    
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <app-catalogo-select formControlName="idMotivoTipoTramite" [catalogo]="motivoOpciones"
+            [label]="'Motivo del oficio'" [isDisabled]="esFormularioSoloLectura" name="idMotivoTipoTramite" ></app-catalogo-select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="siglas" class="form-label">Siglas del dictaminador</label>
+                <input class="form-control" id="siglas" type="text"
+                    formControlName="siglasDictaminador" libUppercase>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <app-catalogo-select formControlName="numeroGenerico1" [catalogo]="autorizadorOpcions"
+            [label]="'Asignar autorizador'" [isDisabled]="esFormularioSoloLectura" name="numeroGenerico1" ></app-catalogo-select>
+            </div>
+        </div>
+    </div>
+    
+</form>
+
+<div class="card mt-4" *ngIf="dictamenDetalle?.observaciones?.length">
+    <div class="card-header">
+        <h5 class="card-title">Observaciones al dictamen</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            @for (item of encabezadoTablaObservaciones; track $index) {
+                            <th>{{ item.valor }}</th>
+                            }
+                            <th class="center">Detalle</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngIf="datosTablaObservaciones.length === 0">
+                            <td [attr.colspan]="encabezadoTablaObservaciones.length + 1" class="text-center">Sin registros que mostrar</td>
+                        </tr>
+                        @for (row of datosTablaObservaciones; track $index) {
+                        <tr class="table-row">
+                            @for (item of encabezadoTablaObservaciones; let i = $index; track $index) {
+                            <td>{{ row[item.key] }}</td>
+                            }
+                            <td class="center">
+                                <button type="button" class="btn btn-link me-2" id="verDetalle" data-bs-toggle="button"
+                                    data-bs-placement="top" title="Detalle del dictamen" (click)="verDetalle(row.id)">
+                                    <i class="bi bi-eye bi-c text-gold"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

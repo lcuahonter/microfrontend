@@ -1,0 +1,137 @@
+<ng-titulo titulo="Domicilio del establecimiento"></ng-titulo>
+
+<form [formGroup]="domicilioEstablecimiento">
+    <div class="row">
+        <div class="col-md-4">
+            <label class="form-label" for="CodigoPostal">Código postal*:
+            </label>
+            <input type="text" class="form-control" id="CodigoPostal" formControlName="codigo"
+                (change)="setValoresStore(domicilioEstablecimiento,'codigo')">
+        </div>
+
+        <div class="col-md-4">
+            <app-catalogo-select formControlName="estado" id="estado" [label]="'Estado'" (change)="setValoresStore(domicilioEstablecimiento,'estado')" [required]="true" [catalogo]="estadosData"></app-catalogo-select>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label" for="Municipio">Municipio o alcaldía*:</label>
+            <input [ngClass]="isValid('Municipio') ? 'required' : ''" type="text" class="form-control" id="Municipio"
+                formControlName="municipio" (change)="setValoresStore(domicilioEstablecimiento,'municipio')">
+            <div *ngIf="domicilioEstablecimiento?.get('municipio')?.invalid && domicilioEstablecimiento?.get('municipio')?.touched"
+                class="text-danger">
+                Favor de seleccionar el municipio.
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label" for="localidad">Localidad*:</label>
+            <input [ngClass]="isValid('localidad') ? 'required' : ''" type="text" class="form-control" id="localidad"
+                formControlName="localidad" (change)="setValoresStore(domicilioEstablecimiento,'localidad')">
+            <div *ngIf="domicilioEstablecimiento?.get('localidad')?.invalid && domicilioEstablecimiento?.get('localidad')?.touched"
+                class="text-danger">
+                Favor de seleccionar el localidad.
+            </div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="Colonia">Colonia*:</label>
+            <input [ngClass]="isValid('Colonia') ? 'required' : ''" type="text" class="form-control" id="Colonia"
+                formControlName="colonia" (change)="setValoresStore(domicilioEstablecimiento,'colonia')">
+            <div *ngIf="domicilioEstablecimiento?.get('colonia')?.invalid && domicilioEstablecimiento?.get('colonia')?.touched"
+                class="text-danger">
+                Favor de seleccionar el colonia.
+            </div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="calle">Calle y número*: 
+            <span tooltip="Domicilio, calle, numero interior, numero exterior, lote">
+              <i class="bi bi-question-circle-fill"></i>
+            </span>
+            </label>
+            <input [ngClass]="isValid('calle') ? 'required' : ''" type="text" class="form-control" id="calle"
+                formControlName="calle" (change)="setValoresStore(domicilioEstablecimiento,'calle')">
+            <div *ngIf="domicilioEstablecimiento?.get('calle')?.invalid && domicilioEstablecimiento?.get('calle')?.touched"
+                class="text-danger">
+                Favor de seleccionar el calle.
+            </div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="Correo-exterior">Correo electrónico*:
+            <span tooltip="ejemplo@dominio.com">
+              <i class="bi bi-question-circle-fill"></i>
+            </span>
+            </label>
+            <input [ngClass]="isValid('Correo-exterior') ? 'required' : ''" type="text" class="form-control"
+                id="Correo-exterior:" formControlName="correo"
+                (change)="setValoresStore(domicilioEstablecimiento,'correo')">
+            <div *ngIf="domicilioEstablecimiento?.get('correo')?.invalid && domicilioEstablecimiento?.get('correo')?.touched"
+                class="text-danger">
+                Favor de seleccionar el correo.
+            </div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="sanitario-interior:">RFC del responsable sanitario:</label>
+            <input type="text" class="form-control" id="sanitario-interior:" formControlName="sanitario"
+                (change)="setValoresStore(domicilioEstablecimiento,'sanitario')">
+        </div>
+        <div class="col-md-1">
+            <label class="form-label" for="lada">Lada:</label>
+            <input type="text" class="form-control" id="lada" formControlName="lada"
+                (change)="setValoresStore(domicilioEstablecimiento,'lada')">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label" for="telefono">Teléfono*:</label>
+            <input type="text" class="form-control" id="telefono" formControlName="telefono"
+                (change)="setValoresStore(domicilioEstablecimiento,'telefono')">
+        </div>
+
+    </div>
+</form>
+    <div class="row" class="mt-5">
+        <div class="form-group">
+          <label class="form-label" for="scian">S.C.I.A.N*:</label>
+          <app-tabla-dinamica
+            [configuracionTabla]="configuracionTabla"
+            [datos]="datosData"
+            [tipoSeleccionTabla]="tipoSeleccionTabla.CHECKBOX" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura">
+          </app-tabla-dinamica>
+        </div>
+      </div>
+
+<ng-container>
+    <!-- <div class="row mt-5">
+        <label>Mercancías seleccionadas</label>
+    </div> -->
+    <div class="table-container mt-5">
+        <div class="col-md-12 mt-5 d-flex justify-content-end">
+            <button type="button" class="btn btn-danger ms-3"  [disabled]="esFormularioSoloLectura">Eliminar</button>
+            <button type="button" class="btn btn-primary ms-3"  [disabled]="esFormularioSoloLectura"> Agregar </button>
+        </div>
+    </div>
+</ng-container>
+
+<br>
+<form [formGroup]="AvisodeFuncionamiento">
+    <div class="row">
+         <div class="col-md-4">
+        <lib-input-check [id]="'funciona'" [label]="'Aviso de funcionamiento'" [required]="false"
+        formControlName="funcionamiento"
+        (change)="setValoresStore(domicilioEstablecimiento,'funcionamiento')"  [isDisabled]="esFormularioSoloLectura"></lib-input-check>
+    </div>
+    <div class="col-md-4"> 
+        <label class="form-label" for="licencia">No. de licencia sanitaria:
+            <span tooltip="Número de la autorización indicado en el documento emitido por la autoridad sanitaria competente.">
+              <i class="bi bi-question-circle-fill"></i>
+            </span>
+            <input class="form-control"  formControlName="licencia" id="licencia"
+                (change)="setValoresStore(domicilioEstablecimiento,'licencia')">          
+        </label>
+    </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <app-catalogo-select formControlName="regimen" id="Regimen" [label]="'Régimen al que se destinará la mercancía'" (change)="setValoresStore(domicilioEstablecimiento,'regimen')" [required]="true" [catalogo]="regimenesData"></app-catalogo-select>
+        </div>
+    </div>
+    
+    
+</form>

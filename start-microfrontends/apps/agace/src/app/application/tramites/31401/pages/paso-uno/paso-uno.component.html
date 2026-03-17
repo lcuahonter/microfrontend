@@ -1,0 +1,50 @@
+
+<div class="container">
+    <div class="row">
+        <ul class="nav nav-tabs">
+            <li [ngClass]="indice === 1 ? 'active' : ''">
+                <a data-toggle="tab" tabindex="0" (keyup)="seleccionaTab(1)" (click)="seleccionaTab(1)">Solicitante</a>
+            </li>
+            <li [ngClass]="indice === 2 ? 'active' : ''">
+                <a data-toggle="tab" tabindex="0" (keyup)="seleccionaTab(2)" (click)="seleccionaTab(2)">Datos generales de la solicitud</a>
+            </li>
+            <li [ngClass]="indice === 3 ? 'active' : ''">
+                <a data-toggle="tab" tabindex="0" (keyup)="seleccionaTab(3)" (click)="seleccionaTab(3)">Datos por garantía</a>
+            </li>
+            <li [ngClass]="indice === 4 ? 'active' : ''">
+                <a data-toggle="tab" tabindex="0" (keyup)="seleccionaTab(4)" (click)="seleccionaTab(4)">Terceros relacionados</a>
+            </li>
+        </ul>
+        <ng-container>
+            @switch (indice) {
+                @case(1) {
+                    <solicitante></solicitante>
+                }              
+                @case (2) {
+                    @if (esDatosRespuesta) {
+                        <tipo-de-garantia></tipo-de-garantia>
+                        <modalidad-de-la-garantia></modalidad-de-la-garantia>
+                        <tipo-sector></tipo-sector>
+                        <manifiesto-bajo-protesta></manifiesto-bajo-protesta>
+                        <requisitos [consultaState]="consultaState"></requisitos>
+                        <clientes-y-provedores></clientes-y-provedores>
+                        <control-de-inventarios></control-de-inventarios>
+                        <miembros-de-la-empresa></miembros-de-la-empresa>
+                        <miembro-de-la-empresa [consultaState]="consultaState"></miembro-de-la-empresa>
+                        <regimen-aduanero></regimen-aduanero>
+                        <infraestructura></infraestructura>
+                        <manifestaciones-de-cancelacion [consultaState]="consultaState"></manifestaciones-de-cancelacion>
+                    }
+                } @case (3) {
+                    @if (esDatosRespuesta) {
+                        <datos-por-garantia [consultaState]="consultaState"></datos-por-garantia>
+                    }
+                } @case (4) {
+                    @if (esDatosRespuesta) {
+                        <tereceros-relacionados [consultaState]="consultaState"></tereceros-relacionados>
+                    }
+                }
+            }
+        </ng-container>
+    </div>
+</div>

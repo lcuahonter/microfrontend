@@ -1,0 +1,90 @@
+<div class="container">
+    <form [formGroup]="formTransporte">
+        <div class="row mt-3">
+            <ng-titulo titulo="Detalles del transporte" />
+            <div *ngIf="campoDestinatario">
+                <div class="row mt-2">
+                    <div class="col-md-8">
+                        <app-catalogo-select [isDisabled]="esFormularioSoloLectura" [catalogo]="medioDeTransporte || []" [label]="'Medio de transporte'"
+                            [required]="false" [disabledPrimerOption]="false" [hiddenPrimerOption]="false" name="estado" formControlName="medioDeTransporte"
+                            (selectionChange)="medioDeTransporteSeleccion($event)"
+                            (change)="setValoresStore('formTransporte','medioDeTransporte','setFormDestinatario')"
+                            ></app-catalogo-select>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-6 mb-3">
+                        <label>Ruta completa:</label>
+                        <input type="text" class="form-control" id="rutaCompleta" maxlength="40" formControlName="rutaCompleta"
+                            (change)=" setValoresStore( 'formTransporte', 'rutaCompleta', 'setRutaCompleta')" />
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-6 mb-3">
+                        <label>Puerto de embarque:</label>
+                        <input type="text" class="form-control" id="puertoEmbarque" maxlength="40" formControlName="puertoEmbarque"
+                            (change)=" setValoresStore( 'formTransporte', 'puertoEmbarque', 'setgrupoDeTransportePuertoEmbarque')" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Puerto de desembarque:</label>
+                        <input type="text" class="form-control" maxlength="40" id="puertoDesembarque"
+                            formControlName="puertoDesembarque"
+                            (change)=" setValoresStore( 'formTransporte', 'puertoDesembarque', 'setgrupoDeTransportePuertoDesembarque')" />
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="campoDetalles">
+                <div class="row mt-5">
+                    <div class="col-md-4 mb-3">
+                        <label>Puerto de embarque :</label>
+                        <input type="text" class="form-control" id="puertoEmbarque" formControlName="puertoEmbarque"
+                            (change)=" setValoresStore( 'formTransporte', 'puertoEmbarque', 'setgrupoDeTransportePuertoEmbarque')" />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label>Puerto de desembarque :</label>
+                        <input type="text" class="form-control" id="puertoDesembarque"
+                            formControlName="puertoDesembarque"
+                            (change)=" setValoresStore( 'formTransporte', 'puertoDesembarque', 'setgrupoDeTransportePuertoDesembarque')" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5 mb-3">
+                        <label>Puerto de tránsito:</label>
+                        <input type="text" class="form-control" id="puertoTransito" formControlName="puertoTransito"
+                            (change)="setValoresStore('formTransporte', 'puertoTransito', 'setgrupoDeTransportePuertoTransito')" />
+                    </div>
+                    <div class="col-md-5 mb-3">
+                        <label>Nombre de la embarcación:</label>
+                        <input type="text" class="form-control" id="nombreEmbarcacion"
+                            formControlName="nombreEmbarcacion"
+                            (change)="setValoresStore('formTransporte', 'nombreEmbarcacion', 'setgrupoDeTransporteNombreEmbarcacion')" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5 mb-3">
+                        <label>Número de vuelo:</label>
+                        <input type="text" class="form-control" id="numeroVuelo" formControlName="numeroVuelo"
+                            (change)="setValoresStore('formTransporte', 'numeroVuelo', 'setgrupoDeTransporteNumeroVuelo')" />
+                    </div>
+                </div>
+            </div>
+            <ng-template #defaultTemplate>
+                <div class="col-md-6">
+                    <app-catalogo-select [disabledPrimerOption]="false" [hiddenPrimerOption]="false" [isDisabled]="esFormularioSoloLectura" [catalogo]="medioDeTransporte || []" [label]="'Medio de transporte'"
+                        [required]="false" name="estado" formControlName="medioDeTransporte"
+                        (selectionChange)="medioDeTransporteSeleccion($event)"
+                        (change)="setValoresStore('formTransporte','medioDeTransporte','setFormDestinatario')"
+                        ></app-catalogo-select>
+                </div>
+            </ng-template>
+            <div *ngIf="!campoDestinatario && !campoDetalles">
+              <ng-container *ngTemplateOutlet="defaultTemplate"></ng-container>
+            </div>
+            <!-- <ng-template #defaultTemplate>
+                <div *ngIf="!campoDestinatario && !campoDetalles">
+                    <ng-container *ngTemplateOutlet="defaultTemplate"></ng-container>
+                </div>
+            </ng-template> -->
+        </div>
+    </form>
+</div>

@@ -1,0 +1,352 @@
+<div class="container">
+  <div id="divTabIngrSocio" class="tabs mt-5">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" data-bs-toggle="tab" href="#subtabs-3" (click)="selectTab('parquevehicular')"
+          role="tab" aria-controls="subtabs-3" aria-selected="true">
+          Parque vehicular
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#subtabs-4" (click)="selectTab('unidaddearrastre')" role="tab"
+          aria-controls="subtabs-4" aria-selected="false">
+          Unidad de arrastre
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div *ngIf="selectedTab === 'Parque vehicular'" class="tab-content">
+    <div class="tab-pane fade show active" id="subtabs-4" role="tabpanel">
+      <ng-titulo titulo="Parque vehicular" />
+      <label>Vehículos:</label>
+      <app-tabla-dinamica [tipoSeleccionTabla]="tipoSeleccionTabla"
+        [configuracionTabla]="vehiculosTablaConfig.encabezadas" [datos]="vehiculosTablaConfig.datos">
+      </app-tabla-dinamica>
+
+      <div class="d-flex justify-content-end">
+        <button type="button" class="btn btn-danger ms-3" [disabled]="isReadonly" (click)="eliminarPedimento()">
+          Eliminar
+        </button>
+        <button type="button" class="btn btn-primary ms-3" [disabled]="isReadonly"
+          *ngFor="let row of vehiculosTablaConfig.datos; let i = index" (click)="startEditVehiculo(i)">
+          Modificar
+        </button>
+        <button type="button" class="btn btn-primary ms-3" [disabled]="isReadonly" (click)="abiertoPedimento()">
+          Agregar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="vehiculoModal" tabindex="-1" #vehiculoModal aria-labelledby="vehiculoModal"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <ng-titulo titulo="Datos del Vehículo" />
+        <form [formGroup]="vehiculoFormulario">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-4">
+                <label>Número de identificación vehicular*:</label>
+                <input type="text" class="form-control" formControlName="numero" [required]="true"
+                  [ngClass]="isValid(vehiculoFormulario,'numero') ? 'required' : ''"
+                  (change)="setValoresStore(vehiculoFormulario, 'numero', 'setDatosVehiculoNumero')" />
+              </div>
+              <div class="col-md-4 ">
+                <app-catalogo-select [catalogo]="tipoDeVehiculoCatalogo" [label]="'Tipo de vehiculo'" [required]="true"
+                  id="tipoDeVehiculo" formControlName="tipoDeVehiculo"
+                  [ngClass]="isValid(vehiculoFormulario,'tipoDeVehiculo') ? 'required' : ''"
+                  (change)="setValoresStore(vehiculoFormulario, 'tipoDeVehiculo', 'setDatosVehiculoTipoDeVehiculo')">
+                </app-catalogo-select>
+
+              </div>
+              <div class="col-md-4 ">
+                <label>ID de Vehículo*:</label>
+                <input type="text" class="form-control" formControlName="idDeVehiculo"
+                  [ngClass]="isValid(vehiculoFormulario,'idDeVehiculo') ? 'idDeVehiculo' : 'true'"
+                  (change)="setValoresStore(vehiculoFormulario, 'idDeVehiculo', 'setDatosVehiculoIdDeVehiculo')" />
+              </div>
+            </div>
+          </div>
+
+          <!-- //second row -->
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-4">
+                <label>Número de Placas*:</label>
+                <input type="text" class="form-control" formControlName="numeroPlaca"
+                  [ngClass]="isValid(vehiculoFormulario,'numeroPlaca') ? 'required' : ''"
+                  (change)="setValoresStore(vehiculoFormulario, 'numeroPlaca', 'setDatosVehiculoNumeroPlaca')" />
+              </div>
+              <div class="col-md-4 ">
+                <app-catalogo-select [catalogo]="tipoDeVehiculoCatalogo" [label]="'País Emisor'" [required]="true"
+                  id="paisEmisor" formControlName="paisEmisor"
+                  [ngClass]="isValid(vehiculoFormulario,'paisEmisor') ? 'required' : ''"
+                  (change)="setValoresStore(vehiculoFormulario, 'paisEmisor', 'setDatosVehiculoPaisEmisor')">
+                </app-catalogo-select>
+
+              </div>
+              <div class="col-md-4 ">
+                <label>ID de Vehículo*:</label>
+                <input type="text" class="form-control" formControlName="estado"
+                  [ngClass]="isValid(vehiculoFormulario,'estado') ? 'idDeVehiculo' : 'true'"
+                  (change)="setValoresStore(vehiculoFormulario, 'estado', 'setDatosVehiculoEstado')" />
+              </div>
+            </div>
+          </div>
+
+          <!-- third row -->
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-4">
+                <label>Marca*:</label>
+                <input type="text" class="form-control" formControlName="marca"
+                  [ngClass]="isValid(vehiculoFormulario,'marca') ? 'required' : ''"
+                  (change)="setValoresStore(vehiculoFormulario, 'marca', 'setDatosVehiculoMarca')" />
+              </div>
+              <div class="col-md-4 ">
+                <label>Modelo*:</label>
+                <input type="text" class="form-control" formControlName="modelo"
+                  [ngClass]="isValid(vehiculoFormulario,'modelo') ? 'modelo' : 'true'"
+                  (change)="setValoresStore(vehiculoFormulario, 'modelo', 'setDatosVehiculoEstado')" />
+              </div>
+              <div class="col-md-4 ">
+                <app-catalogo-select [catalogo]="tipoDeVehiculoCatalogo" [label]="'Año'" [required]="true" id="ano"
+                  formControlName="ano" [ngClass]="isValid(vehiculoFormulario,'ano') ? 'required' : ''"
+                  (change)="setValoresStore(vehiculoFormulario, 'ano', 'setDatosVehiculoAno')">
+                </app-catalogo-select>
+
+              </div>
+
+            </div>
+          </div>
+
+          <!-- fourth row -->
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-4">
+                <label>Transponder*:</label>
+                <input type="text" class="form-control" formControlName="transponder"
+                  [ngClass]="isValid(vehiculoFormulario,'transponder') ? 'required' : ''"
+                  (change)="setValoresStore(vehiculoFormulario, 'transponder', 'setDatosVehiculoTransponder')" />
+              </div>
+              <div class="col-md-4 ">
+                <app-catalogo-select [catalogo]="tipoDeVehiculoCatalogo" [label]="'Color de Vehículo'" [required]="true"
+                  id="colorVehiculo" formControlName="colorVehiculo"
+                  [ngClass]="isValid(vehiculoFormulario,'colorVehiculo') ? 'required' : ''"
+                  (change)="setValoresStore(vehiculoFormulario, 'colorVehiculo', 'setDatosVehiculoColorVehiculo')">
+                </app-catalogo-select>
+
+              </div>
+              <div class="col-md-4 ">
+                <label>Número económico*:</label>
+                <input type="text" class="form-control" formControlName="numuroEconomico"
+                  [ngClass]="isValid(vehiculoFormulario,'numuroEconomico') ? 'modelo' : 'true'"
+                  (change)="setValoresStore(vehiculoFormulario, 'numuroEconomico', 'setDatosVehiculoNumuroEconomico')" />
+              </div>
+
+
+            </div>
+          </div>
+
+          <!-- fifth row -->
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-4">
+                <label>Número 2da Placa:</label>
+                <input type="text" class="form-control" formControlName="numero2daPlaca"
+                  [ngClass]="isValid(vehiculoFormulario,'numero2daPlaca') ? 'required' : ''"
+                  (change)="setValoresStore(vehiculoFormulario, 'numero2daPlaca', 'setDatosVehiculoNumero2daPlaca')" />
+              </div>
+              <div class="col-md-4 ">
+                <label>Estado emisor de 2da Placa:</label>
+                <input type="text" class="form-control" formControlName="estado2daPlaca"
+                  [ngClass]="isValid(vehiculoFormulario,'estado2daPlaca') ? 'required' : 'true'"
+                  (change)="setValoresStore(vehiculoFormulario, 'estado2daPlaca', 'setDatosVehiculoEstado2daPlaca')" />
+              </div>
+              <div class="col-md-4 ">
+                <app-catalogo-select [catalogo]="tipoDeVehiculoCatalogo" [label]="'País Emisor 2da Placa'"
+                  [required]="false" id="paisEmisor2daPlaca" formControlName="paisEmisor2daPlaca"
+                  [ngClass]="isValid(vehiculoFormulario,'paisEmisor2daPlaca') ? 'required' : ''"
+                  (change)="setValoresStore(vehiculoFormulario, 'paisEmisor2daPlaca', 'setDatosVehiculoPaisEmisor2daPlaca')">
+                </app-catalogo-select>
+
+              </div>
+
+            </div>
+          </div>
+
+          <!-- fifth row -->
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-8">
+                <label>Descripción del vehículo:</label>
+                <input type="text" class="form-control" formControlName="descripcion"
+                  [ngClass]="isValid(vehiculoFormulario,'descripcion') ? 'required' : ''"
+                  (change)="setValoresStore(vehiculoFormulario, 'descripcion', 'setDatosVehiculoDescripcion')" />
+              </div>
+
+            </div>
+          </div>
+        </form>
+        <div class="modal-footer custom-footer mt-4">
+          <button type="button" class="btn btn-primary" (click)="limpiarVahiculodata()">
+            Limpiar
+          </button>
+          <button type="button" class="btn btn-default" data-bs-dismiss="modal" #closeModal> Cancelar </button>
+          <button type="submit" class="btn btn-primary" (click)="agregarVahiculodata()"> Guardar </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- second tab data  -->
+<div *ngIf="selectedTab === 'Unidad de arrastre'" class="tab-content">
+  <div class="tab-pane fade show active" id="subtabs-3" role="tabpanel">
+    <ng-titulo titulo="Unidad de arrastre" />
+    <label>Unidad de arrastre:</label>
+    <app-tabla-dinamica [tipoSeleccionTabla]="tipoSeleccionTabla" [configuracionTabla]="unidadesTablaConfig.encabezadas"
+      [datos]="unidadesTablaConfig.datos">
+    </app-tabla-dinamica>
+    <div class="d-flex justify-content-end">
+      <button type="button" class="btn btn-danger ms-3" [disabled]="isReadonly" (click)="eliminarUnidadPedimento()">
+        Eliminar
+      </button>
+      <button type="button" class="btn btn-primary ms-3" [disabled]="isReadonly"
+        *ngFor="let row of unidadesTablaConfig.datos; let i = index" (click)="startEditUnidad(i)">
+        Modificar
+      </button>
+      <button type="button" class="btn btn-primary ms-3" [disabled]="isReadonly" (click)="abiertoPedimentoUnidad()">
+        Agregar
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="unidadModal" tabindex="-1" #unidadModal aria-labelledby="unidadModal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <ng-titulo titulo="Datos del Vehículo de arrastre" />
+        <form [formGroup]="unidadFormulario">
+          <!-- first row -->
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-4">
+                <label>VIN del vehículo*:</label>
+                <input type="text" class="form-control" formControlName="vinVehiculo" [required]="true"
+                  [ngClass]="isValid(unidadFormulario,'vinVehiculo') ? 'required' : ''"
+                  (change)="setValoresStore(unidadFormulario, 'vinVehiculo', 'setDatosUnidadVinVehiculo')" />
+              </div>
+              <div class="col-md-4 ">
+                <app-catalogo-select [catalogo]="tipoDeVehiculoCatalogo" [label]="'Tipo de unidad de arrastre'"
+                  [required]="true" id="tipoDeUnidadArrastre" formControlName="tipoDeUnidadArrastre"
+                  [ngClass]="isValid(unidadFormulario,'tipoDeUnidadArrastre') ? 'required' : ''"
+                  (change)="setValoresStore(unidadFormulario, 'tipoDeUnidadArrastre', 'setDatosUnidadTipoDeUnidadArrastre')">
+                </app-catalogo-select>
+
+              </div>
+              <div class="col-md-4 ">
+                <label>ID de Vehículo de arrastre*:</label>
+                <input type="text" class="form-control" formControlName="idDeVehiculo"
+                  [ngClass]="isValid(unidadFormulario,'idDeVehiculo') ? 'idDeVehiculo' : 'true'"
+                  (change)="setValoresStore(unidadFormulario, 'idDeVehiculo', 'setDatosUnidadIdDeVehiculo')" />
+              </div>
+            </div>
+          </div>
+
+          <!-- //second row -->
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-4">
+                <label>Número de Placas*:</label>
+                <input type="text" class="form-control" formControlName="numeroPlaca" [required]="true"
+                  [ngClass]="isValid(unidadFormulario,'numeroPlaca') ? 'required' : ''"
+                  (change)="setValoresStore(unidadFormulario, 'numeroPlaca', 'setDatosUnidadNumeroPlaca')" />
+              </div>
+              <div class="col-md-4 ">
+                <app-catalogo-select [catalogo]="tipoDeVehiculoCatalogo" [label]="'País Emisor'" [required]="true"
+                  id="paisEmisor" formControlName="paisEmisor"
+                  [ngClass]="isValid(unidadFormulario,'paisEmisor') ? 'required' : ''"
+                  (change)="setValoresStore(unidadFormulario, 'paisEmisor', 'setDatosUnidadPaisEmisor')">
+                </app-catalogo-select>
+
+              </div>
+              <div class="col-md-4 ">
+                <label>Estado o provincia*:</label>
+                <input type="text" class="form-control" formControlName="estado"
+                  [ngClass]="isValid(unidadFormulario,'estado') ? 'estado' : 'true'"
+                  (change)="setValoresStore(unidadFormulario, 'estado', 'setDatosUnidadEstado')" />
+              </div>
+            </div>
+          </div>
+
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-4 ">
+                <app-catalogo-select [catalogo]="tipoDeVehiculoCatalogo" [label]="'Color de Vehículo'" [required]="true"
+                  id="colorVehiculo" formControlName="colorVehiculo"
+                  [ngClass]="isValid(unidadFormulario,'colorVehiculo') ? 'required' : ''"
+                  (change)="setValoresStore(unidadFormulario, 'colorVehiculo', 'setDatosUnidadColorVehiculo')">
+                </app-catalogo-select>
+
+              </div>
+              <div class="col-md-4 ">
+                <label>Número económico*:</label>
+                <input type="text" class="form-control" formControlName="numeroEconomico"
+                  [ngClass]="isValid(unidadFormulario,'numeroEconomico') ? 'modelo' : 'true'"
+                  (change)="setValoresStore(unidadFormulario, 'numeroEconomico', 'setDatosUnidadNumeroEconomico')" />
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-4">
+                <label>Número 2da Placa:</label>
+                <input type="text" class="form-control" formControlName="numero2daPlaca"
+                  [ngClass]="isValid(unidadFormulario,'numero2daPlaca') ? 'required' : ''"
+                  (change)="setValoresStore(unidadFormulario, 'numero2daPlaca', 'setDatosUnidadNumero2daPlaca')" />
+              </div>
+              <div class="col-md-4 ">
+                <label>Estado emisor de 2da Placa:</label>
+                <input type="text" class="form-control" formControlName="estado2daPlaca"
+                  [ngClass]="isValid(unidadFormulario,'estado2daPlaca') ? 'required' : 'true'"
+                  (change)="setValoresStore(unidadFormulario, 'estado2daPlaca', 'setDatosUnidadEstado2daPlaca')" />
+              </div>
+              <div class="col-md-4 ">
+                <app-catalogo-select [catalogo]="tipoDeVehiculoCatalogo" [label]="'País Emisor 2da Placa'"
+                  [required]="false" id="paisEmisor2daPlaca" formControlName="paisEmisor2daPlaca"
+                  [ngClass]="isValid(unidadFormulario,'paisEmisor2daPlaca') ? 'required' : ''"
+                  (change)="setValoresStore(unidadFormulario, 'paisEmisor2daPlaca', 'setDatosUnidadPaisEmisor2daPlaca')">
+                </app-catalogo-select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-8">
+                <label>Descripción del vehículo:</label>
+                <input type="text" class="form-control" formControlName="descripcion"
+                  [ngClass]="isValid(unidadFormulario,'descripcion') ? 'required' : ''"
+                  (change)="setValoresStore(unidadFormulario, 'descripcion', 'setDatosUnidadDescripcion')" />
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="modal-footer custom-footer mt-4">
+          <button type="button" class="btn btn-primary" (click)="limpiarUnidaddata()">Limpiar</button>
+          <button type="button" class="btn btn-default" data-bs-dismiss="modal" #closeUnidadModal> Cancelar </button>
+          <button type="submit" class="btn btn-primary" (click)="agregarUnidadData()"> Guardar </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

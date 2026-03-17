@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: modulefederation-aga-microfront-ingress-qa
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/proxy-buffering: "on"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
+spec:
+  rules:
+  - host: frontqa.v30.cloud-ultrasist.net
+    http:
+      paths:
+      - path: /aga(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: modulefederation-aga-microfront-service-qa
+            port:
+              number: 4202
+  tls:
+  - hosts:
+    - frontqa.v30.cloud-ultrasist.net
+    secretName: v30certs-qa

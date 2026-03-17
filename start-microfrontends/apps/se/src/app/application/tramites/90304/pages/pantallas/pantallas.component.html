@@ -1,0 +1,33 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-10">
+            <h3>Registro de solicitud modificación programa PROSEC (Baja de
+                productor indirecto)</h3>
+        </div>
+        <br><br>
+        
+        @if(esFormaValido) {
+            <ng-alert [CONTENIDO]="ALERTA_PRODUCTORAS_ERROR" [CUSTOMECLASS]="infoError"></ng-alert>
+        }
+
+        <app-wizard [listaPasos]="pantallasPasos"></app-wizard>
+    </div>
+    <div class="row">
+        @switch (indice) {
+        @case (1) {
+        <app-datos></app-datos>
+        } @case (2) {
+            <app-paso-carga-documento [idSolicitud]="solicitudState.idSolicitud" [idTipoTRamite]="'90304'"
+            [cargaArchivosEvento]="cargarArchivosEvento"
+            (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+            (reenviarCargaRealizada)="cargaRealizada($event)"
+            (cargaEnProgreso)="onCargaEnProgreso($event)"></app-paso-carga-documento>
+        } @case (3) {
+            <paso-firma [idSolicitud]="solicitudState.idSolicitud" [procedure]="90304" [procedureUrl]="'modificaciones-immex-prosec/solicitud-modificaciones'"></paso-firma>
+        }
+        }
+    </div>
+    
+    <btn-continuar [datos]="datosPasos" (continuarEvento)="getValorIndice($event)" (anteriorEvento)="getValorIndice($event)">
+    </btn-continuar>
+</div>

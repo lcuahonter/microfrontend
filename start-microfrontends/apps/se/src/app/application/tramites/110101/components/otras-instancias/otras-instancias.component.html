@@ -1,0 +1,43 @@
+<ng-titulo [titulo]="titulo" />
+<ng-alert [CONTENIDO]="mensajeAlerta"></ng-alert>
+<form [formGroup]="formularioInstancias">
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <lib-input-check [label]="'Acumulación'" formControlName="acumulacion" [required]="false" [id]="'acumulación'"
+             (change)="setValoresStore(formularioInstancias,'acumulacion')"></lib-input-check>
+        </div>
+        <div class="col-md-4">
+            <lib-input-check formControlName="bienes" [label]="modificacionTxt ? 'Juegos o surtidos' : 'Bienes y Materiales Fungibles'" [required]="false"
+                [id]="'bienes'" (change)="setValoresStore(formularioInstancias,'bienes')"></lib-input-check>
+        </div>
+        <div class="col-md-4">
+            <lib-input-check [label]="'Materiales Intermedios'" [required]="false" formControlName="intermedio"
+                [id]="'intermedio'"  (change)="setValoresStore(formularioInstancias,'intermedio')"></lib-input-check>
+        </div>
+    </div>
+    @if (catalogo) {
+        <div class="col-md-12">
+            <div class="col-md-8">
+                <app-catalogo-select [catalogo]="criteriosInstanciasCatalogo" formControlName="criterioInstancias"
+                    [label]="'Criterio Otras instancias'" [required]="true" name="Criterio Otras instancias"
+                   (selectionChange)="setValoresStore(formularioInstancias,'criterioInstancias',$event)"></app-catalogo-select>
+                <div *ngIf="formularioInstancias.get('criterioInstancias')?.invalid && (formularioInstancias.get('criterioInstancias')?.touched || formularioInstancias.get('criterioInstancias')?.dirty)"
+                class="text-danger mt-1">
+                <small *ngIf="formularioInstancias.get('criterioInstancias')?.errors?.['required']">
+                    Este campo es obligatorio.
+                </small>
+                </div>
+            </div>
+        </div>
+    }
+
+
+</form>
+
+
+@if (nuevaNotificacion) {
+<section>
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+    </lib-notificaciones>
+</section>
+}

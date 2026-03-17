@@ -1,0 +1,32 @@
+<div class="container">
+  <h2>Otras Areas</h2>
+  <div class="row mt-3">
+    @for (item of menuItems; track item) {
+    <div class="col-md-6">
+      <div class="custom-card">
+        <!-- Si tiene subitems -->
+        @if (item.subitems) {
+        <h4 (click)="toggle(item)" class="card-toggle">
+          {{ item.title }} <span class="caret" [class.caret-up]="item.open"></span>
+        </h4>
+        @if (item.open) {
+        <ul class="subitems">
+          @for (sub of item.subitems; track sub) {
+          <li>
+            <a [routerLink]="sub.route">{{ sub.title }}</a>
+          </li>
+          }
+        </ul>
+        } }
+
+        <!-- Si es link directo -->
+        @if (!item.subitems) {
+        <h4>
+          <a [routerLink]="item.route">{{ item.title }}</a>
+        </h4>
+        }
+      </div>
+    </div>
+    }
+  </div>
+</div>

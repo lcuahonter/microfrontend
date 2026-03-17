@@ -1,0 +1,83 @@
+<div class="page">
+  <div class="container mt-5">
+      <div class="row">
+     @if(indice === 1){
+      <div class="col-md-12">
+        <h1> Permiso de importación de permiso de importación de nutrientes vegetales</h1>
+      </div>
+      }
+    @if(indice === 2){
+      <div class="col-md-12">
+        <h1>Cargar archivos</h1>
+      </div>
+      }
+      @if(indice === 3){
+      <div class="col-md-12">
+        <h1>Firmar</h1>
+      </div>
+      }
+   <div class="col-12">
+        @if (isPeligro) {
+        <ng-alert [CONTENIDO]="formErrorAlert" [CUSTOMECLASS]="infoError"></ng-alert>
+      }
+       <div class="row mt-5" *ngIf="indice === 2">
+        <div class="col-md-12">
+          <lib-notificaciones
+            [notificacionInput]="alertaNotificacion"
+          ></lib-notificaciones>
+        </div>
+      </div>
+      </div>
+    <ng-container *ngIf="indice === 2"> </ng-container>
+   <app-wizard #WizardComponent [listaPasos]="pasos"></app-wizard>  
+  </div>
+
+    <div class="row">
+      @switch (indice) { @case (1) {
+      <app-paso-uno #pasoUnoRef [isContinuarTriggered]="isContinuarTriggered"></app-paso-uno>
+      } @case (2) {
+      <app-paso-carga-documento [idSolicitud]="guardarIdSolicitud" [idTipoTRamite]="'260508'"
+        [showInstrucciones]="true"
+        [cargaArchivosEvento]="cargarArchivosEvento"
+        (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+        (reenviarCargaRealizada)="cargaRealizada($event)"
+        (cargaEnProgreso)="onCargaEnProgreso($event)"
+        (enBlancoObligatoria)="onBlancoObligatoria($event)"></app-paso-carga-documento>
+      } @case (3) {
+      <paso-firma [idSolicitud]="guardarIdSolicitud" [procedure]="260508"
+        [procedureUrl]="'permiso-nutrientes/plaguicidas'"></paso-firma>
+      }
+      }
+      <div class="row">
+        <div class="col-md-12">
+          @if (indice !== 2) {
+          <btn-continuar [dePadre]="true" [datos]="datosPasos"
+            (continuarEvento)="getValorIndice($event)"></btn-continuar>
+          } @else {
+          <div class="mt-5 mb-3 d-flex justify-content-end">
+            <button type="button" class="btn btn-default" (click)="anterior()" *ngIf="seccionCargarDocumentos">
+              Anterior
+            </button>
+
+
+            @if(isSaltar) {
+            <button type="button" class="btn btn-default ms-3" (click)="saltar()">
+              Saltar
+            </button>
+            }
+
+            <button class="btn btn-primary ms-3" (click)="
+              seccionCargarDocumentos ? onClickCargaArchivos() : siguiente()
+            "
+              [disabled]="(seccionCargarDocumentos && !activarBotonCargaArchivos) || (!seccionCargarDocumentos && cargaEnProgreso)">
+              {{ seccionCargarDocumentos ? 'Cargar archivos' : 'Continuar' }}
+            </button>
+          </div>
+          }
+        </div>
+
+      </div>
+      <app-aviso-de-privacidad *ngIf="indice === 1"></app-aviso-de-privacidad>
+    </div>
+  </div>
+</div>

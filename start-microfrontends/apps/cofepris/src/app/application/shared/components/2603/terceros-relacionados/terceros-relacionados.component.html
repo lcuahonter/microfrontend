@@ -1,0 +1,131 @@
+<div class="container">
+    <ng-titulo titulo="Terceros relacionados"></ng-titulo>
+    <ng-alert [CONTENIDO]="TEXTOS.Importante"></ng-alert>
+    <form [formGroup]="tercerosRelacionadosTabla">
+        <div class="row mb-3">
+            <h5>
+                @if (permisoDefinitivoTitulo && (permisoDefinitivoTitulo.includes(260302) || permisoDefinitivoTitulo.includes(260304))) {
+                    Destinatario (destino final)<span
+                        [ngClass]="{
+                            'text-danger': tercerosRelacionadosTabla.invalid && tercerosRelacionadosTabla.touched && fabricanteTablaDatos.length === 0
+                        }"
+                    >*</span>:
+                } @else {
+                    Fabricante<span
+                        [ngClass]="{
+                            'text-danger': tercerosRelacionadosTabla.invalid && tercerosRelacionadosTabla.touched && fabricanteTablaDatos.length === 0
+                        }"
+                    >*</span>:
+                }
+            </h5>
+            <div class="col-md-12">
+                <app-tabla-dinamica
+                    [configuracionTabla]="configuracionTabla"
+                    [datos]="fabricanteTablaDatos"
+                    [tipoSeleccionTabla]="checkbox" 
+                    [disableSeleccionTablaCheckBox]="consultaState.readonly"
+                    [isInvalida]="tercerosRelacionadosTabla.invalid && tercerosRelacionadosTabla.touched && fabricanteTablaDatos.length === 0"
+                    (listaDeFilaSeleccionada)="onSeleccionChangeFabricante($event)"
+                    >
+                </app-tabla-dinamica>
+                <div class="d-flex justify-content-end mt-4">
+                    @if (permisoDefinitivoTitulo && (permisoDefinitivoTitulo.includes(260302) || permisoDefinitivoTitulo.includes(260304))) {
+                        <button *ngIf="fabricanteTablaDatos.length > 0 && selectedFabricanteRows.length > 0" type="button" class="btn btn-danger me-2" (click)="eliminarFabricante()">Eliminar</button>
+                        <button *ngIf="fabricanteTablaDatos.length > 0 && selectedFabricanteRows.length === 1" type="button" class="btn btn-default me-2" (click)="modificarFabricante()">Modificar</button>
+                        <button *ngIf="fabricanteTablaDatos.length === 0" type="button" class="btn btn-primary" (click)="abrirFabricanteModal('Agregar fabricante')" [disabled]="consultaState.readonly">Agregar</button>
+                    } @else {
+                        <button *ngIf="fabricanteTablaDatos.length > 0 && selectedFabricanteRows.length > 0" type="button" class="btn btn-danger me-2" (click)="eliminarFabricante()">Eliminar</button>
+                        <button *ngIf="fabricanteTablaDatos.length > 0 && selectedFabricanteRows.length === 1" type="button" class="btn btn-default me-2" (click)="modificarFabricante()">Modificar</button>
+                        <button type="button" class="btn btn-primary" (click)="abrirFabricanteModal('Agregar fabricante')" [disabled]="consultaState.readonly">Agregar</button>
+                    }
+                </div>
+            </div>
+        </div>
+    @if (permisoSeccion && (permisoSeccion.includes(260301) || permisoSeccion.includes(260303))) {
+        <div class="row mb-3">
+            <h5>Facturador<span
+                [ngClass]="{
+                    'text-danger': tercerosRelacionadosTabla.invalid && tercerosRelacionadosTabla.touched && facturadorTablaDatos.length === 0
+                    }"
+                    >*</span>:</h5>
+            <div class="col-md-12">
+                <app-tabla-dinamica
+                    [configuracionTabla]="configuracionFacturadorTabla"
+                    [datos]="facturadorTablaDatos"
+                    [tipoSeleccionTabla]="checkbox" 
+                    [disableSeleccionTablaCheckBox]="consultaState.readonly"
+                    [isInvalida]="tercerosRelacionadosTabla.invalid && tercerosRelacionadosTabla.touched && facturadorTablaDatos.length === 0"
+                    (listaDeFilaSeleccionada)="onSeleccionChangeFacturador($event)"
+                    >
+                </app-tabla-dinamica>
+                <div class="d-flex justify-content-end mt-4">
+                    <button *ngIf="facturadorTablaDatos.length > 0 && selectedFacturadorRows.length > 0" type="button" class="btn btn-danger me-2" (click)="eliminarFacturador()">Eliminar</button>
+                    <button *ngIf="facturadorTablaDatos.length > 0 && selectedFacturadorRows.length === 1" type="button" class="btn btn-default me-2" (click)="modificarFacturador()">Modificar</button>
+                    <button type="button" class="btn btn-primary" (click)="abrirFabricanteModal('Agregar facturador')" [disabled]="consultaState.readonly">Agregar</button>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <h5>Proveedor/distribuidor:</h5>
+            <div class="col-md-12">
+                <app-tabla-dinamica
+                    [configuracionTabla]="configuracionProveedorTabla"
+                    [datos]="proveedorTablaDatos"
+                    [tipoSeleccionTabla]="checkbox" [disableSeleccionTablaCheckBox]="consultaState.readonly"
+                    (listaDeFilaSeleccionada)="onSeleccionChangeProveedor($event)"
+                    >
+                </app-tabla-dinamica>
+                <div class="d-flex justify-content-end mt-4">
+                    <button *ngIf="proveedorTablaDatos.length > 0 && selectedProveedorRows.length > 0" type="button" class="btn btn-danger me-2" (click)="eliminarProveedor()">Eliminar</button>
+                    <button *ngIf="proveedorTablaDatos.length > 0 && selectedProveedorRows.length === 1" type="button" class="btn btn-default me-2" (click)="modificarProveedor()">Modificar</button>
+                    <button *ngIf="proveedorTablaDatos.length === 0" type="button" class="btn btn-primary" (click)="abrirFabricanteModal('Agregar proveedor/distribuidor')" [disabled]="consultaState.readonly">Agregar</button>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <h5>Certificado analítico:</h5>
+            <div class="col-md-12">
+                <app-tabla-dinamica
+                    [configuracionTabla]="configuracionCertificadoAnaliticoTabla"
+                    [datos]="certificadoAnaliticoTablaDatos"
+                    [tipoSeleccionTabla]="checkbox" [disableSeleccionTablaCheckBox]="consultaState.readonly"
+                    (listaDeFilaSeleccionada)="onSeleccionChangeCertificadoAnalitico($event)"
+                    >
+                </app-tabla-dinamica>
+                <div class="d-flex justify-content-end mt-4">
+                    <button *ngIf="certificadoAnaliticoTablaDatos.length > 0 && selectedCertificadoAnaliticoRows.length > 0" type="button" class="btn btn-danger me-2" (click)="eliminarCertificadoAnalitico()">Eliminar</button>
+                    <button *ngIf="certificadoAnaliticoTablaDatos.length > 0 && selectedCertificadoAnaliticoRows.length === 1" type="button" class="btn btn-default me-2" (click)="modificarCertificadoAnalitico()">Modificar</button>
+                    <button *ngIf="certificadoAnaliticoTablaDatos.length === 0" type="button" class="btn btn-primary" (click)="abrirFabricanteModal('Agregar certificado analítico')" [disabled]="consultaState.readonly">Agregar</button>
+                </div>
+            </div>
+        </div>
+    }
+        <div class="row mb-3">
+            <h5>Otros:</h5>
+            <div class="col-md-12">
+                <app-tabla-dinamica
+                    [configuracionTabla]="configuracionOtrosTabla"
+                    [datos]="otrosTablaDatos"
+                    [tipoSeleccionTabla]="checkbox" [disableSeleccionTablaCheckBox]="consultaState.readonly"
+                    (listaDeFilaSeleccionada)="onSeleccionChangeOtros($event)"
+                    >
+                </app-tabla-dinamica>
+                <div class="d-flex justify-content-end mt-4">
+                    <button *ngIf="otrosTablaDatos.length > 0 && selectedOtrosRows.length > 0" type="button" class="btn btn-danger me-2" (click)="eliminarOtros()">Eliminar</button>
+                    <button *ngIf="otrosTablaDatos.length > 0 && selectedOtrosRows.length === 1" type="button" class="btn btn-default me-2" (click)="modificarOtros()">Modificar</button>
+                    <button *ngIf="otrosTablaDatos.length === 0" type="button" class="btn btn-primary" (click)="abrirFabricanteModal('Agregar otros')" [disabled]="consultaState.readonly">Agregar</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<!-- Modal de notificación -->
+@if(nuevaNotificacion && nuevaNotificacion.tipoNotificacion) {
+<section>
+  <lib-notificaciones 
+    [invertirBotones]="true"
+    [notificacionInput]="nuevaNotificacion"
+    (confirmacionModal)="manejarConfirmacionNotificacion($event)">
+  </lib-notificaciones>
+</section>
+}

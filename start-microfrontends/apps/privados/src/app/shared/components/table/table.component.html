@@ -1,0 +1,88 @@
+<div class="panel panel-default">
+  <!-- Header con título e ícono -->
+  <ng-container *ngIf="displayHeader">
+    <div class="panel-heading clearfix">
+      <h5 class="panel-title pull-left"> {{ title }} </h5>
+      @if (ableCollapse) {
+        <a
+          class="pull-right a-table"
+          data-toggle="collapse"
+          [attr.href]="'#' + collapseId"
+          [attr.aria-controls]="collapseId"
+          aria-expanded="true"
+        >
+          <span class="icon-caret-right"></span>
+        </a>
+      }
+    </div>
+  </ng-container>
+  <!-- Contenido colapsable -->
+  <div [id]="collapseId" class="panel-collapse collapse in">
+    <h5 class="text-center" *ngIf="isLoading()">Cargando...</h5>
+
+    <ng-container *ngIf="!isLoading()">
+      <div class="table-responsive">
+        <table class="table table-striped" [ngClass]="{'table-bordered': borderedStyle, 'table-hover': ableSelectRows || hasRedirect }">
+          <thead>
+            <tr>
+              <th scope="col"> </th>
+              <th scope="col" *ngIf="ableSelectRows">
+                <input type="checkbox" [disabled]="!ableSelectAllTable" [(ngModel)]="selectAllRows" (change)="onSelectAllChange()" />
+              </th>
+              <th scope="col" [ngClass]="{'text-center': textCenterTitleColums }" *ngFor="let header of tableDataConverted().headers; let headerIndex = index">{{ header }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="error">
+              <td colspan="100%" class="text-center">Sucedió un error</td>
+            </tr>
+            <tr *ngIf="!error && dataIsEmpty()">
+              <td colspan="100%" class="text-center">Sin resultados</td>
+            </tr>
+            <ng-container *ngIf="!error && !dataIsEmpty()">
+              <tr *ngFor="let body of tableDataConverted().body; let bodyTrackBy = index">
+                <td class="index-row"> {{ bodyTrackBy + 1 }} </td>
+                <td class="pointer" *ngIf="ableSelectRows">
+                  <input
+                    type="checkbox"
+                    [(ngModel)]="body.isSelected"
+                    (change)="onRowChange()"
+                  />
+                </td>
+                <td *ngFor="let element of body.rows; let rowIndex = index"
+                    [ngClass]="{ 'pointer' : hasRedirect || ableSelectRows }"
+                    (click)="onRowClick(bodyTrackBy)">{{ element }}</td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+      <div class="form-inline m-1 text-center" *ngIf="hasPagination && !dataIsEmpty()">
+        <label for="pageSelect" class="mr">Página: </label>
+        <select
+          class="form-control input-sm"
+          [ngModel]="currentPage()"
+          (ngModelChange)="changePage($event)"
+        >
+          <option *ngFor="let page of pages()" [value]="page">{{ page }}</option>
+        </select>
+        <span class="ml mr">de {{ totalPages() }}</span>
+        <gob-button
+          type="button"
+          className="btn-primary btn-sm"
+          label="«"
+          [disabled]="currentPage() === 1"
+          (clicked)="changePage(currentPage() - 1)"
+        ></gob-button>
+
+        <gob-button
+          type="button"
+          className="btn-primary btn-sm"
+          label="»"
+          [disabled]="currentPage() === totalPages()"
+          (clicked)="changePage(currentPage() + 1)"
+        ></gob-button>
+      </div>
+    </ng-container>
+  </div>
+</div>

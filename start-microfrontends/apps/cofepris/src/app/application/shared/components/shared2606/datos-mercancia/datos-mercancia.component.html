@@ -1,0 +1,802 @@
+<ng-titulo titulo="Datos mercancía"></ng-titulo>
+@if(mensajeDeError){
+<ng-alert [CONTENIDO]="mensajeDeError" [CUSTOMECLASS]="'alert-danger text-center'"></ng-alert>
+}
+<form [formGroup]="mercanciaForm">
+  <div class="row">
+    <div class="col-md-10">
+      <div class="ml-2">
+        <app-catalogo-select [catalogo]="clasificacionProductoDatos" formControlName="clasificacionProducto"
+          [label]="'Clasificación del producto'" [required]="true"
+          [markUntouched]="mercanciaForm.get('clasificacionProducto')?.errors?.['required'] && mercanciaForm.get('clasificacionProducto')?.touched ? true : false"
+          name="clasificacionProducto" [placeholder]="'Selecciona una opción'"
+          [markTouched]="mercanciaForm.get('clasificacionProducto')?.touched??false"
+          (selectionChange)="onCambioClasificacionProducto($event)"></app-catalogo-select>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-10 ml-2">
+      <div class="form-group">
+        <app-catalogo-select [catalogo]="especificarClasificacionProductoDatos"
+          formControlName="especificarClasificacionProducto" [label]="'Especificar clasificación del producto'"
+          [required]="true"
+          [markUntouched]="mercanciaForm.get('especificarClasificacionProducto')?.errors?.['required'] && mercanciaForm.get('especificarClasificacionProducto')?.touched? true : false"
+          name="especificarClasificacionProducto" [placeholder]="'Selecciona una opción'"
+          [markTouched]="mercanciaForm.get('especificarClasificacionProducto')?.touched??false"></app-catalogo-select>
+      </div>
+    </div>
+  </div>
+  <div class="row" *ngIf="showDenominacionEspecificaProducto">
+      <div class="col-md-10">
+        <div class="form-group">
+          <label class="form-label" for="denominacionEspecificaProducto"
+            >Denominación específica del producto<span
+              [ngClass]="
+            {
+              'text-danger': mercanciaForm.get('denominacionEspecificaProducto')?.errors?.['required'] && mercanciaForm.get('denominacionEspecificaProducto')?.touched
+            }"
+              >*</span
+            >:</label
+          >
+          <input
+            class="form-control"
+            id="denominacionEspecificaProducto"
+            type="text"
+            
+            formControlName="denominacionEspecificaProducto"
+            [ngClass]="
+              isValid(mercanciaForm, 'denominacionEspecificaProducto')
+                ? 'required'
+                : ''
+            "
+          />
+          <div
+            class="mensaje-error"
+            *ngIf="mercanciaForm.get('denominacionEspecificaProducto')?.errors?.['required'] && mercanciaForm.get('denominacionEspecificaProducto')?.touched"
+          >
+            Este campo es obligatorio.
+          </div>
+          <div
+  class="mensaje-error"
+  *ngIf="mercanciaForm.get('denominacionEspecificaProducto')?.value?.length > 120 && mercanciaForm.get('denominacionEspecificaProducto')?.touched"
+>
+  Por favor, no escribas más de 120 caracteres
+</div>
+        </div>
+      </div>
+    </div>
+  <div class="row">
+    <div class="col-md-10">
+      <div class="form-group">
+        <label class="form-label" for="marcaComercialODenominacionDistintiva">Marca comercial o denominación
+          distintiva<span [ngClass]="
+            {
+              'text-danger': mercanciaForm.get('marcaComercialODenominacionDistintiva')?.errors?.['required'] && mercanciaForm.get('marcaComercialODenominacionDistintiva')?.touched
+            }">*</span>:</label>
+        <input class="form-control" id="marcaComercialODenominacionDistintiva" type="text" maxlength="120"
+          formControlName="marcaComercialODenominacionDistintiva" [ngClass]="
+              isValid(mercanciaForm, 'marcaComercialODenominacionDistintiva')
+                ? 'required'
+                : ''
+            " />
+        <div class="mensaje-error"
+          *ngIf="mercanciaForm.get('marcaComercialODenominacionDistintiva')?.errors?.['required'] && mercanciaForm.get('marcaComercialODenominacionDistintiva')?.touched">
+          Este campo es obligatorio.
+        </div>
+      </div>
+    </div>
+  </div>
+  @if(!elementosNoValidos.includes('denominacionComunInternacional')){
+  <div class="row">
+    <div class="col-md-10">
+      <div class="form-group">
+        <label class="form-label" for="denominacionComunInternacional">Denominación común internacional (DCI) o
+          denominación genérica<span [ngClass]="
+            {
+              'text-danger': mercanciaForm.get('denominacionComunInternacional')?.errors?.['required'] && mercanciaForm.get('denominacionComunInternacional')?.touched
+            }">*</span>:</label>
+        <input class="form-control" id="denominacionComunInternacional" type="text" maxlength="40"
+          formControlName="denominacionComunInternacional" [ngClass]="
+              isValid(mercanciaForm, 'denominacionComunInternacional')
+                ? 'required'
+                : ''
+            " />
+        <div class="mensaje-error"
+          *ngIf="mercanciaForm.get('marcaComercialODenominacionDistintiva')?.errors?.['required'] && mercanciaForm.get('marcaComercialODenominacionDistintiva')?.touched">
+          Este campo es obligatorio.
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+  @if(elementosAnadidos.includes('marca')){
+  <div class="row">
+    <div class="col-md-10">
+      <div class="form-group">
+        <label class="form-label" for="marca">Marca<span [ngClass]="
+            {
+              'text-danger': mercanciaForm.get('marca')?.errors?.['required'] && mercanciaForm.get('marca')?.touched
+            }">*</span>:</label>
+        <input class="form-control" id="marca" type="text" formControlName="marca"
+          [ngClass]="isValid(mercanciaForm, 'marca') ? 'required' : ''" />
+        <div class="mensaje-error"
+          *ngIf="mercanciaForm.get('marca')?.errors?.['required'] && mercanciaForm.get('marca')?.touched">
+          Este campo es obligatorio.
+        </div>
+      </div>
+    </div>
+  </div>
+  } @if(!elementosNoValidos.includes('denominacionDistintiva')) {
+  <div class="row">
+    <div class="col-md-10">
+      <div class="form-group">
+        <label class="form-label" for="denominacionDistintiva">Denominación distintiva<span [ngClass]="
+            {
+              'text-danger': mercanciaForm.get('denominacionDistintiva')?.errors?.['required'] && mercanciaForm.get('denominacionDistintiva')?.touched
+            }">*</span>:</label>
+        <input class="form-control" id="denominacionDistintiva" type="text" formControlName="denominacionDistintiva"
+          maxlength="1000" [ngClass]="
+              isValid(mercanciaForm, 'denominacionDistintiva') ? 'required' : ''
+            " />
+        <div class="mensaje-error"
+          *ngIf="mercanciaForm.get('denominacionDistintiva')?.errors?.['required'] && mercanciaForm.get('denominacionDistintiva')?.touched">
+          Este campo es obligatorio.
+        </div>
+      </div>
+    </div>
+  </div>
+  } @if(!elementosNoValidos.includes('denominacionComun')){
+  <div class="row">
+    <div class="col-md-10">
+      <div class="form-group">
+        <label class="form-label" for="denominacionComun">Denominación o nombre científico1<span [ngClass]="
+            {
+              'text-danger': mercanciaForm.get('denominacionComun')?.errors?.['required'] && mercanciaForm.get('denominacionComun')?.touched
+            }">*</span>:
+        </label>
+        <span tooltip="Denominación común internacional o genérica">
+          <i class="bi bi-question-circle-fill"></i>
+        </span>
+        <input class="form-control" id="denominacionComun" type="text" maxlength="120"
+          formControlName="denominacionComun" [ngClass]="
+              isValid(mercanciaForm, 'denominacionComun') ? 'required' : ''
+            " />
+        <div class="mensaje-error"
+          *ngIf="mercanciaForm.get('denominacionComun')?.errors?.['required'] && mercanciaForm.get('denominacionComun')?.touched">
+          Este campo es obligatorio.
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+
+  <div class="row">
+    <div class="col-md-10 ml-2">
+      <app-catalogo-select [catalogo]="tipoProductoDatos" formControlName="tipoProducto" [label]="'Tipo de producto'"
+        [required]="true"
+        [markUntouched]="mercanciaForm.get('tipoProducto')?.errors?.['required'] && mercanciaForm.get('tipoProducto')?.touched ? true : false"
+        name="tipoProducto" [placeholder]="'Selecciona una opción'"
+        [markTouched]="mercanciaForm.get('tipoProducto')?.touched??false"
+        (selectionChange)="onCambioTipoProduct($event)"></app-catalogo-select>
+    </div>
+  </div>
+
+  @if(elementosAnadidos.includes('especifique') &&
+  tipoProductoObj?.[0]?.descripcion === 'Otro'){
+  <div class="row">
+    <div class="col-md-10">
+      <div class="form-group">      
+        <label class="form-label" for="especifique">Especifique<span [ngClass]="
+            {
+              'text-danger': mercanciaForm.get('especifique')?.errors?.['required'] && mercanciaForm.get('especifique')?.touched
+            }">*</span>:</label>
+        <input maxlength="100" class="form-control" id="especifique" type="text" formControlName="especifique"
+          [ngClass]="isValid(mercanciaForm, 'especifique') ? 'required' : ''" />
+        <div class="mensaje-error"
+          *ngIf="mercanciaForm.get('especifique')?.errors?.['required'] && mercanciaForm.get('especifique')?.touched">
+          Este campo es obligatorio.
+        </div>
+      </div>
+    </div>
+  </div>
+  } @if(!elementosNoValidos.includes('formaFarmaceutica') ) {
+  <div class="row">
+    <div class="col-md-10 ml-2">
+      <app-catalogo-select [catalogo]="formaFarmaceuticaDatos" formControlName="formaFarmaceutica"
+        [label]="'Forma farmacéutica'" [required]="true" name="formaFarmaceutica"
+        [placeholder]="'Selecciona una opción'"
+        [markTouched]="mercanciaForm.get('formaFarmaceutica')?.touched??false"></app-catalogo-select>
+    </div>
+  </div>
+  } @if(elementosAnadidos.includes('especifiqueForma') &&
+  mercanciaForm.get('formaFarmaceutica')?.value === tipoFOFA &&
+  !elementosBelow){
+  <div class="row">
+    <div class="col-md-10">
+      <div class="form-group">
+        <label class="form-label" for="especifiqueForma">Especifique<span [ngClass]="
+            {
+              'text-danger': mercanciaForm.get('especifiqueForma')?.errors?.['required'] && mercanciaForm.get('especifiqueForma')?.touched
+            }">*</span>:</label>
+        <input maxlength="100" class="form-control" id="especifiqueForma" type="text" formControlName="especifiqueForma"
+          [ngClass]="
+              isValid(mercanciaForm, 'especifiqueForma') ? 'required' : ''
+            " />
+        <div class="mensaje-error"
+          *ngIf="mercanciaForm.get('especifiqueForma')?.errors?.['required'] && mercanciaForm.get('especifiqueForma')?.touched">
+          Este campo es obligatorio.
+        </div>
+      </div>
+    </div>
+  </div>
+  } @if(!elementosNoValidos.includes('estadoFisico')){
+  <div class="row">
+    <div class="col-md-10 ml-2">
+      <app-catalogo-select [catalogo]="estadoFisicoDatos" formControlName="estadoFisico" [label]="'Estado físico'"
+        [required]="true"
+        [markUntouched]="mercanciaForm.get('estadoFisico')?.errors?.['required'] && mercanciaForm.get('estadoFisico')?.touched ? true : false"
+        name="estadoFisico" [placeholder]="'Selecciona una opción'"
+        [markTouched]="mercanciaForm.get('estadoFisico')?.touched??false"></app-catalogo-select>
+    </div>
+  </div>
+  } @if(elementosAnadidos.includes('especifiqueEstado') &&
+  mercanciaForm.get('estadoFisico')?.value === 'ESFIMG.OTRE' ){
+  <div class="row">
+    <div class="col-md-10">
+      <div class="form-group">
+        <label class="form-label"
+          for="especifiqueEstado">Especifique@if(elementosMandatorios.includes('especifiqueEstado')){
+          <span [ngClass]="
+                {
+                  'text-danger': mercanciaForm.get('especifiqueEstado')?.errors?.['required'] && mercanciaForm.get('especifiqueEstado')?.touched
+                }">*</span>
+          }:</label>
+        <input maxlength="100" class="form-control" id="especifiqueEstado" type="text"
+          formControlName="especifiqueEstado" [ngClass]="
+              isValid(mercanciaForm, 'especifiqueEstado') ? 'required' : ''
+            " />
+        <div class="mensaje-error"
+          *ngIf="mercanciaForm.get('especifiqueEstado')?.errors?.['required'] && mercanciaForm.get('especifiqueEstado')?.touched">
+          Este campo es obligatorio.
+        </div>
+      </div>
+    </div>
+  </div>
+  } @if(elementosAnadidos.includes('especifiqueForma') &&
+  mercanciaForm.get('formaFarmaceutica')?.value === tipoProductoEspecial &&
+  elementosBelow){
+  <div class="row">
+    <div class="col-md-10">
+      <div class="form-group">
+        <label class="form-label" for="especifiqueForma">Especifique<span [ngClass]="
+            {
+              'text-danger': mercanciaForm.get('especifiqueForma')?.errors?.['required'] && mercanciaForm.get('especifiqueForma')?.touched
+            }">*</span>:</label>
+        <input maxlength="100" class="form-control" id="especifiqueForma" type="text" formControlName="especifiqueForma"
+          [ngClass]="
+              isValid(mercanciaForm, 'especifiqueForma') ? 'required' : ''
+            " />
+        <div class="mensaje-error"
+          *ngIf="mercanciaForm.get('especifiqueForma')?.errors?.['required'] && mercanciaForm.get('especifiqueForma')?.touched">
+          Este campo es obligatorio.
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+
+  <div class="row">
+    @if(fraccionArancelariaCatalog){
+    <div class="col-md-10">
+      <div class="form-group">
+        <label class="form-label" for="fraccionArancelaria">Fracción arancelaria<span [ngClass]="
+            {
+              'text-danger': mercanciaForm.get('fraccionArancelaria')?.errors?.['required'] && mercanciaForm.get('fraccionArancelaria')?.touched
+            }">*</span>:
+        </label>&nbsp;<span
+          tooltip="Descripción numérica o desglose de un código de clasificación que otorga el Sistema Armonizado">
+          <i class="bi bi-question-circle-fill"></i>
+        </span>
+        <input maxlength="8" class="form-control" id="fraccionArancelaria" type="text"
+          formControlName="fraccionArancelaria" (change)="cambiarFraccionArancelaria()"
+          (keydown)="validarFraccionArancelaria()" [ngClass]="{
+            'is-invalid':
+            mercanciaForm.get('fraccionArancelaria')?.invalid &&
+            mercanciaForm.get('fraccionArancelaria')?.touched
+          }" />
+
+  <div class="mensaje-error"
+     *ngIf="mercanciaForm.get('fraccionArancelaria')?.errors?.['pattern'] && mercanciaForm.get('fraccionArancelaria')?.touched">
+  Por favor, sólo escribe dígitos
+</div>
+
+<div class="mensaje-error"
+     *ngIf="mercanciaForm.get('fraccionArancelaria')?.errors?.['minlength'] && mercanciaForm.get('fraccionArancelaria')?.touched">
+  Por favor, no escribas menos de 8 caracteres.
+</div>
+
+<div class="mensaje-error"
+     *ngIf="mercanciaForm.get('fraccionArancelaria')?.errors?.['maxlength'] && mercanciaForm.get('fraccionArancelaria')?.touched">
+  Por favor, no escribas más de 8 caracteres.
+</div>
+
+        <div class="mensaje-error"
+          *ngIf="mercanciaForm.get('fraccionArancelaria')?.errors?.['required'] && mercanciaForm.get('fraccionArancelaria')?.touched">
+          Este campo es obligatorio.
+        </div>
+      </div>
+    </div>
+    }
+
+    @else{
+    <div class="col-md-10">
+      <div class="form-group">
+        <app-catalogo-select [catalogo]="fraccionArancelariaDatos" formControlName="fraccionArancelaria"
+          [label]="'Fracción arancelaria'" [required]="true"
+          [markUntouched]="mercanciaForm.get('fraccionArancelaria')?.errors?.['required'] && mercanciaForm.get('fraccionArancelaria')?.touched ? true : false"
+          name="fraccionArancelaria" [placeholder]="'Selecciona una opción'"></app-catalogo-select>
+      </div>
+    </div>
+    }
+  </div>
+  <div class="row">
+    <div class="col-md-10">
+      <div class="form-group">
+        <label class="form-label" for="descripcionFraccion">Descripción de la fracción arancelaria</label>
+        <span class="form-label"
+          [ngClass]="((isValid(mercanciaForm, 'descripcionFraccion') && mercanciaForm.get('descripcionFraccion')?.touched)|| ((mercanciaForm.get('descripcionFraccion')?.errors?.['required']|| mercanciaForm.get('denominacionRazon')?.value===''|| mercanciaForm.get('descripcionFraccion')?.value===null) && mercanciaForm.get('descripcionFraccion')?.touched)) ? 'text-danger' : ''">*</span>
+        <span class="form-label">:</span>
+        <input class="form-control" id="descripcionFraccion"
+          [readonly]="elementosDeshabilitados.includes('descripcionFraccion')" type="text"
+          formControlName="descripcionFraccion"
+          [ngClass]="isValid(mercanciaForm, 'descripcionFraccion') ? 'required' : ''" />
+        <div class="mensaje-error" *ngIf="(
+           (mercanciaForm.get('descripcionFraccion')?.errors?.['required'] && mercanciaForm.get('descripcionFraccion')?.touched)
+           || 
+           (mercanciaForm.get('descripcionFraccion')?.touched && elementosDeshabilitados.includes('descripcionFraccion') && !mercanciaForm.get('descripcionFraccion')?.value)
+         )">
+          Este campo es obligatorio.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="showDenominacionEspecificaProducto">
+      <div class="col-md-10">
+        <div class="form-group">
+          <label class="form-label" for="modelo"
+            >Modelo<span
+              [ngClass]="
+            {
+              'text-danger': mercanciaForm.get('modelo')?.errors?.['required'] && mercanciaForm.get('modelo')?.touched
+            }"
+              >*</span
+            >:</label
+          >
+          <input
+            class="form-control"
+            id="modelo"
+            type="text"
+            maxlength="1000"
+            formControlName="modelo"
+            [ngClass]="
+              isValid(mercanciaForm, 'modelo')
+                ? 'required'
+                : ''
+            "
+          />
+          <div
+            class="mensaje-error"
+            *ngIf="mercanciaForm.get('modelo')?.errors?.['required'] && mercanciaForm.get('modelo')?.touched"
+          >
+            Este campo es obligatorio.
+          </div>
+        </div>
+      </div>
+    </div>
+  <div class="row" *ngIf="showDenominacionEspecificaProducto">
+      <div class="col-md-10">
+        <div class="form-group">
+          <label class="form-label" for="descripcionDelProducto"
+            >Descripción del producto <span
+              [ngClass]="
+            {
+              'text-danger': mercanciaForm.get('descripcionDelProducto')?.errors?.['required'] && mercanciaForm.get('descripcionDelProducto')?.touched
+            }"
+              >*</span
+            >:</label
+          >
+          <input
+            class="form-control"
+            id="descripcionDelProducto"
+            type="text"
+            maxlength="1000"
+            formControlName="descripcionDelProducto"
+            [ngClass]="
+              isValid(mercanciaForm, 'descripcionDelProducto')
+                ? 'required'
+                : ''
+            "
+          />
+          <div
+            class="mensaje-error"
+            *ngIf="mercanciaForm.get('descripcionDelProducto')?.errors?.['required'] && mercanciaForm.get('descripcionDelProducto')?.touched"
+          >
+            Este campo es obligatorio.
+          </div>
+        </div>
+      </div>
+    </div>
+@if(!elementosNoValidos.includes('UMC')){
+  <div class="row">
+    <div class="col-md-5">
+      <div class="form-group">
+        <label class="form-label" for="cantidadUmcValor">Cantidad UMC<span [ngClass]="
+            {
+              'text-danger': mercanciaForm.get('cantidadUmcValor')?.errors?.['required'] && mercanciaForm.get('cantidadUmcValor')?.touched
+            }">*</span>:</label>
+        <input maxlength="20" class="form-control" id="cantidadUmcValor" type="text" formControlName="cantidadUmcValor"
+          [ngClass]="
+              isValid(mercanciaForm, 'cantidadUmcValor') ? 'required' : ''
+            " />
+        <div class="mensaje-error"
+          *ngIf="mercanciaForm.get('cantidadUmcValor')?.errors?.['required'] && mercanciaForm.get('cantidadUmcValor')?.touched">
+          Este campo es obligatorio.
+        </div>
+
+        <div
+          *ngIf="mercanciaForm.get('cantidadUmcValor')?.touched && mercanciaForm.get('cantidadUmcValor')?.errors?.['pattern']"
+          class="mensaje-error">
+          Por favor, escribe un número entero válido.
+        </div>
+        <div *ngIf="mercanciaForm.get('cantidadUmcValor')?.errors?.['formatoInvalido'] && 
+          !mercanciaForm.get('cantidadUmcValor')?.errors?.['required'] && 
+          !mercanciaForm.get('cantidadUmcValor')?.errors?.['pattern'] && 
+          mercanciaForm.get('cantidadUmcValor')?.touched" class="mensaje-error">
+
+          Este campo permite doce números enteros y hasta diez decimales
+        </div>
+      </div>
+    </div>
+    <div class="col-md-5 ml-2">
+      <app-catalogo-select [catalogo]="cantidadUmcDatos" formControlName="cantidadUmc" [label]="'UMC'" [required]="true"
+        [markUntouched]="mercanciaForm.get('cantidadUmc')?.errors?.['required'] && mercanciaForm.get('cantidadUmc')?.touched? true : false"
+        [tooltipQuestionCircle]="true" [tooltipQuestionCircleText]="'Unidad de medida de comercialización'"
+        [markTouched]="mercanciaForm.get('cantidadUmc')?.touched??false" name="cantidadUmc"></app-catalogo-select>
+    </div>
+  </div>
+}
+@if(!elementosNoValidos.includes('PorcentajeDeConcentracion')){
+  <div class="row">
+    <div class="col-md-5">
+      <div class="form-group">
+        <label class="form-label" for="PorcentajeDeConcentracion">Porcentaje de concentración<span [ngClass]="
+            {
+              'text-danger': mercanciaForm.get('PorcentajeDeConcentracion')?.errors?.['required'] && mercanciaForm.get('PorcentajeDeConcentracion')?.touched
+            }">*</span>:</label>
+        <input maxlength="100" class="form-control" id="PorcentajeDeConcentracion" type="text" formControlName="PorcentajeDeConcentracion"
+          [ngClass]="
+              isValid(mercanciaForm, 'PorcentajeDeConcentracion') ? 'required' : ''
+            " />
+        <div class="mensaje-error"
+          *ngIf="mercanciaForm.get('PorcentajeDeConcentracion')?.errors?.['required'] && mercanciaForm.get('PorcentajeDeConcentracion')?.touched">
+          Este campo es obligatorio.
+        </div>
+
+        <div
+          *ngIf="mercanciaForm.get('PorcentajeDeConcentracion')?.touched && mercanciaForm.get('PorcentajeDeConcentracion')?.errors?.['pattern']"
+          class="mensaje-error">
+          Por favor, escribe un número entero válido.
+        </div>
+        <div *ngIf="mercanciaForm.get('PorcentajeDeConcentracion')?.errors?.['formatoInvalido'] && 
+          !mercanciaForm.get('PorcentajeDeConcentracion')?.errors?.['required'] && 
+          !mercanciaForm.get('PorcentajeDeConcentracion')?.errors?.['pattern'] && 
+          mercanciaForm.get('PorcentajeDeConcentracion')?.touched" class="mensaje-error">
+
+          Este campo permite doce números enteros y hasta diez decimales
+        </div>
+      </div>
+    </div>
+    <div class="col-md-5 ml-2">
+      <div class="form-group">
+        <label class="form-label" for="valorComercial">Valor comercial (dólares)<span [ngClass]="
+            {
+              'text-danger': mercanciaForm.get('valorComercial')?.errors?.['required'] && mercanciaForm.get('valorComercial')?.touched
+            }">*</span>:</label>
+        <input maxlength="20" class="form-control" id="valorComercial" type="text" formControlName="valorComercial"
+          [ngClass]="
+              isValid(mercanciaForm, 'valorComercial') ? 'required' : ''
+            " />
+        <div class="mensaje-error"
+          *ngIf="mercanciaForm.get('valorComercial')?.errors?.['required'] && mercanciaForm.get('valorComercial')?.touched">
+          Este campo es obligatorio.
+        </div>
+
+        <div
+          *ngIf="mercanciaForm.get('valorComercial')?.touched && mercanciaForm.get('valorComercial')?.errors?.['pattern']"
+          class="mensaje-error">
+          Por favor, escribe un número entero válido.
+        </div>
+        <div *ngIf="mercanciaForm.get('valorComercial')?.errors?.['formatoInvalido'] && 
+          !mercanciaForm.get('valorComercial')?.errors?.['required'] && 
+          !mercanciaForm.get('valorComercial')?.errors?.['pattern'] && 
+          mercanciaForm.get('valorComercial')?.touched" class="mensaje-error">
+
+          Este campo permite doce números enteros y hasta diez decimales
+        </div>
+      </div>
+    </div>
+  </div>
+}
+  @if(!elementosNoValidos.includes('presentacion') && idProcedimiento !== 260603){
+  <div class="row">
+    <div class="col-md-10">
+      <label class="form-label text-start" for="presentacion">
+        Presentación farmacéutica o tipo de envase<span [ngClass]="
+            {
+              'text-danger': mercanciaForm.get('presentacion')?.errors?.['required'] && mercanciaForm.get('presentacion')?.touched
+            }">*</span>:
+      </label>
+      <textarea maxlength="250" id="presentacion" class="form-control height t-area" rows="5"
+        formControlName="presentacion" [ngClass]="{
+          'is-invalid':
+          mercanciaForm.get('presentacion')?.invalid &&
+          mercanciaForm.get('presentacion')?.touched
+          }"></textarea>
+      <div class="mensaje-error"
+        *ngIf="mercanciaForm.get('presentacion')?.errors?.['required'] && mercanciaForm.get('presentacion')?.touched">
+        Este campo es obligatorio.
+      </div>
+    </div>
+  </div>
+  }
+
+  <div class="row" *ngIf="!esValidoRegistroOVencimiento">
+    @if(!elementosNoValidos.includes('numeroRegistroSanitario') && !requiedField) {
+    <div class="col-md-5">
+      <div class="form-group">
+        <label class="form-label" for="numeroRegistroSanitario">Número de registro sanitario:</label>
+        <input maxlength="50" class="form-control" id="numeroRegistroSanitario" type="text"
+          formControlName="numeroRegistroSanitario" />
+
+      </div>
+    </div>
+    } @if(!elementosNoValidos.includes('fechaDeMovimiento')){
+    <div class="col-md-10">
+      <div class="form-group">
+        <input-fecha [datos]="fechaDeMovimientoInput" name="fechaDeMovimiento"
+          (valorCambiado)="fechaDeMovimientoValor($event)"
+          [setFecha]="mercanciaForm.get('fechaDeMovimiento')?.value"></input-fecha>
+      </div>
+    </div>
+    }
+    @if (idProcedimiento === 260603 &&
+    !elementosNoValidos.includes('presentacion')) {
+    <div class="col-md-10">
+      <div class="form-group">
+        <label for="presentacion"
+          >Presentación farmacéutica o tipo de envase<span
+            [ngClass]="{
+            'text-danger': mercanciaForm.get('presentacion')?.errors?.['required'] && mercanciaForm.get('presentacion')?.touched
+          }"
+            >*</span
+          >:
+        </label>
+        <input
+          type="text"
+          name="presentacion"
+          id="presentacion"
+          class="form-control"
+          formControlName="presentacion"
+          [ngClass]="{
+            'is-invalid':
+              mercanciaForm.get('presentacion')?.invalid &&
+              mercanciaForm.get('presentacion')?.touched
+          }"
+        />
+        @if (mercanciaForm.get('presentacion')?.errors?.['required'] &&
+        mercanciaForm.get('presentacion')?.touched) {
+        <div class="mensaje-error">Este campo es obligatorio.</div>
+        }
+      </div>
+    </div>
+    }
+  </div>
+  <div class="row mt-5" *ngIf="showDenominacionEspecificaProducto">
+      <div class="col-md-12">
+        <div class="panel-group ficha-collapse mb-0" id="accordion">
+          <div class="panel panel-default">
+            <div class="panel-heading" (click)="mostrarColapsable(1)">
+              <h4 class="panel-title">
+                <a> País de origen </a>
+              </h4>
+              <button
+                type="button"
+                class="collpase-button"
+                [class.collapsed]="!paisDeOriginColapsable"
+              ></button>
+            </div>
+            @if(paisDeOriginColapsable){
+            <div class="panel-collapse collapse in" id="panel-01">
+              <div class="panel-body">
+                <crosslist
+                #originList
+                  [fechas]="seleccionarOrigenDelPais"
+                  [botones]="paisDeProcedenciaBotonsUno"
+                  [label]="paisDeOriginLabel"
+                  [fechasSeleccionadas]="seleccionadasPaisDeOriginDatos"
+                  (fechasSeleccionadasChange)="
+                    paisDeOriginSeleccionadasChange($event)
+                  "
+                ></crosslist>
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+        <div
+          class="mensaje-error"
+          *ngIf="mercanciaForm.get('paisDeOriginDatos')?.errors?.['required'] && mercanciaForm.get('paisDeOriginDatos')?.touched"
+        >
+          Este campo es obligatorio.
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-3" *ngIf="showDenominacionEspecificaProducto">
+      <div class="col-md-12">
+        <div class="panel-group ficha-collapse mb-0" id="accordion">
+          <div class="panel panel-default">
+            <div class="panel-heading" (click)="mostrarColapsable(2)">
+              <h4 class="panel-title">
+                <a> País de procedencia </a>
+              </h4>
+              <button
+                type="button"
+                class="collpase-button"
+                [class.collapsed]="!paisDeProcedenciaColapsable"
+              ></button>
+            </div>
+            @if(paisDeProcedenciaColapsable){
+            <div class="panel-collapse collapse in" id="panel-01">
+              <div class="panel-body">
+                <crosslist
+                #procedenciaList
+                  [fechas]="paisDeProcedencia"
+                  [botones]="paisDeProcedenciaBotonsDos"
+                  [label]="paisDeProcedenciaLabel"
+                  [fechasSeleccionadas]="seleccionadasPaisDeProcedenciaDatos"
+                  (fechasSeleccionadasChange)="
+                    paisDeProcedenciaSeleccionadasChange($event)
+                  "
+                ></crosslist>
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+      <div
+        class="mensaje-error ml-1"
+        *ngIf="mercanciaForm.get('paisDeProcedenciaDatos')?.errors?.['required'] && mercanciaForm.get('paisDeProcedenciaDatos')?.touched"
+      >
+        Este campo es obligatorio.
+      </div>
+    </div>
+  <div class="row">
+    <div class="col-md-10">
+      <div class="ml-2">
+        <app-catalogo-select [catalogo]="paisDestinoDatos" formControlName="paisDestino"
+          [label]="'País de destino'" [required]="true"
+          [markUntouched]="mercanciaForm.get('paisDestino')?.errors?.['required'] && mercanciaForm.get('paisDestino')?.touched ? true : false"
+          name="paisDestino" [placeholder]="'Selecciona una opción'"
+          [isDisabled]="paisDeDestinoDisabled.includes(idProcedimiento)"
+          [markTouched]="mercanciaForm.get('paisDestino')?.touched??false"
+          (selectionChange)="onSeleccionarPaisDeDestino($event)"></app-catalogo-select>
+      </div>
+    </div>
+  </div>
+  @if(!elementosNoValidos.includes('paisDeProcedencia')){
+  <div class="row">
+    <div class="col-md-10">
+      <div class="ml-2">
+        <app-catalogo-select [catalogo]="paisDeProcedenciaDatos" formControlName="paisProcedencia"
+          [label]="'País de procedencia'" [required]="true"
+          [markUntouched]="mercanciaForm.get('paisProcedencia')?.errors?.['required'] && mercanciaForm.get('paisProcedencia')?.touched ? true : false"
+          name="paisProcedencia" [placeholder]="'Selecciona una opción'"
+          [isDisabled]="paisDeProcedenciaDisabled.includes(idProcedimiento)"
+          [markTouched]="mercanciaForm.get('paisProcedencia')?.touched??false"
+          (selectionChange)="onSeleccionarPaisDeProcedencia($event)"></app-catalogo-select>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-10">
+      <div class="ml-2">
+        <app-catalogo-select [catalogo]="paisDeOrigenDatos" formControlName="paisDeOrigen"
+          [label]="'País de origen'" [required]="true"
+          [markUntouched]="mercanciaForm.get('paisDeOrigen')?.errors?.['required'] && mercanciaForm.get('paisDeOrigen')?.touched ? true : false"
+          name="paisDeOrigen" [placeholder]="'Selecciona una opción'"
+          [markTouched]="mercanciaForm.get('paisDeOrigen')?.touched??false"
+          (selectionChange)="onSeleccionarPaisDeOrigen($event)"></app-catalogo-select>
+      </div>
+    </div>
+  </div>
+  }
+  <div class="row mt-3">
+    <div class="col-md-12">
+      <div class="panel-group ficha-collapse mb-0" id="accordion">
+        <div class="panel panel-default">
+          <div class="panel-heading" (click)="mostrarColapsable(3)">
+            <h4 class="panel-title">
+              <a> Uso específico </a>
+            </h4>
+            <button type="button" class="collpase-button" [class.collapsed]="!usoEspesificoColapsable"></button>
+          </div>
+          @if(usoEspesificoColapsable){
+          <div class="panel-collapse collapse in" id="panel-01">
+              <div class="panel-body">
+                <crosslist
+                #usoList
+                  [fechas]="usoEspesifico"
+                  [label]="usoEspesificoLabel"
+                  [botones]="paisDeProcedenciaBotonsTres"
+                  [fechasSeleccionadas]="seleccionadasUsoEspesificoDatos"
+                  (fechasSeleccionadasChange)="
+                    usoEspesificoSeleccionadasChange($event)
+                  "
+                ></crosslist>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+    <div class="mensaje-error ml-1"
+      *ngIf="mercanciaForm.get('usoEspecifico')?.errors?.['required'] && mercanciaForm.get('usoEspecifico')?.touched">
+      Este campo es obligatorio.
+    </div>
+  </div>
+  <ng-template #fecha let-controlName="controlName" let-lableName="lableName">
+    <label class="form-label" [for]="controlName">{{
+      lableName ? lableName : 'Fecha'
+      }}</label>
+    <input class="form-control" [id]="controlName" type="date" [formControlName]="controlName"
+      [ngClass]="isValid(mercanciaForm, controlName) ? 'required' : ''" />
+  </ng-template>
+</form>
+
+<!-- @if(detalleMercancia) {
+<div class="row mt-3">
+  <app-detalle-mercancia [datosTablaDetalleMercancia]="datosTablaDetalleMercancia"
+    (agregarMercanciaSellecion)="agregarMercanciaSellecion($event)"
+    (eliminarMercancia)="eliminarMercancia($event)"></app-detalle-mercancia>
+</div>
+} -->
+
+<div class="row my-5">
+  <div class="col-md-6">
+    <p>* Campos obligatorios</p>
+  </div>
+  <div class="col-md-6 mb-5">
+    <div class="pull-right ml-2">
+      <button type="button" name="eliminarScian" class="btn btn-default ms-2" (click)="limpiarMercancia()">
+        Limpiar
+      </button>
+      <button type="button" name="eliminarScian" class="btn btn-default ms-2" (click)="cancelar()">
+        Cancelar
+      </button>
+      <button type="button" name="agregarScian" class="btn btn-primary ms-2" (click)="agregarMercancia()">
+        {{ isAccionModificar ? 'Modificar' : 'Agregar' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion" (confirmacionModal)="eliminarPedimento($event)">
+  </lib-notificaciones>
+</section>
+}

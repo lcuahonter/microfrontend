@@ -1,0 +1,379 @@
+<div class="container-fluid px-0">
+  <ng-titulo titulo="Datos de la solicitud" />
+  <form [formGroup]="formSolicitud">
+    <div class="row">
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="permisoCitesService.tipodeMovimiento" formControlName="tipodeMovimiento"
+          [label]="'Tipo de movimiento'" [required]="true" [isDisabled]="esFormularioSoloLectura" name="tipodeMovimiento"
+          (change)="cambiarTipoDeMovimiento()"></app-catalogo-select>
+          <div *ngIf="formSolicitud.get('tipodeMovimiento')?.touched && formSolicitud.get('tipodeMovimiento')?.invalid">
+          <small class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+          </div>
+      </div>
+    </div>
+    
+    @if (tipoMovimientoSeleccionada || formSolicitud.get('tipodeMovimiento')?.value) {
+    <ng-titulo titulo="Régimen" />
+    <div class="row">
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="permisoCitesService.tipoRegimen" formControlName="tipoRegimen"
+          [label]="'Tipo de régimen'" [required]="true" name="tipoRegimen" [isDisabled]="esFormularioSoloLectura"
+          (change)="setValoresStore(formSolicitud, 'tipoRegimen')"></app-catalogo-select>
+          <div *ngIf="formSolicitud.get('tipoRegimen')?.touched && formSolicitud.get('tipoRegimen')?.invalid">
+          <small *ngIf="formSolicitud.get('tipoRegimen')?.errors?.['required']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+        </div>
+      </div>
+    </div>
+    <ng-titulo [titulo]="
+        solicitud230902State.tipodeMovimiento === '2' ||
+        solicitud230902State.tipodeMovimiento === '4'
+          ? 'Aduanas de salida'
+          : 'Aduana'
+      "></ng-titulo>
+    <div class="row mt-3">
+      <div class="col-md-12 mt-3">
+        @if(solicitud230902State.tipodeMovimiento==="1" || solicitud230902State.tipodeMovimiento==="3"){
+        <h5>Aduanas de entradas (Máximo 3 aduanas)</h5>
+        }
+        <crosslist #CrosslistComponentAduanas [fechas]="listaOriginalAduanas" [isDisabled]="esFormularioSoloLectura" [fechasSeleccionadas]="listaSeleccionadaAduanas"
+          [botones]="aduanasBotons" [label]="aquandasLabel"></crosslist>
+      </div>
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-md-6">
+        <label for="mercancia">Mercancía*:</label>
+      </div>
+      <div class="col-md-12">
+        <app-tabla-dinamica
+        [configuracionTabla]="configuracionTabla"
+        [datos]="tablaDatos"
+        [tipoSeleccionTabla]="tablaSeleccion"
+        [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+        (listaDeFilaSeleccionada)="hadleFilaSeleccionada($event)"
+      ></app-tabla-dinamica>
+      <div *ngIf="tablaError">
+          <small class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+        </div>
+      </div>
+
+      <nav aria-label="Page navigation example mt-3">
+        <ul class="pagination justify-content-center">
+          <li class="page-item"><a class="page-link" href="#">1</a></li>
+        </ul>
+      </nav>
+      <div class="row pb-4 text-end">
+        <div>
+          <button type="button" class="btn btn-default me-2" [disabled]="esFormularioSoloLectura" (click)="modficarMercanciaItem()">Modificar</button>
+          <button type="button" class="btn btn-danger me-2" [disabled]="esFormularioSoloLectura" (click)="confirmEliminarMercanciaItem()">Eliminar</button>
+          <button
+            type="button"
+            class="btn btn-primary me-2"
+            [disabled]="esFormularioSoloLectura"
+            (click)="mostrarformMercanciaModal()"
+          >
+            Agregar
+          </button>
+        </div>
+      </div>
+    </div>
+    <lib-notificaciones 
+    *ngIf="confirmEliminarPopupAbierto"
+    [notificacionInput]="nuevaNotificacion" 
+    (confirmacionModal)="eliminarMercanciaItem($event)">
+    </lib-notificaciones>
+    <lib-notificaciones 
+      *ngIf="multipleSeleccionPopupAbierto"
+      [notificacionInput]="nuevaNotificacion" 
+      (confirmacionModal)="cerrarMultipleSeleccionPopup()">
+    </lib-notificaciones>
+    <ng-titulo titulo="Finalidad del movimiento" />
+    <div class="row mt-3">
+      <div class="col-md-12 mt-3">
+        <crosslist #CrosslistComponentFinalidad [fechas]="listaOriginalMovimiento" [isDisabled]="esFormularioSoloLectura" [fechasSeleccionadas]="listSeleccionadaMovimiento"
+          [botones]="movimientoBotons" [label]="movimientoLabel"></crosslist>
+      </div>
+    </div>
+    }
+  </form>
+
+  @if(showDatosMercanciaModal){
+    <app-modal>
+      <div class="datos-mercancia-container">
+        <ng-titulo titulo="Datos mercancia" />
+        <form [formGroup]="formMercancia">
+          <div class="row">
+            <div class="col-md-5">
+              <app-catalogo-select
+                [catalogo]="
+                permisoCitesService.fraccionArancelaria
+                "
+                name="fraccionArancelaria" [isDisabled]="esFormularioSoloLectura"
+                formControlName="fraccionArancelaria"
+                (selectionChange)="manejarCambioFraccionArancelaria($event)"
+                [label]="'Fracción arancelaria'"
+                [required]="true"
+                [isDisabled]="otraFraccionSeleccionada"
+                (change)="setValoresStore(formMercancia,'fraccionArancelaria')"
+              ></app-catalogo-select>
+            </div>
+            <div class="col-md-7">
+              <div class="form-group">
+                <label class="form-label" for="fraccionDescripcion"
+                  >Descripción de la fracción arancelaria:<span tooltip="Ingrese una fracción"
+                  ><i class="bi bi-question-circle-fill"></i
+                ></span>
+                </label
+                >
+                <input
+                  id="fraccionDescripcion"
+                  type="text"
+                  formControlName="fraccionDescripcion"
+                  class="form-control"
+                  (change)="setValoresStore(formMercancia,'fraccionDescripcion')"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 justify-content-start">
+              <div class="form-check mt-4">
+                <input
+                  id="otraFraccion"
+                  type="checkbox"
+                  formControlName="otraFraccion"
+                  (change)="manejarCambioOtraFraccion(); setValoresStore(formMercancia,'otraFraccion')"
+                  class="form-check-input"
+                />
+                <label class="form-check-label" for="otraFraccion"
+                  >Otra fracción
+                </label>
+              </div>
+            </div>
+            @if(otraFraccionSeleccionada){
+            <div class="row">
+              <div class="col-md-5">
+                <label
+                  class="form-label text-start"
+                  for="fraccionVigenteTIGIE"
+                  >La Fracción debe estar vigente conforme a la TIGIE</label
+                >
+                <input
+                  id="fraccionVigenteTIGIE"
+                  type="text"
+                  formControlName="fraccionVigenteTIGIE"
+                  class="form-control"
+                  maxlength="8"
+                  (change)="setValoresStore(formMercancia,'fraccionVigenteTIGIE')"
+                />
+              </div>
+            </div>
+            }
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <label for="message" class="form-label">Descripción<span [ngClass]="formMercancia.get('descripcion')?.touched && formMercancia.get('descripcion')?.invalid && formMercancia.get('descripcion')?.errors?.['required'] ? 'text-danger' : ''">*</span>:<span tooltip="Describe si se trata de piel, trofeos de caza, madera, plantas, semillas, entre otros, asi como la forma de presentación o preservación, las cuales pueden ser vivos, formol, taxidermia u otros."
+                ><i class="bi bi-question-circle-fill"></i
+              ></span></label>
+                <textarea
+                id="descripcion"
+                formControlName="descripcion"
+                class="form-control"
+                rows="4"
+                [required]="true"
+                (change)="setValoresStore(formMercancia,'descripcion')"
+                [ngStyle]="formMercancia.get('descripcion')?.touched && formMercancia.get('descripcion')?.invalid && formMercancia.get('descripcion')?.errors?.['required'] ? {'border': '1px solid red'} : {}"
+                >
+              ></textarea>
+              <div *ngIf="esInvalido('descripcion')" class="text-danger">
+                <small
+                  *ngIf="formMercancia.controls['descripcion'].hasError('required')"
+                  >Este campo es obligatorio.</small
+                >
+                <small
+                  *ngIf="formMercancia.controls['descripcion'].hasError('maxlength')"
+                  >Por favor, no escribas más de 1000 caracteres</small>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <label for="message" class="form-label"
+                >Rendimiento del producto (en su caso):</label
+              >
+              <textarea
+                id="rendimientoProducto"
+                class="form-control"
+                rows="4"
+                formControlName="rendimientoProducto"
+                (change)="setValoresStore(formMercancia,'rendimientoProducto')"
+              ></textarea>
+              <small *ngIf="formMercancia.controls['rendimientoProducto'].hasError('maxlength')" class="text-danger">Por favor, no escribas más de 1000 caracteres</small>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <app-catalogo-select
+                [catalogo]="
+                  permisoCitesService.clasificacionTaxonomica
+                "
+                name="clasificacionTaxonomica"
+                formControlName="clasificacionTaxonomica"
+                [label]="'Clasificación taxonómica'"
+                [required]="true"
+                (change)="setValoresStore(formMercancia,'clasificacionTaxonomica')"
+              ></app-catalogo-select>
+            </div>
+            <div class="col-md-4">
+              <app-catalogo-select
+                [catalogo]="permisoCitesService.nombreCientifico"
+                name="nombreCientifico"
+                formControlName="nombreCientifico"
+                [label]="'Nombre científico'"
+                [required]="true"
+                (change)="setValoresStore(formMercancia,'nombreCientifico')"
+              ></app-catalogo-select>
+            </div>
+          </div>
+          <div class="row mb-5">
+            <div class="col-md-4">
+              <app-catalogo-select
+                [catalogo]="permisoCitesService.nombreComun"
+                name="nombreComun"
+                formControlName="nombreComun"
+                [label]="'Nombre común'"
+                [required]="true"
+                (change)="setValoresStore(formMercancia,'nombreComun')"
+              ></app-catalogo-select>
+            </div>
+          </div>
+          <ng-alert
+            [CONTENIDO]="alert_message"
+            [CUSTOMECLASS]="'alert-info'"
+          ></ng-alert>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="marca">Marca (Marcaje)<span [ngClass]="(formMercancia.get('marca')?.touched && formMercancia.get('marca')?.invalid && formMercancia.get('marca')?.errors?.['required']) || formMercancia.controls['marca'].hasError('hasSpecialCharacters') ? 'text-danger' : ''">*</span>:</label>
+                <input
+                  id="marca"
+                  type="text"
+                  class="form-control"
+                  formControlName="marca"
+                  [required]="true"
+                  maxlength="200"
+                  [class.is-invalid]="formMercancia.get('marca')?.touched && formMercancia.get('marca')?.invalid"
+                  (change)="setValoresStore(formMercancia,'marca')"
+                />
+              </div>
+              <div *ngIf="esInvalido('marca')" class="text-danger">
+                <span *ngIf="formMercancia.controls['marca'].hasError('required')">Este campo es obligatorio.</span>
+                <span *ngIf="formMercancia.controls['marca'].hasError('hasSpecialCharacters')">Ingresa datos validos.</span>
+            </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="cantidad">Cantidad<span [ngClass]="(formMercancia.get('cantidad')?.touched && formMercancia.get('cantidad')?.invalid && formMercancia.get('cantidad')?.errors?.['required']) || formMercancia.controls['cantidad'].hasError('pattern') ? 'text-danger' : ''">*</span>:</label>
+                <input
+                  id="cantidad"
+                  type="text"
+                  class="form-control"
+                  formControlName="cantidad"
+                  [required]="true"
+                  [class.is-invalid]="formMercancia.get('cantidad')?.touched && formMercancia.get('cantidad')?.invalid"
+                  maxlength="16"
+                  (change)="setValoresStore(formMercancia,'cantidad')"
+                />
+                
+                <div *ngIf="esInvalido('cantidad')" class="text-danger">
+                  <span *ngIf="formMercancia.controls['cantidad'].hasError('required')">Este campo es obligatorio.</span>
+                </div>
+                <div *ngIf="esInvalido('cantidad')" class="text-danger">
+                  <span
+                    *ngIf="formMercancia.controls['cantidad'].hasError('pattern')"
+                    >Estos campos permiten hasta 12 enteros y 3 decimales</span
+                  >
+                </div>
+               
+                <p>No esta permitido capturar "," (coma)</p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <app-catalogo-select
+              name="unidadMedida"
+              formControlName="unidadMedida"
+                [catalogo]="permisoCitesService.unidadMedida"
+                [label]="'Unidad de medida'"
+                [required]="true"
+                (change)="setValoresStore(formMercancia,'unidadMedida')"
+              ></app-catalogo-select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <app-catalogo-select
+              formControlName="paisOrigen"
+              name="paisOrigen"
+                [catalogo]="permisoCitesService.paisOrigen"
+                [label]="'País de origen'"
+                [required]="true"
+                (change)="setValoresStore(formMercancia,'paisOrigen')"
+              ></app-catalogo-select>
+            </div>
+            <div class="col-md-4">
+              <app-catalogo-select
+              name="paisProcedencia"
+              formControlName="paisProcedencia"
+                [catalogo]="permisoCitesService.paisProcedencia"
+                [label]="'País de procedencia'"
+                [required]="true"
+                (change)="setValoresStore(formMercancia,'paisProcedencia')"
+              ></app-catalogo-select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 d-flex justify-content-end gap-1">
+              <button 
+                type="button" 
+                class="btn btn-default"
+                (click)="limpiarFormularioMercancia()"
+              >
+                Limpiar
+              </button>
+              <button
+              type="button"
+              class="btn btn-danger"
+              (click)="alternarVisibilidadModalMercancia()"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="enviarFormularioMercancia()"
+            >
+              Agregar
+            </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </app-modal>
+  }
+
+
+</div>
+@if(sinRegistro){
+  <lib-notificaciones 
+  *ngIf="sinRegistro"
+  [notificacionInput]="nuevaNotificacionModificar" 
+  (confirmacionModal)="cerrarSinRegistro()">
+</lib-notificaciones>
+}
+@if(sinEliminar){
+  <lib-notificaciones 
+  *ngIf="sinEliminar"
+  [notificacionInput]="nuevaNotificacionEliminar" 
+  (confirmacionModal)="cerrarSinEliminar()">
+</lib-notificaciones>
+}

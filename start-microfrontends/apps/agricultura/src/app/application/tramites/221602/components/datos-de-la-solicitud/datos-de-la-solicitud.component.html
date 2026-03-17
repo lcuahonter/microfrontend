@@ -1,0 +1,108 @@
+<div class="custom-table-wrapper">
+  <div class="container">
+    <div class="header d-flex justify-content-between align-items-center">
+      <i class="bi bi-repeat"></i>
+      <span class="plus-icon" tabindex="0" (click)="toggleContent()" (keyup.enter)="toggleContent()" (keyup.space)="toggleContent()">{{ showContent ? '+' : '-' }}</span>
+    </div>
+    
+    <div *ngIf="showContent" class="content">
+      <ng-alert [CONTENIDO]="TEXTOS"></ng-alert>
+      
+      <div class="col-md-12 mt-5 d-flex justify-content-end">
+        <button type="button" class="btn btn-primary ms-3" [disabled]="esFormularioSoloLectura">Cargar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container" [formGroup]="TramitesForm">
+ 
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group">
+        <label class="form-label" for="justificacion">Justificación*:</label>
+        <textarea class="form-control custom-textarea" id="justificacion" formControlName="justificacion" style="height: 90px;" 
+                  (change)="setValoresStore(TramitesForm, 'justificacion', 'setJustificacion')"></textarea>
+      </div>
+    </div>
+  </div>
+  
+  <ng-titulo titulo="Datos del trámite a realizar" />
+
+ 
+  <div class="row" style="padding-bottom: 20px;">
+    <div class="col-md-8">
+      <div class="form-group">
+        <label class="form-label" for="aduana">Aduana de ingreso*:</label>
+        <input class="form-control" id="aduana" formControlName="aduana" type="text" (change)="setValoresStore(TramitesForm, 'aduana', 'setAduana')" />
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col-md-8">
+      <div class="form-group">
+        <label class="form-label" for="oficina">Oficina de inspección de Sanidad Agropecuaria*:</label>
+        <input class="form-control" id="oficina" formControlName="oficina" type="text" (change)="setValoresStore(TramitesForm, 'oficina', 'setOficina')" />
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="row">
+    <div class="col-md-8">
+      <div class="form-group">
+        <label class="form-label" for="punto">Punto de inspección*:</label>
+        <input class="form-control" id="punto" formControlName="punto" type="text" (change)="setValoresStore(TramitesForm, 'punto', 'setPunto')" />
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="form-label" for="guia">Número de guía:</label>
+        <input class="form-control" id="guia" formControlName="guia" type="number" (change)="setValoresStore(TramitesForm, 'guia', 'setGuia')" />
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <app-catalogo-select [catalogo]="regimen" [label]="'Régimen'" [required]="true" name="regimen" [isDisabled]="esFormularioSoloLectura"
+                             formControlName="regimen" (change)="setValoresStore(TramitesForm, 'regimen', 'setRegimen')">
+        </app-catalogo-select>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="row" style="padding-bottom: 20px;">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="form-label" for="carro">Número de Carro de Ferrocarril:</label>
+        <input class="form-control" id="carro" formControlName="carro" type="text" (change)="setValoresStore(TramitesForm, 'carro', 'setCarro')" />
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="row">
+    <h6>Mercancías</h6>
+    <app-tabla-dinamica [configuracionTabla]="configuracionTabla" [datos]="mercancias" [tipoSeleccionTabla]="checkbox" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"></app-tabla-dinamica>
+    
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center">
+        <li class="page-item"><a class="page-link">1</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  
+  <div class="col-md-12 mt-5 d-flex justify-content-end">
+    <button type="button" class="btn btn-default" [disabled]="esFormularioSoloLectura">Modificar</button>
+    <button type="button" class="btn btn-danger ms-3" [disabled]="esFormularioSoloLectura">Eliminar</button>
+    <button type="button" class="btn btn-primary ms-3" [disabled]="esFormularioSoloLectura">Agregar</button>
+  </div>
+</div>

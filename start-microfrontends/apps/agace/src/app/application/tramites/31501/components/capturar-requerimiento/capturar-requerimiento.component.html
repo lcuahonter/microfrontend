@@ -1,0 +1,50 @@
+<div class="container">
+    <ng-titulo titulo="Requerimiento" />
+    <form [formGroup]="capturarRequirementoForm">
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="tramiteList.catalogos" [label]="aduana.labelNombre"
+                    [placeholder]="tramiteList.primerOpcion" [required]="true" formControlName="tipoDeRequerimiento" name="tipoDeRequerimiento" id="tipoDeRequerimiento" (change)=" setValoresStore(capturarRequirementoForm, 'tipoDeRequerimiento', 'setTipoDeRequerimiento' )" [isDisabled]="soloLectura"></app-catalogo-select>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-4">
+              <label>Justificación del requerimiento*:</label>
+              <textarea cols="60" rows="5" 
+                [ngClass]="{
+                  'form-control area-de-texto': true,
+                  'is-invalid': capturarRequirementoForm.get('motivoCancelacion')?.invalid && 
+                               (capturarRequirementoForm.get('motivoCancelacion')?.touched || 
+                                capturarRequirementoForm.get('motivoCancelacion')?.dirty)
+                }"
+                formControlName="motivoCancelacion" required
+                (change)=" setValoresStore(capturarRequirementoForm, 'motivoCancelacion', 'setMotivoCancelacion' )"></textarea>
+              @if (capturarRequirementoForm.get('motivoCancelacion')?.invalid &&
+              (capturarRequirementoForm.get('motivoCancelacion')?.touched ||
+              capturarRequirementoForm.get('motivoCancelacion')?.dirty)) {
+              <div class="text-danger small mt-1">Este campo es obligatorio.</div>
+              }
+            </div>
+        </div>
+    </form>
+    
+    <div class="row">
+    <ul class="nav nav-tabs">
+      <li [ngClass]="indice === 1 ? 'active' : ''">
+        <a
+          (click)="seleccionaTab(1)"
+          (keyup.enter)="seleccionaTab(1)"
+          (keydown.space)="seleccionaTab(1)"
+          tabindex="0"
+          data-toggle="tab"
+          >Solicitante</a>
+      </li>
+    </ul>
+
+    <ng-container>
+      @switch (indice) { @case (1) {
+        <solicitante #Solicitante></solicitante>
+      }}
+    </ng-container>
+  </div>
+</div>

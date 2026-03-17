@@ -1,0 +1,549 @@
+<div class="container">
+    <form [formGroup]="productosForm">
+        <ng-titulo titulo="Datos Generales de la Mercancía Productos o Subproductos" />
+
+        <div class="row">
+            <div class="col-md-3">
+                <label for="tipoRequisito" class="form-label">
+                        Tipo requisito<span [ngClass]="{ 'text-dark': !(productosForm.get('tipoRequisito')?.invalid && productosForm.get('tipoRequisito')?.touched), 'text-danger': productosForm.get('tipoRequisito')?.invalid && productosForm.get('tipoRequisito')?.touched }" >*</span>:
+                </label>
+                    <select
+                        class="form-select form-control"
+                        id="tipoRequisito"
+                        formControlName="tipoRequisito"
+                        [disabled]="productosForm.disabled"
+                        [class.is-invalid]="productosForm.get('tipoRequisito')?.invalid &&
+                                            productosForm.get('tipoRequisito')?.touched"
+                        aria-required="true"
+                        aria-describedby="tipoRequisitoError"
+                        style="background-image: none !important;"
+                        >
+                        <option value="">Seleccione una opción</option>
+                        <option *ngFor="let item of catalogosDatos.tipoRequisitoList" [value]="item.clave">
+                            {{ item.descripcion }}
+                        </option>
+                        </select>
+                        <div
+                        id="tipoRequisitoError"
+                        *ngIf="productosForm.get('tipoRequisito')?.hasError('required') &&
+                                productosForm.get('tipoRequisito')?.touched "
+                        >
+                        <small class="text-danger"> Este campo es obligatorio</small>
+                        </div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="Requisito">Requisito<span [ngClass]="{ 'text-dark': !(productosForm.get('requisito')?.invalid && productosForm.get('requisito')?.touched), 'text-danger': productosForm.get('requisito')?.invalid && productosForm.get('requisito')?.touched }" >*</span>:</label>
+                <input type="text" class="form-control" formControlName="requisito" name="requisito" [maxlength]="50" [class.is-invalid]="
+                    productosForm.get('requisito')?.invalid &&
+                    productosForm.get('requisito')?.touched"/>
+                <div *ngIf="productosForm.get('requisito')?.hasError('required') && productosForm.get('requisito')?.touched">
+                    <small class="text-danger"> Este campo es obligatorio</small>
+                </div>
+            </div>
+            <div class="col-md-6 form-group">
+                <label class="form-label" for="numeroCertificadoInternacional">
+                        Número de certificado internacional<span [ngClass]="{
+                            'text-dark': !(productosForm.get('numeroCertificadoInternacional')?.invalid && productosForm.get('numeroCertificadoInternacional')?.touched),
+                            'text-danger': productosForm.get('numeroCertificadoInternacional')?.invalid && productosForm.get('numeroCertificadoInternacional')?.touched
+                        }">*</span>:<span tooltip="Si la normatividad no le solicita el certificado, puede capturar NO APLICA">
+                            <i class="bi bi-question-circle-fill"></i>
+                        </span></label>
+                        <input 
+                        type="text" 
+                        class="form-control" 
+                        id="numeroCertificadoInternacional"
+                        formControlName="numeroCertificadoInternacional"
+                        maxlength="50"
+                        [class.is-invalid]="productosForm.get('numeroCertificadoInternacional')?.invalid && productosForm.get('numeroCertificadoInternacional')?.touched"
+                        />
+                        <!-- Error por requerido -->
+                        <div *ngIf="productosForm.get('numeroCertificadoInternacional')?.hasError('required') && productosForm.get('numeroCertificadoInternacional')?.touched"
+                            class="text-danger">
+                        <small>Este campo es obligatorio</small>
+                        </div>
+                        <!-- Error por longitud -->
+                        <div *ngIf="productosForm.get('numeroCertificadoInternacional')?.hasError('maxlength') && productosForm.get('numeroCertificadoInternacional')?.touched"
+                            class="text-danger">
+                        <small>Favor, no escribas más de 50 caracteres</small>
+                        </div>
+                        <!-- Error por patrón -->
+                        <div *ngIf="productosForm.get('numeroCertificadoInternacional')?.hasError('pattern') && productosForm.get('numeroCertificadoInternacional')?.touched"
+                            class="text-danger">
+                        <small>Solo se permiten letras y números</small>
+                        </div>
+                </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                    <label for="fraccionArancelaria" class="form-label">
+                    Fracción arancelaria<span [ngClass]="{ 'text-dark': !(productosForm.get('fraccionArancelaria')?.invalid && productosForm.get('fraccionArancelaria')?.touched), 'text-danger': productosForm.get('fraccionArancelaria')?.invalid && productosForm.get('fraccionArancelaria')?.touched }" >*</span>:</label>
+                    <select
+                    class="form-select form-control"
+                    id="fraccionArancelaria"
+                    formControlName="fraccionArancelaria"
+                    [disabled]="productosForm.disabled"
+                    (change)="setValoresStoreFraccion()"
+                    [class.is-invalid]="productosForm.get('fraccionArancelaria')?.invalid &&
+                                        (productosForm.get('fraccionArancelaria')?.touched || productosForm .get('fraccionArancelaria')?.dirty)"
+                    aria-required="true"
+                    aria-describedby="fraccionArancelariaError"
+                    style="background-image: none !important;">
+                    <option value="">Seleccione una opción</option>
+                    <option *ngFor="let item of catalogosDatos.fraccionArancelariaList" [value]="item.clave">
+                        {{ item.descripcion }}
+                    </option>
+                    </select>
+                    <!-- Mensaje de error -->
+                    <div
+                    id="fraccionArancelariaError"
+                    *ngIf="productosForm.get('fraccionArancelaria')?.hasError('required') &&
+                            (productosForm.get('fraccionArancelaria')?.touched || productosForm.get('fraccionArancelaria')?.dirty)"
+                    class="mt-1"
+                    >
+                    <small class="text-danger">Este campo es obligatorio</small>
+                    </div>
+                    <!-- Campo oculto -->
+                    <input type="hidden" formControlName="clave_fraccion" />
+            </div>
+            <div class="col-md-8 form-group">
+                <label class="form-label">Descripción de la fracción arancelaria<span [ngClass]="{ 'text-dark': !(productosForm.get('descripcionFraccion')?.invalid && productosForm.get('descripcionFraccion')?.touched), 'text-danger': productosForm.get('descripcionFraccion')?.invalid && productosForm.get('descripcionFraccion')?.touched }" >*</span>:<span tooltip="Sólo para usuarios que cuenten con la contraseña UCON e importen productos cárnicos">
+                <i class="bi bi-question-circle-fill"></i>
+            </span>
+        </label>
+                <input type="text" class="form-control" formControlName="descripcionFraccion" id="descripcionFraccion" [class.is-invalid]=" productosForm.get('descripcionFraccion')?.invalid && (productosForm.get('descripcionFraccion')?.touched || productosForm.get('descripcionFraccion')?.dirty) " style="background-image: none !important;"/>
+                 <div *ngIf=" productosForm.get('descripcionFraccion')?.hasError('required') && (productosForm.get('descripcionFraccion')?.touched ||  productosForm.get('descripcionFraccion')?.dirty)" 
+                    class="mt-1"> 
+                    <small class="text-danger">Este campo es obligatorio</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <label for="nico" class="form-label">
+                    Nico<span [ngClass]="{ 'text-dark': !(productosForm.get('nico')?.invalid && productosForm.get('nico')?.touched), 'text-danger': productosForm.get('nico')?.invalid && productosForm.get('nico')?.touched }" >*</span>:</label>
+                    <select
+                    class="form-select form-control"
+                    id="nico"
+                    formControlName="nico"
+                    [disabled]="productosForm.disabled"
+                    (change)="setValoresStoreFraccionNico()"
+                    [class.is-invalid]="productosForm.get('nico')?.invalid &&
+                                        (productosForm.get('nico')?.touched || productosForm.get('nico')?.dirty)"
+                    aria-required="true"
+                    aria-describedby="nicoError"
+                    style="background-image: none !important;">
+                    <option value="">Seleccione una opción</option>
+                    <option *ngFor="let item of catalogosDatos.nicoList" [value]="item.clave">
+                        {{ item.descripcion }}
+                    </option>
+                    </select>
+
+                    <!-- Mensaje de error -->
+                    <div
+                    id="nicoError"
+                    *ngIf="productosForm.get('nico')?.hasError('required') &&
+                            (productosForm.get('nico')?.touched || productosForm.get('nico')?.dirty)"
+                    class="mt-1"
+                    >
+                    <small class="text-danger">Este campo es obligatorio</small>
+                    </div>
+            </div>
+            <div class="col-md-8 form-group">
+                <label class="form-label">Descripción Nico<span [ngClass]="{ 'text-dark': !(productosForm.get('descripcionNico')?.invalid && productosForm.get('descripcionNico')?.touched), 'text-danger': productosForm.get('descripcionNico')?.invalid && productosForm.get('descripcionNico')?.touched }">*</span>:<span tooltip="Sólo para usuarios que cuenten con la contraseña UCON e importen productos cárnicos">
+                <i class="bi bi-question-circle-fill"></i>
+            </span>
+        </label>
+                <input type="text" class="form-control" formControlName="descripcionNico" [class.is-invalid]=" productosForm.get('descripcionNico')?.invalid && (productosForm.get('descripcionNico')?.touched || productosForm.get('descripcionNico')?.dirty) " style="background-image: none !important;"/>
+                <div *ngIf="productosForm.get('descripcionNico')?.hasError('required') &&  (productosForm.get('descripcionNico')?.touched || productosForm.get('descripcionNico')?.dirty) " class="text-danger">
+                        <small>Este campo es obligatorio</small>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 form-group">
+                <label class="form-label">Descripción<span [ngClass]="{ 'text-dark': !(productosForm.get('descripcion')?.invalid && productosForm.get('descripcion')?.touched), 'text-danger': productosForm.get('descripcion')?.invalid && productosForm.get('descripcion')?.touched }" >*</span>:</label>
+                <textarea id="descripcion" class="form-control" style="height: 60%; resize: none;"
+                    formControlName="descripcion" maxlength="1000"   [class.is-invalid]="productosForm.get('descripcion')?.invalid && productosForm.get('descripcion')?.touched" style="background-image: none !important;"></textarea>
+                <div *ngIf="productosForm.get('descripcion')?.invalid && productosForm.get('descripcion')?.touched"
+                    class="text-danger">
+                    <small class="text-danger">Este campo es obligatorio</small>
+                </div>
+                <div *ngIf="productosForm.get('descripcion')?.hasError('maxlength') && productosForm.get('descripcion')?.touched"
+                    class="text-danger">
+                    <small class="text-danger">Por favor, no escribas más de 1000 caracteres</small>
+                </div>
+                <div *ngIf="productosForm.get('descripcion')?.hasError('pattern') && productosForm.get('descripcion')?.touched"
+                    class="text-danger">
+                    <small class="text-danger">Solo se permiten letras y números</small>
+                </div>    
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-md-4 form-group">
+                <label class="form-label">Cantidad UMT<span [ngClass]="{ 'text-dark': !(productosForm.get('cantidadUMT')?.invalid && productosForm.get('cantidadUMT')?.touched), 'text-danger': productosForm.get('cantidadUMT')?.invalid && productosForm.get('cantidadUMT')?.touched }" >*</span>:</label>
+                <input type="text" class="form-control" formControlName="cantidadUMT" [maxlength]="16"  [class.is-invalid]="productosForm.get('cantidadUMT')?.invalid && productosForm.get('cantidadUMT')?.touched" style="background-image: none !important;"/>
+                <div *ngIf="productosForm.get('cantidadUMT')?.invalid && productosForm.get('cantidadUMT')?.touched">
+                    <small class="text-danger">Este campo es obligatorio</small>
+                </div>
+                <div *ngIf="productosForm.get('cantidadUMT')?.hasError('max') && productosForm.get('cantidadUMT')?.touched"
+                    class="text-danger">
+                    Por favor, escribe un valor menor o igual a 999999999999.999
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">UMT<span [ngClass]="{ 'text-dark': !(productosForm.get('umt')?.invalid && productosForm.get('umt')?.touched), 'text-danger': productosForm.get('umt')?.invalid && productosForm.get('umt')?.touched }" >*</span>:<span tooltip="Unidad de medida de la tarifa">
+                        <i class="bi bi-question-circle-fill"></i>
+                    </span></label>
+                <input type="text" class="form-control" formControlName="umt" [maxlength]="16" [class.is-invalid]="productosForm.get('umt')?.invalid && productosForm.get('umt')?.touched" style="background-image: none !important;" />
+                <input type="hidden" formControlName="clave_umt" />
+                <div *ngIf="productosForm.get('umt')?.invalid && productosForm.get('umt')?.touched">
+                        <small class="text-danger">Este campo es obligatorio</small>
+                    </div>
+                    <div *ngIf="productosForm.get('umt')?.hasError('max') && productosForm.get('umt')?.touched"
+                        class="text-danger">
+                        <small class="text-danger">Por favor, escribe un valor menor o igual a 999999999999.999</small>
+                    </div>
+                    <!-- Mensaje para el campo hidden -->
+                    <div *ngIf="productosForm.get('clave_umt')?.invalid && productosForm.get('umt')?.touched" class="text-danger">
+                        <small class="text-danger">Clave UMT no puede estar vacía</small>
+                    </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 form-group">
+                <label class="form-label">Cantidad UMC<span [ngClass]="{ 'text-dark': !(productosForm.get('cantidadUMC')?.invalid && productosForm.get('cantidadUMC')?.touched), 'text-danger': productosForm.get('cantidadUMC')?.invalid && productosForm.get('cantidadUMC')?.touched }" >*</span>:</label>
+                <input type="text" class="form-control" formControlName="cantidadUMC" [maxlength]="16" [class.is-invalid]="productosForm.get('cantidadUMC')?.invalid && productosForm.get('cantidadUMC')?.touched" style="background-image: none !important;"/>
+                <div *ngIf="productosForm.get('cantidadUMC')?.touched">
+                    <div *ngIf="productosForm.get('cantidadUMC')?.invalid && productosForm.get('cantidadUMC')?.hasError('required')"
+                        class="text-danger">
+                        <small class="text-danger"> Este campo es obligatorio</small>
+                    </div>
+                    <div *ngIf="productosForm.get('cantidadUMC')?.hasError('max') && !productosForm.get('cantidadUMC')?.hasError('required') && !productosForm.get('cantidadUMC')?.hasError('pattern')"
+                        class="text-danger">
+                        <small class="text-danger">Por favor, escribe un valor menor o igual a 999999999999.999</small>
+                    </div>
+                    <div *ngIf="productosForm.get('cantidadUMC')?.hasError('pattern') && !productosForm.get('cantidadUMC')?.hasError('required')">
+                        <small class="text-danger">Este campo permite doce números enteros y hasta tres decimales</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                    <label for="umc" class="form-label">
+                    UMC<span [ngClass]="{ 'text-dark': !(productosForm.get('umc')?.invalid && productosForm.get('umc')?.touched), 'text-danger': productosForm.get('umc')?.invalid && productosForm.get('umc')?.touched }" >*</span>:<span tooltip="Unidad de medida de comercialización"> <i class="bi bi-question-circle-fill"></i></span>
+                    <!-- Tooltip con ícono de ayuda -->
+                </label>
+                    <select
+                    class="form-select form-control"
+                    id="umc"
+                    formControlName="umc"
+                    [disabled]="productosForm.disabled"
+                    [class.is-invalid]="productosForm.get('umc')?.invalid &&
+                                        (productosForm.get('umc')?.touched || productosForm.get('umc')?.dirty)"
+                    aria-required="true"
+                    aria-describedby="umcError"
+                    style="background-image: none !important;">
+                    <option value="">Seleccione una opción</option>
+                    <option *ngFor="let item of catalogosDatos.umcList" [value]="item.clave">
+                        {{ item.descripcion }}
+                    </option>
+                    </select>
+
+                    <!-- Mensaje de error -->
+                    <div
+                    id="umcError"
+                    *ngIf="productosForm.get('umc')?.hasError('required') &&
+                            (productosForm.get('umc')?.touched || productosForm.get('umc')?.dirty)"
+                    class="text-danger mt-1"
+                    >
+                        <small class="text-danger"> Este campo es obligatorio</small>
+                    </div>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                    <label for="especie" class="form-label">
+                        Especie<span [ngClass]="{ 'text-dark': !(productosForm.get('especie')?.invalid && productosForm.get('especie')?.touched), 'text-danger': productosForm.get('especie')?.invalid && productosForm.get('especie')?.touched }" >*</span>:
+                        </label>
+                        <select
+                        class="form-select form-control"
+                        id="especie"
+                        formControlName="especie"
+                        [disabled]="productosForm.disabled"
+                        [class.is-invalid]="productosForm.get('especie')?.invalid &&
+                                            (productosForm.get('especie')?.touched || productosForm.get('especie')?.dirty)"
+                        aria-required="true"
+                        aria-describedby="especieError"
+                        style="background-image: none !important;">
+                        <option value="">Seleccione una opción</option>
+                        <option *ngFor="let item of catalogosDatos.especieList" [value]="item.clave">
+                            {{ item.descripcion }}
+                        </option>
+                        </select>
+
+                        <!-- Mensaje de error -->
+                        <div
+                        id="especieError"
+                        *ngIf="productosForm.get('especie')?.hasError('required') &&
+                                (productosForm.get('especie')?.touched || productosForm.get('especie')?.dirty)"
+                        class="text-danger mt-1"
+                        >
+                        <small class="text-danger"> Este campo es obligatorio</small>
+                        </div>
+
+            </div>
+            <div class="col-md-4">
+                    <label for="uso" class="form-label">
+                    Uso<span [ngClass]="{ 'text-dark': !(productosForm.get('uso')?.invalid && productosForm.get('uso')?.touched), 'text-danger': productosForm.get('uso')?.invalid && productosForm.get('uso')?.touched }" >*</span>:
+                    </label>
+
+                    <select
+                    class="form-select form-control"
+                    id="uso"
+                    formControlName="uso"
+                    [disabled]="productosForm.disabled"
+                    [class.is-invalid]="productosForm.get('uso')?.invalid &&
+                                        (productosForm.get('uso')?.touched || productosForm.get('uso')?.dirty)"
+                    aria-required="true"
+                    aria-describedby="usoError"
+                    style="background-image: none !important;">
+                    <option value="">Seleccione una opción</option>
+                    <option *ngFor="let item of catalogosDatos.usoList" [value]="item.clave">
+                        {{ item.descripcion }}
+                    </option>
+                    </select>
+
+                    <!-- Mensaje de error -->
+                    <div
+                    id="usoError"
+                    *ngIf="productosForm.get('uso')?.hasError('required') &&
+                            (productosForm.get('uso')?.touched || productosForm.get('uso')?.dirty)"
+                    class="mt-1"
+                    >
+                    <small class="text-danger"> Este campo es obligatorio</small>
+                    </div>
+
+            </div>
+            <div class="col-md-4">                
+                <label for="paisDeOrigen" class="form-label">
+                País de origen<span [ngClass]="{ 'text-dark': !(productosForm.get('paisDeOrigen')?.invalid && productosForm.get('paisDeOrigen')?.touched), 'text-danger': productosForm.get('paisDeOrigen')?.invalid && productosForm.get('paisDeOrigen')?.touched }" >*</span>:
+                </label>
+
+                <select
+                class="form-select form-control"
+                id="paisDeOrigen"
+                formControlName="paisDeOrigen"
+                [disabled]="productosForm.disabled"
+                [class.is-invalid]="productosForm.get('paisDeOrigen')?.invalid &&
+                                    (productosForm.get('paisDeOrigen')?.touched || productosForm.get('paisDeOrigen')?.dirty)"
+                aria-required="true"
+                aria-describedby="paisDeOrigenError"
+                style="background-image: none !important;">
+                <option value="">Seleccione una opción</option>
+                <option *ngFor="let item of catalogosDatos.paisOrigenList" [value]="item.clave">
+                    {{ item.descripcion }}
+                </option>
+                </select>
+
+                <!-- Mensaje de error -->
+                <div
+                id="paisDeOrigenError"
+                *ngIf="productosForm.get('paisDeOrigen')?.hasError('required') &&
+                        (productosForm.get('paisDeOrigen')?.touched || productosForm.get('paisDeOrigen')?.dirty)"
+                class="mt-1"
+                >
+                <small class="text-danger"> Este campo es obligatorio</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <label for="paisDeProcedencia" class="form-label">
+                País de procedencia<span [ngClass]="{ 'text-dark': !(productosForm.get('paisDeProcedencia')?.invalid && productosForm.get('paisDeProcedencia')?.touched), 'text-danger': productosForm.get('paisDeProcedencia')?.invalid && productosForm.get('paisDeProcedencia')?.touched }" >*</span>:
+                </label>
+
+                <select
+                class="form-select form-control"
+                id="paisDeProcedencia"
+                formControlName="paisDeProcedencia"
+                [disabled]="productosForm.disabled"
+                [class.is-invalid]="productosForm.get('paisDeProcedencia')?.invalid &&
+                                    (productosForm.get('paisDeProcedencia')?.touched || productosForm.get('paisDeProcedencia')?.dirty)"
+                aria-required="true"
+                aria-describedby="paisDeProcedenciaError"
+                style="background-image: none !important;">
+                <option value="">Seleccione una opción</option>
+                <option *ngFor="let item of catalogosDatos.paisDeProcedenciaList" [value]="item.clave">
+                    {{ item.descripcion }}
+                </option>
+                </select>
+
+                <!-- Mensaje de error -->
+                <div
+                id="paisDeProcedenciaError"
+                *ngIf="productosForm.get('paisDeProcedencia')?.hasError('required') &&
+                        (productosForm.get('paisDeProcedencia')?.touched || productosForm.get('paisDeProcedencia')?.dirty)"
+                class="mt-1"
+                >
+                <small class="text-danger"> Este campo es obligatorio</small>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="catalogosDatos.presentacionList" formControlName="presentacion"
+                    [label]="'Presentación'" [required]="false" name="presentacion"
+                    [isDisabled]="productosForm.disabled"></app-catalogo-select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label form-group">Cantidad de presentación:</label>
+                <input type="text" class="form-control" formControlName="cantidadPresentacion" />
+            </div>
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="catalogosDatos.tipoPresentacionList" formControlName="tipoPresentacion"
+                    [label]="'Tipo presentación'" [required]="false" name="tipoPresentacion"
+                    [isDisabled]="productosForm.disabled"></app-catalogo-select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="catalogosDatos.tipoPlantaList" formControlName="tipoPlanta"
+                    [label]="'Tipo planta'" [required]="false" name="tipoPlanta" (change) ='plantaAutorizadaOrigen()'
+                    [isDisabled]="productosForm.disabled"></app-catalogo-select>
+            </div>
+
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="catalogosDatos.plantaAutorizadaOrigenList"
+                    formControlName="plantaAutorizadaOrigen" [label]="'Planta autorizada de origen'" [required]="false"
+                    name="plantaAutorizadaOrigen" [isDisabled]="productosForm.disabled"></app-catalogo-select>
+            </div>
+        </div>
+    </form>
+
+    <form [formGroup]="detalleForm">
+        <div class="mt-4">
+            <ng-titulo titulo="Detalle" />
+
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="form-label form-group">Número de lote<span [ngClass]="{'mensaje-error':detalleForm.get('numeroLote')?.invalid && detalleForm.get('numeroLote')?.touched}">*</span>:</label>
+                    <input type="text" class="form-control" formControlName="numeroLote" [maxlength]="16" />
+                    <div
+                        *ngIf="detalleForm.get('numeroLote')?.invalid && detalleForm.get('numeroLote')?.touched">
+                        <small class="text-danger"> Este campo es obligatorio</small>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="col-md-12">
+                        <label for="certficacion_a">Rango de fechas:</label>
+                    </div>
+                    <div class="col-md-12">
+                        <app-input-radio [radioOptions]="opcionDeBotonDeRadio" 
+                            [layout]="'vertical'" name="rangoDeFecha"
+                            formControlName="rangoDeFecha" (change)="radioBotonSeleccionado()"></app-input-radio>
+                    </div>
+                </div>
+            </div>            
+
+            <div class="row">
+                <div class="col-md-6 mt-3">
+                    <label class="form-label">Fecha de elaboración o empaque o proceso</label>
+                </div>
+                <div class="col-md-3">                    
+                    <input-fecha 
+                        [setFecha]="detalleForm.get('fechaElaboracionEmpaqueProceso')?.value" 
+                        [datos]="fechaInicioInput"
+                        (valorCambiado)="seleccionaFecha($event, 'fechaElaboracionEmpaqueProceso')"
+                        [etiquetaSobreControlFecha]="'Desde'"></input-fecha>
+                </div>
+                <div class="col-md-3" *ngIf="detalleForm.get('rangoDeFecha')?.value === 'si'">
+                    <input-fecha 
+                        [setFecha]="detalleForm.get('fechaFinElaboracionEmpaqueProceso')?.value" 
+                        [datos]="fechaInicioInput"
+                        (valorCambiado)="seleccionaFecha($event, 'fechaFinElaboracionEmpaqueProceso')"
+                        [etiquetaSobreControlFecha]="'Hasta'"></input-fecha>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mt-3">
+                    <label class="form-label">Fecha de producción o sacrificio</label>
+                </div>
+                <div class="col-md-3">
+                    <input-fecha 
+                    [setFecha]="detalleForm.get('fechaProduccionSacrificio')?.value" 
+                    [datos]="fechaInicioInput"
+                    (valorCambiado)="seleccionaFecha($event, 'fechaProduccionSacrificio')"
+                    name="sacrificio"></input-fecha>
+                </div>
+                <div class="col-md-3" *ngIf="detalleForm.get('rangoDeFecha')?.value === 'si'">
+                    <input-fecha 
+                    [setFecha]="detalleForm.get('fechaFinProduccionSacrificio')?.value" 
+                    [datos]="fechaInicioInput"               
+                    (valorCambiado)="seleccionaFecha($event, 'fechaFinProduccionSacrificio')"     
+                    name="fechaFinProduccionSacrificio"></input-fecha>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mt-3">
+                    <label class="form-label">Fecha de caducidad del producto o consumo preferente</label>
+                </div>
+                <div class="col-md-3">
+                    <input-fecha 
+                    [setFecha]="detalleForm.get('fechaCaducidadProducto')?.value" 
+                    [datos]="fechaInicioInput"
+                    (valorCambiado)="seleccionaFecha($event, 'fechaCaducidadProducto')"
+                    name="fechaCaducidadProducto"></input-fecha>
+                </div>
+                <div class="col-md-3" *ngIf="detalleForm.get('rangoDeFecha')?.value === 'si'">
+                    <input-fecha 
+                    [setFecha]="detalleForm.get('fechaFinCaducidadProducto')?.value" 
+                    [datos]="fechaInicioInput"
+                    (valorCambiado)="seleccionaFecha($event, 'fechaFinCaducidadProducto')"
+                    name="fechaFinCaducidadProducto"></input-fecha>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-12 d-flex justify-content-end">
+                <button type="button" class="btn btn-default ms-3" (click)="eliminarDetalleTablaDatos(detalleTablaDatosSeleccionada)">Eliminar Detalle</button>
+                <button type="button" class="btn btn-primary ms-3" (click)="agregarDetalleTablaDatos()">Agregar Detalle</button>                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mt-3">
+                <label class="form-label">Detalle</label>
+            </div>
+        </div>
+        <div class="row my-5">
+        <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccion" [configuracionTabla]="configuracionSensiblesTabla"
+            [datos]="detalleTablaDatos" [showPagination]="true" [mode]="'client'" [totalItems]="detalleTablaDatos.length" [itemsPerPage]="5"
+            (listaDeFilaSeleccionada)="detalleTablaDatosSeleccionada = $event"></app-tabla-dinamica>
+        </div>
+    </form>
+
+    <div class="row mt-2">
+        <div class="col-md-12 d-flex justify-content-end">
+            <button type="button" class="btn btn-default ms-3" (click)="limpiarAnimalesVivo()">Limpiar</button>
+            <button type="button" class="btn btn-primary ms-3" (click)="agregarProductos()" *ngIf="productosForm.get('modificado')?.value === true">Modificar</button>
+            <button type="button" class="btn btn-default ms-3" (click)="cancelar()">Cancelar</button>
+            <button type="button" class="btn btn-primary ms-3" (click)="agregarProductos()" *ngIf="productosForm.get('modificado')?.value === false">Agregar</button>
+        </div>
+    </div>
+</div>
+
+@if(nuevaNotificacion) {
+<section>
+    <lib-notificaciones
+        [notificacionInput]="nuevaNotificacion"
+        [forma]="datosServicio"
+        (confirmacionModal)="confirmacionModal($event)"
+    >
+    </lib-notificaciones>
+</section>
+}

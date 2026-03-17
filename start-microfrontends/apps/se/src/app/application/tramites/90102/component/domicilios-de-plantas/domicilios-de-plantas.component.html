@@ -1,0 +1,120 @@
+<div class="container">
+    <form [formGroup]="forma">
+        <div class="row mt-5">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label" for="modalidad">Selecciona la modalidad:</label>
+                    <input type="text" value="" class="form-control" id="modalidad"
+                        placeholder="Selecciona la modalidad" formControlName="modalidad" (change)="
+                        setValoresStore(
+                        forma,
+                        'modalidad',
+                        'setModalidad'
+                        )">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <ng-titulo titulo="Consulta de domicilios"></ng-titulo>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <ng-alert [CONTENIDO]="TEXTO"></ng-alert>
+            </div>
+        </div>
+        <div class="row mb-5">
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="estadoSeleccionar" [label]="'Estado'" [required]="true"
+                    formControlName="Estado" name="Estado" (change)="onEstadoChange()"
+                    [isDisabled]="esFormularioSoloLectura"
+                    [disabledPrimerOption]="false"
+                    [hiddenPrimerOption]="false"
+                    [placeholder]="'Seleccione una opción'">
+                </app-catalogo-select>
+                <div *ngIf="forma.get('Estado')?.invalid && forma.get('Estado')?.touched">
+                    <span class="text-danger">Este campo es obligatorio.</span>
+                </div>
+            </div>
+            <div class="col-md-4"></div>
+            <div class="col-md-4 text-end btn-mostrar-domicilios">
+                <button type="button" class="btn btn-primary" [disabled]="esFormularioSoloLectura" (click)="mostrarDomicilios()">Mostrar domicilios</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12" [ngClass]="{'enable-scrollbar': true}">
+                <h6>Datos de las plantas donde se realizarán las operaciones PROSEC disponibles:</h6>
+                <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX"
+                    [configuracionTabla]="plantaColumnsConfiguracion" [datos]="plantasDatos"
+                    [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+                    (listaDeFilaSeleccionada)="seleccionTabla($event)">
+                </app-tabla-dinamica>
+            </div>
+        </div>
+        <div class="row mb-5">
+            <div class="col-md-12 text-end mt-5">
+                <button class="btn btn-default me-2" [disabled]="esFormularioSoloLectura" (click)="eliminarPlantas()">Eliminar plantas</button>
+                <button class="btn btn-primary" [disabled]="esFormularioSoloLectura" (click)="agregarPlantas()">Agregar plantas</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 mt-3">
+                <h6 class="mb-5">Datos de las plantas donde se realizarán las operaciones PROSEC seleccionadas*:</h6>
+                <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX"
+                    [configuracionTabla]="plantaColumnsConfiguracion" [datos]="prosecDatos"
+                [disableSeleccionTablaCheckBox]="esFormularioSoloLectura" (listaDeFilaSeleccionada)="seleccionTabla($event)"></app-tabla-dinamica>
+            </div>
+        </div>
+        <div class="row mb-5">
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="RepresentacionFederalLista" [label]="'Representación federal'"
+                    [required]="true" formControlName="RepresentacionFederal" name="RepresentacionFederal" (change)="
+                setValoresStore(
+                forma,
+                'RepresentacionFederal',
+                'setRepresentacionFederal'
+                )"
+                [isDisabled]="esFormularioSoloLectura"
+                [disabledPrimerOption]="false"
+                [hiddenPrimerOption]="false"
+                [placeholder]="'Seleccione una opción'"></app-catalogo-select>
+                <div *ngIf="forma.get('RepresentacionFederal')?.invalid && forma.get('RepresentacionFederal')?.touched">
+                    <span class="text-danger">Este campo es obligatorio.</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="ActividadProductivaLista" [label]="'Actividad productiva'" [required]="true"
+                    formControlName="ActividadProductiva" name="ActividadProductiva" (change)="
+                setValoresStore(
+                forma,
+                'ActividadProductiva',
+                'setActividadProductiva'
+                )"
+                [isDisabled]="esFormularioSoloLectura"
+                [disabledPrimerOption]="false"
+                [hiddenPrimerOption]="false"
+                [placeholder]="'Seleccione una opción'"></app-catalogo-select>
+                <div *ngIf="forma.get('ActividadProductiva')?.invalid && forma.get('ActividadProductiva')?.touched">
+                    <span class="text-danger">Este campo es obligatorio.</span>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+@if(eliminarPlantasAlerta) {
+            <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+            (confirmacionModal)="eliminarPedimento($event)"></lib-notificaciones>
+        }
+        @if(eliminarPlantasConfirmacion) {
+            <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+            (confirmacionModal)="eliminarPedimentoDatos($event)"></lib-notificaciones>
+        }
+        @if(espectaculoAlerta) {
+            <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+            (confirmacionModal)="mostrarDomicilios()"></lib-notificaciones>
+        }
+        @if(espectaculoAlertaAgregar){
+            <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+            (confirmacionModal)="agregarPlantasconfirmar()"></lib-notificaciones>
+        }

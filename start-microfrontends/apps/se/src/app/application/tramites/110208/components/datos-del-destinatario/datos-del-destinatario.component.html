@@ -1,0 +1,35 @@
+<ng-titulo titulo="Datos del destinatario" />
+<form [formGroup]="datosDestinatario">
+
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <label for="nombres" class="form-label">Nombre(s):</label>
+            <input type="text" class="form-control" formControlName="nombres"
+                id="nombres" (change)="setValoresStore(datosDestinatario,'nombres', 'setNombres')" (focusout)="desactivarRazonSocial()">
+        </div>
+    
+        <div class="col-md-4">
+            <label for="primerApellido" class="form-label">Primer apellido:</label>
+            <input type="text" class="form-control" formControlName="primerApellido" id="primerApellido" (change)="setValoresStore(datosDestinatario,'primerApellido', 'setPrimerApellido')">
+        </div>
+        <div class="col-md-4">
+            <label for="segundoApellido" class="form-label">Segundo apellido:</label>
+            <input type="text" class="form-control" formControlName="segundoApellido" id="segundoApellido" (change)="setValoresStore(datosDestinatario,'segundoApellido', 'setSegundoApellido')">
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <label for="numeroFiscal" class="form-label">Número de registro fiscal*:</label>
+            <input type="text" class="form-control" formControlName="numeroFiscal"
+                id="numeroFiscal" [ngClass]="esValido('numeroFiscal') ? 'required' : ''" (change)="setValoresStore(datosDestinatario,'numeroFiscal', 'setNumeroFiscal')">
+            <div *ngIf="datosDestinatario.get('numeroFiscal')?.touched && datosDestinatario.get('numeroFiscal')?.hasError('required')" class="mensaje-error">
+                Este campo es obligatorio
+            </div>
+        </div>
+    
+        <div class="col-md-8">
+            <label for="razonSocial" class="form-label">Razón social:</label>
+            <input type="text" class="form-control" formControlName="razonSocial" id="razonSocial" (change)="setValoresStore(datosDestinatario,'razonSocial', 'setRazonSocial')" (focusout)="desactivarNombre()">
+        </div>
+    </div>
+</form>

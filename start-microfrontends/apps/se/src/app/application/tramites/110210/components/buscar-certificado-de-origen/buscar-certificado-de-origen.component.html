@@ -1,0 +1,67 @@
+<div class="container">
+    <ng-titulo [titulo]="'Buscar certificado de origen'"></ng-titulo>
+    <form [formGroup]="buscarCertificadoDeOrigenFrom">     
+        <div class="row">
+            <div class="row">
+                <div class="col-md-8">
+                    <label for="certificadoOrigenProductoNumRegistro" class="form-label text-start">Número de Certificado de Origen*:</label>
+                    <input type="text" id="cveRegistroProductor" formControlName="cveRegistroProductor" class="form-control"
+                        size="30" [placeholder]="" maxlength="25"
+                        (change)="setValoresStore(buscarCertificadoDeOrigenFrom,'cveRegistroProductor','setCveRegistroProductor')" />
+                    
+                        <div *ngIf="esInvalido('cveRegistroProductor')" class="text-danger">
+                        <small
+                            *ngIf="buscarCertificadoDeOrigenFrom.controls['cveRegistroProductor'].hasError('required')">Este
+                            campo es obligatorio.</small>
+                        </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-primary mt-4"
+                        (click)="actualizaGridComercializadoresProductos()"
+                        [disabled]="esFormularioSoloLectura">
+                        Buscar Certificado
+                    </button>
+                
+                 </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-8">
+                    <app-catalogo-select [catalogo]="paisBloque" [label]="'País / Bloque'"
+                        formControlName="paisBloqueClave"
+                        [isDisabled]="esFormularioSoloLectura"
+                        (change)="setValoresStore(buscarCertificadoDeOrigenFrom,'paisBloqueClave','setPaisBloqueClave')">
+                    </app-catalogo-select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <app-catalogo-select [catalogo]="tratadoAcuerdo" [label]="'Tratado / Acuerdo'"
+                        formControlName="tratadoAcuerdoClave"
+                        [isDisabled]="esFormularioSoloLectura"
+                        (change)="setValoresStore(buscarCertificadoDeOrigenFrom,'tratadoAcuerdoClave','setTratadoAcuerdoClave')">
+                    </app-catalogo-select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-primary mt-4"
+                        (click)="actualizaGridComercializadoresCatalogs()"
+                        [disabled]="esFormularioSoloLectura">
+                        Buscar Certificado
+                    </button>
+                </div>
+            </div>
+        </div>   
+    </form>
+</div>
+@if (nuevaNotificacion) {
+    <section>
+        <lib-notificaciones
+            [notificacionInput]="nuevaNotificacion"
+        >
+        </lib-notificaciones>
+    </section>
+}

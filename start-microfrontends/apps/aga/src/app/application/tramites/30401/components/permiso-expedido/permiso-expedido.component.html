@@ -1,0 +1,80 @@
+<ng-container [formGroup]="inicializarFormulario">
+    <div class="row mt-2 mb-4">
+      <div class="col-md-12">
+        <ng-titulo
+          titulo="Permiso expedido por la Dirección General de Autotransporte Federal de la Secretaria de Comunicaciones y Transportes, para prestar el servicio de autotransporte federal de carga"
+        />
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label text-left">Número:</label>
+          <input
+            class="form-control"
+            id="numeroFolioPermiso"
+            type="text"
+            name="numeroFolioPermiso"
+            formControlName="numeroFolioPermiso"
+            (change)="setValoresStore(inicializarFormulario, 'numeroFolioPermiso')"
+          />
+          <div *ngIf="esInvalido('numeroFolioPermiso')" class="text-danger">
+            <small
+            *ngIf="
+              inicializarFormulario.controls['numeroFolioPermiso'].hasError('maxlength')
+            "
+          >
+            La calle no puede exceder los 20 caracteres.</small
+          >
+          <small
+          *ngIf="inicializarFormulario.controls['numeroFolioPermiso'].hasError('pattern')"
+        >
+          Solo se permiten números.
+        </small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label">Fecha*:</label>
+          <input
+            class="form-control"
+            id="fechaExpedicion"
+            type="date"
+            name="fechaExpedicion"
+            formControlName="fechaExpedicion"
+            (change)="setValoresStore(inicializarFormulario, 'fechaExpedicion')"
+          />
+          <div *ngIf="esInvalido('fechaExpedicion')" class="text-danger">
+            <small *ngIf="inicializarFormulario.controls['fechaExpedicion'].hasError('required')"
+              >Este campo es obligatorio.</small
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert-info content-with-checkbox">
+      <lib-input-check
+          [id]="'elCapitalSocial'"
+          [label]="capitalSocialNota"
+          [required]="true"
+          formControlName="elCapitalSocial"
+            (change)="setValoresStore(inicializarFormulario, 'elCapitalSocial')"
+          [isDisabled]="esFormularioSoloLectura"
+      ></lib-input-check>
+
+    </div>
+
+    <div class="alert alert-info content-with-checkbox mb-0">
+      <lib-input-check
+          [id]="'miRepresentada'"
+          [label]="miRepresentadaNota"
+          [required]="true"
+          formControlName="miRepresentada"
+            (change)="setValoresStore(inicializarFormulario, 'miRepresentada')"
+          [isDisabled]="esFormularioSoloLectura"
+      ></lib-input-check>
+
+    </div>
+  </ng-container>

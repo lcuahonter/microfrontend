@@ -1,0 +1,303 @@
+
+
+<div class="row">
+<div class="col-md-12">
+  <form [formGroup]="forma" class="mb-4">
+        <app-catalogo-select
+          [catalogo]="domiciliosRegistradosList"
+          formControlName="domiciliosRegistrados"
+          [label]="''"
+          (change)="setValoresStore(forma,'domiciliosRegistrados')"
+          [placeholder]="'Domicilios registrades'"
+          [isDisabled]="esFormularioSoloLectura"
+          [required]="false"
+        >
+        </app-catalogo-select>
+  </form>
+  
+  <label class="form-label text-left">Indique todos los domicilios registrados ante el RFC del solicitante e indique aquellos en que se desarrollen actividades relacionadas con su proceso productivo y/o la prestación de servicios.</label>
+  
+  <ng-alert [CONTENIDO]="DOMICILIO_REGISTRADOS"></ng-alert>
+	<div *ngIf="mostrarErroresValidacion && DomiciliosRfcSolicitanteList.length === 0 && forma.get('domiciliosRFCTabla')?.touched" class="mt-3">
+  		<div class="col-md-12 text-danger mb-3">
+    		<b>Se debe agregar por lo menos un domicilio registrado</b>
+  	</div>
+</div>
+
+<!-- Show if missing main installation -->
+<div *ngIf="mostrarErroresValidacion && DomiciliosRfcSolicitanteList.length > 0 && !tieneInstalacionPrincipal()" class="mt-3">
+  <div class="col-md-12 text-danger mb-3">
+    <b>Se debe agregar por lo menos una instalación principal</b>
+  </div>
+</div>
+
+<!-- Show if missing foreign trade operation -->
+<div *ngIf="mostrarErroresValidacion && DomiciliosRfcSolicitanteList.length > 0 && !tieneOperacionesComercioExterior()" class="mt-3">
+  <div class="col-md-12 text-danger mb-3">
+    <b>Se debe agregar por lo menos una instalación que realice operaciones de comercio exterior</b>
+  </div>
+</div>
+<div class="col-md-12"> 
+    <app-tabla-dinamica
+    [tipoSeleccionTabla]="tipoSeleccionTabla"
+    [configuracionTabla]="ParqueVehicular"
+    [datos]="DomiciliosRfcSolicitanteList"
+    (listaDeFilaSeleccionada)="manejarFilaSeleccionada($event)"
+    [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+  >
+  </app-tabla-dinamica>
+
+  <div class="d-flex justify-content-end">
+    <div class="d-flex flex-row flex-wrap gap-3">
+        <button class="btn btn-primary" [ngClass]="{'btn-secondary': !enableEliminarBoton}"
+        (click)="confirmEliminarEmpleadoItem()" [disabled]="esFormularioSoloLectura">Eliminar</button>
+        <button class="btn btn-primary" [ngClass]="{'btn-secondary': !enableEliminarBoton}" (click)="modificarItemEmpleado()" [disabled]="esFormularioSoloLectura">Modificar</button>
+        <button class="btn btn-primary" (click)="agregarDialogoDatos()" [disabled]="esFormularioSoloLectura">Agregar</button>
+    </div>
+  </div>
+</div>
+  </div>
+
+
+
+<div
+class="modal fade custom-backdrop"
+id="registroDeDomiciliosRfcSolicitante"
+tabindex="-1"
+aria-labelledby="registroDeDomiciliosRfcSolicitanteLabel"
+aria-hidden="true"
+data-bs-backdrop="static"
+#registroDeDomiciliosRfcSolicitante
+>
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title mt-0">Agregar</h4>
+      </div>
+
+      <div class="modal-body">
+      <app-agregar-enlace-operativo 
+        [resetTableSelection]="resetChildTableSelection"
+        (instalacionesSeleccionadas)="instalacionesSeleccionadas($event)"></app-agregar-enlace-operativo>
+
+      <footer class="footer d-flex py-5 gap-3 justify-content-end">
+        <button type="button" class="btn btn-primary" (click)="modalCancelar()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="enviarDialogData()">Aceptar</button>
+      </footer>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade custom-backdrop" id="modificartRegistroDeDomiciliosRfc" tabindex="-1"
+	aria-labelledby="modificartRegistroDeDomiciliosRfcLabel" aria-hidden="true" data-bs-backdrop="static"
+	#modificartRegistroDeDomiciliosRfc>
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title mt-0">Modificar</h4>
+      </div>
+
+      <div class="modal-body">
+      
+        <form [formGroup]="registroDomiciliosRfcSolicitanteForm">
+    
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="instalacionesPrincipales" class="form-label text-left">
+            <span class="text-danger">*</span> Instalaciones Principales
+          </label>
+          <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'"
+          formControlName="InstalacionesPrincipales"></app-input-radio>
+
+        </div>
+      </div>
+ 
+      <div class="col-md-4">
+        <div class="form-group">
+          <app-catalogo-select
+            [catalogo]="tipoInstalacionList"
+            formControlName="tipoInstalacion"
+            [label]="'Tipo de Instalación'"
+            [placeholder]="'Seleccione un tipo de instalación'"
+            [required]="true"
+            >
+            </app-catalogo-select>
+          @if(registroDomiciliosRfcSolicitanteForm.get('tipoInstalacion')?.invalid && registroDomiciliosRfcSolicitanteForm.get('tipoInstalacion')?.touched) {
+            <div class="mensaje-error">Este campo es obligatorio.</div>
+          }
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="coloniaCalleNumero" class="form-label text-left">
+            Colonia, Calle y Número*:
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            name="coloniaCalleNumero"
+            id="coloniaCalleNumero"
+            formControlName="coloniaCalleNumero"
+            readonly="true"
+          />
+          @if(registroDomiciliosRfcSolicitanteForm.get('coloniaCalleNumero')?.invalid && registroDomiciliosRfcSolicitanteForm.get('coloniaCalleNumero')?.touched) {
+            <div class="mensaje-error">Este campo es obligatorio.</div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label text-left">Entidad federativa:</label>
+          <input
+            type="text"
+            class="form-control"
+            name="entidadFederativa"
+            id="entidadFederativa"
+            formControlName="entidadFederativa"
+            readonly="true"
+          />
+          @if(registroDomiciliosRfcSolicitanteForm.get('entidadFederativa')?.invalid && registroDomiciliosRfcSolicitanteForm.get('entidadFederativa')?.touched) {
+            <div class="mensaje-error">Este campo es obligatorio.</div>
+          }
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="">Municipio o alcaldía:</label>
+          <input
+            type="text"
+            class="form-control"
+            name="municipioAlcaldia"
+            id="municipioAlcaldia"
+            formControlName="municipioAlcaldia"
+            readonly="true"
+          />
+          @if(registroDomiciliosRfcSolicitanteForm.get('municipioAlcaldia')?.invalid && registroDomiciliosRfcSolicitanteForm.get('municipioAlcaldia')?.touched) {
+            <div class="mensaje-error">Este campo es obligatorio.</div>
+          }
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="registroSESAT" class="form-label text-left">
+            Registro ante SE/SAT*:
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            name="registroSESAT"
+            id="registroSESAT"
+            formControlName="registroSESAT"
+            readonly="true"
+          />
+          @if(registroDomiciliosRfcSolicitanteForm.get('registroSESAT')?.invalid && registroDomiciliosRfcSolicitanteForm.get('registroSESAT')?.touched) {
+            <div class="mensaje-error">Este campo es obligatorio.</div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="codigoPostal" class="form-label text-left">
+            Código Postal*:
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            id="codigoPostal"
+            name="codigoPostal"
+            formControlName="codigoPostal"
+            maxlength="5"
+            readonly="true"
+          />
+          @if(registroDomiciliosRfcSolicitanteForm.get('codigoPostal')?.invalid && registroDomiciliosRfcSolicitanteForm.get('codigoPostal')?.touched) {
+            <div class="mensaje-error">
+              @if(registroDomiciliosRfcSolicitanteForm.get('codigoPostal')?.errors?.['required']) {
+                Este campo es obligatorio.
+              }
+            </div>
+          }
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="procesoProductivo" class="form-label text-left">
+            Proceso Productivo*:
+          </label>
+          <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'"
+          formControlName="procesoProductivo"></app-input-radio>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label text-left">
+          Realiza Actividad Económica de Comercio Exterior*:
+          </label>
+          <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'"
+          formControlName="realizaActividadComercioExterior"></app-input-radio>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="acreditaUsoGoceInmueble" class="form-label text-left">
+            Acreditación del Uso y Goce del Inmueble*:
+          </label>
+          <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'"
+          formControlName="acreditaUsoGoceInmueble"></app-input-radio>
+
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="perfilEmpresa" class="form-label text-left">
+            Perfil de la Empresa
+          </label>
+          <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'"
+          formControlName="perfilEmpresa" (valueChange)="onPerfilEmpresaChange()"></app-input-radio>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label text-left">
+            Reconocimiento Mutuo (Instalación CIPAT)*:
+          </label>
+          <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'"
+          formControlName="reconocimientoMutuoCTPAT" (valueChange)="onReconocimientoMutuoChange()"></app-input-radio>
+        </div>
+      </div>
+    </div>
+
+  </form>
+
+      <footer class="footer d-flex py-5 gap-3 justify-content-end">
+        <button type="button" class="btn btn-primary" (click)="modalCancelar('modificar')">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="enviarActualizarDialogData()">Aceptar</button>
+      </footer>
+      </div>
+    </div>
+  </div>
+</div>
+
+<lib-notificaciones *ngIf="esHabilitarElDialogo" [notificacionInput]="nuevaNotificacion" 
+  (confirmacionModal)="cerrarModal()">
+</lib-notificaciones>
+
+  
+  <lib-notificaciones *ngIf="confirmEliminarPopupAbierto" [notificacionInput]="nuevaNotificacion" 
+  (confirmacionModal)="eliminarEmpleadoItem($event)">
+</lib-notificaciones>
+
+<lib-notificaciones *ngIf="multipleSeleccionPopupAbierto" [notificacionInput]="nuevaNotificacion" 
+  (confirmacionModal)="cerrarMultipleSeleccionPopup()">
+</lib-notificaciones>

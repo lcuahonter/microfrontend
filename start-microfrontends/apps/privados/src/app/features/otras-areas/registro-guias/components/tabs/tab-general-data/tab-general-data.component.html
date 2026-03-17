@@ -1,0 +1,127 @@
+<form [formGroup]="generalDataForm" (ngSubmit)="onSubmit()" autocomplete="off">
+  <h3>Datos generales del Manifiesto</h3>
+  <hr class="red" />
+  <div class="row">
+    <!-- Issue Date -->
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <date-picker
+          label="Issue Date*:"
+          formControlName="issueDate"
+          [initialValue]="issueDateInitialValue"
+          [hasError]="formUtils.isValidField(generalDataForm, 'issueDate')"
+        ></date-picker>
+        <ng-container *ngIf="formUtils.isValidField(generalDataForm, 'issueDate')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(generalDataForm, 'issueDate') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Issue Time -->
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <label for="issueTime" class="control-label">Issue Time*:</label>
+        <input
+          type="text"
+          id="issueTime"
+          class="form-control"
+          appTimeFormat
+          placeholder="HH:mm (24 hrs)"
+          formControlName="issueTime"
+          [ngClass]="{
+            'form-control-error': formUtils.isValidField(generalDataForm, 'issueTime')
+          }"
+        />
+        <ng-container *ngIf="formUtils.isValidField(generalDataForm, 'issueTime')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(generalDataForm, 'issueTime') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Purpose Code -->
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <label for="purposeCode" class="control-label">Purpose Code*:</label>
+        <app-tooltip text="Función del Mensaje"></app-tooltip>
+        <select
+          id="purposeCode"
+          class="form-control"
+          formControlName="purposeCode"
+          [ngClass]="{
+            'form-control-error': formUtils.isValidField(generalDataForm, 'purposeCode')
+          }"
+        >
+          <option [ngValue]="null">Seleccione una opción</option>
+          <option value="Creation">Alta</option>
+          <option value="Update">Actualizar</option>
+        </select>
+        <ng-container *ngIf="formUtils.isValidField(generalDataForm, 'purposeCode')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(generalDataForm, 'purposeCode') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <!-- CAAT -->
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <label for="caat" class="control-label">C A A T*:</label>
+        <app-tooltip text="Transmisor ID"></app-tooltip>
+        <input
+          type="text"
+          id="caat"
+          [appMaxLength]="4"
+          uppercase
+          class="form-control"
+          formControlName="caat"
+          [ngClass]="{
+            'form-control-error': formUtils.isValidField(generalDataForm, 'caat')
+          }"
+        />
+        <ng-container *ngIf="formUtils.isValidField(generalDataForm, 'caat')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(generalDataForm, 'caat') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- RFC -->
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <label for="rfc" class="control-label">R F C*:</label>
+        <app-tooltip text="Registro Federal de Contribuyente"></app-tooltip>
+        <input
+          type="text"
+          id="rfc"
+          class="form-control"
+          formControlName="rfc"
+          readonly
+          [ngClass]="{
+            'form-control-error': formUtils.isValidField(generalDataForm, 'rfc')
+          }"
+        />
+        <ng-container *ngIf="formUtils.isValidField(generalDataForm, 'rfc')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(generalDataForm, 'rfc') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-1">
+    <div class="col-md-12">
+      <button class="btn btn-primary" (click)="search()">
+        Buscar
+      </button>
+    </div>
+  </div>
+</form>
+
+<app-dialog [id]="'caatModal'" [content]="'El CAAT no existe'"/>

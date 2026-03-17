@@ -1,0 +1,142 @@
+<ng-titulo titulo="Descripción del producto" />
+
+<div class="row" >
+  <h6>Descripción del producto*:</h6>
+  <app-tabla-dinamica
+    [configuracionTabla]="configuracionTabla"
+    [datos]="producto"
+    [tipoSeleccionTabla]="checkbox"
+  ></app-tabla-dinamica>
+  
+  <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+      <li class="page-item"><a class="page-link">1</a></li>
+    </ul>
+  </nav>
+</div>
+<div class="col-md-12 mt-5 d-flex justify-content-end">    
+   
+    <button type="button" class="btn btn-danger" [disabled]="esFormularioSoloLectura">Borrar</button>
+    <button type="button" class="btn btn-default ms-3" [disabled]="esFormularioSoloLectura">Guardor datos</button>    
+    <button type="button" class="btn btn-primary ms-3"  (click)="mercancias()" [disabled]="esFormularioSoloLectura">Agregar</button>
+  </div>
+
+  <app-modal [active]="showMercanciasModal">
+    <div>
+    <ng-titulo titulo="Mercancías sin CFI" />
+    <form [formGroup]="formMercancias">
+    <div class="row">
+ 
+        <div class="col-md-8">
+            <div class="form-group">
+              <app-catalogo-select [catalogo]="descripcion" formControlName="descripcion" [label]="'Descripción del producto'"
+                [required]="true" name="descripcion" (change)="setValoresStore(formMercancias, 'descripcion', 'setDescripcion')" [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+            </div>
+          </div>
+      </div>
+      <ng-titulo titulo="Detalle" />
+      <div class="row">
+ 
+        <div class="col-md-4">
+            <div class="form-group">
+              <app-catalogo-select [catalogo]="fraccion" formControlName="fraccion" [label]="'Fracción arancelaria'"
+                [required]="true" name="fraccion"  (change)="setValoresStore(formMercancias, 'fraccion', 'setFraccion')" [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="form-group">
+                <label class="form-label" for="arancelaria">Descripción de la fracción arancelaria*: </label>
+              <input class="form-control" id="arancelaria" type="text"
+                formControlName="arancelaria" (change)="setValoresStore(formMercancias, 'arancelaria', 'setArancelaria')" />
+             
+            </div>
+          </div>
+      </div>
+      <div class="row">      
+          <div class="col-md-4">
+            <div class="form-group">
+                <label class="form-label" for="cantidad">Cantidad*:</label>
+              <input class="form-control" id="cantidad" type="text"
+                formControlName="cantidad" (change)="setValoresStore(formMercancias, 'cantidad', 'setCantidad')"/>
+             
+            </div>
+            @if(formMercancias.controls['cantidad'].invalid && formMercancias.controls['cantidad'].touched) {
+              <div class="d-grid">
+                @if(formMercancias.controls['cantidad'].errors?.['required']) {
+                  <span class="mensaje-error">Este campo es obligatorio</span>
+                }
+              
+              </div>
+            }
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+                <app-catalogo-select [catalogo]="medida" formControlName="medida" [label]="' Unidad de medida'"
+                [required]="true" name="medida"(change)="setValoresStore(formMercancias, 'medida', 'setMedida')" [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+                <app-catalogo-select [catalogo]="genero" formControlName="genero" [label]="'Género'"
+                [required]="true" name="genero" (change)="setValoresStore(formMercancias, 'genero', 'setGenero')" [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+            </div>
+          </div>
+      </div>
+      <div class="row">  
+        <div class="col-md-4">
+            <div class="form-group">
+                <app-catalogo-select [catalogo]="especie" formControlName="especie" [label]="'Especie'"
+                [required]="true" name="especie" (change)="setValoresStore(formMercancias, 'especie', 'setEspecie')" [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+                <app-catalogo-select [catalogo]="comun" formControlName="comun" [label]="'Nombre común'"
+                [required]="true" name="comun" (change)="setValoresStore(formMercancias, 'comun', 'setComun')" [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+            </div>
+          </div>
+      </div>
+      <div class="row">  
+        <div class="col-md-4">
+            <div class="form-group">
+                <app-catalogo-select [catalogo]="origen" formControlName="origen" [label]="'País de origen'"
+                [required]="true" name="origen" (change)="setValoresStore(formMercancias, 'origen', 'setOrigen')" [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+                <app-catalogo-select [catalogo]="procedencia" formControlName="procedencia" [label]="'País de procedencia'"
+                [required]="true" name="procedencia" (change)="setValoresStore(formMercancias, 'procedencia', 'setProcedencia')" [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+            </div>
+          </div>
+      </div>
+      <div class="col-md-12 mt-5 d-flex justify-content-end">    
+   
+        <button type="button" class="btn btn-default ms-3">Borrar</button>    
+        <button type="button" class="btn btn-primary ms-3"  (click)="detalleData()" >Agregar</button>
+      </div>
+ 
+    </form>
+    <div class="row">
+        <h6>fraccion:*</h6>
+        <app-tabla-dinamica
+          [configuracionTabla]="configuracionMercanciasTabla"
+          [datos]="fraccionData"
+          [tipoSeleccionTabla]="checkbox"
+        ></app-tabla-dinamica>
+        
+        <nav aria-label="Page navigation example">
+          <ul class="pagination justify-content-center">
+            <li class="page-item"><a class="page-link">1</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="col-md-12 mt-5 d-flex justify-content-end">    
+   
+        <button type="button" class="btn btn-default ms-3" (click)="detalleCancelar()" >Cancelar</button>    
+        <button type="button" class="btn btn-primary ms-3"  (click)="detalleGuardar()"   >Guardar</button>
+      </div>
+ 
+
+</div>
+</app-modal>

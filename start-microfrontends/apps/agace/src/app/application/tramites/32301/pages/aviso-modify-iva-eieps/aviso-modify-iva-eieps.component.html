@@ -1,0 +1,34 @@
+<div class="page">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h2>Aviso de modificación del Registro en el Esquema de Certificación de Empresas Modalidad IVA e IEPS 
+        </h2>
+        </div>
+        <app-wizard [listaPasos]="pasos"></app-wizard>
+      </div>
+  
+      <div class="row">
+        @switch (indice) {
+          @case (1) {
+            <app-paso-uno  (tabSelected)="handleTabSelected($event)" (continuarEvento)="getValorIndice({ accion: 'cont', valor: 2 })"></app-paso-uno>
+          } @case (2) {
+            <app-paso-dos
+              [idTipoTRamite]="'32301'"
+              [datosUsuario]="datosUsuario"
+              [cargaArchivosEvento]="cargarArchivosEvento"
+              (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+              (continuarEvento)="getValorIndice({ accion: 'cont', valor: 3 })"
+              (reenviarCargaRealizada)="cargaRealizada($event)"></app-paso-dos>
+          } @case (3) {
+            <paso-firma
+        [idSolicitud]="+this.numeroSolicitud"
+        [procedure]="32301"
+        [procedureUrl]="'aviso-modificacion'"
+      ></paso-firma>
+          }
+        }
+      </div>
+    </div>
+  </div>
+  

@@ -1,0 +1,66 @@
+<div class="page">
+    <div class="container">
+
+        @if (!esNaviero) {
+        <div class="row pt-5">
+            <div class="col-md-12">
+                <div class="alert alert-info" [innerHTML]="mensajeAgenteNaviero"></div>
+            </div>
+        </div>
+        }@else{
+        <div class="row">
+            @if (indice ===1) {
+            <div class="col-md-12">
+                <h1 class="titulo titulo-gold">
+                    <h1>Registro del código alfanumérico armonizado del transportista</h1>
+                </h1>
+            </div>
+            } @if (indice === 2) {
+            <div class="col-md-12">
+                <h1 class="titulo titulo-gold">Firmar</h1>
+            </div>
+            }
+
+            <div class="row mt-5">
+                <div class="col-md-12">
+                    <div *ngIf="indice < 3 && estadoSolicitud.idSolicitud" class="alert alert-info"
+                        [innerHTML]="notificacionGuardadoExitoso"></div>
+                </div>
+            </div>
+
+            <app-wizard [listaPasos]="pantallasPasos"></app-wizard>
+        </div>
+
+        <div class="row">
+            @switch (indice) {
+            @case (1) {
+            <app-datos [rfc]="rfcLogueado"></app-datos>
+            } @case (2) {
+            <paso-firma [idSolicitud]="estadoSolicitud.idSolicitud" [procedure]="40201"
+                [procedureUrl]="'asignar-caat-maritimo'"></paso-firma>
+            }
+            }
+
+            <btn-continuar [datos]="datosPasos" (anteriorEvento)="getValorIndice($event)"
+                (continuarEvento)="getValorIndice($event)">
+            </btn-continuar>
+
+            @if(1 === indice) {
+            <div class="row mt-5">
+                <div class="col-12 text-justify">
+                    <ng-alert [CONTENIDO]="TEXTOS.aviso" [CUSTOMECLASS]="infoAlert"></ng-alert>
+                </div>
+            </div>
+            }
+        </div>
+        }
+    </div>
+</div>
+
+
+@if(nuevaNotificacion) {
+<section>
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+    </lib-notificaciones>
+</section>
+}

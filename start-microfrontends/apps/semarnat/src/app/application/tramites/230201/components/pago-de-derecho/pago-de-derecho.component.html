@@ -1,0 +1,85 @@
+<div class="container form-container">
+  <ng-titulo titulo="Pago de derechos" />
+  <div>
+    <form [formGroup]="FormSolicitud">
+      <ng-container formGroupName="pagodeDerechos">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="claveDeReferencia">Clave de referencia*:</label>
+              <input class="form-control" id="claveDeReferencia" 
+                formControlName="claveDeReferencia" type="text"
+                [ngClass]="isValid(pagodeDerechos,'claveDeReferencia') ? 'required' : ''"
+                (change)="setValoresStore(pagodeDerechos,'claveDeReferencia', 'setClaveDeReferencia')" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="cadenaPagoDependencia">Cadena de la dependencia*:</label>
+              <input class="form-control" id="cadenaPagoDependencia" formControlName="cadenaPagoDependencia" type="text"
+                [ngClass]="isValid(pagodeDerechos,'cadenaPagoDependencia') ? 'required' : ''"
+                (change)="setValoresStore(pagodeDerechos,'cadenaPagoDependencia', 'setCadenaPagoDependencia')"
+                appUppercase />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <div class="form-group">
+                <app-catalogo-select [catalogo]="bancoCatalogo.catalogos" formControlName="banco" [label]="'Banco'"
+                  [required]="true" [isDisabled]="soloLectura"
+                  (change)="setValoresStore(pagodeDerechos,'banco', 'setBanco');"></app-catalogo-select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="llaveDePago">Llave de pago*:</label>
+              <input class="form-control" id="llaveDePago" formControlName="llaveDePago" type="text"
+                [ngClass]="isValid(pagodeDerechos,'llaveDePago') ? 'required' : ''"
+                (input)="onLlaveDePagoInput($event)"
+                maxlength="8" />
+                @if (pagodeDerechos.get('llaveDePago')?.invalid && pagodeDerechos.get('llaveDePago')?.touched) {
+                <div class="text-danger">
+                  @if (pagodeDerechos.get('llaveDePago')?.errors?.['required']) {
+                  <small>Este campo es obligatorio.</small>
+                  } @else if (pagodeDerechos.get('llaveDePago')?.errors?.['formatoIncorrecto']) {
+                  <small>Debe capturar el formato correcto.</small>
+                  } @else if (pagodeDerechos.get('llaveDePago')?.errors?.['caracteresInvalidos']) {
+                  <small>Existen datos incorrectos que no cumplen con el formato esperado.</small>
+                  }
+                </div>
+                }
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="fecPago">Fecha de pago*:</label>
+              <input class="form-control" id="fecPago" 
+                formControlName="fecPago" type="date"
+                [ngClass]="isValid(pagodeDerechos,'fecPago') ? 'required' : ''"
+                (change)="setValoresStore(pagodeDerechos,'fecPago', 'setFecPago')" />
+              <div *ngIf="pagodeDerechos.get('fecPago')?.touched && pagodeDerechos.get('fecPago')?.hasError('futureDateNotAllowed')" 
+                class="text-danger mt-1 small">
+                La fecha de pago debe ser menor o igual a la fecha actual.
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="impPago">Importe de pago*:</label>
+              <input class="form-control" id="impPago" 
+                formControlName="impPago" type="text"
+                [ngClass]="isValid(pagodeDerechos,'impPago') ? 'required' : ''"
+                (change)="setValoresStore(pagodeDerechos,'impPago', 'setImpPago')" appUppercase />
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </form>
+  </div>
+</div>

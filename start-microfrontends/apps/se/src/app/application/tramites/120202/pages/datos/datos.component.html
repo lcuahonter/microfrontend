@@ -1,0 +1,35 @@
+<div class="container">
+    <div class="row">
+        <ul class="nav nav-tabs">
+            <li [ngClass]="indice === 1 ? 'active' : ''">
+                <a data-toggle="tab" (click)="seleccionaTab(1)" (keydown.enter)="seleccionaTab(1)"
+                    (keydown.space)="seleccionaTab(1)" role="button" tabindex="1">Solicitante</a>
+            </li>
+            <li [ngClass]="indice === 2 ? 'active' : ''">
+                <a data-toggle="tab" (click)="seleccionaTab(2)" (keydown.enter)="seleccionaTab(2)"
+                    (keydown.space)="seleccionaTab(2)" role="button" tabindex="2">Expedición certificados asignación
+                    directa</a>
+            </li>
+        </ul>
+
+        <ng-container>
+            @switch (indice) {
+            @case (1) {
+            <solicitante [tabindex]="1" [hidden]="indice !== 1" #solicitante></solicitante>
+            }
+            @case (2) {
+            @if (esDatosRespuesta) {
+            <app-expedicion-certificados-asignacion-directa [tabindex]="2" [hidden]="indice !== 2"
+                #expedicionCertificadosAsignacionDirectaComponent (formExpedicionEvent)="setValoresStore($event)"
+                (updateStore)="updateStoreValues($event)"
+                [mostrarDetalleConsulta]="consultaState.update"
+                [expedicionCertificadoAsignacionState]="expedicionCertificadoAsignacionState"
+                (mostrarError)="mostrarErrorEvent($event)" [idProcedimiento]="120202"
+                (mostrarNumFolioAsignacionError)="mostrarNumFolioAsignacionErrorEvent($event)"
+                (mostrarAgregarError)="mostrarAgregarErrorEvento($event)"></app-expedicion-certificados-asignacion-directa>
+            }
+            }
+            }
+        </ng-container>
+    </div>
+</div>

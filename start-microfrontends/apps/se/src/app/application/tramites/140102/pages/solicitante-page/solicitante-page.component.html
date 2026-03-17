@@ -1,0 +1,48 @@
+<div class="Page"></div>
+<div class="Page">
+  <div class="container">
+    <div class="row">
+      @if(indice ===1) {
+      <div class="col-md-12">
+        <h1>Registro de solicitud de cancelación PROSEC</h1>
+      </div>
+      }
+      @if(indice !==1) {
+      <h1>Firmar</h1>
+        <ng-alert [CONTENIDO]="firmarMensaje"></ng-alert>
+      }
+      @if(indice ===1 && !esFormaValido) {
+        <div class="alert alert-info alert-danger">
+          <div class="d-flex justify-content-center text-center">
+            <div class="col-md-12 p-3  border-danger  text-danger rounded">
+              <div class="d-flex justify-content-start mb-1">
+                <span class="flex-grow-1 text-center" [innerHTML]="formErrorAlert">
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+      <app-wizard [listaPasos]="pantallasPasos"></app-wizard>
+    </div>
+    <div class="row">
+      @switch (indice) {
+      @case (1) {
+      <app-pantallas [idTipoTramite]="idTipoTramite" #datosComponent></app-pantallas>
+      }
+      @case (2) {
+      <paso-firma [idSolicitud]="idSolicitudState" [procedure]="140102" [procedureUrl]="'registro-solicitudModule/pantallas'"></paso-firma>
+      }
+
+
+      }
+      <btn-continuar [datos]="datosPasos" (continuarEvento)="getValorIndice($event)">
+      </btn-continuar>
+
+    </div>
+    @if(indice === 1){
+    <ng-alert [CONTENIDO]="TEXTOS.AVISO.Aviso"></ng-alert>
+    }
+  </div>
+
+</div>

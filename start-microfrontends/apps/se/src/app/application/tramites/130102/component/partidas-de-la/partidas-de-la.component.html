@@ -1,0 +1,298 @@
+<div class="container">
+    <form [formGroup]="form">
+        <div>
+            <ng-titulo titulo="Partidas de la mercancía"></ng-titulo>
+            <ng-alert [CONTENIDO]="TEXTOS.INSTRUCCIONES"></ng-alert>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label" for="cantidadPartidas">Cantidad*:</label>
+                        <input class="form-control" type="text" id="cantidadPartidas" formControlName="cantidadPartidas" maxlength="18" libUppercase
+                            aria-labelledby="cantidadPartidas"   (change)="setValoresStore(form,'cantidadPartidas', 'setCantidad_partidas')" >
+                            @if (esInvalido('cantidadPartidas')) {
+                                <div class="text-danger">
+                                  @if (form.controls['cantidadPartidas'].hasError('required')) {
+                                    <small>Este campo es obligatorio.</small>
+                                  }
+                                  @if (form.controls['cantidadPartidas'].hasError('pattern')) {
+                                    <small>Solo se permiten números.</small>
+                                  }
+                                  @if (form.controls['cantidadPartidas'].hasError('maxlength')) {
+                                    <small>Máximo 18 caracteres.</small>
+                                  }
+                                  @if (form.controls['cantidadPartidas'].hasError('leadingSpaces')) {
+                                    <small>No se permiten espacios al inicio del campo.</small>
+                                  }
+                                  @if (form.controls['cantidadPartidas'].errors?.['maxDigits']) {
+                                    <small>Este campo permite 11 enteros y tres decimales.</small>
+                                  }
+                                </div>
+                              }
+                                
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label" for="fraccionArancelariaTIGIE">Fracción arancelaria TIGIE*:</label>
+                        <input class="form-control" type="text" id="fraccionArancelariaTIGIE"
+                            formControlName="fraccionArancelariaTIGIE" aria-labelledby="fraccionArancelariaTIGIE" 
+                            (change)="setValoresStore(form,'fraccionArancelariaTIGIE', 'setFraccionArancelariaTIGIE')"
+                            (blur)="onBlurFraccionArancelaria()"
+                            maxlength="10" libUppercase>
+                            @if (esInvalido('fraccionArancelariaTIGIE')) {
+                                <div class="text-danger">
+                                  @if (form.controls['fraccionArancelariaTIGIE'].errors?.['required']) {
+                                    <small>Este campo es obligatorio.</small>
+                                  }
+                                  @if (form.controls['fraccionArancelariaTIGIE'].errors?.['pattern']) {
+                                    <small>Debe ingresar una fracción válida (por ejemplo: 0101.21.01).</small>
+                                  }
+                                  @if (form.controls['fraccionArancelariaTIGIE'].errors?.['leadingSpaces']) {
+                                    <small>No se permiten espacios al inicio del campo.</small>
+                                  }
+                                </div>
+                              }
+                              
+                    </div>
+                </div>
+                <div class="col-md-4">
+                   <div class="form-group">
+                   <label class="form-label" for="fraccionArancelariaTIGIE_TIGIE"></label>
+                    <select class="form-control form-select" formControlName="fraccionArancelariaTIGIE_TIGIE" (change)="setValoresStore(form,'fraccionArancelariaTIGIE_TIGIE', 'setFraccionArancelariaTIGIE_TIGIE');">
+                      <option [ngValue]="null">Selecciona una fracción</option>
+                      <option *ngFor="let reg of fraccionArancelariaTigieData" [value]="reg.cveFraccion">
+                        {{ reg.cveFraccion }} - {{ reg.descripcion }}
+                      </option>
+                    </select>
+                    @if (esInvalido('fraccionArancelariaTIGIE')) {
+                        <div class="text-danger">
+                          @if (form.controls['fraccionArancelariaTIGIE_TIGIE'].errors?.['required']) {
+                            <small>Este campo es obligatorio.</small>
+                          }
+                        </div>
+                      }
+                   </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label class="form-label" for="descripcion">Descripción*:</label>
+                        <textarea class="form-control height" rows="3" id="descripcion" formControlName="descripcion" maxlength="250"
+                            aria-labelledby="descripcion" (change)="setValoresStore(form,'descripcion', 'setdescripcion_partidas')"></textarea>
+                            @if (form.controls['descripcion'].hasError('maxlength') && form.controls['descripcion'].touched) {
+                              <div class="text-danger">
+                                <small>Máximo 250 caracteres permitidos.</small>
+                              </div>
+                            }
+                            @if (esInvalido('descripcion')) {
+                                <div class="text-danger">
+                                  @if (form.controls['descripcion'].hasError('required')) {
+                                    <small>Este campo es obligatorio.</small>
+                                  }
+                                  @if (form.controls['descripcion'].hasError('maxLength')) {
+                                    <small>Máximo 250 caracteres.</small>
+                                  }
+                                  @if (form.controls['descripcion'].hasError('leadingSpaces')) {
+                                    <small>No se permiten espacios al inicio del campo.</small>
+                                  }
+                                </div>
+                              }
+                              
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label" for="valorPartidaUSD">Valor partida USD*:</label>
+                        <input class="form-control" type="text" id="valorPartidaUSD" formControlName="valorPartidaUSD"
+                            aria-labelledby="valorPartidaUSD" (change)="setValoresStore(form,'valorPartidaUSD', 'setvalorPartidaUSD')">
+                            @if (esInvalido('valorPartidaUSD')) {
+                                <div class="text-danger">
+                                  @if (form.controls['valorPartidaUSD'].hasError('required')) {
+                                    <small>Este campo es obligatorio.</small>
+                                  }
+                                  @if (form.controls['valorPartidaUSD'].errors?.['maxDigits']) {
+                                    <small>Este campo permite 11 enteros y dos decimales.</small>
+                                  }
+                                  @if (form.controls['valorPartidaUSD'].hasError('min')) {
+                                    <small>El valor debe ser mayor o igual a 0.</small>
+                                  }
+                                </div>
+                              }
+                              
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col-md-4"></div>
+                <div class="col-md-8">
+                    <hr>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8"></div>
+                <div class="col-md-4 text-end">
+                    <div class="btn-group">
+                        <button class="btn btn-primary me-2" type="button" (click)="cargarArchivo()" [disabled]="esFormularioSoloLectura">Cargar archivo</button>
+                        <button class="btn btn-danger" type="button" (click)="validarYEnviarFormulario()" [disabled]="esFormularioSoloLectura">Agregar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+ 
+    <div class="row mt-5">
+        <ng-alert [CONTENIDO]="TEXTOS.INSTRUCCIONES_PARA_PARTIDAS"></ng-alert>
+        <div>
+            <h6>Partidas</h6>
+        <app-tabla-dinamica
+          [configuracionTabla]="configuracionTabla"
+          [datos]="datosSocios"
+          [tipoSeleccionTabla]="tablaSeleccion.CHECKBOX"
+          [disableSeleccionTablaCheckBox]="esFormularioSoloLectura ? true : false"
+          (listaDeFilaSeleccionada)="onPartidasSeleccion($event)"
+        ></app-tabla-dinamica>
+          
+            <form [formGroup]="formForTotalCount">  
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label" for="cantidadTotal">Cantidad total:</label>
+                            <input class="form-control" type="number" id="cantidadTotal" formControlName="cantidadTotal"
+                                aria-labelledby="cantidadTotal">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label" for="valorTotalUSD">Valor Total USD:</label>
+                            <input class="form-control" type="number" id="valorTotalUSD"
+                                formControlName="valorTotalUSD" aria-labelledby="valorTotalUSD">
+                        </div>
+                    </div>
+                </div>
+ 
+                <div class="row mt-5">
+                    <div class="col-md-4"></div>
+                    <div class="col-md-8">
+                        <hr>
+                    </div>
+                </div>
+               
+                <div class="row">
+                    <div class="col-md-6 col-sm-6"></div>
+                    <div class="col-md-6 col-sm-6 text-end">
+                        <div class="btn-group">
+                            <button class="btn btn-primary me-2" type="button" (click)="eliminar()" [disabled]="esFormularioSoloLectura">Eliminar partida</button>
+                            <button class="btn btn-danger" type="button" (click)="abrirModalEditar()" [disabled]="esFormularioSoloLectura">Modificar partida mercancia</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div
+  class="modal fade"
+  #cargarArchivoModal
+  id="cargarArchivoModal"
+  tabindex="-1"
+  aria-labelledby="cargarArchivoModal"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="row">
+          <ng-titulo titulo="Cargar archivo" />
+        </div>
+        <form [formGroup]="archivoFormGroup">
+            <div class="row">
+            <p>Archivo:</p>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <input
+                class="form-control"
+                type="file"
+                formControlName="archivo"
+                (change)="onFileChange($event)"
+                id="archivo" 
+            >
+            </div>
+        </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger me-2 btn-space" (click)="cerrar()">Cerrar</button>
+        <button type="button" class="btn btn-primary btn-space" (click)="enviarArchivo()">Enviar</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="modal fade" #modalConfirmacionRef id="modalConfirmacion" tabindex="-1" aria-labelledby="modalConfirmacionLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+      </div>
+      <div class="modal-body">
+        <p>Selecciona un registro a eliminar.</p>
+        <div class="modal-footer custom-footer">
+          <button type="button" class="btn btn-default" data-bs-dismiss="modal" #closeModal>Acceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" #modalEditarRef id="modalEditarPartida" tabindex="-1" aria-labelledby="modalEditarPartidaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalEditarPartidaLabel">Modificar partida</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <formas-dinamicas
+          [forma]="modificarPartidaForm"
+          [formularioDatos]="modificarPartidasFormData"
+         (emitirCambioDeValor)="establecerCambioDeValor($event)"
+        ></formas-dinamicas>
+      </div>
+       <div class="modal-footer custom-footer d-flex ">
+        <button type="button"  class="btn btn-default" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarEdicion()" >Guardar cambios</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmation Modal -->
+@if(confirmacionAlerta){
+<section>
+  <lib-notificaciones
+    [notificacionInput]="seleccionarFilaNotificacion"
+    (confirmacionModal)="confirmarEliminacionSustancias($event)"
+  >
+  </lib-notificaciones>
+</section>
+}
+
+<!-- Success Modal -->
+@if(mostrarNotificacion){
+<section>
+  <lib-notificaciones
+    [notificacionInput]="notificacionEliminacionExitosa"
+    (confirmacionModal)="cerrarNotificacionEliminacion($event)"
+  >
+  </lib-notificaciones>
+</section>
+}
+
+@if(nuevaNotificacion) {
+  <section>
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+    </lib-notificaciones>
+  </section>
+}

@@ -1,0 +1,126 @@
+<div class="container">
+  <form [formGroup]="formPagoLC">
+    <ng-titulo titulo="Ingresar pago de derechos:" />
+
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="lineaCaptura"
+            >Línea de captura
+            <span
+              class="require"
+              [ngClass]="{
+                'text-danger':
+                  formPagoLC.get('lineaCaptura')?.invalid &&
+                  formPagoLC.get('lineaCaptura')?.touched
+              }"
+              >*</span
+            >:</label
+          >
+          <input
+            type="text"
+            id="lineaCaptura"
+            class="form-control"
+            formControlName="lineaCaptura"
+            maxlength="20"
+            (change)="setLineaCaptura($event)"
+          />
+          <div>
+            <span
+              *ngIf="
+                formPagoLC.get('lineaCaptura')?.hasError('required') &&
+                formPagoLC.get('lineaCaptura')?.touched
+              "
+              id="descMercancia"
+              class="text-danger"
+            >
+              Este campo es obligatorio
+            </span>
+
+            <span
+              *ngIf="
+                formPagoLC.get('lineaCaptura')?.hasError('pattern') &&
+                formPagoLC.get('lineaCaptura')?.touched
+              "
+              id="descMercancia"
+              class="text-danger"
+            >
+              El formato de linea de captura no es correcto
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="lineaCaptura">Monto*:</label>
+          <input
+            type="text"
+            id="monto"
+            class="form-control"
+            formControlName="valorPago"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-md-12">
+        <div class="form-group d-flex justify-content-end">
+          <button class="btn btn-default me-5" [disabled]="esFormularioSoloLectura" (click)="limpiarCampos()">
+            Limpiar
+          </button>
+          <button class="btn btn-primary me-5" [disabled]="esFormularioSoloLectura" (click)="anadirTarifasDePago()">
+            Agregar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-md-4"></div>
+      <div class="col-md-4">
+        @if (pagoDerechosLista.length > 0){
+        <app-tabla-dinamica
+          [tipoSeleccionTabla]="tipoSeleccionTabla"
+          [configuracionTabla]="configuracionColumnas"
+          [datos]="pagoDerechosLista"
+          (listaDeFilaSeleccionada)="onFilaSeleccionada($event)"
+        >
+        </app-tabla-dinamica>
+        }
+      </div>
+      <div class="col-md-4"></div>
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-md-12">
+        <div class="form-group pull-right">
+          <button class="btn btn-danger" [disabled]="esFormularioSoloLectura" (click)="eliminarSeleccion()">
+            Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <div class="form-group pull-right">
+        <p class="mt-5 fw-bold">
+          A través del siguiente vínculo puedes ingresar a la página para
+          generar la línea de captura de la constancia que se solicita:
+        </p>
+        <br />
+        <a [href]="generarLineaCapturaURL" target="_blank">
+          Generar línea de captura
+        </a>
+        <br /><br />
+      </div>
+    </div>
+  </form>
+</div>
+
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+  </lib-notificaciones>
+</section>
+}

@@ -1,0 +1,54 @@
+<div class="page">
+  <div class="container">
+    <div class="row">
+
+      @if(indice === 1){
+      <div class="col-md-12">
+        <h2>Solicitud Importación Vehículos usados adaptados para personas físicas con actividad empresarial o personas
+          morales </h2>
+
+      </div>
+      }
+      @if(indice === 2){
+      <div class="col-md-12">
+        <h1>Cargar archivos</h1>
+      </div>
+      }
+      @if(indice === 3){
+      <div class="col-md-12">
+        <h1>Firmar</h1>
+      </div>
+      }
+    </div>
+    <div class="row mt-5" *ngIf="indice === 3">
+      <div class="col-md-12">
+        <lib-notificaciones [notificacionInput]="alertaNotificacion"></lib-notificaciones>
+      </div>
+    </div>
+    <app-wizard [listaPasos]="pasosSolicitar"></app-wizard>
+  </div>
+
+  <div class="row">
+    @switch(indice){
+    @case(1){
+    <app-paso-uno></app-paso-uno>
+    }@case(2){
+    <app-paso-carga-documento [idSolicitud]="solicitudState.idSolicitud" [idTipoTRamite]="'130111'"
+      [cargaArchivosEvento]="cargarArchivosEvento" (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+      (reenviarCargaRealizada)="cargaRealizada($event)"
+      (cargaEnProgreso)="onCargaEnProgreso($event)"></app-paso-carga-documento>
+    }@case(3){
+    <paso-firma [idSolicitud]="solicitudState.idSolicitud" [procedure]="130111"
+      [procedureUrl]="'importacion-de-vehiculos-usados/importacion-de-vehiculos'"></paso-firma>
+    }
+    }
+  </div>
+  <div class="container">
+    <div class="col-md-12">
+      <btn-continuar [datos]="datosPasos" (continuarEvento)="getValorIndice($event)"></btn-continuar>
+    </div>
+    <div class="row">
+      <ng-alert [CONTENIDO]="TEXTOS.AVISO.Aviso"></ng-alert>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,36 @@
+<div class="page">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h1>Validar inicialmente el certificado CAM</h1>
+      </div>
+      @if(esFormaValido){
+      <div class="col-md-12">
+        <ng-alert [CONTENIDO]="formErrorAlert" [CUSTOMECLASS]="'alert-danger'"></ng-alert>
+      </div>
+      }
+      <div class="row mt-5" *ngIf="indice === 2">
+        <div class="col-md-12">
+          <lib-notificaciones [notificacionInput]="alertaNotificacion"></lib-notificaciones>
+        </div>
+      </div>
+      <app-wizard [listaPasos]="pasos"></app-wizard>
+    </div>
+    <div class="row">
+      @switch (indice) { @case (1) {
+      <app-paso-uno #pasoUnoRef></app-paso-uno>
+      }
+      @case (2) {
+      <paso-firma [idSolicitud]="solicitudState.idSolicitud" [procedure]="110211"
+        [procedureUrl]="'validar-certificado/cam'"></paso-firma>
+      }
+      }
+      <btn-continuar [datos]="datosPasos" (anteriorEvento)="getValorIndice($event)"
+        (continuarEvento)="getValorIndice($event)"></btn-continuar>
+
+      @if(indice ===1){
+        <ng-alert [CONTENIDO]="TEXTOS.INSTRUCCIONES"></ng-alert>
+      }
+    </div>
+
+  </div>

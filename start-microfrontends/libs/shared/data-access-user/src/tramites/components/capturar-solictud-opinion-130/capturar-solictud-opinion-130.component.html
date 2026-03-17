@@ -1,0 +1,73 @@
+<div class="container">
+    @if(esFormaValido){
+    <div class="col-md-12 mt-3">
+        <ng-alert [CONTENIDO]="formErrorAlert" [CUSTOMECLASS]="'alert-danger'"></ng-alert>
+    </div>
+    }
+    <div class="row">
+        <form [formGroup]="formCapturaOpinion">
+            <div class="row">
+                <div class="col-md-12">
+                    <app-catalogo-select [catalogo]="catDependencia" formControlName="dependencia"
+                        [label]="'Dependencia'" [required]="true" name="dependencia"></app-catalogo-select>
+                    <div
+                        *ngIf="formCapturaOpinion.get('dependencia')?.touched && formCapturaOpinion.get('dependencia')?.invalid">
+                        <small class="text-danger" *ngIf="formCapturaOpinion.get('dependencia')?.errors?.['required']">
+                            La dependencia es obligatoria.
+                        </small>
+                    </div>
+                </div>
+                <div class="col-md-12 left">
+                    <label for="justificacion" class="form-label">Justificación*:</label>
+                    <textarea name="justificacion" id="justificacion" class="form-control text-height"
+                        formControlName="justificacion" [required]="true"></textarea>
+                    <div
+                        *ngIf="formCapturaOpinion.get('justificacion')?.touched && formCapturaOpinion.get('justificacion')?.invalid">
+                        <small class="text-danger"
+                            *ngIf="formCapturaOpinion.get('justificacion')?.errors?.['required']">
+                            La justificación es obligatoria.
+                        </small>
+                        <small class="text-danger"
+                            *ngIf="formCapturaOpinion.get('justificacion')?.errors?.['maxlength']">
+                            La justificación no debe exceder los 1000 caracteres.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="d-flex justify-content-lg-end h1">
+            <button class="btn btn-primary ms-2" type="button" (click)="guardarOpinion()">Guardar</button>
+            <button type="button" class="btn btn-default ms-2" (click)="limpiarFormulario()">Limpiar</button>
+        </div>
+        <div *ngIf="visualizaTabla" class="col-md-12">
+            <div class="row">
+                <div class="col-md-12">
+                    <h4>Se solicitarán las siguientes opiniones:</h4>
+                    <div class="table-responsive">
+                        <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccion.CHECKBOX"
+                            [configuracionTabla]="encabezadoDeTablaOpiniones" [datos]="listadoOpiniones"
+                            (listaDeFilaSeleccionada)="opinionesSeleccionados = $event">
+                        </app-tabla-dinamica>
+                    </div>
+                    <div class="d-flex justify-content-lg-end h1">
+                        <button class="btn btn-primary ms-2" type="button" (click)="editarOpinion()">Editar</button>
+                        <button type="button" class="btn btn-default ms-2" (click)="eliminarOpinion()">Eliminar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="visualizaBotones" class="col-md-12">
+            <div class="d-flex justify-content-lg-end h1">
+                <button class="btn btn-primary ms-2" type="button" (click)="enviarOpiniones()">Enviar</button>
+                <button type="button" class="btn btn-default ms-2" (click)="cancelar()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (nuevaNotificacion) {
+<section>
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+    </lib-notificaciones>
+</section>
+}

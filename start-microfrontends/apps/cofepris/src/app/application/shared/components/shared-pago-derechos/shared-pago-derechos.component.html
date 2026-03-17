@@ -1,0 +1,64 @@
+<div class="container mt-4">
+  <ng-titulo titulo="Pago de derechos"></ng-titulo>
+   <ng-alert [CONTENIDO]="DEBES_CAPTURAR" [CUSTOMECLASS]="infoAlert"></ng-alert>
+  <form [formGroup]="derechosForm">
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label for="claveReferencia" class="form-label">Clave de referencia:</label>
+        <input type="text" id="claveReferencia" class="form-control" formControlName="claveReferencia" maxlength="9"
+          (change)="setValoresStore(derechosForm,'claveReferencia', 'setclaveReferencia')" />
+      </div>
+
+      <div class="col-md-4">
+        <label for="cadenaDependencia" class="form-label">Cadena de la dependencia:</label>
+        <input type="text" id="cadenaDependencia" class="form-control" formControlName="cadenaDependencia"
+          maxlength="14" (change)="setValoresStore(derechosForm,'cadenaDependencia', 'setcadenaDependencia')" />
+      </div>
+
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="derechosList" formControlName="banco" [label]="'Banco'" [required]="false"
+          (change)="setValoresStore(derechosForm,'banco', 'setbanco')"
+          [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+      </div>
+    </div>
+
+    <div class="row g-3 mt-2">
+      <div class="col-md-4">
+        <label for="llavePago" class="form-label">Llave de pago:</label>
+        <input type="text" id="llavePago" class="form-control" formControlName="llavePago" maxlength="30"
+          (change)="setValoresStore(derechosForm,'llavePago', 'setllavePago')" />
+      </div>
+      <div class="col-md-4">
+        <input-fecha [setFecha]="derechosForm.get('fechaDePago')?.value" [datos]="fechaInicioInput"
+          (valorCambiado)="cambioFechaDePago($event)"
+          [isDisabled]="esFormularioSoloLectura ? true : false"></input-fecha>
+        <div *ngIf="fechaFuturaSeleccionada" class="mensaje-error mt-1">
+          La fecha de pago debe ser menor o igual a la fecha actual.
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label for="importePago" class="form-label">Importe de pago:</label>
+        <input type="text" id="importePago" class="form-control" formControlName="importePago"
+          (change)="setValoresStore(derechosForm,'importePago', 'setimportePago')" maxlength="16" />
+        <div *ngIf="importePago?.invalid && (importePago?.dirty || importePago?.touched)" class="text-danger mt-1">
+          <div *ngIf="importePago?.errors?.['required']">
+            El campo es obligatorio.
+          </div>
+          <div *ngIf="importePago?.errors?.['pattern']">
+            Este campo solo permite números hasta dos decimales
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-12">
+        <div class="pull-right">
+          <button type="button" name="agregarMercancias" class="btn btn-primary ms-2" (click)="alReiniciar()"
+            [disabled]="esFormularioSoloLectura ? true : false">
+            Borrar datos del pago
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,358 @@
+<div class="container">
+  <form [formGroup]="aeronavesForm">
+    <div class="row">
+      <div class="col-md-12">
+        <label class="form-label text-start"
+          >Conforme a la regla 7.1.4 primer párrafo, fracciones I a la IV,
+          acredite lo siguiente:</label
+        >
+      </div>
+      <div class="col-md-12 mt-4">
+        <label class="form-label text-start"
+          >Señale si ha realizado operaciones de comercio exterior durante los
+          últimos dos años anteriores a su solicitud e indique la fecha de
+          inicio de operaciones de comercio exterior. *</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gap]="'50px'"
+          formControlName="2042"
+          (valueChange)="actualizar2042($event)"
+        ></app-input-radio>
+      </div>
+      @if(validaComercioExterior === 1){
+      <div class="col-md-6 mt-4">
+        <input-fecha
+          [datos]="fechaDeFinDeVigencia"
+          [isDisabled]="esFormularioSoloLectura"
+          [setFecha]="aeronavesForm.get('fechaInicioComercio')?.value"
+          (valorCambiado)="actualizarFechaInicioComercio($event)"
+        >
+        </input-fecha>
+      </div>
+      <div class="col-md-6 mt-4"></div>
+      } @if(validaComercioExterior === 2){
+      <div class="col-md-12 mt-4">
+        <label class="form-label text-start">
+          Señale si forma parte de un mismo grupo, siempre que las empresas de
+          grupo hayan efectuado operaciones de comercio exterior en el plazo
+          referido. *</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gap]="'50px'"
+          formControlName="306"
+          (valueChange)="actualizar306($event)"
+        ></app-input-radio>
+      </div>
+      <div class="col-md-12 mt-4">
+        <label class="form-label text-start">
+          Señale si su constitución resultó de una fusión o escisión, siempre
+          que las empresas fusionantes o, en su caso, la sociedad escindente,
+          hayan efectuado operaciones de comercio exterior.*</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gap]="'50px'"
+          formControlName="307"
+          (valueChange)="actualizar307($event)"
+        ></app-input-radio>
+      </div>
+
+      <div class="col-md-12 mt-4">
+        <label class="form-label text-start">
+          Señale si previo a su constitución ha operado durante los últimos 2
+          años como empresa extranjera al amparo de otra empresa con Programa
+          IMMEX en la modalidad de albergue.*</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gap]="'50px'"
+          formControlName="308"
+          (valueChange)="actualizar308($event)"
+        ></app-input-radio>
+      </div>
+      }
+      <div class="col-md-12">
+        <label class="form-label text-start">
+          Señale si ha efectuado el pago del derecho correspondiente a la fecha
+          de presentación de la solicitud, a que se refiere el artículo 40,
+          inciso m de la LFD, en relación con el Anexo 19 de la RMF vigente a la
+          fecha de presentación de la solicitud del registro. *</label
+        >
+      </div>
+      <div class="col-md-4 mt-4">
+        <input-fecha
+          [datos]="fechaDePago"
+          [isDisabled]="esFormularioSoloLectura"
+          [setFecha]="aeronavesForm.get('fechaPago')?.value"
+          (valorCambiado)="actualizarFechaPago($event)"
+        >
+        </input-fecha>
+      </div>
+      <div class="col-md-4 mt-4">
+        <label class="form-label text-start" for="montoOEA">Monto :</label>
+        <input
+          class="form-control"
+          formControlName="monto"
+          type="text"
+          id="montoOEA"
+          name="montoOEA"
+        />
+      </div>
+      <div class="col-md-4 mt-4">
+        <label class="form-label text-start" for="operacionesBancarias"
+          >Número de Operación Bancaria :</label
+        >
+        <input
+          class="form-control"
+          formControlName="operacionesBancarias"
+          type="text"
+          id="operacionesBancarias"
+          name="operacionesBancarias"
+        />
+      </div>
+      <div class="col-md-4 mt-4">
+        <label class="form-label text-start" for="llaveOEA"
+          >Llave de pago :</label
+        >
+        <input
+          class="form-control"
+          formControlName="llavePago"
+          type="text"
+          id="llaveOEA"
+          name="llaveOEA"
+        />
+      </div>
+      <div class="col-md-12">
+        <label class="form-label text-start"
+          >Reportar el nombre y clave en el RFC de las empresas transportistas
+          autorizadas para efectuar el traslado de las mercancías de comercio
+          exterior. *</label
+        >
+      </div>
+      <div class="col-md-12">
+        <ng-titulo titulo="Transportistas" />
+      </div>
+      <div class="col-md-12">
+        <app-tabla-dinamica
+          [tipoSeleccionTabla]="transportistasTabla"
+          [configuracionTabla]="transportistasConfiguracionColumnas"
+          [datos]="transportistasLista"
+        >
+        </app-tabla-dinamica>
+      </div>
+      <div class="col-md-12 mt-3">
+        <div class="form-group mt-5 pull-right">
+          <button
+            type="button"
+            [disabled]="esFormularioSoloLectura"
+            id="agregarTransportista"
+            class="btn btn-primary me-2"
+            data-bs-toggle="modal"
+            data-bs-target="#transportistas"
+            (click)="agregarTransportistaModel()"
+          >
+            Agregar
+          </button>
+          <button
+            type="button"
+            [disabled]="esFormularioSoloLectura"
+            id="modificarTransportista"
+            class="btn btn-secondary me-2"
+          >
+            Modificar
+          </button>
+          <button
+            type="button"
+            [disabled]="esFormularioSoloLectura"
+            id="eliminarTransportista"
+            class="btn btn-danger"
+          >
+            Eliminar
+          </button>
+        </div>
+      </div>
+      <div class="col-md-12 mt-4">
+        <label class="form-label text-start"
+          >Indique el número de su Programa IMMEX y la modalidad. *</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gap]="'50px'"
+          formControlName="301"
+          (valueChange)="actualizar301($event)"
+        ></app-input-radio>
+      </div>
+      <div class="col-md-4 mt-4">
+        <label class="form-label text-start">Número de Programa IMMEX:*</label>
+        <input
+          class="form-control"
+          formControlName="numeroIMMEX"
+          maxlength="20"
+          type="text"
+          size="35"
+          id="numeroAeronaves"
+          name="numeroIMMEX"
+        />
+      </div>
+      <div class="col-md-8 mt-4"></div>
+      <div class="col-md-4 mt-4">
+        <label class="form-label text-start">
+          Modalidad del Programa IMMEX:*</label
+        >
+        <input
+          class="form-control"
+          formControlName="modalidadIMMEX"
+          maxlength="20"
+          type="text"
+          size="35"
+          id="modalidadAeronaves"
+          name="modalidadIMMEX"
+        />
+      </div>
+      <div class="col-md-8 mt-4"></div>
+      <div class="col-md-12 mt-4">
+        <label class="form-label text-start">
+          Señale si cuenta con el Registro en el Esquema de Certificación de
+          Empresas en la Modalidad de IVA e IEPS en cualquiera de sus rubros.
+          *</label
+        >
+        <app-input-radio
+          [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="sinoOpcion.isRequired"
+          [layout]="'horizontal'"
+          [gap]="'50px'"
+          formControlName="302"
+          (valueChange)="actualizar302($event)"
+        ></app-input-radio>
+      </div>
+
+      <div class="col-md-4 mt-4">
+        <label class="form-label text-start"> Modalidad I V A e I E P S</label>
+        <input
+          class="form-control"
+          formControlName="rubroCertificacion"
+          maxlength="3"
+          type="text"
+          size="35"
+          id="rubroAeronaves"
+          name="rubroCertificacion"
+          (change)="actualizarRubroCertificacion($event)"
+        />
+      </div>
+      <div class="col-md-4 mt-4">
+        <label class="form-label text-start"> Fecha De Registro</label>
+        <input
+          class="form-control"
+          formControlName="fechaFinVigenciaRubro"
+          maxlength="20"
+          type="text"
+          size="35"
+          id="fechaFinVigenciaAeronaves"
+          name="fechaFinVigenciaRubro"
+          (change)="actualizarFechaFinVigenciaRubro($event)"
+        />
+      </div>
+      <div class="col-md-4 mt-4">
+        <label class="form-label text-start"> Número de autorización</label>
+        <input
+          class="form-control"
+          formControlName="numeroOficio"
+          maxlength="35"
+          type="text"
+          size="35"
+          id="numeroOficioAeronaves"
+          name="numeroOficio"
+          (change)="actualizarNumeroOficio($event)"
+        />
+      </div>
+
+      <div class="col-md-12">
+        <ng-titulo titulo="Reconocimiento Mutuo" />
+      </div>
+      <div class="col-md-12">
+        <label class="form-label text-start"
+          >La adopción de México de las normas establecidas en el Marco
+          Normativo SAFE de la OMA para Asegurar y Facilitar el Comercio Global
+          publicado por la OMA, donde se incorporan prácticas y normas en
+          materia de seguridad, tiene como uno de sus objetivos, alcanzar el
+          Reconocimiento Mutuo" con aquellos países que cuentan con un programa
+          similar en materia de seguridad, que cumplen con la condición de
+          Operadores Económicos Autorizados de acuerdo al "Marco SAFE" y la
+          legislación de cada país. *</label
+        >
+        <label class="form-label text-start"
+          >Por lo tanto, como parte de la estrategia para evitar la duplicación
+          de controles de seguridad y contribuir de manera significativa a la
+          facilitación y control de las mercancías que circulan en la cadena de
+          suministro internacional, es necesario contar con la participación de
+          aquellos que logren obtener el Registro en el Esquema de Certificación
+          de Empresas y autorizar el intercambio de información que permita
+          enriquecer los sistemas informáticos, eliminar y/o reducir la
+          redundancia y/o duplicación de esfuerzos en el proceso de
+          inscripción.</label
+        >
+        <label class="form-label text-start"
+          >Por lo anterior y de conformidad con lo dispuesto en el artículo 117
+          de Ley Federal de Transparencia y Acceso a la Información Pública,
+          autorizo al sujeto obligado denominado SAT, a través de la AGACE, a
+          compartir, difundir o distribuir con otras autoridades nacionales o
+          extranjeras los datos personales y demás información de la empresa que
+          represento, y que se genere durante el transcurso en que la misma se
+          encuentre inscrita en el Registro en el Esquema de Certificación de
+          Empresas</label
+        >
+        <app-input-radio
+          [radioOptions]="mutuo.radioOptions"
+          [isRequired]="mutuo.isRequired"
+          [layout]="'horizontal'"
+          [gap]="'50px'"
+          formControlName="2043"
+          (valueChange)="actualizar2043($event)"
+        ></app-input-radio>
+      </div>
+      <div class="col-md-12">
+        <ng-titulo titulo="Clasificación de la Información" />
+      </div>
+      <div class="col-md-12 mt-3">
+        <label class="form-label text-start"
+          >La información proporcionada, durante este trámite para el Registro
+          de Certificación de Empresas es clasificada por la empresa
+          como:</label
+        >
+        <app-input-radio
+          [radioOptions]="clasificacionInformacion.radioOptions"
+          [isRequired]="clasificacionInformacion.isRequired"
+          [layout]="'horizontal'"
+          [gap]="'50px'"
+          formControlName="2044"
+          (valueChange)="actualizar2044($event)"
+        ></app-input-radio>
+      </div>
+    </div>
+  </form>
+</div>
+<div
+  class="modal fade"
+  id="transportistas"
+  tabindex="-1"
+  aria-labelledby="modaltransportistas"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <app-agregar-transportistas></app-agregar-transportistas>
+    </div>
+  </div>
+</div>

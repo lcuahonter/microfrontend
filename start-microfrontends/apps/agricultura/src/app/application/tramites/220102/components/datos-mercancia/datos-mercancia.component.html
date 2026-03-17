@@ -1,0 +1,382 @@
+<div class="tab-content">
+  <div class="row">
+    <div class="col-md-12">
+      <ng-titulo titulo="Datos del trámite" />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <ng-alert [CONTENIDO]="importante"></ng-alert>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <label for="mercancia">Mercancías*:</label>
+    </div>
+    <div class="col-md-12">
+      <app-tabla-dinamica
+        [tipoSeleccionTabla]="tipoSeleccionarParaTabla"
+        [configuracionTabla]="configuracionParaEncabezadoDeTabla"
+        [datos]="cuerpoTabla"
+        (listaDeFilaSeleccionada)="onListaDeFilaSeleccionada($event)"
+        [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+      >
+      </app-tabla-dinamica>
+    </div>
+  </div>
+  <div class="row btn-align">
+    <div>
+      <button
+        type="button"
+        class="btn btn-default btn-space me-2"
+        data-bs-toggle="modal"
+        data-bs-target="#modalMercancia"
+        *ngIf="cuerpoTabla.length !== 0"
+        [disabled]="!(listaDeTablasSeleccionadas.length === 1) || esFormularioSoloLectura"
+        (click)="seleccionarParaModificacion()"
+      >
+        Modificar
+      </button>
+      <button
+        type="button"
+        class="btn btn-default btn-space me-2"
+        *ngIf="cuerpoTabla.length !== 0"
+        [disabled]="!(listaDeTablasSeleccionadas.length === 1) || esFormularioSoloLectura"
+        (click)="eliminarElementoSeleccionado()"
+      >
+        Eliminar
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary btn-space"
+        data-bs-toggle="modal"
+        data-bs-target="#modalMercancia"
+        [disabled]="esFormularioSoloLectura"
+      >
+        Agregar
+      </button>
+    </div>
+  </div>
+</div>
+<!--Datos Mercancia Modal-->
+<div
+  #modalMercancia
+  class="modal fade test-modal"
+  id="modalMercancia"
+  tabindex="-1"
+  aria-labelledby="modalMercancia"
+>
+  <div class="modal-dialog modal-dialog-centered modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="container mt-5">
+          <div class="row">
+            <div class="col-md-6">
+              <h2>Solicitud de Requisitos Fitosanitarios para Importación</h2>
+            </div>
+          </div>
+          <div class="row mt-5">
+            <form [formGroup]="formMercancia">
+              <div class="row">
+                <div class="col-md-12">
+                  <ng-titulo titulo="Datos mercancia" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <app-catalogo-select
+                    [catalogo]="catalogoNombreComun"
+                    formControlName="nombreComun"
+                    [label]="'Nombre común'"
+                    [required]="true"
+                    name="nombreComun"
+                    [isDisabled]="esFormularioSoloLectura"
+                  ></app-catalogo-select>
+                </div>
+                <div class="col-md-6">
+                  <app-catalogo-select
+                    [catalogo]="catalogoNombreCientifico"
+                    formControlName="nombreCientifico"
+                    [label]="'Nombre científico'"
+                    [required]="true"
+                    name="nombreCientifico"
+                    [isDisabled]="esFormularioSoloLectura"
+                  ></app-catalogo-select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <app-catalogo-select
+                    [catalogo]="catalogoUso"
+                    formControlName="uso"
+                    [label]="'Uso'"
+                    [required]="true"
+                    name="uso"
+                    [isDisabled]="esFormularioSoloLectura"
+                  ></app-catalogo-select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <app-catalogo-select
+                    [catalogo]="catalogoPaisOrigen"
+                    formControlName="paisOrigen"
+                    [label]="'País de origen'"
+                    [required]="true"
+                    name="paisOrigen"
+                    [isDisabled]="esFormularioSoloLectura"
+                  ></app-catalogo-select>
+                </div>
+                <div class="col-md-6">
+                  <app-catalogo-select
+                    [catalogo]="catalogoPaisProcedencia"
+                    formControlName="paisProcedencia"
+                    [label]="'País de procedencia'"
+                    [required]="true"
+                    name="paisProcedencia"
+                    [isDisabled]="esFormularioSoloLectura"
+                  ></app-catalogo-select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <app-catalogo-select
+                    [catalogo]="catalogoTipoProducto"
+                    formControlName="tipoProducto"
+                    [label]="'Tipo de producto'"
+                    [required]="true"
+                    name="tipoProducto"
+                    [isDisabled]="esFormularioSoloLectura"
+                  ></app-catalogo-select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <label for="fraccionArancelaria"
+                    >Fracción arancelaria<span
+                      [ngClass]="
+                        isValid(formMercancia, 'fraccionArancelaria')
+                          ? 'require'
+                          : ''
+                      "
+                      >*</span
+                    >:</label
+                  >
+                  <input
+                    type="text"
+                    id="fraccionArancelaria"
+                    class="form-control"
+                    maxlength="8"
+                    [ngClass]="
+                      isValid(formMercancia, 'fraccionArancelaria')
+                        ? 'required'
+                        : ''
+                    "
+                    formControlName="fraccionArancelaria"
+                    (change)="establecerValoresStore('fraccionArancelaria')"
+                  />
+                  @if (formMercancia.get('fraccionArancelaria')?.errors &&
+                  (formMercancia.get('fraccionArancelaria')?.touched) ||
+                  formMercancia.get('fraccionArancelaria')?.dirty) { @if
+                  (formMercancia.get('fraccionArancelaria')?.errors?.['required'])
+                  {
+                  <small class="mensaje-error">Este campo es obligatorio</small>
+                  } @if
+                  (formMercancia.get('fraccionArancelaria')?.errors?.['minlength'])
+                  {
+                  <small class="mensaje-error"
+                    >Por favor, no escribas menos de 8 caracteres</small
+                  >
+                  } @if
+                  (formMercancia.get('fraccionArancelaria')?.errors?.['pattern']
+                  &&
+                  !formMercancia.get('fraccionArancelaria')?.errors?.['minlength'])
+                  {
+                  <small class="mensaje-error"
+                    >Por favor, sólo escribe dígitos</small
+                  >
+                  } }
+                </div>
+                <div class="col-md-6">
+                  <label for="descripcionFraccionArancelaria"
+                    >Descripción de la fracción arancelaria*:
+                    <span
+                      class="bi bi-question-circle-fill"
+                      title="Ingresa una fracción"
+                      data-bs-toggle="tooltip"
+                    ></span
+                  ></label>
+                  <input
+                    type="text"
+                    id="descripcionFraccionArancelaria"
+                    class="form-control"
+                    formControlName="descripcionFraccionArancelaria"
+                    [readOnly]="true"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  <label for="cantidadUMT">Cantidad UMT:</label>
+                  <input
+                    type="text"
+                    id="cantidadUMT"
+                    class="form-control"
+                    [ngClass]="
+                      isValid(formMercancia, 'cantidadUMT') ? 'required' : ''
+                    "
+                    formControlName="cantidadUMT"
+                  />
+                  @if ((formMercancia.get('cantidadUMT')?.touched ||
+                  formMercancia.get('cantidadUMT')?.dirty) &&
+                  formMercancia.get('cantidadUMT')?.errors?.['pattern']) {
+                  <small class="mensaje-error"
+                    >Este campo permite doce números enteros y hasta tres
+                    decimales</small
+                  >
+                  }
+                </div>
+                <div class="col-md-4">
+                  <label for="descripcionFraccionArancelaria"
+                    >UMT:
+                    <span
+                      class="bi bi-question-circle-fill"
+                      title="Unidad de medida de la tarifa"
+                      data-bs-toggle="tooltip"
+                    ></span
+                  ></label>
+                  <input
+                    type="text"
+                    id="umt"
+                    class="form-control"
+                    formControlName="umt"
+                    [readOnly]="true"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4 mt-2">
+                  <label for="cantidadUMC"
+                    >Cantidad UMC<span
+                      [ngClass]="
+                        isValid(formMercancia, 'cantidadUMC') ? 'require' : ''
+                      "
+                      >*</span
+                    >:</label
+                  >
+                  <input
+                    type="text"
+                    id="cantidadUMC"
+                    class="form-control"
+                    [ngClass]="
+                      isValid(formMercancia, 'cantidadUMC') ? 'required' : ''
+                    "
+                    formControlName="cantidadUMC"
+                  />
+                  @if (formMercancia.get('cantidadUMC')?.errors &&
+                  (formMercancia.get('cantidadUMC')?.touched) ||
+                  formMercancia.get('cantidadUMC')?.dirty) { @if
+                  (formMercancia.get('cantidadUMC')?.errors?.['required']) {
+                  <small class="mensaje-error">Este campo es obligatorio</small>
+                  } @if (formMercancia.get('cantidadUMC')?.errors?.['pattern'])
+                  {
+                  <small class="mensaje-error"
+                    >Este campo permite doce números enteros y hasta tres
+                    decimales</small
+                  >
+                  } }
+                </div>
+                <div class="col-md-4">
+                  <app-catalogo-select
+                    [catalogo]="catalogoUmc"
+                    formControlName="umc"
+                    [label]="'UMC'"
+                    [required]="true"
+                    name="umc"
+                    [tooltipQuestionCircle]="true"
+                    [tooltipQuestionCircleText]="
+                      'Unidad de medida de comercialización'
+                    "
+                    [isDisabled]="esFormularioSoloLectura"
+                  ></app-catalogo-select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group">
+                  <div class="col-md-12 mt-2">
+                    <label class="control-label" for="descripcion"
+                      >Descripción<span
+                        [ngClass]="
+                          isValid(formMercancia, 'descripcion') ? 'require' : ''
+                        "
+                        >*</span
+                      >:</label
+                    >
+                    <textarea
+                      class="form-control"
+                      id="descripcion"
+                      cols="5000"
+                      rows="5"
+                      formControlName="descripcion"
+                      name="descripcion"
+                      [ngClass]="
+                        isValid(formMercancia, 'descripcion') ? 'required' : ''
+                      "
+                    ></textarea>
+                    @if (formMercancia.get('descripcion')?.errors &&
+                    (formMercancia.get('descripcion')?.touched) ||
+                    formMercancia.get('descripcion')?.dirty) { @if
+                    (formMercancia.get('descripcion')?.errors?.['required']) {
+                    <small class="mensaje-error"
+                      >Este campo es obligatorio</small
+                    >
+                    } @if
+                    (formMercancia.get('descripcion')?.errors?.['maxlength']) {
+                    <small class="mensaje-error"
+                      >Por favor, no escribas más de 1000 caracteres</small
+                    >
+                    } }
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="row my-5">
+            <div class="col-md-8">
+              <p>* Campos obligatorios</p>
+            </div>
+            <div class="col-md-4 d-flex justify-content-end">
+              <button
+                name="limpiar"
+                class="btn btn-primary me-2"
+                (click)="limpiarDatosFormulario()"
+              >
+                Limpiar
+              </button>
+              <button
+                name="cancelar"
+                class="btn btn btn-danger me-2"
+                data-bs-dismiss="modal"
+                #cerrarModal
+              >
+                Cancelar
+              </button>
+              <button
+                name="agregar"
+                class="btn btn-primary"
+                [disabled]="!formMercancia.valid"
+                (click)="
+                  almacenarDatoEnTabla(
+                    formMercancia.value.id !== null ? 'editar' : 'agregar'
+                  )
+                "
+              >
+                Agregar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

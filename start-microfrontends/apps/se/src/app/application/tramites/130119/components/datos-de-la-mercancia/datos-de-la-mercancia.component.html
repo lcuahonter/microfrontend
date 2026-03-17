@@ -1,0 +1,123 @@
+   <form [formGroup]="datosDeLaMercanciaForm">
+    <ng-titulo [titulo]="'Datos de la Mercancía'"></ng-titulo>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label for="descripcion" class="form-label">Descripción de la mercancía<span [ngClass]="{'text-danger': datosDeLaMercanciaForm.get('descripcion')?.invalid && (datosDeLaMercanciaForm.get('descripcion')?.touched || datosDeLaMercanciaForm.get('descripcion')?.dirty)}">*</span>:</label>
+                    <textarea id="descripcion" formControlName="descripcion" class="form-control  no-scroll"
+                        (change)="setValoresStore(datosDeLaMercanciaForm,'descripcion')" cols="60" rows="5" maxlength="1000"></textarea>
+                    @if (datosDeLaMercanciaForm.get('descripcion')?.invalid && datosDeLaMercanciaForm.get('descripcion')?.touched) {
+                        <div class="text-danger">
+                            @if (datosDeLaMercanciaForm.get('descripcion')?.errors?.['required']) {
+                                <small>Este campo es obligatorio</small>
+                            } @else if (datosDeLaMercanciaForm.get('descripcion')?.errors?.['pattern']) {
+                                <small>Por favor, corrija la descripción</small>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <app-catalogo-select (change)="onFraccionArancelariaChange()" [label]="'Fracción arancelaria'"
+                        [required]="true" formControlName="fraccionArancelaria" [catalogo]="opcionesFraccionArancelaria" [isDisabled]="esSoloLectura" >
+                    </app-catalogo-select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="umt" class="form-label">UMT: <span class="bi bi-question-circle-fill mx-2" tooltip="Unidad de medida de la tarifa (UMT)" placement="top"></span></label>
+                    <input type="text" id="umt" formControlName="umt" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="cantidad" class="form-label">Cantidad<span [ngClass]="{'text-danger': datosDeLaMercanciaForm.get('cantidad')?.invalid && (datosDeLaMercanciaForm.get('cantidad')?.touched || datosDeLaMercanciaForm.get('cantidad')?.dirty)}">*</span>:</label>
+                    <input type="text" id="cantidad" formControlName="cantidad" class="form-control"
+                        (change)="setValoresStore(datosDeLaMercanciaForm,'cantidad')" maxlength="17">
+                    @if (datosDeLaMercanciaForm.get('cantidad')?.invalid && datosDeLaMercanciaForm.get('cantidad')?.touched) {
+                        <div class="text-danger">
+                            @if (datosDeLaMercanciaForm.get('cantidad')?.errors?.['required']) {
+                                <small>Este campo es obligatorio</small>
+                            } @else if (datosDeLaMercanciaForm.get('cantidad')?.errors?.['soloNumerico']) {
+                                <small>Por favor, escribe un número entero válido</small>
+                            } @else if (datosDeLaMercanciaForm.get('cantidad')?.errors?.['formatoInvalido']) {
+                                <small>La cantidad no cumple el formato especificado. Formato es máximo 14 dígitos enteros y máximo 2 decimales</small>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="valorFacturaUSD" class="form-label">Valor factura USD<span [ngClass]="{'text-danger': datosDeLaMercanciaForm.get('valorFacturaUSD')?.invalid && (datosDeLaMercanciaForm.get('valorFacturaUSD')?.touched || datosDeLaMercanciaForm.get('valorFacturaUSD')?.dirty)}">*</span>: <span class="bi bi-question-circle-fill mx-2" tooltip="En caso de no contar con valor factura proporciona el valor estimado" placement="top"></span></label>
+                    
+                    <input type="text" id="valorFacturaUSD" formControlName="valorFacturaUSD" class="form-control"
+                        (change)="setValoresStore(datosDeLaMercanciaForm,'valorFacturaUSD')">
+                    @if (datosDeLaMercanciaForm.get('valorFacturaUSD')?.invalid && datosDeLaMercanciaForm.get('valorFacturaUSD')?.touched) {
+                        <div class="text-danger">
+                            @if (datosDeLaMercanciaForm.get('valorFacturaUSD')?.errors?.['required']) {
+                                <small>Este campo es obligatorio</small>
+                            } @else if (datosDeLaMercanciaForm.get('valorFacturaUSD')?.errors?.['pattern']) {
+                                <small>Por favor, escribe un número entero válido</small>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <app-catalogo-select [label]="'País origen'" [required]="true" [catalogo]="pasises"
+                        (change)="setValoresStore(datosDeLaMercanciaForm,'paisOrigen')"
+                        formControlName="paisOrigen" [isDisabled]="esSoloLectura"></app-catalogo-select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <app-catalogo-select [label]="'País exportador'" [required]="true" [catalogo]="pasises"
+                        formControlName="paisExportador"
+                        (change)="setValoresStore(datosDeLaMercanciaForm,'paisExportador')" [isDisabled]="esSoloLectura"></app-catalogo-select>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="numeroFactura" class="form-label">Número de factura<span [ngClass]="{'text-danger': datosDeLaMercanciaForm.get('numeroFactura')?.invalid && (datosDeLaMercanciaForm.get('numeroFactura')?.touched || datosDeLaMercanciaForm.get('numeroFactura')?.dirty)}">*</span>:</label>
+                    <input type="text" id="numeroFactura" formControlName="numeroFactura" class="form-control"
+                        (change)="setValoresStore(datosDeLaMercanciaForm,'numeroFactura')" maxlength="36">
+                    @if (datosDeLaMercanciaForm.get('numeroFactura')?.invalid && datosDeLaMercanciaForm.get('numeroFactura')?.touched) {
+                        <div class="text-danger">
+                            @if (datosDeLaMercanciaForm.get('numeroFactura')?.errors?.['required']) {
+                                <small>Este campo es obligatorio</small>
+                            } @else if (datosDeLaMercanciaForm.get('numeroFactura')?.errors?.['pattern']) {
+                                <small>Por favor, corrija el número de factura</small>
+                            } @else if (datosDeLaMercanciaForm.get('numeroFactura')?.errors?.['maxlength']) {
+                                <small>Por favor, no escribas más de 36 caractere</small>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                            <input-fecha [setFecha]="datosDeLaMercanciaForm.get('fechaExpedicionFactura')?.value" [datos]="fechaFinalInput"
+                                (valorCambiado)="cambioFechaFinal($event)" [isDisabled]="esSoloLectura"></input-fecha>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label for="observaciones" class="form-label">Observaciones:</label>
+                    <textarea class="form-control no-scroll" id="observaciones" formControlName="observaciones"
+                        (change)="setValoresStore(datosDeLaMercanciaForm,'observaciones')" cols="60" rows="5"></textarea>
+                </div>
+            </div>
+        </div>
+    </form>

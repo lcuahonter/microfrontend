@@ -1,0 +1,237 @@
+@if((trimateSeries26030.includes(tramite) && slectTramite)&&(guardarDatos.estadoDeTramite?.toLowerCase() ===
+"iniciado"|| guardarDatos.parameter.toLowerCase() === "registraropinion")) {
+<app-evaluar-26030 [guardarDatos]="guardarDatos" [tramite]="tramite" (cancelarEvento)="cancelar()"
+(refreshTabs)="getTabs()">
+</app-evaluar-26030>
+<div class="row mb-5 mt-5">
+    <app-reviewers-tabs [viewChild]="viewChild" [tramite]="tramite" [tabs]="tabs" [documentos]="documentosSolicitud"
+        [tareasSolicitud]="tareasSolicitud" [dictamenes]="dictamenesSolicitud" [envioDigital]="envioDigital"
+        [opinion]="opinion" [requerimientos]="requerimientosSolicitud" [acusesResolucion]="acusesResolucion"
+        [departamento]="'cofepris'" (viewChildcambioDePestana)="viewChildcambioDePestana($event)"
+        (tabSeleccionado)="onTabSeleccionado($event)">
+    </app-reviewers-tabs>
+
+</div>
+}
+@else if(slectTramite) {
+<div class="container">
+    <div class="row">
+        <div class="col-md-3 p-0" style="max-width: 150px;">
+            <app-menu-funcionario></app-menu-funcionario>
+        </div>
+        <div class="col-md-9 p-0" style="flex: 1;">
+            <div>
+                <div *ngIf="!firmar">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2 class="titulo mt-5 mb-5">Evaluar</h2>
+                            <p class="titulo mt-5 mb-5">Por favor seleccione que tipo de evaluación requiere generar.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mt-3 mb-3">
+                            <lib-encabezado-requerimiento [numFolioTramite]="guardarDatos.folioTramite"
+                                [tipoTramite]="guardarDatos.tipoDeTramite"></lib-encabezado-requerimiento>
+                        </div>
+                    </div>
+                    <div class="row margin-top">
+                        <ul class="nav nav-tabs justify-content-center">
+                            <ng-container *ngFor="let tabsEvaluacion of tabsOpcionEvaluacion">
+                                <li *ngIf="tieneOpcion(tabsEvaluacion.nombre)"
+                                    [ngClass]="indice === tabsEvaluacion.id ? 'active' : ''">
+                                    <a data-toggle="tab" (click)="seleccionaTab(tabsEvaluacion.id)"
+                                        (keydown.enter)="seleccionaTab(tabsEvaluacion.id)"
+                                        (keydown.space)="seleccionaTab(tabsEvaluacion.id)" role="button"
+                                        tabindex="{{tabsEvaluacion.id}}">
+                                        {{ tabsEvaluacion.nombre }}
+                                    </a>
+                                </li>
+                            </ng-container>
+                        </ul>
+                        <!-- @if (config.descargaSolicitud) {
+                    <ng-container>
+                        <div class="row">
+                        <div class="col-md-12 d-flex justify-content-center">
+                            <label class="form-label text-title" style="cursor: pointer; text-decoration: underline;"
+                                (click)="descargarSolicitud()">
+                            Descargar datos de la solicitud
+                            </label>
+                        </div>
+                        </div>
+                    </ng-container>
+                    } -->
+                        <ng-container>
+                            @switch (indice) {
+                            @case (1) {
+                            @if (tramite.toString().startsWith('2602') || series_26090.includes(tramite)) {
+                            <app-generar-dictamen [procedureId]="tramite" [dataIniciarDictamen]="dataIniciarDictamen"
+                                [opcionesSentidosDisponibles]="opcionesSentidosDispobles"
+                                (enviarEvento)="enviarEvento($event)" (controlDictaminador)="onDictaminador($event)">
+                            </app-generar-dictamen>
+                            }
+                            @else if(series_260514.includes(tramite)) {
+                            <app-generar-dictamen-26051 [mostrarTitulo]="true" [procedureId]="tramite"
+                                [dataIniciarDictamen]="dataIniciarDictamen"
+                                [opcionesSentidosDisponibles]="opcionesSentidosDispobles"
+                                (enviarEvento)="enviarEvento($event)" (controlDictaminador)="onDictaminador($event)">
+                            </app-generar-dictamen-26051>
+                            }
+                            @else if(tramite.toString().startsWith('26040')) {
+                            <app-generar-dictamen-2604 [procedureId]="tramite"
+                                [dataIniciarDictamen]="dataIniciarDictamen"
+                                [opcionesSentidosDisponibles]="opcionesSentidosDispobles"
+                                (enviarEvento)="enviarEvento($event)" (controlDictaminador)="onDictaminador($event)">
+                            </app-generar-dictamen-2604>
+                            }
+                            @else if(tramite.toString().startsWith('26050') || tramite.toString() === '260510' ||
+                            tramite.toString() === '260511') {
+                            <app-generar-dictamen-26050 [mostrarPaisFabrica]="generarDictamen26050Config.isPaisFabrica"
+                                [mostrarPaisElabora]="generarDictamen26050Config.isPaisElabora"
+                                [isFechaFinVigencia]="generarDictamen26050Config.isFechaFinVigencia"
+                                [mostrarTitulo]="true" [procedureId]="tramite"
+                                [dataIniciarDictamen]="dataIniciarDictamen"
+                                [opcionesSentidosDisponibles]="opcionesSentidosDispobles"
+                                (enviarEvento)="enviarEvento($event)" (controlDictaminador)="onDictaminador($event)">
+                            </app-generar-dictamen-26050>
+                            }
+                            @else if(tramite.toString().startsWith('26010')) {
+                            <app-generar-dictamen-2601 [procedureId]="tramite"
+                                [dataIniciarDictamen]="dataIniciarDictamen"
+                                [opcionesSentidosDisponibles]="opcionesSentidosDispobles"
+                                (enviarEvento)="enviarEvento($event)" (controlDictaminador)="onDictaminador($event)">
+                            </app-generar-dictamen-2601>
+                            }
+                            @else if(tramite.toString().startsWith('2606')) {
+                            <app-generar-dictamen-2606 [procedureId]="tramite"
+                                [dataIniciarDictamen]="dataIniciarDictamen"
+                                [opcionesSentidosDisponibles]="opcionesSentidosDispobles"
+                                (enviarEvento)="enviarEvento($event)" (controlDictaminador)="onDictaminador($event)">
+                            </app-generar-dictamen-2606>
+                            }
+                            @else if(series_2617.includes(tramite)) {
+                            <app-generar-dictamen-2617 [procedureId]="tramite" (enviarEvento)="enviarEvento($event)"
+                                (controlDictaminador)="onDictaminador($event)">
+                            </app-generar-dictamen-2617>
+                            }
+                            @else if(trimateSeries26030.includes(tramite)) {
+                            <app-generar-dictamen-26030 [procedureId]="tramite"
+                                [dataIniciarDictamen]="dataIniciarDictamen"
+                                [opcionesSentidosDisponibles]="opcionesSentidosDispobles"
+                                (enviarEvento)="enviarEvento($event)" (controlDictaminador)="onDictaminador($event)"
+                                [soloLectura]="false">
+                            </app-generar-dictamen-26030>
+                            }
+                            }
+                            @case (2) {
+                            <br>
+                            <ul class="nav nav-tabs">
+                                <li [ngClass]="indiceDictamen === 1 ? 'active' : ''">
+                                    <a data-toggle="tab" (click)="seleccionaTabRequerimiento(1)"
+                                        (keydown.enter)="seleccionaTabRequerimiento(1)"
+                                        (keydown.space)="seleccionaTabRequerimiento(1)" role="button"
+                                        tabindex="0">Capturar
+                                        requerimiento</a>
+                                </li>
+                                <li [ngClass]="indiceDictamen === 2 ? 'active' : ''">
+                                    <a data-toggle="tab" (click)="seleccionaTabRequerimiento(2)"
+                                        (keydown.enter)="seleccionaTabRequerimiento(2)"
+                                        (keydown.space)="seleccionaTabRequerimiento(2)" role="button"
+                                        tabindex="2">Seleccionar
+                                        documentos</a>
+                                </li>
+                            </ul>
+                            <ng-container>
+                                @switch (indiceDictamen) {
+                                @case (1) {
+                                <app-capturar-requerimiento #CapturarRequerimientoComponent
+                                    [isTipoRequerimiento]="requerimientoConfig.isTipoRequerimiento"
+                                    [isAreaSolicitante]="requerimientoConfig.isAreaSolicitante "
+                                    [isJustificacionRequerimiento]="requerimientoConfig.isJustificacionRequerimiento"
+                                    [isFundamento]="requerimientoConfig.isFundamento"
+                                    [isMotivo]="requerimientoConfig.isMotivo"
+                                    [isSiglasParticipanteExterno]="requerimientoConfig.isSiglasParticipanteExterno"
+                                    [iniciarResponse]="dataIniciarRequerimiento"
+                                    [isEvaluar]="observaciones_posiciones_series.includes(tramite) ? false : true"
+                                    [isAsignarAutorizador]="requerimientoConfig.isAsignarAutorizador"
+                                    (enviarEvento)="enviarEventoRequerimiento()" [procedureId]="tramite"
+                                    [triggerGuardar]="triggerGuardar"
+                                    (formChanged)="onFormRequerimientoChanged($event)">
+                                </app-capturar-requerimiento>
+
+                                }
+                                @case (2) {
+                                <app-solicitar-documentos #SolicitarDocumentosEvaluacionComponent [isEvaluar]="true"
+                                    [isSegundaTabla]="requerimientoConfig.isSegundaTabla"
+                                    [iniciarResponse]="dataIniciarRequerimiento"
+                                    [documentosEspecificos]="documentosEscpecificos"
+                                    [documentosIniciales]="listadoDocumentosGuardados"
+                                    (documentosActualizados)="onDocumentosActualizados($event)"
+                                    (documentosRequeridosActualizados)="onDocumentosRequeridosActualizados($event)"
+                                    [triggerGuardar]="triggerGuardar" [tramite]="tramite"
+                                    [idSolicitud]="guardarDatos.id_solicitud">
+                                </app-solicitar-documentos>
+                                }
+                                }
+                            </ng-container>
+                            @if (isModificarRequerimiento || clickType === 'guardar' || clickType === 'guardar-firmar')
+                            {
+                            <div class="d-flex justify-content-lg-end h3">
+                                <button type="button" class="btn btn-default ms-2"
+                                    (click)="vistaPreliminarRequerimiento()">Vista preliminar</button>
+                            </div>
+                            }
+                            <div class="d-flex justify-content-lg-end h3">
+                                <button type="button" class="btn btn-default ms-2"
+                                    (click)="onGuardarYFirmarClick('guardar-firmar')">Guardar y Firmar</button>
+                                <button class="btn  btn-primary ms-2" type="button"
+                                    (click)="onGuardarYFirmarClick('guardar')">Guardar</button>
+                                <button type="button" class="btn btn-default ms-2"
+                                    (click)="cancelar()">Cancelar</button>
+                            </div>
+                            }
+                            @case (3) {
+                            <app-solicitar-opinion></app-solicitar-opinion>
+                            }
+                            }
+                        </ng-container>
+                    </div>
+
+                </div>
+                <div *ngIf="firmar">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2 class="titulo mt-5 mb-5">Firmar</h2>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col-md-6">
+                            <firma-electronica [tipo]="''"
+                                [cadenaOriginal]="cadenaOriginal || cadenaOriginalRequerimiento"
+                                (datosFirma)="obtieneFirma($event)"></firma-electronica>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-5 mt-5">
+                    <app-reviewers-tabs [viewChild]="viewChild" [tramite]="tramite" [tabs]="tabs"
+                        [documentos]="documentosSolicitud" [tareasSolicitud]="tareasSolicitud"
+                        [dictamenes]="dictamenesSolicitud" [envioDigital]="envioDigital" [opinion]="opinion"
+                        [requerimientos]="requerimientosSolicitud" [acusesResolucion]="acusesResolucion"
+                        [departamento]="'cofepris'" [isIniciado]="isIniciado"
+                        (viewChildcambioDePestana)="viewChildcambioDePestana($event)"
+                        (tabSeleccionado)="onTabSeleccionado($event)">
+                    </app-reviewers-tabs>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}
+@if(nuevaNotificacion) {
+<section>
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+    </lib-notificaciones>
+</section>
+}

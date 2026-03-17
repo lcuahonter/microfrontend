@@ -1,0 +1,34 @@
+<div class="container">
+    <!-- Contenedor principal -->
+    <div class="row">
+        <!-- Fila principal -->
+        <ul class="nav nav-tabs">
+            <!-- Lista de pestañas de navegación -->
+            <li [ngClass]="indice === 1 ? 'active' : ''">
+                <!-- Pestaña activa si el índice es 1 -->
+                <a data-toggle="tab" tabindex="0" (keyup)="seleccionaTab(1)" (click)="seleccionaTab(1)">Solicitante</a>
+                <!-- Enlace para seleccionar la pestaña "Solicitante" -->
+            </li>
+            <li [ngClass]="indice === 2 ? 'active' : ''">
+                <!-- Pestaña activa si el índice es 2 -->
+                <a data-toggle="tab" tabindex="0" (keyup)="seleccionaTab(1)" (click)="seleccionaTab(2)">Expedición certificados</a>
+                <!-- Enlace para seleccionar la pestaña "Cancellation de autorizaciones" -->
+            </li>
+        </ul>
+        <ng-container>
+            <!-- Contenedor para el contenido dinámico según el índice -->
+            @switch (indice) {
+            @case (1) {
+                <!-- Caso 1: Mostrar componente "Solicitante" -->
+                <solicitante [tabindex]="1" #solicitante></solicitante>
+            }
+            @case (2) {
+                @if(esDatosRespuesta){
+                <!-- Caso 2: Mostrar componente "app-programa-a-cancelar" -->
+                <app-capturar-expedicion #capturarExpedicionComponent [readonly]="esFormularioSoloLectura"></app-capturar-expedicion>
+                }
+            }
+            }
+        </ng-container>
+    </div>
+</div>

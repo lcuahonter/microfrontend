@@ -1,0 +1,177 @@
+@if(slectTramite) {
+<div class="container mt-2">
+    <div>
+        <div class="row" *ngIf="!isFirma && !isDocumento">
+            <div class="col-md-12">
+                <h2 class="titulo mt-5 mb-5">Autorizar Requerimiento</h2>
+            </div>
+        </div>
+        <div *ngIf="isRequerimiento">
+            <div class="row">
+                <div class="col-md-12 mt-3 mb-3">
+                    <lib-encabezado-requerimiento [numFolioTramite]="guardarDatos.folioTramite"
+                        [tipoTramite]="guardarDatos.tipoDeTramite"></lib-encabezado-requerimiento>
+                </div>
+            </div>
+            <div class="row margin-top">
+                <ul class="nav nav-tabs">
+                    <li [ngClass]="indiceRequerimiento === 1 ? 'active' : ''">
+                        <a data-toggle="tab" (click)="seleccionaTabRequerimiento(1)"
+                            (keydown.enter)="seleccionaTabRequerimiento(1)"
+                            (keydown.space)="seleccionaTabRequerimiento(1)" role="button" tabindex="0">Requerimiento</a>
+                    </li>
+                    <li [ngClass]="indiceRequerimiento === 2 ? 'active' : ''">
+                        <a data-toggle="tab" (click)="seleccionaTabRequerimiento(2)"
+                            (keydown.enter)="seleccionaTabRequerimiento(2)"
+                            (keydown.space)="seleccionaTabRequerimiento(2)" role="button" tabindex="2">Documentos requeridos</a>
+                    </li>
+                </ul>
+                @switch (indiceRequerimiento) {
+                @case (1) {
+                   <app-capturar-requerimiento 
+                    [isTipoRequerimiento]="requerimientoConfig.isTipoRequerimiento" 
+                    [isAreaSolicitante]="requerimientoConfig.isAreaSolicitante "
+                    [isJustificacionRequerimiento]="requerimientoConfig.isJustificacionRequerimiento"
+                    [isFundamento]="requerimientoConfig.isFundamento"
+                    [iniciarResponse]="dataIniciarRequerimiento"
+                    [readonly]="true" 
+                    [isEvaluar]="false"
+                    [showTitle]="false"
+                    [isAsignarAutorizador]="false"
+                    [procedureId]="tramite"
+                    (formChanged)="onFormRequerimientoChanged($event)">
+                </app-capturar-requerimiento>
+                }
+                @case (2) {
+                <app-solicitar-documentos [isSegundaTabla]="requerimientoConfig.isSegundaTabla"
+                    [documentosEspecificos]="documentosEscpecificos"
+                    [documentosIniciales]="listadoDocumentosGuardados"
+                    [iniciarResponse]="dataIniciarRequerimiento"
+                    [enableMode]="false" [tramite]="tramite" [idSolicitud]="guardarDatos.id_solicitud"
+                ></app-solicitar-documentos>
+                }
+                }
+                 <!-- <div class="d-flex justify-content-lg-end h3">
+                    <button type="button" class="btn btn-default ms-2" (click)="vistaPreliminarAutorizarRequerimiento()">Vista preliminar</button>
+                </div> -->
+                <div class="d-flex justify-content-lg-end h3">
+                    @if(tramite === 80101) {
+                        <button class="btn  btn-primary ms-2" type="button" (click)="getObservar()">No Autorizar</button>
+                    }
+                    <button type="button" class="btn btn-default ms-2" (click)="mostrarFirmarAutorizarRequerimiento()">Autorizar</button>
+                    @if(tramite !== 80101) {
+                        <button class="btn  btn-primary ms-2" type="button" (click)="getObservar()">Observar</button>
+                    }
+                </div>
+            </div>
+
+        </div>
+        <div *ngIf="isFirma">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="titulo mt-5 mb-5">Firmar</h2>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <firma-electronica [tipo]="''" [cadenaOriginal]="cadenaOriginal || cadenaOriginalRequerimiento"
+                        (datosFirma)="obtieneFirma($event)"></firma-electronica>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="isObservacion">
+            <div class="row">
+                <div class="col-md-12 mt-3 mb-3">
+                    <lib-encabezado-requerimiento [numFolioTramite]="guardarDatos.folioTramite"
+                        [tipoTramite]="guardarDatos.tipoDeTramite"></lib-encabezado-requerimiento>
+                </div>
+            </div>
+            <h6 style="color:red">Datos requeridos*</h6>
+            <form [formGroup]="observacionForm">
+                <div class="row mb-5">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="observacion" class="form-label">Justificación de la observación*:</label>
+                            <textarea id="observacion" class="form-control text-height" formControlName="observacion" libUppercase
+                            [ngClass]="esValido('observacion') ? 'required' : ''"></textarea>
+                        </div>
+                        <div *ngIf="observacionForm.get('observacion')?.invalid &&
+                                    (observacionForm.get('observacion')?.touched ||
+                                    observacionForm.get('observacion')?.dirty)">
+                            <div class="mensaje-error" *ngIf="observacionForm.get('observacion')?.errors?.['required']">
+                                Este campo es obligatorio.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+             <div class="d-flex justify-content-lg-end h3">
+              <button class="btn  btn-primary ms-2" type="button" (click)="postGenerarObservacion()">Generar Observacion</button>
+              <button type="button" class="btn btn-default ms-2" (click)="getRegresar()">Regresar</button>
+            </div>
+        </div>
+
+        <div  *ngIf="isDocumento">
+            <div class="row margin-top">
+               <div class="row">
+                <div class="col-md-6">
+                    <h2 class="titulo mt-5 mb-5">Acuses y resoluciones</h2>
+                </div>
+                </div>
+            </div>
+            <div class="row mt-4 mb-4">
+                <div class="col-md 6">
+                    <h2 class="titulo mt-5 mb-5">Resolución(es)</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-container">
+                    <thead>
+                        <tr class="table-header">
+                        @for (item of encabezadoTablaResolucion; track $index) {
+                        <th>{{ item.valor }}</th>
+                        }
+                        <th class="center">Descargar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (row of datosTablaResolucion; track $index) {
+                        <tr class="table-row">
+                        @for (item of encabezadoTablaResolucion;  let i = $index; track $index) {
+                        <td>{{ row[item.key] }}</td>
+                        }
+                        <td class="center">
+                            <button type="button" class="btn btn-link me-2" id="descargarPdfResol" data-bs-toggle="button"
+                                data-bs-placement="top" title="Ver Documento" (click)="descargarPdfResolucion(row.urlPdf)">
+                                <i class="bi bi-download bi-c text-gray"></i>
+                            </button>
+                        </td>
+                        </tr>
+                        }
+                    </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-5 mt-5">
+            <app-reviewers-tabs [viewChild]="viewChild" [tramite]="tramite" [tabs]="tabs" [documentos]="documentosSolicitud"
+                [tareasSolicitud]="tareasSolicitud" [dictamenes]="dictamenesSolicitud"
+                [envioDigital]="envioDigital" [opinion]="opinion"
+                [requerimientos]="requerimientosSolicitud" [acusesResolucion]="acusesResolucion"
+                (viewChildcambioDePestana)="viewChildcambioDePestana($event)"
+                (tabSeleccionado)="onTabSeleccionado($event)">
+            </app-reviewers-tabs>
+         
+        </div>
+    </div>
+</div>
+}
+@if(nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+  </lib-notificaciones>
+</section>
+}

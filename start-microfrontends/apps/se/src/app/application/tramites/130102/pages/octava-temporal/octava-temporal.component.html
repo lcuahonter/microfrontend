@@ -1,0 +1,39 @@
+
+<div class="Page">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Solicitud importación regla octava temporal</h1>
+            </div>
+            @if (mostrarErrorFormularios) {
+                <div class="col-12">
+                    <ng-alert [CUSTOMECLASS]="'alert-danger'" [CONTENIDO]="registroAlert"></ng-alert>
+                  </div>
+              }
+        </div>
+            <div class="row">
+                <app-wizard [listaPasos]="pantallasPasos"></app-wizard>
+            </div>
+        <div class="row">
+            @switch (indice) {
+            @case (1) {
+           <app-datos (alertaEvento)="mostrarAlerta = $event"></app-datos>
+            }
+            @case (2) {
+                <app-paso-tres [procedure]="130102" [procedureUrl]="'octava-temporal/solicitante'"></app-paso-tres>
+                 }
+            }
+        </div>
+        <btn-continuar [dePadre]="consultaState.readonly ? false : true" [datos]="datosPasos" (continuarEvento)="ejecutarGuardadoSolicitud($event);"></btn-continuar>
+         @if (mostrarAlerta) {
+ <ng-alert [CONTENIDO]="avisoContrnido"></ng-alert>
+}
+    </div>
+
+</div>
+@if(nuevaNotificacion) {
+<section>
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+    </lib-notificaciones>
+</section>
+}

@@ -1,0 +1,56 @@
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="fw-bold my-5 titulo-tasks">Verificar dictamen</h2>        
+            <hr class="red">
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">            
+            <div class="form-group">            
+                <label for="folio" class="form-label text-title">Folio del trámite:</label>
+                <label for="folio" class="form-label text-title espacio-label">{{consultaState.folioTramite}}</label>
+            </div>
+            <div class="form-group">
+                <label for="tipoSolicitud" class="form-label text-title">Tipo de solicitud:</label>
+                <label for="folio" class="form-label text-title espacio-label">Permiso Sanitario Previo de Importación de Productos</label>
+            </div>
+        </div>
+    </div>
+    <br>
+    <form [formGroup]="frmObservacion">   
+    <div class="form-group">            
+        <div class="col-md-12 text-end">
+            <button type="button" class="btn btn-primary" [disabled]="frmObservacion.invalid" (click)="guardarObservacion()">Generar observación</button>
+            <button type="button" class="btn btn-default ms-3" (click)="regresar()">Regresar</button>
+        </div>            
+    </div>
+    <div class="form-group">            
+        <label for="folio" class="form-label text-title">*Justificación de la observación:</label>
+        <textarea id="observacion" formControlName="observacion" class="form-control"
+            placeholder="Fundamento del dictamen"  rows="8"></textarea>
+    </div>
+    <div *ngIf="frmObservacion.get('observacion')?.invalid 
+        && frmObservacion.get('observacion')?.touched" style="color:red;">
+        <div *ngIf="frmObservacion.get('observacion')?.errors?.['required']">
+            Este campo es obligatorio.
+        </div>
+        <div *ngIf="frmObservacion.get('observacion')?.errors?.['minlength']">
+            La observación debe tener al menos 4 caracteres.
+        </div>
+    </div>
+    <div class="row mb-5 mt-5">
+        <app-reviewers-tabs [viewChild]="viewChild" [tramite]="tramite"
+            (viewChildcambioDePestana)="viewChildcambioDePestana($event)"></app-reviewers-tabs>
+    </div>
+    </form>
+</div>
+@if(nuevaNotificacion) {
+<section>
+    <lib-notificaciones
+        [notificacionInput]="nuevaNotificacion"
+        (confirmacionModal)="confirmacionModal($event)"
+    >
+    </lib-notificaciones>
+</section>
+}

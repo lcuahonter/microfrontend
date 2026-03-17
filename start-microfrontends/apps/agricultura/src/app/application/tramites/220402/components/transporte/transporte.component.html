@@ -1,0 +1,30 @@
+<div class="container">
+  <ng-titulo titulo="Transporte" />
+
+  <form [formGroup]="transporteForm" (ngSubmit)="validarTransporteFormulario()">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <app-catalogo-select [catalogo]="tiposDocumentos.catalogos" formControlName="mediodeTransporte"
+            [label]="'Medio de transporte'" [required]="true"
+            (change)="setValoresStore(transporteForm,'mediodeTransporte', 'setMediodeTransporte')"
+            [isDisabled]="soloLectura"></app-catalogo-select>
+          <div *ngIf="transporteForm.get('mediodeTransporte')?.invalid && transporteForm.get('mediodeTransporte')?.touched" class="mensaje-error">
+            El medio de transporte es obligatorio.
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="identificacionDelTransporte">Identificación del transporte:</label>
+          <input class="form-control" maxlength="50" id="identificacionDelTransporte" formControlName="identificacionDelTransporte"
+            placeholder="" type="text"
+            (change)="setValoresStore(transporteForm,'identificacionDelTransporte', 'setIdentificacionDelTransporte')" />
+          <div *ngIf="transporteForm.get('identificacionDelTransporte')?.errors?.['maxlength'] && transporteForm.get('identificacionDelTransporte')?.touched" class="mensaje-error">
+            Máximo 50 caracteres permitidos.
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

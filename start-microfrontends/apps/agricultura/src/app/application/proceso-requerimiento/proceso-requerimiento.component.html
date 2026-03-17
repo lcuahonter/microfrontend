@@ -1,0 +1,127 @@
+@if(slectTramite) {
+
+<div class="page">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h1>Atender requerimiento</h1>
+      </div>
+      <app-wizard [listaPasos]="pasos"></app-wizard>
+    </div>
+    @if(!esAcuse && indice !== 3) {
+    <div class="mb-5">
+      <lib-encabezado-requerimiento
+        [numFolioTramite]="guardarDatos.folioTramite"
+        [tipoTramite]="guardarDatos.tipoDeTramite"
+      >
+      </lib-encabezado-requerimiento>
+    </div>
+    } @if(esAcuse) {
+    <lib-component-acuse
+      titulo="Acuse de recibo"
+      [txtAlerta]="txtAlerta"
+      [subtitulo]="subtitulo"
+      [folio]="idSolicitud.toString()"
+      [url]="url"
+      [datosTabla]="datosTablaAcuse"
+      [tramite]="tramite"
+    ></lib-component-acuse>
+    } @if(indice === 1 && iniciarAtenderRequerimientoData) {
+    <lib-requerimiento-informacion
+      [fechaRequerimiento]="
+        iniciarAtenderRequerimientoData.fecha_generacion || ''
+      "
+      [justificacionRequerimiento]="
+        iniciarAtenderRequerimientoData.justificacion || ''
+      "
+    ></lib-requerimiento-informacion>
+    } @if(indice === 2) {
+    <app-paso-carga-documento
+      [idTipoTRamite]="'requerimiento'"
+      [idSolicitud]="+guardarDatos.id_solicitud"
+      [cargaArchivosEvento]="cargarArchivosEvento"
+      (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+      (reenviarCargaRealizada)="cargaRealizada($event)"
+      (cargaEnProgreso)="onCargaEnProgreso($event)"
+      [documentosAdicionales]="iniciarAtenderRequerimientoData.documentos"
+    ></app-paso-carga-documento>
+    } @if(indice === 3 && esAcuse === false) {
+    <div class="row">
+      <div class="col-md-12">
+        <h2 class="titulo mt-5 mb-5">Firmar solicitud</h2>
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <firma-electronica
+          [tipo]="''"
+          [cadenaOriginal]="cadenaOriginal"
+          [cadenasOriginalesDocumentos]="cadenasOriginalesDocumentos"
+          (datosFirma)="obtieneFirma($event)"
+          (documentosFirmados)="onDocumentosFirmados($event)"
+        >
+        </firma-electronica>
+      </div>
+    </div>
+    } @if(indice !== 2 && esAcuse === false) {
+    <btn-continuar
+      [datos]="datosPasos"
+      (continuarEvento)="getValorIndice($event)"
+      (anteriorEvento)="getValorIndice($event)"
+    ></btn-continuar>
+    } @if(indice === 2) {
+    <div class="mt-5 mb-3 d-flex justify-content-end">
+      <button
+        type="button"
+        class="btn btn-default"
+        (click)="anterior()"
+        *ngIf="seccionCargarDocumentos"
+      >
+        Anterior
+      </button>
+
+      <button
+        class="btn btn-primary ms-3"
+        (click)="onContinuarClick()"
+        [disabled]="
+          (seccionCargarDocumentos && !activarBotonCargaArchivos) ||
+          (!seccionCargarDocumentos && cargaEnProgreso)
+        "
+      >
+        'Cargar archivos' 
+      </button>
+      <button
+        type="button"
+        class="btn btn-default"
+        (click)="continuar()"
+        *ngIf="seccionCargarDocumentos"
+      >
+        Continuar
+      </button>
+    </div>
+    } @if(!esAcuse && indice !== 3) {
+    <div class="row mt-5 mb-5">
+      <app-reviewers-tabs
+        [viewChild]="viewChild"
+        [tramite]="tramite"
+        [tabs]="tabs"
+        [documentos]="documentosSolicitud"
+        [dictamenes]="dictamenesSolicitud"
+        [requerimientos]="requerimientosSolicitud"
+        [opinion]="opinion"
+        [acusesResolucion]="acusesResolucion"
+        [tareasSolicitud]="tareasSolicitud"
+        [envioDigital]="envioDigital"
+        (viewChildcambioDePestana)="viewChildcambioDePestana($event)"
+        (tabSeleccionado)="onTabSeleccionado($event)"
+      ></app-reviewers-tabs>
+    </div>
+    }
+  </div>
+</div>
+} @if(nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+  </lib-notificaciones>
+</section>
+}

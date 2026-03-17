@@ -1,0 +1,60 @@
+<div class="container">
+  <ng-titulo titulo="Pago de derechos"></ng-titulo>
+
+  <form [formGroup]="pagoDerechos">
+    <div class="row">
+      <div class="col-md-8">
+        <label class="control-label" for="claveReferencia">Clave de referencia:</label>
+        <input class="form-control" id="claveReferencia" placeholder="Clave de referencia" type="text"
+          formControlName="claveReferencia">
+        <small class="text-danger"
+          *ngIf="pagoDerechos.get('claveReferencia')?.invalid && pagoDerechos.get('claveReferencia')?.touched">
+          La clave de referencia es obligatoria
+        </small>
+      </div>
+
+      <div class="col-md-8">
+        <label class="control-label" for="cadenaDependencia">Cadena de la dependencia:</label>
+        <input class="form-control" id="cadenaDependencia" placeholder="Cadena de la dependencia" type="text"
+          formControlName="cadenaDependencia">
+      </div>
+
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="catBancos" formControlName="banco" [label]="'Seleccione un valor'"
+          [required]="true" name="banco"></app-catalogo-select>
+      </div>
+
+      <div class="col-md-4">
+        <label class="control-label" for="llavePago">Llave de pago:</label>
+        <input class="form-control" id="llavePago" placeholder="Llave de pago" type="text" formControlName="llavePago">
+      </div>
+
+      <div class="col-md-4">
+        <label class="control-label" for="fechaPago">Fecha de pago:</label>
+        <input class="form-control" id="fechaPago" type="date" formControlName="fechaPago">
+        <small class="text-danger"
+          *ngIf="pagoDerechos.get('fechaPago')?.invalid && pagoDerechos.get('fechaPago')?.touched">
+          La fecha es obligatoria
+        </small>
+      </div>
+
+      <div class="col-md-4">
+        <label class="control-label" for="importePago">Importe de pago:</label>
+        <input class="form-control" id="importePago" type="number" step="0.01" min="0" placeholder="0.00"
+          formControlName="importePago">
+        <small class="text-danger"
+          *ngIf="pagoDerechos.get('importePago')?.invalid && pagoDerechos.get('importePago')?.touched">
+          El importe debe ser mayor a 0
+        </small>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="d-flex justify-content-lg-end">
+        <button type="button" class="btn btn-default ms-2" (click)="borrarDatosPago()">
+          Borrar datos del pago
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

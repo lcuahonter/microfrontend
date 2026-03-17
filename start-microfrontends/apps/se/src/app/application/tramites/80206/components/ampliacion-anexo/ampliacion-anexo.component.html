@@ -1,0 +1,197 @@
+<div class="container my-4">
+
+    <!-- Formulario dinamico de tipo de personas -->
+    <form [formGroup]="formularioInfoRegistro">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label clase-sin-ajuste">Selecciona la modalidad:</label>
+                    <input type="text" id="seleccionaLaModalidad" name="seleccionaLaModalidad" size="30" maxlength="13"
+                        class="form-control" formControlName="seleccionaLaModalidad" />
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label">Folio:</label>
+                    <input type="text" id="folio" name="folio" size="30" maxlength="13" class="form-control"
+                        formControlName="folio" />
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label">Año:</label>
+                    <input type="text" id="Ano" name="ano" size="30" maxlength="13" class="form-control"
+                        formControlName="ano" />
+                </div>
+            </div>
+
+        </div>
+    </form>
+    <div class="row">
+        <div class="col-md-12">
+            <h3>
+                <label for="solicitud.immex.serviciosImmex">Anexo I</label>
+            </h3>
+            <hr class="red" />
+        </div>
+    </div>
+    <ng-alert [CONTENIDO]="TEXTOS.ALERTA_TEXTOS"></ng-alert>
+    <div class="row mt-5">
+        <div class="col-md-6 mb-5 ">
+
+            <div class="form-group">
+
+                <label for="fraccionArancelaria">Fracción arancelaria:</label>
+                <input type="text" id="fraccionArancelaria" [(ngModel)]="fraccionArancelaria" [disabled]="esFormularioSoloLectura" name="fraccionArancelaria"
+                    class="form-control" (ngModelChange)="enCambioDeCampo('fraccionArancelaria', $event)" />
+
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-12 mb-5">
+                <div class="pull-right">
+                    <button name="eliminarServicio"  class="btn btn-danger" [disabled]="esFormularioSoloLectura" [attr.data-bs-toggle]="condicion ? 'modal' : null"
+                     [attr.data-bs-target]="condicion ? '#confirmarEliminar' : null" (click)="onIntentarEliminar()">
+                        Eliminar
+                    </button>
+                    <button name="agregarServicio" (click)="actualizaGridEmpresasNacionales()"
+                        class="btn btn-primary mx-2" [disabled]="esFormularioSoloLectura">
+                        Agregar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="my-4 mb-5">
+
+            <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccion" (filaSeleccionada)="seleccionarDomicilios($event)"
+            [disableSeleccionTablaRadio]="esFormularioSoloLectura" [configuracionTabla]="configuracionTablaServicio" [datos]="datosImmex"></app-tabla-dinamica>
+        </div>
+        <div class="col-md-6 mb-5 mt-5">
+
+            <div class="form-group">
+
+                <label for="importacion">Fracción arancelaria de la mercancia de importación:</label>
+                <input type="text" id="importacion" [(ngModel)]="importacion" [disabled]="esFormularioSoloLectura" name="importacion" class="form-control"
+                    (ngModelChange)="enCambioDeCampo('importacion', $event)" />
+
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-12 mb-5">
+                <div class="pull-right">
+                    <button name="eliminarServicio" (click)="eliminarImportacion()" class="btn btn-danger" [disabled]="esFormularioSoloLectura">
+                        Eliminar
+                    </button>
+                    <button name="agregarServicio" (click)="agregarImportacion()" class="btn btn-primary mx-2" [disabled]="esFormularioSoloLectura">
+                        Agregar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="my-4 mb-5">
+
+            <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccion" (filaSeleccionada)="seleccionarDomicilios($event)"
+               [disableSeleccionTablaRadio]="esFormularioSoloLectura" [configuracionTabla]="configuracionTablaImportacion" [datos]="datosImportacion"></app-tabla-dinamica>
+        </div>
+
+
+
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <h3>
+                    <label for="solicitud.immex.empresasNacionales">Modificar los valores de la fracción
+                        sensible</label>
+                </h3>
+                <hr class="red" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-1">
+                <div class="form-group">
+                    <label for="rfdecontri">Id</label>
+
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="fraccion">Fracción:</label>
+                    <input type="text" id="fraccion" [(ngModel)]="fraccion" name="fraccion" class="form-control"
+                        (ngModelChange)="enCambioDeCampo('fraccion', $event)" disabled />
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="cantidad">Cantidad:</label>
+                    <input type="text" id="cantidad" [(ngModel)]="cantidad" [disabled]="esFormularioSoloLectura" name="cantidad" class="form-control"
+                        (ngModelChange)="enCambioDeCampo('cantidad', $event)" />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="valor">Valor:</label>
+                    <input type="text" id="valor" [(ngModel)]="valor" [disabled]="esFormularioSoloLectura" name="valor" class="form-control"
+                        (ngModelChange)="enCambioDeCampo('valor', $event)" />
+                </div>
+            </div>
+        </div>
+
+        <div class="row my-4">
+            <div class="col-md-12">
+                <div class="pull-right">
+                    <button name="eliminar" class="btn btn-danger" [disabled]="esFormularioSoloLectura">
+                        Cancelar
+                    </button>
+                    <button name="agregar" class="btn btn-primary mx-2" [disabled]="esFormularioSoloLectura">
+                        Modificar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+    <div class="modal" tabindex="-1" [ngClass]="{'show': mostrarAlerta, 'custom-backdrop': mostrarAlerta}"
+        [ngStyle]="{'display': mostrarAlerta ? 'block' : 'none'}">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 350px;">
+            <div class="modal-content">
+                <div class="modal-header" style="height: 50px;">
+                </div>
+                <div class="modal-body">
+                    <p>{{ mensajeDeAlerta }}</p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-primary" (click)="aceptar()">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="confirmarEliminar" class="modal fade" tabindex="-1"
+  aria-labelledby="confirmarEliminarLabel" aria-hidden="true">
+  <div class="modal-dialog eliminar-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" aria-label="Close" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <label>Al eliminar el registro de fracción arancelaria, se eliminará toda la información asociada a Capacidad instalada, Proveedor cliente, Proyecto de exportación. ¿Está seguro que desea eliminar la(s) Fraccion(es) seleccionada(s)?</label>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="eliminarServiciosGrid()"
+          data-bs-dismiss="modal">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>

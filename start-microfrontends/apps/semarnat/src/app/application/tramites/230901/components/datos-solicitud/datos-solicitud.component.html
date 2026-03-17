@@ -1,0 +1,106 @@
+<div class="container">
+  <ng-titulo titulo="Datos de la solicitud" />
+  <form [formGroup]="formularioSolicitud">
+    <div class="row">
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="tiposMovimientos" formControlName="cve_clasificacion_regimen"
+          [label]="'Tipo de movimiento'" [required]="true" name="cve_clasificacion_regimen"
+          [isDisabled]="esFormularioSoloLectura()" (change)="habilitaTerceros()"
+          [markTouched]="cveClasificacionRegimen.touched"></app-catalogo-select>
+      </div>
+    </div>
+    @if (solicitudState().cve_clasificacion_regimen !== '') {
+    <ng-titulo titulo="Régimen" />
+    <div class="row">
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="tiposRegimen" formControlName="cve_regimen" [label]="'Tipo de régimen'"
+          [required]="true" name="cve_regimen" (change)="setTipoRegimen()" [isDisabled]="esFormularioSoloLectura()"
+          [markTouched]="tipoRegimen.touched"></app-catalogo-select>
+      </div>
+    </div>
+    <ng-titulo
+      [titulo]="solicitudState().cve_clasificacion_regimen === '01'? 'Aduana' : 'Aduanas de salida'"></ng-titulo>
+    <div class="row mt-3">
+      <div class="col-md-12 mt-3">
+        @if(solicitudState().cve_clasificacion_regimen === "01"){
+        <h5>Aduanas de entradas (Máximo 3 aduanas)</h5>
+        }
+        <crosslist #CrosslistComponentAduanas [fechas]="datosService.listaAduanasDescripcion()"
+          [fechasSeleccionadas]="listaSeleccionadaAduanas" [botones]="aduanasBotons" [label]="etiquetaAduanas"
+          [isDisabled]="esFormularioSoloLectura()" (fechasSeleccionadasChange)="obtieneClaveAduanas($event)"
+          [mostrarPaisesSeleccionados]="esFormularioSoloLectura()" [markTouched]="aduanasSeleccionadas.touched &&
+          aduanasSeleccionadas.invalid" [required]="true">
+        </crosslist>
+      </div>
+    </div>
+
+    <div class=" row mt-5">
+      <div class="col-md-6">
+        <label for="mercancia">Mercancía*:</label>
+      </div>
+      <div class="col-md-12">
+        <app-tabla-dinamica [configuracionTabla]="configuracionTablaMercancia" [datos]="solicitudState().mercancias"
+          [tipoSeleccionTabla]="tipoSeleccionTabla" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura()"
+          (listaDeFilaSeleccionada)="manejarFilaSeleccionada($event)"
+          [isInvalida]="datosTablaMercancia.touched && datosTablaMercancia.invalid">
+        </app-tabla-dinamica>
+      </div>
+
+      @if(!esFormularioSoloLectura()){
+      <nav aria-label="Page navigation example mt-3">
+        <ul class="pagination justify-content-center">
+          <li class="page-item"><a class="page-link" href="#">1</a></li>
+        </ul>
+      </nav>
+      <div class="row" style="padding-bottom: 20px; text-align: right">
+        <div>
+
+          <button type="button" class="btn btn-default me-2"
+            [disabled]="enableModificarBoton() || esFormularioSoloLectura()"
+            (click)="mostrarFormularioMercanciaModal('modificar')">
+            Modificar
+          </button>
+
+          <button type="button" class="btn me-2"
+            [ngClass]="{'btn-default': enableEliminarBoton(), 'btn-danger': !enableEliminarBoton()}"
+            [disabled]="enableEliminarBoton() || esFormularioSoloLectura()"
+            (click)="eliminarMercancia()">Eliminar</button>
+
+          <button type="button" class="btn btn-primary me-2" [disabled]="esFormularioSoloLectura()"
+            (click)="mostrarFormularioMercanciaModal('agregar')">
+            Agregar
+          </button>
+
+        </div>
+      </div>
+      }
+    </div>
+
+    <ng-titulo titulo="Finalidad del movimiento" />
+
+    <div class="row mt-3">
+      <div class="col-md-12 mt-3">
+        <crosslist #CrosslistComponentMovimientos [fechas]="datosService.listaMovimientosDescripcion()"
+          [fechasSeleccionadas]="listaMovimientosSeleccionados" [botones]="botonesMovimientos"
+          [label]="etiquetaMovimientos" [isDisabled]="esFormularioSoloLectura()"
+          (fechasSeleccionadasChange)="obtieneClaveMovimientos($event)"
+          [mostrarPaisesSeleccionados]="esFormularioSoloLectura()"
+          [markTouched]="movimientosSeleccionados.touched && movimientosSeleccionados.invalid" [required]="true">
+        </crosslist>
+      </div>
+    </div>
+    }
+  </form>
+</div>
+
+<ng-template #modalAgregarMercancias>
+  <mercancia (cancelEvent)="cancelarModal()" [listaFilaSeleccionadaMercancia]="listaFilaSeleccionadaMercancia">
+  </mercancia>
+</ng-template>
+
+<lib-notificaciones *ngIf="nuevaNotificacionEliminar" [notificacionInput]="nuevaNotificacionEliminar"
+  (confirmacionModal)="onEliminarConfirmacion($event)">
+</lib-notificaciones>
+
+<lib-notificaciones *ngIf="nuevaNotificacion" [notificacionInput]="nuevaNotificacion">
+</lib-notificaciones>

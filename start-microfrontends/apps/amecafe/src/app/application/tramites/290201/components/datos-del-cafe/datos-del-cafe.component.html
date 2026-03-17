@@ -1,0 +1,576 @@
+<div class="row">
+   <ng-titulo titulo="Lotes*:" />
+ </div>
+ <div class="col-md-12 scrollable-table-container">
+
+    <app-tabla-dinamica
+     (filaClic)="onRowClick($event)"
+    [configuracionTabla]="configuracionColumnasoli"
+    [tipoSeleccionTabla]="tipoSeleccionsoliMercancias"
+     [datos]="tableData"
+     (listaDeFilaSeleccionada)="onSelectedRowsChange($event)"
+     >
+</app-tabla-dinamica>
+<div *ngIf="(isSubmitted$ | async) && (!tableData || tableData.length === 0)" 
+     class="mensaje-error mt-1">
+    Debe agregar al menos un registro en la tabla.
+</div>
+
+ </div>
+ <div class="col-md-12 d-flex justify-content-end">
+   <div class="btn-group">
+      <button class="btn btn-danger me-2"
+      type="button" [disabled]="!selectedRows" (click)="onDeleteSelectedRows()">Borrar</button>
+<button class="btn btn-primary"
+      type="button" (click)="onAgregar()">Agregar</button>
+   </div>
+</div>
+<div class="modal fade" id="datosCafeModal" tabindex="-1" aria-labelledby="datosCafeModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-xl custom-modal-size">
+     <div class="modal-content">
+       <div class="modal-header">
+         <h5 class="modal-title" id="datosCafeModalLabel">Datos de Café</h5>
+         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+       </div>
+       <div class="modal-body">
+         <div class="container"  *ngIf="esFormularioVisible">
+            <form [formGroup]="dataCafeForm" (ngSubmit)="enEnviar()">
+             <ng-titulo titulo="Datos de café" />
+            <ng-container formGroupName="datosDelTramiteRealizar"> 
+         <div class="row">
+          <div class="col-md-4 mb-3">
+            <div class="form-group">
+                <app-catalogo-select
+                id="envasadoenData"
+                formControlName="envasadoen"
+                [catalogo]="envasadoenData.catalogos"
+                [label]="'Envasado en'"
+                [placeholder]="envasadoenData.primerOpcion"
+                [required]="true"
+                (change)="setValoresStore(datosDelTramiteRealizar,'envasadoen','setEnvasadoen')"
+                [disabled]="esFormularioSoloLectura"
+                 [markTouched]="markCatalogoTouched"
+                
+              ></app-catalogo-select>
+            </div>
+         </div>
+         <div class="col-md-8 mb-3">
+            <div class="form-group">
+                <app-catalogo-select
+                id="utilizoCafeComoData"
+                formControlName="utilizoCafeComo"
+                [catalogo]="utilizoCafeComoData.catalogos"
+                [label]="'¿Utilizó café como materia prima importada para elaborar este producto?'"
+                [placeholder]="utilizoCafeComoData.primerOpcion"
+                [required]="true"
+                (change)="setValoresStore(datosDelTramiteRealizar,'utilizoCafeComo','setUtilizoCafeComo')"
+                [disabled]="esFormularioSoloLectura"
+                  [markTouched]="markCatalogoTouched"
+              ></app-catalogo-select>
+            </div>
+         </div>
+       <div *ngIf="isUtilizoCafeComoSi">
+         <div class="col-md-6 mb-3">
+            <div class="form-group">
+               <label class="form-label" for="cantidadutilizada">Cantidad utilizada para elaborar este lote de importación:</label>
+               <input class="form-control"  placeholder="" type="text" formControlName="cantidadutilizada" id="cantidadutilizada"
+               (change)="setValoresStore(datosDelTramiteRealizar,'cantidadutilizada','setCantidadutilizada')"
+               [disabled]="esFormularioSoloLectura"
+               [ngClass]="{
+                'is-invalid': esCantidadUtilizadaExcede ||
+                  dataCafeForm.get('datosDelTramiteRealizar.cantidadutilizada')?.invalid &&
+                  dataCafeForm.get('datosDelTramiteRealizar.cantidadutilizada')?.touched
+              }"
+               >
+            @if(esCantidadUtilizadaExcede) {
+               <small class="text-danger">
+                   La Cantidad Utilizada debe ser menor a la cantidad Facturada
+               </small>
+            }
+             <small
+      *ngIf="
+        dataCafeForm.get('datosDelTramiteRealizar.cantidadutilizada')?.hasError('pattern') &&
+        dataCafeForm.get('datosDelTramiteRealizar.cantidadutilizada')?.touched
+      "
+      class="text-danger"
+    >
+      Por favor, sólo escribe dígitos
+    </small>
+    
+        
+            </div>
+         </div>
+         <div class="col-md-6 mb-3">
+            <div class="form-group">
+               <label class="form-label" for="numerodepedimento">Número de pedimento de importación*:</label>
+               <input class="form-control"  placeholder="" type="text" formControlName="numerodepedimento" id="numerodepedimento"
+               (change)="setValoresStore(datosDelTramiteRealizar,'numerodepedimento','setNumerodepedimento')"
+               [disabled]="esFormularioSoloLectura">
+            </div>
+         </div>
+         <div class="col-md-8 mb-3">
+            <div class="form-group">
+                <app-catalogo-select
+                id="paisdeimportacionData"
+                formControlName="paisdeimportacion"
+                [catalogo]="paisdeimportacionData.catalogos"
+                [label]="'País de importación'"
+                [placeholder]="paisdeimportacionData.primerOpcion"
+                [required]="true"
+                (change)="setValoresStore(datosDelTramiteRealizar,'paisdeimportacion','setPaisdeimportacion')"
+                [disabled]="esFormularioSoloLectura"
+                  [markTouched]="markCatalogoTouched"
+              ></app-catalogo-select>
+            </div>
+         </div>
+         <div class="col-md-4 mb-3">
+            <div class="form-group">
+                <app-catalogo-select
+                id="fraccionarancelariaData"
+                formControlName="fraccionarancelaria"
+                [catalogo]="fraccionarancelariaData.catalogos"
+                [label]="'Fracción arancelaria'"
+                [placeholder]="fraccionarancelariaData.primerOpcion"
+                [required]="true"
+                (change)="setValoresStore(datosDelTramiteRealizar,'fraccionarancelaria','setFraccionarancelaria')"
+                [disabled]="esFormularioSoloLectura"
+                [tooltipQuestionCircle]="true"
+                
+              ></app-catalogo-select>
+            </div>
+         </div>
+        </div>
+         <ng-titulo titulo="Factura y Cantidad" />
+         <div class="row">
+            <div class="col-md-4 mb-3">
+                <div class="form-group">
+                   <label class="form-label" for="cantidad">Cantidad*:</label>
+                   <input class="form-control" required="true" placeholder="" type="text" formControlName="cantidad" id="cantidad"
+                   (click)="validarFormaCafe()"
+                   (change)="setValoresStore(datosDelTramiteRealizar,'cantidad','setCantidad')"
+                   [disabled]="esFormularioSoloLectura"
+                   [ngClass]="{
+                    'is-invalid': isCantidadInvalid
+                  }">
+                 @if(isCantidadInvalid){
+                  @if(isCantidadPatternInvalid){
+                  <small class="text-danger">
+                  Por favor, sólo escribe dígitos
+                </small>
+              }
+                 }
+                  
+                </div>
+             </div>
+             <div class="col-md-4 mb-3">
+                <div class="form-group">
+                    <app-catalogo-select
+                    id="unidaddemedidaData"
+                    formControlName="unidaddemedida"
+                    [catalogo]="unidaddemedidaData.catalogos"
+                    [label]="'Unidad de medida'"
+                    [placeholder]="unidaddemedidaData.primerOpcion"
+                    [required]="true"
+                    (change)="setValoresStore(datosDelTramiteRealizar,'unidaddemedida','setUnidaddemedida')"
+                    [disabled]="esFormularioSoloLectura"
+                      [markTouched]="markCatalogoTouched"
+                  ></app-catalogo-select>
+                  
+                </div>
+               
+             </div>
+         </div>
+         <div class="row">
+            <div class="col-md-4 mb-3">
+                <div class="form-group">
+                   <label class="form-label" for="precioapplicable">Precio aplicable*:</label>
+                   <input class="form-control" required="true" placeholder="" type="text" formControlName="precioapplicable" id="precioapplicable"
+                   (change)="setValoresStore(datosDelTramiteRealizar,'precioapplicable','setPrecioapplicable')"
+                   [disabled]="esFormularioSoloLectura"
+                   [ngClass]="{
+                    'is-invalid': esPrecioAplicableInvalido
+                  }">
+                </div>
+      @if(esPrecioAplicableInvalido){
+        @if(isPrecioApplicablePatternInvalid){
+          <small class="text-danger">
+          Solo 7 enteros y hasta 3 Decimales
+         </small>
+        }
+      }
+             </div>
+             <div class="col-md-4 mb-3">
+                <div class="form-group">
+                    <app-catalogo-select
+                    id="dolarData"
+                    formControlName="dolar"
+                    [catalogo]="dolarData.catalogos"
+                    [label]="''"
+                    [placeholder]="dolarData.primerOpcion"
+                    [required]="true"
+                    (change)="setValoresStore(datosDelTramiteRealizar,'dolar','setDolar')"
+                    [disabled]="esFormularioSoloLectura"
+                      [markTouched]="markCatalogoTouched"
+                  ></app-catalogo-select>
+                </div>
+             </div>
+             <ng-titulo titulo="Marcas" />
+             <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="form-group">
+                       <label class="form-label" for="lote">Lote*:</label>
+                       <input class="form-control" required="true" placeholder="" type="text" formControlName="lote" id="lote"
+                       (click)="validarCicloCafetalero()"
+                       (change)="setValoresStore(datosDelTramiteRealizar,'lote','setLote')"
+                       [disabled]="esFormularioSoloLectura"
+                                      [ngClass]="{
+        'is-invalid': dataCafeForm.get('datosDelTramiteRealizar.lote')?.invalid &&
+                      dataCafeForm.get('datosDelTramiteRealizar.lote')?.touched
+      }">
+                       
+                       @if(isLoteInvalid){
+                        @if(isLotePatternInvalid){
+                          <small>
+                            Por favor, sólo escribe dígitos
+                         </small>
+                        }
+                       }
+                    </div>
+                 </div>
+                 <div class="col-md-8 mb-3">
+                    <div class="form-group">
+                       <label class="form-label" for="otrasmarcas">Otras marcás*:</label>
+                       <input class="form-control" required="true" placeholder="" type="text" formControlName="otrasmarcas" id="otrasmarcas"
+                       (change)="setValoresStore(datosDelTramiteRealizar,'otrasmarcas','setOtrasmarcas')"
+                       [disabled]="esFormularioSoloLectura"
+                         [ngClass]="{
+        'is-invalid': dataCafeForm.get('datosDelTramiteRealizar.otrasmarcas')?.invalid &&
+                      dataCafeForm.get('datosDelTramiteRealizar.otrasmarcas')?.touched
+      }">
+                       <small
+      *ngIf="
+        dataCafeForm.get('datosDelTramiteRealizar.otrasmarcas')?.hasError('pattern') &&
+        dataCafeForm.get('datosDelTramiteRealizar.otrasmarcas')?.touched
+      "
+      class="text-danger"
+    >
+      Por favor, sólo escribe dígitos
+    </small>
+    <small
+      *ngIf="
+        dataCafeForm.get('datosDelTramiteRealizar.otrasmarcas')?.hasError('required') &&
+        dataCafeForm.get('datosDelTramiteRealizar.otrasmarcas')?.touched
+      "
+      class="text-danger"
+    >
+      Este campo es obligatorio
+    </small>
+                    </div>
+                 </div>
+            </div>
+            <ng-titulo titulo="Características Especiales" />
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-group">
+                        <app-catalogo-select
+                        id="elcafeData"
+                        formControlName="elcafe"
+                        [catalogo]="elcafeData.catalogos"
+                        [label]="'¿El café tiene características especiales?'"
+                        [placeholder]="elcafeData.primerOpcion"
+                        [required]="true"
+                        (change)="setValoresStore(datosDelTramiteRealizar,'elcafe','setElcafe')"
+                        [disabled]="esFormularioSoloLectura"
+                          [markTouched]="markCatalogoTouched"
+                      ></app-catalogo-select>
+                    </div>
+                 </div>
+                 </div>
+                 <div class="row" *ngIf="isElCafeSi">
+                  <div class="col-md-12">
+                    <label class="form-label">Detalles Marca:</label>
+                
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="calidadEspecial"
+                        formControlName="calidadEspecial"
+                      />
+                      <label class="form-check-label" for="calidadEspecial">
+                        CAFÉ DE CALIDAD ESPECIAL/GOURMET
+                      </label>
+                    </div>
+                
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="cafePractices"
+                        formControlName="cafePractices"
+                      />
+                      <label class="form-check-label" for="cafePractices">
+                        CAFÉ PRACTICES
+                      </label>
+                    </div>
+                
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="avesMigratorias"
+                        formControlName="avesMigratorias"
+                      />
+                      <label class="form-check-label" for="avesMigratorias">
+                        CENTRO SMITHSONIANO DE AVES MIGRATORIAS
+                      </label>
+                    </div>
+                
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="codigoComunidad"
+                        formControlName="codigoComunidad"
+                      />
+                      <label class="form-check-label" for="codigoComunidad">
+                        CODIGO COMUN DE LA COMUNIDAD CAFETALERA
+                      </label>
+                    </div>
+                
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="comercioJusto"
+                        formControlName="comercioJusto"
+                      />
+                      <label class="form-check-label" for="comercioJusto">
+                        COMERCIO JUSTO (Fair Trade)
+                      </label>
+                    </div>
+                
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="euregap"
+                        formControlName="euregap"
+                      />
+                      <label class="form-check-label" for="euregap">
+                        EUREGAP
+                      </label>
+                    </div>
+                
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="otros"
+                        formControlName="otros"
+                      />
+                      <label class="form-check-label" for="otros">
+                        OTROS
+                      </label>
+                    </div>
+                
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="rainforestAlliance"
+                        formControlName="rainforestAlliance"
+                      />
+                      <label class="form-check-label" for="rainforestAlliance">
+                        RAINFOREST ALLIANCE
+                      </label>
+                    </div>
+                
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="sistemaQ"
+                        formControlName="sistemaQ"
+                      />
+                      <label class="form-check-label" for="sistemaQ">
+                        SISTEMA Q COFFEE
+                      </label>
+                    </div>
+                
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="tasqNespresso"
+                        formControlName="tasqNespresso"
+                      />
+                      <label class="form-check-label" for="tasqNespresso">
+                        TASQ NESPRESSO
+                      </label>
+                    </div>
+                
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="utzCertified"
+                        formControlName="utzCertified"
+                      />
+                      <label class="form-check-label" for="utzCertified">
+                        UTZ CERTIFIED
+                      </label>
+                    </div>
+                  </div>
+                  <div *ngIf="
+  dataCafeForm.get('datosDelTramiteRealizar')?.hasError('ningunaCaracteristicaSeleccionada') &&
+  dataCafeForm.get('datosDelTramiteRealizar')?.touched
+">
+  <small class="text-danger">
+   Este campo es obligatorio
+  </small>
+</div>
+                </div>
+           
+                <div class="row" *ngIf="dataCafeForm.get('datosDelTramiteRealizar.otros')?.value">
+                  <div class="col-md-6 mb-3">
+                  <label class="form-label" for="otrasCaracteristicas">Otras características*:</label>
+               <input class="form-control"  placeholder="" type="text" formControlName="otrasCaracteristicas" id="otrasCaracteristicas"
+               (change)="setValoresStore(datosDelTramiteRealizar,'otrasCaracteristicas','setOtrasCaracteristicas')"
+               [disabled]="esFormularioSoloLectura"
+               [ngClass]="{
+                'is-invalid': isOtrasCaracteristicasRequired
+              }"
+               >
+               @if(isOtrasCaracteristicasRequired){
+                <small class="text-danger">
+                  Este campo es obligatorio
+                        </small>
+               }
+     
+              </div>
+                </div>
+                 <div class="row">
+                     <div class="col-md-6 mb-3">
+                            <div class="form-group">
+                              
+                              <input-fecha
+                              formControlName="fechaexportacion"
+                              [datos]="fechaexportacion"
+                              [setFecha]="datosDelTramiteRealizar.get('fechaexportacion')?.value"
+                              (valorCambiado)="cambioFechaFinal($event)"
+                              (change)="setValoresStore(datosDelTramiteRealizar,'fechaexportacion','setFechaexportacion')"
+                              [disabled]="esFormularioSoloLectura"
+                              
+                            ></input-fecha>
+                              <small
+      *ngIf="
+        dataCafeForm.get('datosDelTramiteRealizar.fechaexportacion')?.hasError('required') &&
+        dataCafeForm.get('datosDelTramiteRealizar.fechaexportacion')?.touched
+      "
+      class="text-danger"
+    >
+      Este campo es obligatorio
+    </small>
+             
+                            </div>
+                      </div>
+                 </div>
+                 <ng-titulo titulo="Transbordo" />
+                 <div class="row">
+                   <!-- País de transbordo -->
+                   <div class="col-md-4 mb-3">
+                     <div class="form-group">
+                       <app-catalogo-select
+                         id="paisdetransbordoData"
+                         formControlName="paisdetransbordo"
+                         [catalogo]="paisdetransbordoData.catalogos"
+                         [label]="'País de transbordo'"
+                         [tooltipQuestionCircle]="true"
+                         [required]="true"
+                         [tooltipQuestionCircleText]="'Si no hay país de transbordo, no seleccione país'"
+                         [placeholder]="paisdetransbordoData.primerOpcion"
+                         (change)="setValoresStore(datosDelTramiteRealizar, 'paisdetransbordo', 'setPaisdetransbordo')"
+                         [disabled]="esFormularioSoloLectura"
+                           [markTouched]="markCatalogoTouched"
+                       ></app-catalogo-select>
+                     </div>
+                   </div>
+                 
+                   <!-- Medio de transporte -->
+                   <div class="col-md-4 mb-3">
+                     <div class="form-group">
+                       <app-catalogo-select
+                         id="mediodetransporteData"
+                         formControlName="mediodetransporte"
+                         [catalogo]="mediodetransporteData.catalogos"
+                         [label]="'Medio de transporte'"
+                         [placeholder]="mediodetransporteData.primerOpcion"
+                         [required]="true"
+                         (change)="setValoresStore(datosDelTramiteRealizar, 'mediodetransporte', 'setMediodetransporte')"
+                         [disabled]="esFormularioSoloLectura"
+                           [markTouched]="markCatalogoTouched"
+                       ></app-catalogo-select>
+                     </div>
+                   </div>
+                 
+                   <!-- Identificador del medio de transporte -->
+                   <div class="col-md-4 mb-3">
+                     <div class="form-group">
+                       <label class="form-label" for="Identificadordel" style="white-space: nowrap;">Identificador del medio de transporte*:</label>
+                       <input
+                         class="form-control"
+                         id="Identificadordel"
+                         formControlName="Identificadordel"
+                         (change)="setValoresStore(datosDelTramiteRealizar, 'Identificadordel', 'setIdentificadordel')"
+                         [disabled]="esFormularioSoloLectura"
+                         [ngClass]="{
+                          'is-invalid': isIdentificadorDelInvalid
+                        }"
+                       />
+                       @if(isIdentificadorDelInvalid){
+                        @if(isIdentificadorDelPatternInvalid){
+                          <small class="text-danger">
+                          Por favor, no escribas más de 5 caracteres
+                        </small>
+                        }
+                        
+                       }
+ 
+                     </div>
+                   </div>
+                 </div>
+                 <ng-titulo titulo="Observaciones" />
+                 <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="form-label" for="observaciones">Observaciones</label>
+                      <textarea class="form-control" id="observaciones" rows="2" height="50"
+                      placeholder="" style="height: 100px" formControlName="observaciones"
+                      (change)="setValoresStore(datosDelTramiteRealizar,'observaciones','setObservaciones')"
+                      [disabled]="esFormularioSoloLectura"></textarea>
+                      @if(isObservacionesMaxLengthExceeded){
+                        <small class="text-danger">
+                          Por favor, no escribas más de 250 caracteres.
+                        </small>
+                      }
+                      
+                    </div>
+              </div>
+         </div>
+     </div>  
+     <div class="col-md-12 d-flex justify-content-end">      
+      <div class="btn-group" style="margin-bottom: 1rem;"> 
+        <button class="btn btn-default me-2"
+              type="button" data-bs-dismiss="modal">Cancelar</button>
+              <button class="btn btn-primary me-2"
+              type="submit" >Agregar</button>
+          </div>    
+         </div>
+          </ng-container>
+        </form>
+       </div>
+      </div>
+   </div>
+    </div>
+ </div>
+             

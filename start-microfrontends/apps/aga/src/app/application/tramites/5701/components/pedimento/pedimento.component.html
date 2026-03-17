@@ -1,0 +1,219 @@
+<div class="row">
+  <div class="col-md-4">
+    <div class="form-group">
+      <label class="form-label" for="numeroPedimento"
+        >Número de pedimento:</label
+      >
+      <input
+        class="form-control"
+        id="numeroPedimento"
+        maxlength="7"
+        placeholder=""
+        type="text"
+        readonly="{{ editable ? null : true }}"
+        [formControl]="pedimentoForm"
+        [ngClass]="isValid ? 'required' : ''"
+        (input)="onInputChange()"
+        libSoloNumeros
+      />
+    </div>
+  </div>
+  <div class="col-md-4 d-flex align-items-end">
+    <button
+      type="button"
+      class="btn btn-primary"
+      id="btnAgregar"
+      [disabled]="!editable"
+      (click)="agregaPedimento()"
+    >
+      Agregar
+    </button>
+  </div>
+  
+</div>
+<div class="row mt-3">
+  <div class="col-md-12">
+    <div
+      *ngIf="shouldShowValidationMessage()"
+      class="mensaje-error"
+    >
+      {{ getMensajeValidacion() }}
+    </div>
+  </div>
+</div>
+
+<div class="row mt-3">
+  <div class="col-md-12">
+    <ngx-datatable
+      class="bootstrap ngx-bordered-table table-striped table-bordered tablaPedimento"
+      #tablaPedimentos
+      [columnMode]="ColumnMode.force"
+      [rows]="pedimentos"
+      [scrollbarH]="true"
+      [rowHeight]="'auto'"
+      [selected]="selected"
+      [selectionType]="SelectionType.checkbox"
+      [messages]="mensajes"
+      (select)="onSelect($event)"
+    >
+      <ngx-datatable-column
+        [width]="30"
+        [sortable]="false"
+        [canAutoResize]="false"
+        [draggable]="false"
+        [resizeable]="false"
+      >
+        <ng-template
+          ngx-datatable-header-template
+          let-allRowsSelected="allRowsSelected"
+          let-selectFn="selectFn"
+        >
+          <input
+            type="checkbox"
+            [checked]="allRowsSelected"
+            (change)="selectFn()"
+          />
+        </ng-template>
+        <ng-template
+          ngx-datatable-cell-template
+          let-value="value"
+          let-isSelected="isSelected"
+          let-onCheckboxChangeFn="onCheckboxChangeFn"
+        >
+          <input
+            type="checkbox"
+            [checked]="isSelected"
+            (change)="onCheckboxChangeFn($event)"
+          />
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column name="Patente" prop="patente">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ row.patente }}
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column name="Pedimento" prop="pedimento">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ row.pedimento }}
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column name="Aduana" prop="aduana">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ row.aduana }}
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column name="Tipo de pedimento" prop="descTipoPedimento">
+        <ng-template
+          ngx-datatable-cell-template
+          let-rowIndex="rowIndex"
+          let-value="value"
+          let-row="row"
+        >
+          @if (!editar[rowIndex + '-descTipoPedimento']) {
+          <span
+            title="Doble click para editar"
+            (dblclick)="editar[rowIndex + '-descTipoPedimento'] = true"
+          >
+            {{ value }}
+          </span>
+          } @if (editar[rowIndex + '-descTipoPedimento']) {
+          <select
+            (blur)="actualizarValor($event, 'descTipoPedimento', rowIndex)"
+            (change)="actualizarValor($event, 'descTipoPedimento', rowIndex)"
+            [value]="value"
+          >
+            <option value="0" disabled>Seleccione un tipo de pedimento</option>
+            <option
+              *ngFor="let tipo of tiposPedimento"
+              [value]="tipo.descripcion"
+            >
+              {{ tipo.descripcion }}
+            </option>
+          </select>
+          }
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column name="Número (s)" prop="numero">
+        <ng-template
+          ngx-datatable-cell-template
+          let-rowIndex="rowIndex"
+          let-valueNumero="value"
+          let-row="row"
+        >
+          @if (editar[rowIndex + '-numero']) {
+          <input
+            (blur)="actualizarValor($event, 'numero', rowIndex)"
+            type="text"
+            [value]="valueNumero"
+            maxlength="70"
+          />
+          } @else {
+          <span
+            title="Doble click para editar"
+            (dblclick)="editarCelda(rowIndex)"
+          >
+            {{ row.numero || '\u00A0\u00A0\u00A0\u00A0\u00A0' }}
+          </span>
+          }
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column name="Comprobante de valor" prop="comprobanteValor">
+        <ng-template
+          ngx-datatable-cell-template
+          let-rowIndex="rowIndex"
+          let-valueComprobanteValor="value"
+          let-row="row"
+        >
+          @if (editar[rowIndex + '-comprobanteValor']) {
+          <input
+            (blur)="actualizarValor($event, 'comprobanteValor', rowIndex)"
+            type="text"
+            [value]="valueComprobanteValor"
+            maxlength="70"
+          />
+          } @else {
+          <span
+            title="Doble click para editar"
+            (dblclick)="editarCelda(rowIndex)"
+          >
+            {{ row.comprobanteValor || '\u00A0\u00A0\u00A0\u00A0\u00A0' }}
+          </span>
+          }
+          
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column name=" Pedimento Validado" prop="pedimentoValidado">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ row.pedimentoValidado }}
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </div>
+</div>
+
+<div class="row mt-3">
+  <div class="col-md-12 d-flex justify-content-end">
+    <button
+      type="button"
+      class="btn btn-danger"
+      id="btnEliminar"
+      [disabled]="!editable"
+      (click)="abrirModalEliminar()"
+    >
+      Eliminar
+    </button>
+  </div>
+</div>
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+  </lib-notificaciones>
+</section>
+}

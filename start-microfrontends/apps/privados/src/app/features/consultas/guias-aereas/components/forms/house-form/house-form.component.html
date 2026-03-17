@@ -1,0 +1,60 @@
+<form [formGroup]="houseForm" autocomplete="off">
+  <div class="row mt-5">
+    <!-- First column -->
+    <div class="col-md-4 col-sm-4 col-xs-6">
+      <div class="form-group">
+        <date-picker
+          label="Fecha de transmisión:"
+          formControlName="broadcastDate"
+          [maxDate]="today"
+          [hasError]="formUtils.formHasError(houseForm, 'broadcastDateRequired', 'broadcastDate')">
+        </date-picker>
+        <small class="form-text form-text-error" *ngIf="formUtils.formHasError(houseForm, 'broadcastDateRequired', 'broadcastDate')">
+          {{ formUtils.getTextError(houseForm.errors) }}
+        </small>
+      </div>
+    </div>
+
+    <!-- Second column -->
+    <div class="col-md-4 col-sm-4 col-xs-6">
+      <div class="form-group">
+        <label
+          >House:
+        </label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="house"
+          [ngClass]="{
+            'form-control-error': formUtils.formHasError(houseForm, 'houseRequired', 'house')
+          }"
+        />
+        <small class="form-text form-text-error" *ngIf="formUtils.formHasError(houseForm, 'houseRequired', 'house')">
+          {{ formUtils.getTextError(houseForm.errors) }}
+        </small>
+      </div>
+    </div>
+
+    <!-- Third column -->
+    <div class="col-md-4 col-sm-4 col-xs-6">
+       <div class="form-group">
+        <label>Aduana/sección aduanera:</label>
+        <select
+          formControlName="custom"
+          class="form-control"
+          [ngClass]="{
+            'form-control-error': formUtils.formHasError(houseForm, 'customRequired', 'custom')
+          }"
+        >
+          <option value="">Seleccione un valor</option>
+          <option *ngFor="let custom of customs; let i = index" [value]="custom.idClave">
+            {{ custom.aduanaNombre }}
+          </option>
+        </select>
+        <small class="form-text form-text-error" *ngIf="formUtils.formHasError(houseForm, 'customRequired', 'custom')">
+          {{ formUtils.getTextError(houseForm.errors) }}
+        </small>
+      </div>
+    </div>
+  </div>
+</form>

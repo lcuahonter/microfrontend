@@ -1,0 +1,233 @@
+<div class="container">
+  <ng-titulo titulo="Terceros relacionados"></ng-titulo>
+
+  <div class="row mt-5">
+    <ng-alert
+      [CONTENIDO]="MENSAJE_TABLA_OBLIGATORIA"
+      [CUSTOMECLASS]="infoAlert"
+    ></ng-alert>
+  </div>
+  @if(habilitarProveedor===true ){
+  <div class="row mt-5"><h6>Proveedor*:</h6></div>
+  <div class="row mt-5">
+    <app-tabla-dinamica
+      [configuracionTabla]="configuracionTablaProveedor"
+      [datos]="proveedorTablaDatos"
+      [tipoSeleccionTabla]="tipoSeleccionTabla"
+       (listaDeFilaSeleccionada)="proveedorSeleccionadoDatos=$event"
+       [disableSeleccionTablaCheckBox]="formularioDeshabilitado ? true : false"
+       [isInvalida]="tableErrorMeassageDispalyProveedor && proveedorTablaDatos.length === 0"
+    ></app-tabla-dinamica>
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-md-12">
+      <div class="pull-right">
+        @if (proveedorTablaDatos.length > 0) {
+        <button
+          type="button"
+          name="modificarMercancias"
+          class="btn btn-default"
+           (click)="modificarProveedor()"
+         [disabled]="formularioDeshabilitado ? true : false"
+        >
+          Modificar
+        </button>
+        <button
+          type="button"
+          name="eliminarMercancias"
+          class="btn btn-danger ms-2"
+          (click)="eliminarProveedor()"
+         [disabled]="formularioDeshabilitado ? true : false"
+        >
+          Eliminar
+        </button>
+        }
+        <button
+          type="button"
+          name="agregarMercancias"
+          class="btn btn-primary ms-2"
+          data-bs-toggle="modal"
+          data-bs-target="#modalAgregarMercancias"
+          (click)="irAAcciones('../agregar-proveedor')"
+         [disabled]="formularioDeshabilitado ? true : false"
+        >
+          Agregar
+        </button>
+      </div>
+    </div>
+  </div>
+  } @if(habilitarFabricante === true){
+  <div class="row mt-5">
+    <div class="col-md-3">
+        <h6>Fabricante*
+          <span class="form-label">:</span>
+        </h6>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <app-tabla-dinamica
+      [configuracionTabla]="configuracionTablaFabricante"
+      [datos]="fabricanteTablaDatos"
+      [tipoSeleccionTabla]="tipoSeleccionTabla"
+      (listaDeFilaSeleccionada)="fabricanteSeleccionadoDatos=$event"
+       [disableSeleccionTablaCheckBox]="formularioDeshabilitado ? true : false"
+       [isInvalida]="tableErrorMeassageDispalyFabricante && fabricanteTablaDatos.length === 0"
+    ></app-tabla-dinamica>
+  </div>
+
+
+  <div class="row mt-5">
+    <div class="col-md-12">
+      <div class="pull-right">
+        @if (fabricanteTablaDatos.length > 0) {
+         <button
+          type="button"
+          name="modificarMercancias"
+          class="btn btn-default"
+         (click)="modificarFabricante()"
+         [disabled]="formularioDeshabilitado ? true : false"
+        >
+          Modificar
+        </button>
+        <button
+          type="button"
+          name="eliminarMercancias"
+          class="btn btn-danger ms-2"
+          (click)="eliminarFabricante()"
+         [disabled]="formularioDeshabilitado ? true : false"
+        >
+          Eliminar
+        </button>
+        }
+        <button
+          type="button"
+          name="agregarMercancias"
+          class="btn btn-primary ms-2"
+          data-bs-toggle="modal"
+          data-bs-target="#modalAgregarMercancias"
+          (click)="irAAcciones('../agregar-fabricante')"
+         [disabled]="formularioDeshabilitado ? true : false"
+        >
+          Agregar
+        </button>
+      </div>
+    </div>
+  </div>
+}
+@if(destinatarioFinal===true){ 
+  <div class="row mt-5">
+    <div class="col-md-3">
+      <h6> Destinatario (destino final)
+        <span class="form-label" *ngIf="esCampoRequerido('destinoFinal')">*</span>
+        <span class="form-label">:</span>
+      </h6>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <app-tabla-dinamica
+      [configuracionTabla]="configuracionTablaDestinatarioFinal"
+      [datos]="destinatarioFinalTablaDatos"
+      [tipoSeleccionTabla]="tipoSeleccionTabla"
+       (listaDeFilaSeleccionada)="destinatarioSeleccionadoDatos=$event"
+       [disableSeleccionTablaCheckBox]="formularioDeshabilitado ? true : false"
+    ></app-tabla-dinamica>
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-md-12">
+      <div class="pull-right">
+        @if (destinatarioFinalTablaDatos.length > 0) {
+        <button
+          type="button"
+          name="modificarMercancias"
+          class="btn btn-default"
+          (click)="modificarDestinatario()"
+         [disabled]="formularioDeshabilitado ? true : false"
+        >
+          Modificar
+        </button>
+        <button
+          type="button"
+          name="eliminarMercancias"
+          class="btn btn-danger ms-2"
+          (click)="eliminarDestinatario()"
+         [disabled]="formularioDeshabilitado ? true : false"
+        >
+          Eliminar
+        </button>
+        }
+        <button
+          type="button"
+          name="agregarMercancias"
+          class="btn btn-primary ms-2"
+          data-bs-toggle="modal"
+          data-bs-target="#modalAgregarMercancias"
+          (click)="irAAcciones('../agregar-destinatario-final')"
+         [disabled]="formularioDeshabilitado ? true : false"
+        >
+          Agregar
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+  @if(habilitarFacturador === true){
+  <div class="row mt-5"><h6>Facturador :</h6></div>
+  <div class="row mt-5">
+    <app-tabla-dinamica
+      [configuracionTabla]="configuracionTablaFacturador"
+      [datos]="facturadorTablaDatos"
+      [tipoSeleccionTabla]="tipoSeleccionTabla"
+       (listaDeFilaSeleccionada)="facturadorSeleccionadoDatos=$event"
+       [disableSeleccionTablaCheckBox]="formularioDeshabilitado ? true : false"
+    ></app-tabla-dinamica>
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-md-12">
+      <div class="pull-right">
+        @if (facturadorTablaDatos.length > 0) {
+        <button
+          type="button"
+          name="modificarMercancias"
+          class="btn btn-default"
+             (click)="modificarFacturador()"
+         [disabled]="formularioDeshabilitado ? true : false"
+        >
+          Modificar
+        </button>
+        <button
+          type="button"
+          name="eliminarMercancias"
+          class="btn btn-danger ms-2"
+          (click)="eliminarFacturador()"
+         [disabled]="formularioDeshabilitado ? true : false"
+        >
+          Eliminar
+        </button>
+        }
+        <button
+          type="button"
+          name="agregarMercancias"
+          class="btn btn-primary ms-2"
+          data-bs-toggle="modal"
+          data-bs-target="#modalAgregarMercancias"
+          (click)="irAAcciones('../agregar-facturador')"
+         [disabled]="formularioDeshabilitado ? true : false"
+        >
+          Agregar
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+  <div class="row mt-5"></div>
+</div>
+@if(mostrarAlerta){
+<section>
+  <lib-notificaciones [notificacionInput]="seleccionarFilaNotificacion" (confirmacionModal)="mostrarAlerta = false">
+  </lib-notificaciones>
+</section>
+}

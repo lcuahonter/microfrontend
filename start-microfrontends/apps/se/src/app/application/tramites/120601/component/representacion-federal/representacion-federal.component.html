@@ -1,0 +1,34 @@
+
+<div class="container">
+    <ng-titulo titulo="Representación federal" />
+    <form [formGroup]="formulario">
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="estado" [label]="'Estado'" [isDisabled]="esFormularioSoloLectura"
+                    name="estado" formControlName="estado" (change)="docSeleccionado($event)">
+                </app-catalogo-select>
+            </div>
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="representacion" [label]="'Representación federal'" [required]="true" [isDisabled]="esFormularioSoloLectura"
+                    name="representacion" formControlName="representacion"
+                    (change)="validarRepresentacionFederalIDCSECEROR_($event)">
+                </app-catalogo-select>
+                <div
+                *ngIf="esInvalido('representacion')"
+                    class="text-danger"
+                >
+                    <small
+                    *ngIf="formulario.get('representacion')?.errors?.['required']"
+                    >
+                    Este campo es obligatorio.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </form>
+    <h6>Selección de sucursal</h6>
+      <app-tabla-dinamica
+          [configuracionTabla]="configuracionTabla"
+          [datos]="datosSocios"
+        ></app-tabla-dinamica>
+</div>

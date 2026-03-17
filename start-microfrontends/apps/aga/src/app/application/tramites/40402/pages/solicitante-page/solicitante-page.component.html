@@ -1,0 +1,32 @@
+<div class="page">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        @if (indice === 1) {
+          <h2>Registro del código alfanumérico<br> armonizado del transportista</h2>
+        } @else if (indice === 2) {
+          <h2>Firmar</h2>
+          <div class="alert alert-info alert-dismissible fade show text-center firmar-alert" role="alert">La Solicitud ha quedado registrada con el número temporal 202772729. Éste no tiene validez legal y sirve solamente para efectos de identificar tu Solicitud. Un folio oficial le será asignado a la Sollicitud al momento en que ésta sea formada</div>
+        } 
+      </div>
+      <app-wizard [listaPasos]="pasos"></app-wizard>
+    </div>
+      <!-- Modal de notificación de error -->
+    <lib-notificaciones
+      *ngIf="btnContinuar"
+      [notificacionInput]="nuevaNotificacion"
+      (confirmacionModal)="btnContinuar = false"
+    ></lib-notificaciones>
+    <div class="row">
+      <!-- Muestra el componente correspondiente según el valor de `indice`. @switch: Directiva que permite cambiar entre diferentes componentes. @case: Caso específico que se muestra cuando `indice` tiene un valor determinado. --> 
+       @switch (indice) { 
+        @case (1) { 
+          <paso-uno #pasoUnoRef></paso-uno> 
+        } @case (2) { 
+          <app-paso-tres (anteriorPaso)="retrocederPaso()"></app-paso-tres> 
+        } 
+      }
+  <btn-continuar *ngIf="indice === 1" [datos]="datosPasos" (continuarEvento)="getValorIndice($event)"></btn-continuar>
+    </div>
+  </div>
+</div>

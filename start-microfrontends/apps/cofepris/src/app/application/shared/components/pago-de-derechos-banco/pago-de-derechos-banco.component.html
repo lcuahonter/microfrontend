@@ -1,0 +1,246 @@
+<div class="container form-container">
+  <ng-titulo titulo="Pago de derechos" />
+  <div>
+    <form [formGroup]="formSolicitud">
+      <ng-container formGroupName="datosImportadorExportador">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="claveDeReferencia"
+                >Clave de referencia*:</label
+              >
+              <input
+                class="form-control"
+                id="claveDeReferencia"
+                formControlName="claveDeReferencia"
+                type="text"
+                (change)="
+                  setValoresStore(
+                    datosImportadorExportador,
+                    'claveDeReferencia',
+                    'setClaveDeReferencia'
+                  )
+                "
+              />
+            </div>
+            @if (
+        formSolicitud.get('datosImportadorExportador.claveDeReferencia')?.invalid &&
+        formSolicitud.get('datosImportadorExportador.claveDeReferencia')?.touched
+      ) {
+        <span class="mensaje-error" *ngIf="formSolicitud.get('datosImportadorExportador.claveDeReferencia')?.errors?.['required']">
+          Todos los campos de pago son requeridos
+        </span>
+        <span class="mensaje-error" *ngIf="formSolicitud.get('datosImportadorExportador.claveDeReferencia')?.errors?.['maxlength']">
+          Máximo 9 caracteres permitidos
+        </span>
+        <span class="mensaje-error" *ngIf="formSolicitud.get('datosImportadorExportador.claveDeReferencia')?.errors?.['pattern']">
+        Todos los campos de pago son requeridos
+        </span>
+      }
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="cadenaDependencia"
+                >Cadena de la dependencia*:</label
+              >
+              <input
+                class="form-control"
+                id="cadenaDependencia"
+                formControlName="cadenaDependencia"
+                type="text"
+                (change)="
+                  setValoresStore(
+                    datosImportadorExportador,
+                    'cadenaDependencia',
+                    'setCadenaDependencia'
+                  )
+                "
+                appUppercase
+              />
+            </div>
+            @if (
+              formSolicitud.get('datosImportadorExportador.cadenaDependencia')?.invalid &&
+              formSolicitud.get('datosImportadorExportador.cadenaDependencia')?.touched
+            ) {
+              <span class="mensaje-error" *ngIf="formSolicitud.get('datosImportadorExportador.cadenaDependencia')?.errors?.['required']">
+                Todos los campos de pago son requeridos
+              </span>
+              <span class="mensaje-error" *ngIf="formSolicitud.get('datosImportadorExportador.cadenaDependencia')?.errors?.['maxlength']">
+                Máximo 14 caracteres permitidos
+              </span>
+            }
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+                <app-catalogo-select
+                  [catalogo]="bancoCatalogo.catalogos"
+                  formControlName="banco"
+                  [label]="'Banco*'"
+                  [isDisabled]="esFormularioSoloLectura"
+                  (change)="
+                    setValoresStore(
+                      datosImportadorExportador,
+                      'banco',
+                      'setBanco'
+                    )
+                  "
+                ></app-catalogo-select>
+              @if(
+                 formSolicitud.get('datosImportadorExportador.banco')?.invalid &&
+                 formSolicitud.get('datosImportadorExportador.banco')?.touched
+               ) {
+                 <span
+                   class="mensaje-error"
+                   *ngIf="formSolicitud.get('datosImportadorExportador.banco')?.errors?.['required']">
+                   Todos los campos de pago son requeridos
+                 </span>
+                 <span
+                   class="mensaje-error"
+                   *ngIf="formSolicitud.get('datosImportadorExportador.banco')?.errors?.['maxlength']">
+                   Existen datos incorrectos que no cumplen con el formato esperado
+                 </span>
+               }
+            </div>
+          </div>
+        </div>
+
+        <!-- Llave de pago, Fecha de pago, Importe de pago -->
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="llaveDePago"
+                >Llave de pago*:</label
+              >
+              <input
+                class="form-control"
+                id="llaveDePago"
+                formControlName="llaveDePago"
+                type="text"
+                maxlength="30"
+                (change)="
+                  setValoresStore(
+                    datosImportadorExportador,
+                    'llaveDePago',
+                    'setllaveDePago'
+                  )
+                "
+              />
+              @if (formSolicitud.get('datosImportadorExportador.llaveDePago')?.errors?.['pattern'] && (formSolicitud.get('datosImportadorExportador.llaveDePago')?.touched)) {
+              <div class="text-danger">
+                <small>Existen datos incorrectos que no cumplen con el formato esperado.</small>
+              </div>
+              }
+            </div>
+            @if (
+        formSolicitud.get('datosImportadorExportador.llaveDePago')?.invalid &&
+        formSolicitud.get('datosImportadorExportador.llaveDePago')?.touched
+      ) {
+        <span
+          class="mensaje-error"
+          *ngIf="formSolicitud.get('datosImportadorExportador.llaveDePago')?.errors?.['required']">
+          Todos los campos de pago son requeridos
+        </span>
+        <span
+          class="mensaje-error"
+          *ngIf="formSolicitud.get('datosImportadorExportador.llaveDePago')?.errors?.['maxlength']">
+          Existen datos incorrectos que no cumplen con el formato esperado
+        </span>
+      }
+          </div>
+       <div class="col-md-4">
+        <input-fecha
+        [datos]="INPUT_FECHA_CONFIG"
+        name="fechaPago"
+        (valorCambiado)="cambioFechaPago($event)"
+        [setFecha]="datosImportadorExportador.get('fechaPago')?.value"
+        [isDisabled]="esFormularioSoloLectura"
+        [soloDosPuntosRequeridos]="soloDosPuntosRequeridos"
+        formControlName="fechaPago"
+        ></input-fecha>
+
+        <div>
+          <small
+            *ngIf="
+              datosImportadorExportador.controls['fechaPago'].errors?.['required'] &&
+              (datosImportadorExportador.controls['fechaPago'].dirty ||
+                datosImportadorExportador.controls['fechaPago'].touched ||
+                isContinuarButtonClicked)
+            "
+            class="text-danger"
+          >
+            Todos los campos de pago son requeridos
+          </small>
+          <small
+            *ngIf="
+              datosImportadorExportador.controls['fechaPago'].errors?.['esFechaPasada'] &&
+              datosImportadorExportador.controls['fechaPago'].touched
+            "
+            class="text-danger"
+          >
+            La fecha de pago debe ser menor o igual a la fecha actual.
+          </small>
+          </div>
+      </div>
+
+ <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="importePago"
+                >Importe de pago*:</label
+              >
+              <input
+                class="form-control"
+                id="importePago"
+                formControlName="importePago"
+                type="text"
+                (change)="
+                  setValoresStore(
+                    datosImportadorExportador,
+                    'importePago',
+                    'setImportePago'
+                  )
+                "
+                appUppercase
+              />
+            </div>
+            @if (
+              formSolicitud.get('datosImportadorExportador.importePago')?.invalid &&
+              formSolicitud.get('datosImportadorExportador.importePago')?.touched
+            ) {
+              <span
+                class="mensaje-error"
+                *ngIf="formSolicitud.get('datosImportadorExportador.importePago')?.errors?.['required']">
+                Todos los campos de pago son requeridos
+              </span>
+        
+              <span
+                class="mensaje-error"
+                *ngIf="formSolicitud.get('datosImportadorExportador.importePago')?.errors?.['maxlength']">
+                Máximo 16 dígitos permitidos
+              </span>
+        
+              <span
+                class="mensaje-error"
+                *ngIf="formSolicitud.get('datosImportadorExportador.importePago')?.errors?.['invalidDecimal']">
+                Este campo solo permite números hasta dos decimales
+              </span>
+            }
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-12 text-right">
+            <div class="form-group">
+              <button
+                type="button"
+                class="btn btn-danger"
+                (click)="borrarDatos()"
+                [disabled]="esFormularioSoloLectura"
+              >
+                Borrar datos del pago
+              </button>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </form>
+  </div>
+</div>

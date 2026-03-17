@@ -1,0 +1,96 @@
+<div class="container">
+  <div>
+    <ng-titulo
+      titulo="Administrar residuos y/o materia prima a importar"
+    ></ng-titulo>
+
+    <div>
+      <h6>
+        Datos de los residuos y/o materia prima a importar
+        <span [ngClass]="{ 'has-error':!esFormularioSoloLectura && !esFormValido }">*</span><span>:</span>
+      </h6>
+
+      <app-tabla-dinamica
+        [styleCenter]="true"
+        [isInvalida]="!esFormularioSoloLectura && !esFormValido && mercancias.length === 0"
+        [configuracionTabla]="mercanciasTabla"
+        [datos]="mercancias"
+        [tipoSeleccionTabla]="tablaSeleccionCheckbox"
+        (listaDeFilaSeleccionada)="onSeleccionMultiple($event)"
+        [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+      ></app-tabla-dinamica>
+
+      <form [formGroup]="formularioParaRecuentoTotal">
+        <div class="text-center">
+          <div>
+            <input
+              class="label-width"
+              id="recuentoTotalDeFilas"
+              formControlName="recuentoTotalDeFilas"
+              aria-labelledby="recuentoTotalDeFilas"
+              [disabled]="true"
+            />
+          </div>
+        </div>
+
+        <div class="row mb-5">
+          <div class="col-md-6 col-sm-6"></div>
+          <div class="col-md-6 col-sm-6 text-end">
+            <div class="btn-group">
+              <button
+                class="btn btn-primary me-2"
+                type="button"
+                [disabled]="
+                  esFormularioSoloLectura || selectedMercancias.length === 0
+                "
+                (click)="borrarFilasSeleccionadas()"
+              >
+                Borrar
+              </button>
+              <button
+                class="btn btn-danger"
+                type="button"
+                [disabled]="esFormularioSoloLectura"
+                (click)="showForm()"
+              >
+                Agregar
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <app-catalogo-select
+              [markTouched]="isInvalid('aduana') ?? false"
+              [catalogo]="aduanas"
+              formControlName="aduana"
+              [label]="'Aduana de entrada'"
+              [required]="true"
+              (change)="setValoresStore(formularioParaRecuentoTotal, 'aduana')"
+              [isDisabled]="esFormularioSoloLectura"
+            ></app-catalogo-select>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Modal para agregar materias primas -->
+<div
+  class="modal fade"
+  id="modalBuscar"
+  tabindex="-1"
+  #modalBuscar
+  aria-labelledby="modalBuscar"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <app-datos-de-los-residuos
+          (cerrar)="cerrarModal()"
+        ></app-datos-de-los-residuos>
+      </div>
+    </div>
+  </div>
+</div>

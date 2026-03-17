@@ -1,0 +1,33 @@
+<div class="container" [formGroup]="maniobrasMercanciasForm">
+    <!--Datos del trámite-->
+    <ng-titulo titulo="Datos del trámite"></ng-titulo>
+
+    <ng-titulo titulo="Declaración de decir verdad"></ng-titulo>
+
+    @for (manifiesto of manifiestos; let i = $index; track i) {
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-info">
+                <div class="manifiesto-checkbox">
+                    <input class="form-check-input" type="checkbox" [id]="'manifiesto-' + i"
+                    [value]="manifiesto.declaracion.clave" [checked]="seleccionadaManifiesto.value[i]" class="required"
+                    [disabled]="formularioDeshabilitado" (change)="onManifiestoCheckboxCambiar($event, i)" />
+                </div>                
+                <div class="manifiesto-descripcion">
+                    <label for="manifiestosSeleccionados">*{{manifiesto.declaracion.descripcion}}</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <app-catalogo-select [catalogo]="aduana" [label]="'Aduana'"
+                    [required]="true" name="aduana" formControlName="aduana"
+                    [isDisabled]="formularioDeshabilitado" (change)="aduanaSeleccion()"></app-catalogo-select>
+            </div>
+        </div>
+    </div>
+</div>

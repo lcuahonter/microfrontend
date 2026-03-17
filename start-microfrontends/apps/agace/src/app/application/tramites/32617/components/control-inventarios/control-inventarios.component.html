@@ -1,0 +1,216 @@
+
+
+<div class="row">
+<div class="col-md-12">
+  <ng-titulo [titulo]="'Control Inventarios'"></ng-titulo>
+</div>
+
+
+<form [formGroup]="registroControlInventariosForm">
+  <div class="row mb-3">
+    <div class="col-md-12">
+      <label class="form-label text-left">Indique si cuenta con un sistema de control de inventarios, para el registro de sus operaciones de comercio exterior de conformidad con el artículo 59, fracción I de la Ley.</label>
+      <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'horizontal'"
+        formControlName="sistemaControlInventariosArt59" (valueChange)="onSeleccionfalsa($event)"
+        (change)="setValoresStore(registroControlInventariosForm,'sistemaControlInventariosArt59')"></app-input-radio>
+        <div *ngIf="esInvalido('sistemaControlInventariosArt59')" class="text-danger mt-3">
+               <b *ngIf="registroControlInventariosForm.controls['sistemaControlInventariosArt59'].hasError('required')">Respuesta Obligatoria</b>
+            </div>
+    </div>
+  </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="nombreSistema" class="form-label text-left"
+                ><span class="text-danger">*</span>Nombre del sistema o datos para su identificación</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="nombreSistema"
+                formControlName="nombreSistema"
+                [disabled]="!radioSeleccionado"
+              />
+              <div *ngIf="esInvalido('nombreSistema')" class="text-danger">
+                <small *ngIf="registroControlInventariosForm.controls['nombreSistema'].hasError('required')">Respuesta Obligatoria</small>
+            </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="lugarRadicacion" class="form-label"
+                >Lugar de radicación*:</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="lugarRadicacion"
+                formControlName="lugarRadicacion"
+                [disabled]="!radioSeleccionado"
+              />
+              <div *ngIf="esInvalido('lugarRadicacion')" class="text-danger">
+                <small *ngIf="registroControlInventariosForm.controls['lugarRadicacion'].hasError('required')">Respuesta Obligatoria</small>
+            </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-8">
+            <div class="form-group">
+              <lib-input-check
+              [id]="'cumpleAnexo24'"
+              [label]="cumpleAnexoNota"
+              [required]="false"
+              [reverse]="false"
+              formControlName="cumpleAnexo24"
+              [isDisabled]="esFormularioSoloLectura"
+              ></lib-input-check>
+            </div>
+          </div>
+        </div>
+        </form>
+        <footer class="d-flex py-5 justify-content-end">
+            <button type="button" class="btn btn-primary" [disabled]="esFormularioSoloLectura" (click)="enviarDialogData()">Agregar</button>
+          </footer>
+
+
+<div class="col-md-12 accordion-bar">
+      <div class="panel-group ficha-collapse" id="accordion">
+        <div class="panel panel-default">
+          <div class="panel-heading" (click)="!esFormularioSoloLectura && mostrar_colapsable()">
+            <p class="panel-title espacio-extra">
+              Control inventarios
+            </p>
+            <button type="button" class="collpase-button collapsed"
+            [ngClass]="{ 'expanded': colapsable,'collapsed': !colapsable}" [disabled]="esFormularioSoloLectura" >
+          </button>
+          </div>
+          @if(colapsable){
+          <div class="panel-collapse collapse in" [ngClass]="{ 'in': colapsable, 'collapse': !colapsable}" id="panel-01">
+            <div class="panel-body">
+              <div class="row">
+
+                
+<div class="col-md-12"> 
+    <app-tabla-dinamica
+    [tipoSeleccionTabla]="tipoSeleccionTabla"
+    [configuracionTabla]="ParqueVehicular"
+    [datos]="controlInventariosList"
+    (listaDeFilaSeleccionada)="manejarFilaSeleccionada($event)"
+    [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+  >
+  </app-tabla-dinamica>
+</div>
+                  </div>
+               </div>
+            </div>
+            }
+         </div>
+      </div>
+   </div>
+  <div class="d-flex justify-content-end">
+    <div class="d-flex flex-row flex-wrap gap-3">
+        <button class="btn btn-primary" [ngClass]="{'btn-secondary': !enableEliminarBoton}"
+        (click)="confirmEliminarEmpleadoItem()" [disabled]="esFormularioSoloLectura">Eliminar</button>
+        <button class="btn btn-primary" [ngClass]="{'btn-secondary': !enableEliminarBoton}" (click)="modificarItemEmpleado()" [disabled]="esFormularioSoloLectura">Modificar</button>
+    </div>
+  </div>
+
+  <div class="d-flex">
+    <h5>Deberá anexar un archivo con el reporte de saldos de mercancía de importación temporal o de mercancías objeto de operaciones de comercio exterior, de un periodo de un mes, que se encuentre dentro de los tres meses anteriores a la presentación de la solicitud.</h5>
+  </div>
+</div>
+<div
+  class="modal fade custom-backdrop"
+  id="registroControlInventariosModalForm"
+  tabindex="-1"
+  aria-labelledby="registroControlInventariosModalFormLabel"
+  aria-hidden="true"
+  data-bs-backdrop="static"
+  #registroControlInventariosModalForm
+>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title mt-0">Modificar inventario</h4>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="modificarRegistroControlInventariosForm">
+        <div class="row mb-3"></div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="modificarNombreSistema" class="form-label text-left"
+                ><span class="text-danger">*</span> Nombre del sistema o datos para su identificación</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="modificarNombreSistema"
+                formControlName="modificarNombreSistema"
+              />
+              
+            </div>
+          </div>
+          <div class="col-md-6">
+                        
+            <div class="form-group">
+              <lib-input-check
+              [id]="'modificarCumpleAnexo24'"
+              [label]="cumpleAnexoNota"
+              [required]="false"
+              [reverse]="false"
+              formControlName="modificarCumpleAnexo24"
+              [isDisabled]="esFormularioSoloLectura"
+              ></lib-input-check>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="modificarLugarRadicacion" class="form-label"
+                ><span class="text-danger">*</span> Lugar de radicación</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="modificarLugarRadicacion"
+                formControlName="modificarLugarRadicacion"
+              />
+             
+            </div>
+          </div>
+        </div>
+        </form>
+        <footer class="footer d-flex py-5 gap-3 justify-content-end">
+            <button type="button" class="btn btn-primary" (click)="modalCancelar()">Cancelar</button>
+            <button type="button" class="btn btn-primary" (click)="modificarEnviarDialogData()">Aceptar</button>
+          </footer>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <lib-notificaciones 
+  *ngIf="esHabilitarElDialogo"
+  [notificacionInput]="nuevaNotificacion" 
+  (confirmacionModal)="cerrarModal()">
+</lib-notificaciones>
+
+  
+  <lib-notificaciones 
+  *ngIf="confirmEliminarPopupAbierto"
+  [notificacionInput]="nuevaNotificacion" 
+  (confirmacionModal)="eliminarEmpleadoItem($event)">
+</lib-notificaciones>
+
+<lib-notificaciones 
+  *ngIf="multipleSeleccionPopupAbierto"
+  [notificacionInput]="nuevaNotificacion" 
+  (confirmacionModal)="cerrarMultipleSeleccionPopup()">
+</lib-notificaciones>

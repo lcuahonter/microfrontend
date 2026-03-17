@@ -1,0 +1,130 @@
+<div class="container form-container">
+  <ng-titulo titulo="Representante Legal" />
+  <form [formGroup]="representante">
+    
+    <ng-container>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="representanteRegistro">Registro Federal de Contribuyentes*:</label>
+            <input
+              class="form-control"
+              id="representanteRegistro"
+              formControlName="representanteRegistro"
+              type="text"
+              (change)="setValoresStore(representante, 'representanteRegistro')"
+            />
+          </div>
+          @if (
+          representante.get('representanteRegistro')?.touched &&
+          representante.get('representanteRegistro')?.hasError('required')
+          ) {
+          <div class="mensaje-error">Este campo es obligatorio.</div>
+          }
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="representanteRfc">RFC</label>
+            <input
+              class="form-control"
+              id="representanteRfc"
+              formControlName="representanteRfc"
+              type="text"
+              (change)="setValoresStore(representante, 'representanteRfc')"
+            />
+          </div>
+        </div>
+        <div class="col-md-4 mt-4">
+            <div class="btn-group">
+                <button class="btn btn-default" type="button" (click)="botonBuscar()" [disabled]="esFormularioSoloLectura">
+                    Buscar
+                </button>
+            </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="representanteNombre">Nombre</label>
+            <input
+              class="form-control"
+              id="representanteNombre"
+              formControlName="representanteNombre"
+              type="text"
+              (change)="setValoresStore(representante, 'representanteNombre')"
+            />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="representanteApellidoPaterno">Apellido Paterno</label>
+            <input
+              class="form-control"
+              id="representanteApellidoPaterno"
+              formControlName="representanteApellidoPaterno"
+              type="text"
+              (change)="setValoresStore(representante, 'representanteApellidoPaterno')"
+            />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="representanteApellidoMaterno">Apellido Materno</label>
+            <input
+              class="form-control"
+              id="representanteApellidoMaterno"
+              formControlName="representanteApellidoMaterno"
+              type="text"
+              (change)="setValoresStore(representante, 'representanteApellidoMaterno')"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="representanteTelefono">Teléfono</label>
+            <input
+              class="form-control"
+              id="representanteTelefono"
+              formControlName="representanteTelefono"
+              type="text"
+              (change)="setValoresStore(representante, 'representanteTelefono')"
+            />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="representanteCorreo">Correo Electrónico</label>
+            <input
+              class="form-control"
+              id="representanteCorreo"
+              formControlName="representanteCorreo"
+              type="text"
+              (change)="setValoresStore(representante, 'representanteCorreo')"
+            />
+          </div>
+        </div>
+      </div>
+       <div class="row" *ngIf="mostrarError">
+            <div class="col-md-12 text-danger mt-3">
+                <b>Debe agregar un Representante Legal</b>
+              
+            </div>
+          </div>
+    </ng-container>
+  </form>
+</div>
+
+
+<lib-notificaciones
+  *ngIf="tieneValorRfc"
+  [notificacionInput]="nuevaNotificacion"
+  (confirmacionModal)="botonBuscar()"
+>
+</lib-notificaciones>

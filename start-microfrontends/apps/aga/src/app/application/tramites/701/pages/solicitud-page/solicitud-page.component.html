@@ -1,0 +1,89 @@
+@if(!isAcuseVisible){
+<div class="page">
+  <div class="container">
+
+    <div class="row">
+      @if (indice !== 4 && mostrarTituloCarga) {
+      <div class="col-md-6">
+        <h1>Cargar archivos</h1>
+      </div>
+    }
+      @if(indice === 4){
+       <div class="col-md-6">
+        <h1>Firmar</h1>
+      </div>
+      }
+      @if (indice === 2 &&  mostrarMensaje) {
+      <div class="alert alert-info alert-dismissible fade show text-center firmar-alert" style="color:#3c763d"
+        role="alert">
+        La solicitud ha quedado registrada con el número temporal
+        <span>{{ idSolicitud }}</span>. Éste no tiene validez legal y sirve solamente para efectos de identificar
+        tu solicitud.
+        Un folio oficial le será asignado a la solicitud al momento en que ésta sea firmada.
+      </div>
+      }
+      @if (indice === 2 && esValido) {
+      <ng-alert [CONTENIDO]="ALERTA" [CUSTOMECLASS]="infoError"></ng-alert>
+      }
+      <app-wizard [listaPasos]="pasos"></app-wizard>
+    </div>
+
+    <div class="row">
+      @switch (indice) {
+      @case (1) {
+      <paso-uno [rfcSolicitante]="this.rfcValor"></paso-uno>
+      }
+      @case (2) {
+      <paso-dos 
+        [rfcSolicitante]="this.rfcValor" 
+        (tiposDocumentoChange)="onTiposDocumentoChange($event)" 
+        (mostrarTituloCarga)="cambiarTituloCarga($event)"
+        (mostrarError)="mostrarAlerta($event)"
+        (limpiarError)="limpiarAlerta()">>
+      </paso-dos>
+      }
+      @case (3) {
+      <app-paso-tres [idTipoTRamite]="'701'" [datosUsuario]="datosUsuario"
+        [idSolicitud]="solicitudState.idSolicitud!.toString()" [cargaArchivosEvento]="cargarArchivosEvento"
+        (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)" (reenviarCargaRealizada)="cargaRealizada($event)"
+        (cargaEnProgresoChange)="onCargaEnProgresoPadre($event)"></app-paso-tres>
+      }
+      @case (4) {
+      <paso-cuatro [idSolicitud]="idSolicitud" [procedure]="701" [procedureUrl]="'solicitud'"
+        (acuseGenerado)="onAcuseGenerado($event)"></paso-cuatro>
+      }
+      }
+
+      @if (indice !== 3) {
+        <btn-continuar
+          [datos]="datosPasos"
+          (continuarEvento)="getValorIndice($event)"
+          (anteriorEvento)="getValorIndice($event)">
+        </btn-continuar>
+      }
+      @if (indice === 3) {
+      <div class="mt-5 mb-3 d-flex justify-content-end">
+        <button type="button" class="btn btn-default" (click)="anterior()">
+          Anterior
+        </button>
+
+        <button class="btn btn-primary ms-3" (click)="
+              seccionCargarDocumentos ? onClickCargaArchivos() : siguiente()
+            "
+          [disabled]="(seccionCargarDocumentos && !activarBotonCargaArchivos) || (!seccionCargarDocumentos && cargaEnProgreso)">
+          {{ seccionCargarDocumentos ? 'Cargar archivos' : 'Continuar' }}
+        </button>
+      </div>
+      }
+      @if (indice === 1) {
+        <ng-alert [CONTENIDO]="TEXTOS" [CUSTOMECLASS]="infoAlert"></ng-alert>
+      }
+    </div>
+  </div>
+</div>
+}
+
+@if (isAcuseVisible) {
+<lib-component-acuse titulo="Acuse de recibo" [txtAlerta]="txtAlerta" [subtitulo]="subtitulo"
+  [idSolicitud]="idSolicitud" [procedure]="701"></lib-component-acuse>
+}

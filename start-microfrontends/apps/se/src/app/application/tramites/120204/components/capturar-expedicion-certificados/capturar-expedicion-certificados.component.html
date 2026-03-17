@@ -1,0 +1,209 @@
+<!-- 
+  Componente: capturarExpedicionCertificados.component.html
+  Descripción: Este componente permite capturar información relacionada con la expedición de certificados, incluyendo detalles de licitaciones, representación federal, distribución de saldo, y otros datos relevantes.
+
+  Estructura:
+  - Contenedor principal: Contiene toda la estructura del componente.
+  - Licitaciones disponibles: Muestra una tabla dinámica con las licitaciones disponibles.
+  - Paginación: Navegación para cambiar entre páginas de la tabla.
+  - Representación federal: Formulario para seleccionar la entidad federativa y la representación federal.
+  - Detalle de la licitación y monto adjudicado: Formulario que muestra información detallada de la licitación seleccionada.
+  - Distribución de saldo: Formulario para gestionar el saldo disponible, monto a expedir y total a expedir.
+
+  Elementos destacados:
+  - app-tabla-dinamica: Componente reutilizable para mostrar tablas dinámicas.
+  - app-catalogo-select: Componente reutilizable para desplegar catálogos en formato de lista desplegable.
+  - Formularios reactivos: Utiliza [formGroup] para manejar los datos de los formularios.
+  - Botones de acción: Incluye botones para agregar y eliminar montos, así como para continuar con el proceso.
+
+  Notas:
+  - Algunos elementos están comentados, como la sección de "Nota: Campos obligatorios".
+  - Se incluye un TODO para agregar el componente de aviso de privacidad.
+-->
+<div class="container">
+  <div>
+      <h6 class="custom-disponibles">Licitaciones disponibles</h6>
+      <app-tabla-dinamica [configuracionTabla]="configTableArray" [datos]="datos" (filaClic)="onRowClick($event)"></app-tabla-dinamica>
+      <div class="col-md-12">
+        <!-- Navegación para la paginación -->
+        <nav aria-label="Page navigation example">
+          <ul class="pagination d-flex justify-content-center">
+              <!-- Elementos de paginación (actualmente comentados) -->
+              <li class="page-item"><a class="page-link" href="#">1</a></li>
+          </ul>
+        </nav>
+      </div>
+    <div *ngIf="mostrarSeccionDetalle">
+      <!-- Representación federal  -->
+      <div class="container">
+        <ng-titulo titulo="Representación federal" />
+        <form [formGroup]="formulario">
+          <div class="row">
+            <div class="col-md-4">
+              <app-catalogo-select [catalogo]="entidadFederativaOptions.catalogos" formControlName="entidadFederativa" [label]="'Entidad federativa'" [required]="true" name="federalent" id="entidadFederativa" (change)="onCambiarEntiadFederative()" [isDisabled]="esFormularioSoloLectura" [placeholder]="'Seleccione una opción'" [markTouched]="validationAttempted" (selectionChange)="onChangeEntidad($event)"></app-catalogo-select>
+            </div>
+            <div class="col-md-4">
+              <app-catalogo-select [catalogo]="representacionFederalOptions.catalogos"  formControlName="representacionFederal" [label]="'Representación federal'"
+              [required]="true" name="representfederal" id="representacionFederal" (change)="onCambiarRepresentacionFederal()" 
+[isDisabled]="esFormularioSoloLectura" [placeholder]="'Seleccione una opción'" [markTouched]="validationAttempted"></app-catalogo-select>
+            </div>
+          </div>
+          </form>
+      </div>
+      <!-- Detalle de la licitación y monto adjudicado  -->
+      <div class="container">
+        <ng-titulo titulo="Detalle de la licitación y monto adjudicado" />
+          <form [formGroup]="detalledelaLicitacionForm">
+          <div class="row">
+              <div class="col-md-4">
+                  <label class="form-label" for="numeraDelicitacion">Número de licitación:</label>
+                  <input type="text" class="form-control" id="numeraDelicitacion" formControlName="numeraDelicitacion" size="30">
+              </div>
+              <div class="col-md-4">
+                  <label class="form-label" for="fechaDelEventoDelicitacion">Fecha de evento <span class="bi bi-question-circle-fill fs-4 m-1"
+              title="Fecha de evento de la licitación publica" 
+              data-bs-toggle="tooltip"></span>: </label>
+                  <input type="text" class="form-control" id="fechaDelEventoDelicitacion" formControlName="fechaDelEventoDelicitacion" size="30">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="descripcionDelProducto">Descripción del producto:</label>
+                <input type="text" class="form-control" id="descripcionDelProducto" formControlName="descripcionDelProducto" size="30">
+            </div>
+            </div>
+             <div class="row">
+              <div class="col-md-8">
+                <label class="form-label" for="unidadMedidaTarifaria">Unidad de medida tarifaria o comercialización:</label>
+                <input type="text" class="form-control" id="unidadMedidaTarifaria" formControlName="unidadMedidaTarifaria" size="30">
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label" for="montoAdjudicado">Monto adjudicado: </label>
+                <input type="text" class="form-control" id="montoAdjudicado" formControlName="montoAdjudicado" size="30">
+              </div>
+             </div>
+
+              <div class="row">
+              <div class="col-md-4">
+                  <label class="form-label" for="regimenAduanero">Régimen aduanero:</label>
+                  <input type="text" class="form-control" id="regimenAduanero" formControlName="regimenAduanero" size="30">
+              </div>
+              <div class="col-md-4">
+                  <label class="form-label" for="fraccionArancelaria">Fracción o fracciones arancelarias:</label>
+                  <input type="text" class="form-control" id="fraccionArancelaria" formControlName="fraccionArancelaria" size="30">
+              </div>
+             </div>
+
+             <div class="row">
+              <div class="col-md-4">
+                  <label class="form-label" for="fechaInicioVigenciaCupo">Fecha de inicio de vigencia del cupo:</label>
+                  <input type="text" class="form-control" id="fechaInicioVigenciaCupo" formControlName="fechaInicioVigenciaCupo" size="30">
+              </div>
+              <div class="col-md-4">
+                  <label class="form-label" for="fechaFinVigenciaCupo">Fecha de fin de vigencia del cupo:</label>
+                  <input type="text" class="form-control" id="fechaFinVigenciaCupo" formControlName="fechaFinVigenciaCupo" size="30">
+              </div>
+             </div>
+
+              <div class="row">
+              <div class="col-md-12">
+                  <label class="form-label" for="observaciones">Observaciones:</label>
+                  <textarea class="form-control custom-textarea-observaciones" id="observaciones" formControlName="observaciones"></textarea>
+              </div>
+              </div>
+
+                <div class="row">
+              <div class="col-md-12">
+                  <label class="form-label" for="bloqueComercial">Bloque comercial:</label>
+                <input type="text" class="form-control" id="bloqueComercial" formControlName="bloqueComercial" size="30">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <label class="form-label" for="paises">Países:</label>
+              <textarea class="form-control custom-textarea-observaciones" id="paises" formControlName="paises" rows="3"></textarea>
+          </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="container">
+        <ng-titulo titulo="Distribución de saldo" />
+        <form [formGroup]="distribucionSaldoForm">
+          <div class="row">
+            <div class="col-md-4">
+              <label class="form-label" for="montoDisponible">Monto disponible: </label>
+              <input type="text" class="form-control" id="montoDisponible" formControlName="montoDisponible">
+              <span>(Caja)</span>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="montoAExpedir">Monto a expedir<span
+                [ngClass]="{'text-danger': distribucionSaldoForm.get('montoAExpedir')?.invalid && (distribucionSaldoForm.get('montoAExpedir')?.touched || validationAttempted) || montoExcedeDisponibleError}">*</span>: </label>
+              <input type="text" class="form-control" id="montoAExpedir" formControlName="montoAExpedir" [ngClass]="{
+                  'required': isInvalid('montoAExpedir') || (distribucionSaldoForm.get('montoAExpedir')?.invalid && validationAttempted),
+                  'is-invalid': montoExcedeDisponibleError
+                }" (change)="onCambiarMontoAExpedir()">
+                @if
+                (distribucionSaldoForm.get('montoAExpedir')?.errors?.['required'] && (distribucionSaldoForm.get('montoAExpedir')?.touched || distribucionSaldoForm.get('montoAExpedir')?.dirty || validationAttempted)) {
+                <small class="mensaje-error">Este campo es obligatorio</small>
+                }
+                @if(montoExcedeDisponibleError) {
+                  <div class="col-md-12">
+                    <span class="mensaje-error">La cantidad solicitada a expedir no debe ser mayor al saldo disponible.</span>
+                  </div>
+                }
+            </div>
+            <div class="col-md-4 text-end">
+        <button type="button" name="" id="" class="mid btn btn-primary custom-agregar-monto" (click)="AgregarMontoExpedir()" [disabled]="esFormularioSoloLectura">
+            Agregar
+            </button>
+            </div>
+            </div>
+          <div class="row mt-5">
+            <div class="col-md-12">
+              <app-tabla-dinamica
+                [configuracionTabla]="configuracionParaEncabezadoDeTabla"
+                [datos]="cuerpoTabla"
+                [tipoSeleccionTabla]="tipoSeleccionTabla"
+                [disableSeleccionTablaCheckBox]="formularioDeshabilitado"
+                (listaDeFilaSeleccionada)="valorDeAlternancia($event)"
+              ></app-tabla-dinamica>
+            </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                  <div class="form-check monto-a-expedir">
+                    <lib-input-check [id]="'montoAExpedirCheck'" [label]="'Monto a expedir'" [required]="false"
+                      formControlName="montoAExpedirCheck" (change)="onCambiarMontoAExpedirCheck()">
+                  </lib-input-check>
+                </div>
+              </div>
+              <div class="text-end">
+                <button type="button" name="" class="mid btn btn-danger custom-agregar-monto custom-mid-eliminar" 
+                        [disabled]="esFormularioSoloLectura || selectedMonto.length === 0"
+                        (click)="eliminar()">
+                  Eliminar seleccionado
+                </button>
+            </div>
+            </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <label class="form-label" for="totalAExpedir">Total a expedir: </label>
+              <input type="text" class="form-control" id="totalAExpedir" formControlName="totalAExpedir">
+              <span>(Caja)</span>
+            </div>
+          </div>
+      </form>     
+      </div>
+  </div>
+</div>
+</div>
+@if (nuevaNotificacion) {
+  <section>
+    <lib-notificaciones 
+      [notificacionInput]="nuevaNotificacion"
+      (confirmacionModal)="onConfirmacionEliminacion($event)">
+    </lib-notificaciones>
+  </section>
+}

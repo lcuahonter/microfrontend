@@ -1,0 +1,92 @@
+<!-- <div class="container">
+  <div class="row">
+    <ul class="nav nav-tabs">
+      <li [ngClass]="indice === 1 ? 'active' : ''">
+        <a
+          data-toggle="tab"
+          (click)="seleccionaTab(1)"
+          (keydown.enter)="seleccionaTab(1)"
+          (keydown.space)="seleccionaTab(1)"
+          role="button"
+          tabindex="0"
+          >Solicitante</a
+        >
+      </li>
+      <li [ngClass]="indice === 2 ? 'active' : ''">
+        <a
+          data-toggle="tab"
+          (click)="seleccionaTab(2)"
+          (keydown.enter)="seleccionaTab(2)"
+          (keydown.space)="seleccionaTab(2)"
+          role="button"
+          tabindex="2"
+          >Anexo I</a
+        >
+
+      </li>
+      <li [ngClass]="indice === 3? 'active' : ''">
+        <a
+          data-toggle="tab"
+          (click)="seleccionaTab(3)"
+          (keydown.enter)="seleccionaTab(3)"
+          (keydown.space)="seleccionaTab(3)"
+          role="button"
+          tabindex="3"
+          >3 R's</a
+        >
+        
+      </li>
+    </ul>
+    <ng-container>
+      @switch (indice) { @case (1) {
+      <solicitante [tabindex]="1"></solicitante>
+      } @case (2) {
+        @if(esDatosRespuesta){
+      <app-ampliacion-servicios [tabindex]="2" [esFormularioSoloLectura]="esFormularioSoloLectura"></app-ampliacion-servicios>
+      } }
+      @case (3) {
+        @if(esDatosRespuesta){
+        <app-ampliacion-3rs [tabindex]="3" [esFormularioSoloLectura]="esFormularioSoloLectura"></app-ampliacion-3rs>
+        }}
+    }
+    </ng-container>
+  </div>
+</div> -->
+<div class="container">
+  <div class="row">
+    <ul class="nav nav-tabs">
+      <li *ngFor="let tab of seccionesDeLaSolicitud" [ngClass]="indice === tab.index ? 'active' : ''">
+        <a [class.active]="indice === tab.index"
+          (click)="seleccionaTab(tab.index)"
+          (keydown.enter)="seleccionaTab(tab.index)"
+          (keydown.space)="seleccionaTab(tab.index)"
+          role="button"
+          [attr.tabindex]="tab.index"
+          data-toggle="tab">
+          {{ tab.title }}
+        </a>
+      </li>
+    </ul>
+
+    <ng-container>
+      <solicitante #solicitanteRef [hidden]="indice !== 1" [tabindex]="1"></solicitante>
+
+      @if(esDatosRespuesta){
+      <app-ampliacion-servicios #ampliacionServiciosRef 
+        [hidden]="indice !== 2" 
+        [tabindex]="2" 
+        [esFormularioSoloLectura]="esFormularioSoloLectura">
+      </app-ampliacion-servicios>
+      }
+
+      @if(esDatosRespuesta){
+      <app-ampliacion-3rs #ampliacion3RsRef 
+        [hidden]="indice !== 3" 
+        [tabindex]="3" 
+        [esFormularioSoloLectura]="esFormularioSoloLectura">
+      </app-ampliacion-3rs>
+      }
+    </ng-container>
+
+  </div>
+</div>

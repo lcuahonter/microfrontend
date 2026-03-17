@@ -1,0 +1,37 @@
+<form [formGroup]="registroForm" (ngSubmit)="validarDestinatarioFormulario()">
+  <div class="container">
+    <div class="row">
+      <ul class="nav nav-tabs">
+        <li [ngClass]="indice === 1 ? 'active' : ''">
+          <a data-toggle="tab" (click)="seleccionaTab(1)" (keydown.enter)="seleccionaTab(1)" (keydown.space)="seleccionaTab(1)" role="button" tabindex="0">Solicitante</a>
+        </li>
+        <li [ngClass]="indice === 2 ? 'active' : ''">
+          <a data-toggle="tab" (click)="seleccionaTab(2)" (keydown.enter)="seleccionaTab(2)" (keydown.space)="seleccionaTab(2)" role="button" tabindex="2">Aviso Único de Renovación</a>
+        </li>
+      </ul>
+      <ng-container> 
+        @switch (indice) { 
+          @case (1) { 
+            <solicitante [tabindex]="1"></solicitante>
+
+            <ng-titulo titulo="Aviso de renovación u homologación" />
+
+            <div class="row">
+              <lib-input-check [id]="'renovacion'" [label]="'Renovación'" [required]="false" formControlName="renovacion" [isDisabled]="esFormularioSoloLectura" (change)="establecerRenovacion($event)"></lib-input-check>
+            </div>
+            <div class="row">
+              <lib-input-check [id]="'homologacion'" [label]="'Homologación de vigencias'" [required]="false" formControlName="homologacion" [isDisabled]="esFormularioSoloLectura" (change)="establecerHomologacion($event)"></lib-input-check>
+            </div>
+            @if (registroForm.get('renovacion')?.touched && registroForm.get('renovacion')?.invalid &&
+            registroForm.get('homologacion')?.touched && registroForm.get('homologacion')?.invalid) {
+              <span class="mensaje-error">Debe seleccionar al menos una opción para generar un aviso</span>
+            }
+          }
+          @case (2) { 
+          <app-solicitud [tabIndex]="2"></app-solicitud> 
+          }
+        }
+      </ng-container>
+    </div>
+  </div>
+</form>

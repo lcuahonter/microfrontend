@@ -1,0 +1,104 @@
+<div class="container py-4">
+  <div class="d-flex align-items-center gap-2 mb-3">
+    <a href="javascript:void(0)" (click)="onSalir()" class="text-decoration-none text-primary fw-bold small">Antecesor</a>
+    <span class="text-muted small">|</span>
+    <span class="text-secondary small">Activo</span>
+  </div>
+  <ng-titulo [titulo]="'Consulta Historia de Fracción Arancelaria'"></ng-titulo>
+  <div class="card mt-4 border-0 shadow-sm bg-light">
+    <div class="card-body p-4">
+      <form [formGroup]="form">
+        <div class="row mb-5 justify-content-center">
+          <div class="col-md-5">
+            <div class="border rounded p-3 bg-white text-center">
+              <label class="form-label mb-0 text-muted me-2">Tipo de Operación:</label>
+              <select class="form-control form-select" formControlName="tipoOperacion">
+                <option value="importacion">Importación</option>
+                <option value="exportacion">Exportación</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <fieldset class="border rounded p-4 bg-white mb-4">
+          <legend class="float-none w-auto px-3 fs-4 text-muted">Ingresar Fracción Arancelaria</legend>
+          <div class="text-center">
+            @if (showInvalidError) {
+              <small class="text-danger d-block mb-3 fw-bold italic text-start ms-5">
+                Debe agregar una Fracción Arancelaria válida
+              </small>
+            }
+            <div class="d-flex justify-content-center align-items-center gap-2">
+              <label class="form-label mb-0 text-muted">Fracción Arancelaria:</label>
+              <input type="text" class="form-control border-secondary w-25" formControlName="fraccionArancelaria">
+              <button type="button" class="btn btn-primary rounded-pill" (click)="onBuscar()">
+                Buscar
+              </button>
+            </div>
+          </div>
+        </fieldset>
+        <fieldset class="border rounded p-4 bg-white mb-4" style="min-height: 200px;">
+          <legend class="float-none w-auto px-3 fs-4 text-muted">Fracciones Agregadas</legend>
+          @if (searched && agregadas.length === 0) {
+            <div class="text-danger fst-italic fw-bold small">
+              No existe histórico de Agregación
+            </div>
+          } @else if (agregadas.length > 0) {
+            <table class="table table-sm table-striped">
+              <thead>
+                <tr class="text-muted small">
+                  <th>Fecha</th>
+                  <th>Acción</th>
+                  <th>Detalle</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of agregadas; track item.fecha) {
+                  <tr class="small">
+                    <td>{{ item.fecha }}</td>
+                    <td>{{ item.accion }}</td>
+                    <td>{{ item.detalle }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          }
+        </fieldset>
+        <fieldset class="border rounded p-4 bg-white mb-4" style="min-height: 200px;">
+          <legend class="float-none w-auto px-3 fs-4 text-muted">Fracciones Disgregadas</legend>
+          @if (searched && disgregadas.length === 0) {
+            <div class="text-danger fst-italic fw-bold small">
+              No existe histórico de Disgregación
+            </div>
+          } @else if (disgregadas.length > 0) {
+            <table class="table table-sm table-striped">
+              <thead>
+                <tr class="text-muted small">
+                  <th>Fecha</th>
+                  <th>Acción</th>
+                  <th>Detalle</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of disgregadas; track item.fecha) {
+                  <tr class="small">
+                    <td>{{ item.fecha }}</td>
+                    <td>{{ item.accion }}</td>
+                    <td>{{ item.detalle }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          }
+        </fieldset>
+        <div class="d-flex justify-content-center gap-3 mt-5">
+          <button type="button" class="btn btn-primary rounded-pill" (click)="onAceptar()">
+            Aceptar
+          </button>
+          <button type="button" class="btn btn-default rounded-pill" (click)="onSalir()">
+            Salir
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,62 @@
+<div class="altaPlant col-md-12">
+  <ng-titulo titulo="Consulta de Domicilios" />
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <form [formGroup]="formulario">
+      
+        <app-catalogo-select
+          [catalogo]="estados"
+          [label]="'Estado'"
+          [required]="true"
+          name="estado"
+          formControlName="entidadFederativa"
+          [isDisabled]="esFormularioSoloLectura"
+          (change)="tipoEstadoSeleccion()"
+        ></app-catalogo-select>
+      </form>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12 d-flex justify-content-end mt-3 mb-4">
+      <button class="btn btn-primary" [disabled]="formularioControl.value <= 0" (click)="buscarDomicilios()">Buscar domicilios</button>
+    </div>
+  </div>
+  <ng-titulo titulo="Lista de Domicilios" />
+  <div class="row">
+    <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccion" (filaSeleccionada)="seleccionarDomicilios($event)"  [configuracionTabla]="configuracionTabla"
+    [datos]="(datos$ | async) || []"  [disableSeleccionTablaRadio]="esFormularioSoloLectura"></app-tabla-dinamica>
+   
+  </div>
+
+  <div class="row">
+    <div class="col-12 d-flex justify-content-end mt-3 mb-4">
+      <button class="btn btn-primary" (click)="aplicarAccion()">Agregar plantas</button>
+    </div>
+  </div>
+
+  <ng-titulo titulo="Lista de Domicilios" />
+
+  <div class="row">
+    <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccion"  [configuracionTabla]="configuracionTabla"
+    [datos]="(domicilios$ | async) || []" (filaSeleccionada)="seleccionarDomicilios($event)" [disableSeleccionTablaRadio]="esFormularioSoloLectura"></app-tabla-dinamica>
+   
+  </div>
+  <div class="row">
+    <div class="col-12 d-flex justify-content-end mt-3 mb-4">
+      <button class="btn btn-primary" (click)="eliminarPlantas()">Eliminar plantas</button>
+    </div>
+  </div>
+@if(nuevaNotificacion) {
+<section>
+    <lib-notificaciones
+        [notificacionInput]="nuevaNotificacion"
+        (confirmacionModal)="confirmacionModal($event)"
+    >
+    </lib-notificaciones>
+</section>
+}
+  <div class="row mt-5">
+    <app-complementaria-immex></app-complementaria-immex>
+  </div>
+</div>

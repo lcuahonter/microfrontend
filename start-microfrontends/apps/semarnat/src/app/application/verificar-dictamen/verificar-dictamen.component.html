@@ -1,0 +1,157 @@
+<div class="page">
+    <div class="container" *ngIf="!panelVerFirmar">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="fw-bold my-5 titulo-tasks">Verificar dictamen</h2>        
+                <hr class="red">
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">            
+                <div class="form-group">            
+                    <label for="folio" class="form-label text-title">Folio del trámite:</label>
+                    <label for="folio" class="form-label text-title espacio-label">{{consultaState.folioTramite}}</label>
+                </div>
+                <div class="form-group">
+                    <label for="tipoSolicitud" class="form-label text-title">Tipo de solicitud:</label>
+                    <label for="folio" class="form-label text-title espacio-label">Permiso Sanitario Previo de Importación de Productos</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container" *ngIf="panelVerFirmar">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="fw-bold my-5 titulo-tasks">Firmar</h2>      
+                <hr class="red">  
+            </div>
+        </div>
+    <div class="row">
+        <div class="col-md-4">
+            <firma-electronica [tipo]="''" (firma)="obtieneFirma($event)"></firma-electronica>
+        </div>
+    </div>
+    </div>
+    <div class="container" *ngIf="!panelVerFirmar">
+        <form [formGroup]="FormTramite" role="form">
+            <br>
+            <div class="row">
+            <div class="col-md-12 text-end d-flex align-items-center justify-content-end" style="gap: 1rem;">
+                <button type="button" class="btn btn-primary" style="margin-top: 12px; margin-bottom: 12px;" (click)="firmar()">Dar Vo. Bo.</button>
+                <button type="button" class="btn btn-default" style="margin-top: 12px; margin-bottom: 12px;" (click)="observacion()">Observar</button>
+            </div>
+            </div>
+            <br>
+            <div class="card">
+            <div class="card-body">            
+                <div class="form-group">            
+                    <label for="folio" class="form-label control-label me-3 text-title">Verificar dictamen:</label>
+                    <div class="radio d-flex align-items-left">
+                            <label class="radio-inline control-label me-3">*Sentido del dictamen:</label>
+                            <label class="radio-inline me-3">
+                                <input type="radio" name="radio-01" value="opcion-01" checked="checked" disabled="disabled">Aceptado
+                            </label>
+                            <label class="radio-inline me-3">
+                                <input type="radio" name="radio-01" value="opcion-02" disabled="disabled"> Rechazado
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="radio-01" value="opcion-03" disabled="disabled"> Parcial
+                            </label>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="card">
+            <div class="card-body">
+                <div class="form-group">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="folio" class="form-label text-title">Fundamento del dictamen:</label>
+                            <textarea id="fundamento" formControlName="fundamento" class="form-control"
+                                placeholder="Fundamento del dictamen" rows="8"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="folio" class="form-label text-title">Justificación del dictamen:</label>
+                    <textarea id="justificacion" formControlName="justificacion" class="form-control"
+                        placeholder="Fundamento del dictamen"  rows="8"></textarea>
+                </div>
+                <div class="form-group">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="folio" class="form-label text-title">Plazo:</label>
+                            <input type="textarea" id="plazo" formControlName="plazo"
+                                class="form-control font-weight-titulo text-title" placeholder="plazo" />
+                        </div> 
+                        <div class="col-md-6">
+                            <div class="ajuste-label-combo-catalogos">
+                                <app-catalogo-select
+                                    [placeholder]="'Seleccione una restricción'"                                
+                                    [catalogo]="requisitosCombo"
+                                    formControlName="requisito"
+                                    [isDisabled]="true"
+                                    [label]="'Requisito que debe cumplir'">
+                                </app-catalogo-select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="folio" class="form-label text-title">Tipo de análisis:</label>
+                            <textarea id="tipoAnalisis" formControlName="tipoAnalisis" class="form-control"
+                                placeholder="Fundamento del dictamen"  rows="8"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="folio" class="form-label text-title">N&uacute;mero  de muestras:</label>
+                            <input type="text" id="numeroDeMuestras" formControlName="numeroDeMuestras"
+                                class="form-control font-weight-titulo text-title" placeholder="Numero de muestras" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+            <div class="row">
+                <div class="col-md-12 text-end d-flex align-items-center justify-content-end" style="gap: 1rem;">
+                    <button type="button" class="btn btn-primary ms-3" style="margin-top: 12px; margin-bottom: 12px;" (click)="observacion()">
+                        Vista Preliminar Aceptado
+                    </button>
+                </div>
+            </div>
+            <br>
+        <div class="card">
+            <div class="card-body">            
+                <div class="form-group">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="folio" class="form-label text-title">Siglas del dictaminador:</label>
+                            <input type="text" id="siglasDictaminador" formControlName="siglasDictaminador"
+                                class="form-control font-weight-titulo text-title" placeholder="Siglas dictaminador" />
+                        </div>
+                        <div class="col-md-6">
+                            <div class="ajuste-label-combo-catalogos">
+                                <app-catalogo-select
+                                    [placeholder]="'Seleccione una opcion'"                                
+                                    [catalogo]="asignarAutorizadorCombo"
+                                    formControlName="asignarAutorizador"
+                                    [isDisabled]="true"
+                                    [label]="'Asignar autorizador'">
+                                </app-catalogo-select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </form>
+    </div>
+    <br>
+    <br>
+    <div class="row mb-5 mt-5">
+        <app-reviewers-tabs [viewChild]="viewChild" [tramite]="tramite"
+            (viewChildcambioDePestana)="viewChildcambioDePestana($event)"></app-reviewers-tabs>
+    </div>

@@ -1,0 +1,37 @@
+<div class="page">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <h2>Solicitud de modificación y/o prórroga del permiso previo para muestras o consumo personal</h2>
+      </div>
+  @if (isPeligro) {
+      <div class="col-md-12">
+        <ng-alert [CONTENIDO]="formErrorAlert" [CUSTOMECLASS]="'alert-danger'"></ng-alert>
+      </div>
+    }
+      <app-wizard [listaPasos]="pasos"></app-wizard>
+
+    </div>
+    
+
+    <div class="row">
+      @switch (indice) {
+      @case (1) {
+      <paso-uno #pasoUnoRef [isContinuarTriggered]="isContinuarTriggered"></paso-uno>
+      }
+      @case (2) {
+      <app-paso-carga-documento [idSolicitud]="guardarIdSolicitud" [idTipoTRamite]="'260702'"
+        [cargaArchivosEvento]="cargarArchivosEvento" (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+        (reenviarCargaRealizada)="cargaRealizada($event)"
+        (cargaEnProgreso)="onCargaEnProgreso($event)"></app-paso-carga-documento>
+      } @case (3) {
+      <paso-firma [idSolicitud]="guardarIdSolicitud" [procedure]="260702"
+        [procedureUrl]="'registrar-solicitud-mcp/registro'"></paso-firma>
+      }
+
+      }
+
+      <btn-continuar [datos]="datosPasos" [dePadre]="true" (continuarEvento)="getValorIndice($event)"></btn-continuar>
+    </div>
+  </div>
+</div>

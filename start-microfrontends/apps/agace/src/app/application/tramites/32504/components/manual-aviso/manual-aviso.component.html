@@ -1,0 +1,194 @@
+<div class="container">
+  <div class="col-12">
+    @if (tieneError) {
+    <div class="alert alert-info alert-danger" [innerHTML]="formErrorAlert"></div>
+    }
+  </div>
+  <div *ngIf="formularioQuienRecibe">
+    <div class="form" [formGroup]="formularioQuienRecibe">
+      <ng-titulo titulo="Datos de quien recibe las mercancías (tercero submanufacturero autorizado)" />
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label for="rfc" class="form-label">RFC<span
+              [ngClass]="controlValido(formularioQuienRecibe,'rfc') ? 'has-error' : ''">*</span>:</label>
+          <input type="text" id="rfc" class="form-control" formControlName="rfc" maxlength="13"
+            [ngClass]="controlValido(formularioQuienRecibe,'rfc') ? 'required':'' " />
+          <div *ngIf="formularioQuienRecibe.get('rfc')?.invalid && formularioQuienRecibe.get('rfc')?.touched"
+            class="text-danger">
+            <small>Este campo es obligatorio.</small>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <label for="programaImmex" class="form-label">Número de programa IMMEX:</label>
+          <input type="text" id="programaImmex" class="form-control" formControlName="programaImmex" maxlength="9" libSoloNumeros
+            [ngClass]="controlValido(formularioQuienRecibe,'programaImmex') ? 'required':'' " />
+          <div
+            *ngIf="formularioQuienRecibe.get('programaImmex')?.invalid && formularioQuienRecibe.get('programaImmex')?.touched"
+            class="text-danger">
+            <small>Este campo es obligatorio.</small>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <label for="anioImmex" class="form-label">Año de programa IMMEX:</label>
+          <input type="text" id="anioImmex" class="form-control" formControlName="anioImmex" libSoloNumeros maxlength="4"
+            [ngClass]="controlValido(formularioQuienRecibe,'anioImmex') ? 'required':'' " />
+          <div
+            *ngIf="formularioQuienRecibe.get('anioImmex')?.invalid && formularioQuienRecibe.get('anioImmex')?.touched"
+            class="text-danger">
+            <small>Este campo es obligatorio.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div *ngIf="formularioDomicilioLugar" class="form" [formGroup]="formularioDomicilioLugar">
+    <ng-titulo titulo="Datos del domicilio del lugar en donde se llevarán a cabo las operaciones de submanufactura" />
+
+    <div class="row mb-3">
+      <div class="col-md-8">
+        <label for="nombreComercial" class="form-label">Nombre comercial:</label>
+        <input type="text" id="nombreComercial" class="form-control" formControlName="nombreComercial" maxlength="250"
+          [ngClass]="controlValido(formularioDomicilioLugar,'nombreComercial') ? 'required':'' " />
+        <div
+          *ngIf="formularioDomicilioLugar.get('nombreComercial')?.invalid && formularioDomicilioLugar.get('nombreComercial')?.touched"
+          class="text-danger">
+          <small>Este campo es obligatorio.</small>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <app-catalogo-select [markTouched]="formularioDomicilioLugar.get('clave_entidad_federativa')?.touched ?? false"
+          [catalogo]="estadosCatalogo" label="Entidad Federativa" [required]="true"
+          [formControl]="entidadFederativaCtrl" name="estado" (selectionChange)="onChangeEstado()" />
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <app-catalogo-select [markTouched]="formularioDomicilioLugar.get('clave_delegacion_municipio')?.touched ?? false"
+          [catalogo]="municipiosCatalogo" label="Alcaldía o Municipio" [required]="true" [formControl]="municipioCtrl"
+          name="clave_delegacion_municipio" (selectionChange)="onChangeMunicipio()" />
+      </div>
+
+      <div class="col-md-4">
+        <app-catalogo-select [markTouched]="formularioDomicilioLugar.get('colonias')?.touched ?? false"
+          [catalogo]="coloniasCatalogo" label="Colonia" [required]="true" [formControl]="coloniaCtrl" name="colonias" />
+      </div>
+
+      <div class="col-md-4">
+        <label for="calle" class="form-label">Calle<span
+            [ngClass]="controlValido(formularioDomicilioLugar,'calle') ? 'has-error' : ''">*</span>:</label>
+        <input type="text" id="calle" class="form-control" formControlName="calle" maxlength="250"
+          [ngClass]="controlValido(formularioDomicilioLugar,'calle') ? 'required':'' " />
+        <div *ngIf="formularioDomicilioLugar.get('calle')?.invalid && formularioDomicilioLugar.get('calle')?.touched"
+          class="text-danger">
+          <small>Este campo es obligatorio.</small>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label for="numeroExterior" class="form-label">Número exterior<span
+            [ngClass]="controlValido(formularioDomicilioLugar,'numeroExterior') ? 'has-error' : ''">*</span>:</label>
+        <input type="text" id="numeroExterior" class="form-control" formControlName="numeroExterior" maxlength="15"
+          [ngClass]="controlValido(formularioDomicilioLugar,'numeroExterior') ? 'required':'' " />
+        <div
+          *ngIf="formularioDomicilioLugar.get('numeroExterior')?.invalid && formularioDomicilioLugar.get('numeroExterior')?.touched"
+          class="text-danger">
+          <small>Este campo es obligatorio.</small>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <label for="numeroInterior" class="form-label">Número interior:</label>
+        <input type="text" id="numeroInterior" class="form-control" formControlName="numeroInterior" maxlength="15"
+          [ngClass]="controlValido(formularioDomicilioLugar,'rfcTercero') ? 'required':'' " />
+        <div
+          *ngIf="formularioDomicilioLugar.get('numeroInterior')?.invalid && formularioDomicilioLugar.get('numeroInterior')?.touched"
+          class="text-danger">
+          <small>Este campo es obligatorio.</small>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <label for="codigoPostal" class="form-label">Código postal<span
+            [ngClass]="controlValido(formularioDomicilioLugar,'codigoPostal') ? 'has-error' : ''">*</span>:</label>
+        <input type="text" id="codigoPostal" class="form-control" formControlName="codigoPostal" maxlength="5" libSoloNumeros
+          [ngClass]="controlValido(formularioDomicilioLugar,'codigoPostal') ? 'required':'' " />
+        <div
+          *ngIf="formularioDomicilioLugar.get('codigoPostal')?.invalid && formularioDomicilioLugar.get('codigoPostal')?.touched"
+          class="text-danger">
+          <small>Este campo es obligatorio.</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Para el modal de agregar mercancias -->
+  <div class="form">
+    <ng-titulo titulo="Datos de la mercancía transferida para submanufactura" />
+    <div class="row">
+      <app-tabla-dinamica [styleCenter]="true" [configuracionTabla]="mercanciasTablaConfig"
+        [datos]="mercanciasAgregadas" [tipoSeleccionTabla]="TablaSeleccion.RADIO"
+        (filaSeleccionada)="onFilasSeleccionadas($event)" />
+
+
+      <div class="d-flex justify-content-end">
+        <button type="button" class="btn btn-danger ms-3" [disabled]="itemsSeleccionados.size === 0"
+          (click)="accionesBotones(actionTypes.TABLE_ACTION, botonAccionesTipos.ELIMINAR)">
+          Eliminar
+        </button>
+        <button type="button" class="btn btn-primary ms-3" [disabled]="itemsSeleccionados.size === 0"
+          (click)="accionesBotones(actionTypes.TABLE_ACTION, botonAccionesTipos.MODIFICAR)">
+          Modificar
+        </button>
+        <button type="button" class="btn btn-primary ms-3" [disabled]="false" (click)="validarNewAgregarFila()">
+          Agregar
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="mt-5 d-flex justify-content-end">
+    <button type="button" class="btn btn-primary ms-3" [disabled]="false"
+      (click)="accionesBotones(actionTypes.FORM_ACTION, botonAccionesTipos.CANCELAR)">
+      Cancelar
+    </button>
+    <button type="button" class="btn btn-primary ms-3" [disabled]="false" (click)="onAgregarClick()">
+      Agregar
+    </button>
+  </div>
+</div>
+
+
+
+
+<div class="modal fade" #modalAgregarMercancia tabindex="-1" aria-labelledby="modalAgregarFilaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+      <agregar-mercancia [mercanciaInput]="mercanciaAModificar" (cerrarMercanciaModalAction)="cerrarModal()"
+        (agregarMercanciaEvento)="agregarMercancia($event)" />
+    </div>
+  </div>
+</div>
+
+
+@if (mostrarInfo) {
+<lib-notificaciones [notificacionInput]="nuevaNotificacionInfo"
+  (confirmacionModal)="aceptarInfo($event)"></lib-notificaciones>
+}
+
+@if (mostrarAlertaSimple) {
+<lib-notificaciones [notificacionInput]="nuevaNotificacionInfo"
+  (confirmacionModal)="aceptarAlerta()"></lib-notificaciones>
+}

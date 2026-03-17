@@ -1,0 +1,65 @@
+<div class="container">
+    <div class="row">
+        <ul class="nav nav-tabs">
+            <li [ngClass]="indice === 1 ? 'active' : ''">
+                <a data-toggle="tab" (click)="seleccionaTab(1)" (keydown.enter)="seleccionaTab(1)"
+                    (keydown.space)="seleccionaTab(1)" role="button" tabindex="1">Solicitante</a>
+            </li>
+            <li [ngClass]="indice === 2 ? 'active' : ''">
+                <a data-toggle="tab" (click)="seleccionaTab(2)" (keydown.enter)="seleccionaTab(2)"
+                    (keydown.space)="seleccionaTab(2)" role="button" tabindex="2">Consultar cupo</a>
+            </li>
+            @if (pestanaDosFormularioValido) {
+            <li [ngClass]="indice === 3 ? 'active' : ''">
+                <a data-toggle="tab" (click)="seleccionaTab(3)" (keydown.enter)="seleccionaTab(3)"
+                    (keydown.space)="seleccionaTab(3)" role="button" tabindex="3">Insumos</a>
+            </li>
+            <li [ngClass]="indice === 4 ? 'active' : ''">
+                <a data-toggle="tab" (click)="seleccionaTab(4)" (keydown.enter)="seleccionaTab(4)"
+                    (keydown.space)="seleccionaTab(4)" role="button" tabindex="4">Proceso productivo</a>
+            </li>
+            }
+        </ul>
+
+        <ng-container>
+            @switch (indice) {
+            @case (1) {
+            <datos-generales></datos-generales>
+            <domicilio-fiscal></domicilio-fiscal>
+            }
+            @case (2) {
+            @if (esDatosRespuesta) {
+            <consultar-cupo #consultarCupo [consultaState]="consultaState"
+                (emitirFilaClicControlador)="archivoHagaClicControlador($event)"
+                (fraccionErrorEvent)="fraccionErrorEvent($event)"
+                (obtenerVisible)="obtenerVisible($event)"></consultar-cupo>
+            @if (elementoDeTablaSeleccionado) {
+            <descripcion-del-cupo #descripcionDelCupo
+                [objetoDeFormulario]="elementoDeTablaSeleccionado"></descripcion-del-cupo>
+            <representacion-federal #representacionFederal [consultaState]="consultaState"></representacion-federal>
+            <bien-final #bienFinal [consultaState]="consultaState"></bien-final>
+            @if(idSolicitud){
+            <div class="col-md-12 text-end">
+                <button type="button" class="btn btn-primary" (click)="guardarEvent.emit()" [disabled]="consultaState.readonly">
+                    Guardar
+                </button>
+            </div>
+            }
+
+            }
+            }
+            }
+            @case (3) {
+            @if (esDatosRespuesta) {
+            <app-insumos #insumos [consultaState]="consultaState"></app-insumos>
+            }
+            }
+            @case (4) {
+            @if (esDatosRespuesta) {
+            <app-proceso-productivo #procesoProductivo [consultaState]="consultaState"></app-proceso-productivo>
+            }
+            }
+            }
+        </ng-container>
+    </div>
+</div>

@@ -1,0 +1,168 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h3>Detalle por secuencia de mercancías</h3>
+      <hr class="red" />
+      <form [formGroup]="commoditySequenceForm" (ngSubmit)="onSubmit()" autocomplete="off">
+      <div class="row">
+        <!-- Gross Weight Measure -->
+        <div class="col-md-4 col-sm-6">
+          <div class="form-group">
+            <label class="control-label">Gross Weight Measure*:</label>
+            <app-tooltip text="Peso Bruto"></app-tooltip>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="grossWeightMeasure"
+              [appMaxLength]="7"
+              numericDecimal
+              [ngClass]="{
+                'form-control-error': formUtils.isValidField(commoditySequenceForm, 'grossWeightMeasure')
+              }"
+            />
+            <ng-container *ngIf="formUtils.isValidField(commoditySequenceForm, 'grossWeightMeasure')">
+              <small class="form-text form-text-error">
+                {{ formUtils.getFieldError(commoditySequenceForm, 'grossWeightMeasure') }}
+              </small>
+            </ng-container>
+          </div>
+        </div>
+
+        <!-- Gross Weight Measure Unit Code -->
+        <div class="col-md-4 col-sm-6">
+          <div class="form-group">
+            <label class="control-label">Gross Weight Measure - unit Code*:</label>
+            <app-tooltip text="Código de la Unidad del Peso"></app-tooltip>
+            <select
+              class="form-control"
+              formControlName="grossWeightUnitCode"
+              [ngClass]="{
+                'form-control-error': formUtils.isValidField(commoditySequenceForm, 'grossWeightUnitCode')
+              }"
+            >
+              <option [ngValue]="null">Selecciona una opción</option>
+              <option *ngFor="let unit of weightUnits" [value]="unit.clave">
+                {{ unit.valor }}
+              </option>
+            </select>
+            <ng-container *ngIf="formUtils.isValidField(commoditySequenceForm, 'grossWeightUnitCode')">
+              <small class="form-text form-text-error">
+                {{ formUtils.getFieldError(commoditySequenceForm, 'grossWeightUnitCode') }}
+              </small>
+            </ng-container>
+          </div>
+        </div>
+
+        <!-- Piece Quantity -->
+        <div class="col-md-4 col-sm-6">
+          <div class="form-group">
+            <label class="control-label">Piece Quantity*:</label>
+            <app-tooltip text="Número de piezas"></app-tooltip>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="pieceQuantity"
+              [appMaxLength]="7"
+              numericDecimal
+              [ngClass]="{
+                'form-control-error': formUtils.isValidField(commoditySequenceForm, 'pieceQuantity')
+              }"
+            />
+            <ng-container *ngIf="formUtils.isValidField(commoditySequenceForm, 'pieceQuantity')">
+              <small class="form-text form-text-error">
+                {{ formUtils.getFieldError(commoditySequenceForm, 'pieceQuantity') }}
+              </small>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- Description -->
+        <div class="col-md-8 col-sm-12">
+          <div class="form-group">
+            <label class="control-label">Description*:</label>
+            <app-tooltip text="Descripción del producto"></app-tooltip>
+            <textarea
+              class="form-control"
+              rows="4"
+              formControlName="description"
+              [ngClass]="{
+                'form-control-error': formUtils.isValidField(commoditySequenceForm, 'description')
+              }"
+            ></textarea>
+            <ng-container *ngIf="formUtils.isValidField(commoditySequenceForm, 'description')">
+              <small class="form-text form-text-error">
+                {{ formUtils.getFieldError(commoditySequenceForm, 'description') }}
+              </small>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- Chargeable Weight Measure -->
+        <div class="col-md-4 col-sm-6">
+          <div class="form-group">
+            <label class="control-label">Chargeable Weight Measure*:</label>
+            <app-tooltip text="Neto"></app-tooltip>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="chargeableWeightMeasure"
+              [appMaxLength]="7"
+              numericDecimal
+              [ngClass]="{
+                'form-control-error': formUtils.isValidField(commoditySequenceForm, 'chargeableWeightMeasure')
+              }"
+            />
+            <ng-container *ngIf="formUtils.isValidField(commoditySequenceForm, 'chargeableWeightMeasure')">
+              <small class="form-text form-text-error">
+                {{ formUtils.getFieldError(commoditySequenceForm, 'chargeableWeightMeasure') }}
+              </small>
+            </ng-container>
+          </div>
+        </div>
+
+        <!-- Chargeable Weight Measure Unit Code -->
+        <div class="col-md-8 col-sm-6">
+          <div class="form-group">
+            <label class="control-label">Chargeable Weight Measure - unit Code*:</label>
+            <app-tooltip text="Código de la Unidad del Peso"></app-tooltip>
+            <select
+              class="form-control"
+              formControlName="chargeableWeightUnitCode"
+              [ngClass]="{
+                'form-control-error': formUtils.isValidField(commoditySequenceForm, 'chargeableWeightUnitCode')
+              }"
+            >
+              <option [ngValue]="null">Selecciona una opción</option>
+              <option *ngFor="let unit of weightUnits" [value]="unit.clave">
+                {{ unit.valor }}
+              </option>
+            </select>
+            <ng-container *ngIf="formUtils.isValidField(commoditySequenceForm, 'chargeableWeightUnitCode')">
+              <small class="form-text form-text-error">
+                {{ formUtils.getFieldError(commoditySequenceForm, 'chargeableWeightUnitCode') }}
+              </small>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <div class="text-right mt-2">
+        <gob-button
+          type="submit"
+          className="btn-primary mr-1"
+          label="Agregar"
+        ></gob-button>
+        <gob-button
+          type="button"
+          className="btn-danger"
+          label="Cancelar"
+          (clicked)="onCancel()"
+        ></gob-button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>

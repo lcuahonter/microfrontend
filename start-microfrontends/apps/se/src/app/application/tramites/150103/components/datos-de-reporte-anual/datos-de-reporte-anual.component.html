@@ -1,0 +1,105 @@
+<div class="container">
+    <form [formGroup]="formReporteAnnual">
+      @if(esFormularioSoloLectura) {
+        <ng-titulo
+        style="white-space: nowrap;"
+          titulo="Reporte anual balanza comercial"
+        />
+      } @else {
+        <ng-titulo
+        style="white-space: nowrap;"
+          titulo="Reporte anual balanza comercial (capture todas las cantidades en miles de pesos)"
+        />
+      }
+      <div class="row mt-3">
+        <div class="col-md-4">
+          @if(esFormularioSoloLectura) {
+            <label class="form-label" for="ventasTotales">Ventas totales(a):</label>
+          } @else {
+            <label class="form-label" for="ventasTotales">Ventas totales(a)*:</label>
+          }
+          <input
+            type="text"
+            id="ventasTotales"
+            class="form-control"
+            formControlName="ventasTotales"
+            (change)="obtenerVentasTotales($event)"
+            [disabled]="esFormularioSoloLectura"
+            pattern="[0-9]*"
+            maxlength="16"
+          />
+        </div>
+        <div class="col-md-4">
+          @if(esFormularioSoloLectura) {
+            <label class="form-label" for="totalExportaciones"
+            >Total exportaciones (b):</label
+          >
+          } @else {
+            <label class="form-label" for="totalExportaciones"
+            >Total exportaciones (b)*:</label
+          >
+          }
+          <input
+            type="text"
+            id="totalExportaciones"
+            class="form-control"
+            formControlName="totalExportaciones"
+            (input)="limitarLongitud($event, 16)"
+            [disabled]="esFormularioSoloLectura"
+            pattern="[0-9]*"
+            maxlength="16"
+          />
+        </div>
+        <div class="col-md-4">
+          @if (esFormularioSoloLectura) {
+            <label class="form-label" for="totalImportaciones"
+            >Total importaciones (c):</label
+          >
+          } @else {
+            <label class="form-label" for="totalImportaciones"
+            >Total importaciones (c)*:</label
+          >
+          }
+          <input
+            type="text"
+            id="totalImportaciones"
+            class="form-control"
+            formControlName="totalImportaciones"
+            (input)="obtenerTotalImportaciones($event)"
+            [disabled]="true"
+          />
+        </div>
+        <div class="col-md-4">
+          <label class="form-label" for="saldo">Saldo b-c:</label>
+          <input
+            type="text"
+            id="saldo"
+            class="form-control"
+            formControlName="saldo"
+            [disabled]="true"
+          />
+        </div>
+        <div class="col-md-4">
+          <label class="form-label" for="porcentajeExportacion"
+            >Porcentaje exportación b/a*100:</label
+          >
+          <input
+            type="text"
+            id="porcentajeExportacion"
+            class="form-control"
+            formControlName="porcentajeExportacion"
+            [disabled]="true"
+          />
+        </div>
+      </div>
+    </form>
+
+    <!-- Notification Component -->
+    @if(nuevaNotificacion) {
+      <lib-notificaciones
+        [notificacionInput]="nuevaNotificacion"
+        (cerrarNotificacion)="cerrarNotificacion()"
+      ></lib-notificaciones>
+    }
+  </div>
+  

@@ -1,0 +1,155 @@
+<div class="col-md-12">
+    <ng-titulo titulo="Registro de vehículos" />
+  <app-tabla-dinamica
+    [tipoSeleccionTabla]="tipoSeleccionTabla"
+    [configuracionTabla]="ParqueVehicular"
+    [datos]="vehiculosInfoList"
+    (listaDeFilaSeleccionada)="manejarFilaSeleccionada($event)"
+    [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+  >
+  </app-tabla-dinamica>
+
+  <div class="d-flex justify-content-end">
+    <div class="d-flex flex-row flex-wrap gap-3">
+        <button class="btn btn-primary" (click)="cargaArchivo()" [disabled]="esFormularioSoloLectura">Carga por archivo</button>
+        <button class="btn btn-primary" [ngClass]="{'btn-secondary': !enableEliminarBoton}"
+        (click)="confirmEliminarVehiculosItem()" [disabled]="esFormularioSoloLectura">Eliminar</button>
+        <button class="btn btn-primary" [ngClass]="{'btn-secondary': !enableEliminarBoton}" (click)="modificarItemVehiculos()" [disabled]="esFormularioSoloLectura">Modificar</button>
+        <button class="btn btn-primary" (click)="agregarDialogoDatos()" [disabled]="esFormularioSoloLectura">Agregar</button>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="registroDeVehiculos"
+  tabindex="-1"
+  aria-labelledby="registroDeVehiculosLabel"
+  aria-hidden="true"
+  data-bs-backdrop="static"
+  #registroDeVehiculos
+>
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form [formGroup]="registroVehiculosForm">
+            <div class="row">
+              <!-- Marca Input -->
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label text-left">Marca*:</label>
+                  <input
+                    class="form-control"
+                    id="marca"
+                    type="text"
+                    name="marca"
+                    formControlName="marca"
+                  />
+                  <div *ngIf="esInvalido('marca')" class="text-danger">
+                    <small *ngIf="registroVehiculosForm.controls['marca'].hasError('required')">
+                      La marca es requerida.
+                    </small>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Modelo Input -->
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label text-left">Modelo*:</label>
+                  <input
+                    class="form-control"
+                    id="modelo"
+                    type="text"
+                    name="modelo"
+                    formControlName="modelo"
+                  />
+                  <div *ngIf="esInvalido('modelo')" class="text-danger">
+                    <small *ngIf="registroVehiculosForm.controls['modelo'].hasError('required')">
+                      El modelo es requerido.
+                    </small>
+                  </div>
+                </div>
+              </div>
+          
+              <!-- VIN Input -->
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label class="form-label text-left">Número de identificación vehicular o serie del vehículo*:</label>
+                  <input
+                    class="form-control"
+                    id="serie"
+                    type="text"
+                    name="vin"
+                    formControlName="vin"
+                  />
+                  <div *ngIf="esInvalido('vin')" class="text-danger">
+                    <small *ngIf="registroVehiculosForm.controls['vin'].hasError('required')">
+                      El VIN es requerido.
+                    </small>
+                    <small *ngIf="registroVehiculosForm.controls['vin'].hasError('pattern')">
+                      No cumple con el formato esperado.
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </form>
+        <footer class="footer d-flex py-5 gap-3 justify-content-end">
+            <button type="button" class="btn btn-primary" (click)="modalCancelar()">Cancelar</button>
+            <button type="button" class="btn btn-primary" (click)="limpiarFormulario()">Limpiar</button>
+            <button type="button" class="btn btn-primary" (click)="enviarDialogData()">Agregar</button>
+          </footer>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="modalArchivo" tabindex="-1" #modalArchivo data-bs-backdrop="static" aria-labelledby="modalArchivo" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form [formGroup]="formularioArchivo">
+          <div class="row">
+            <div class="col-md-12">
+
+              <div class="form-group">
+                <label class="form-label text-left">Seleccionar Archivo</label>
+                <input class="form-control" type="file" formControlName="archivo" id="archivoAdjuntar" size="60"/>
+                <div *ngIf="esInvalido('archivo')" class="text-danger">
+                  <small *ngIf="registroVehiculosForm.controls['archivo'].hasError('required')">
+                    El archivo es requerido.
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer d-flex justify-content-end p-5 gap-3">
+        <button type="button" class="btn btn-default" data-bs-dismiss="modal" #closeModal> Cerrar </button>
+        <button type="submit" class="btn btn-primary" (click)="cerrarModal()"> Enviar </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <lib-notificaciones 
+  *ngIf="esHabilitarElDialogo"
+  [notificacionInput]="nuevaNotificacion" 
+  (confirmacionModal)="cerrarModal()">
+</lib-notificaciones>
+
+  
+  <lib-notificaciones 
+  *ngIf="confirmEliminarPopupAbierto"
+  [notificacionInput]="nuevaNotificacion" 
+  (confirmacionModal)="eliminarVehiculosItem($event)">
+</lib-notificaciones>
+
+<lib-notificaciones 
+  *ngIf="multipleSeleccionPopupAbierto"
+  [notificacionInput]="nuevaNotificacion" 
+  (confirmacionModal)="cerrarMultipleSeleccionPopup()">
+</lib-notificaciones>

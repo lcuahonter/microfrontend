@@ -1,0 +1,368 @@
+<div class="container">
+  <form [formGroup]="masterGuideForm" (ngSubmit)="onSubmit()" autocomplete="off">
+    <h3>Guías master</h3>
+    <hr class="red" />
+    <div class="row">
+      <!-- Transport Split Description -->
+      <div class="col-md-4 col-sm-6">
+        <div class="form-group">
+          <label class="control-label">Transport Split Description*:</label>
+          <app-tooltip text="Código del Tipo de envío"></app-tooltip>
+          <select
+            class="form-control"
+            formControlName="transportSplitDescription"
+            [ngClass]="{
+              'form-control-error': formUtils.isValidField(masterGuideForm, 'transportSplitDescription')
+            }"
+          >
+            <option [ngValue]="null">Selecciona una opción</option>
+            <option *ngFor="let option of transportSplitOptions" [value]="option.clave">
+              {{ option.valor }}
+            </option>
+          </select>
+          <ng-container *ngIf="formUtils.isValidField(masterGuideForm, 'transportSplitDescription')">
+            <small class="form-text form-text-error">
+              {{ formUtils.getFieldError(masterGuideForm, 'transportSplitDescription') }}
+            </small>
+          </ng-container>
+        </div>
+      </div>
+
+      <!-- Waybill Number -->
+      <div class="col-md-4 col-sm-6">
+        <div class="form-group">
+          <label class="control-label">Waybill Number*:</label>
+          <app-tooltip text="Número de guía de viaje"></app-tooltip>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="waybillNumber"
+            [appMaxLength]="12"
+            [ngClass]="{
+              'form-control-error': formUtils.isValidField(masterGuideForm, 'waybillNumber')
+            }"
+          />
+          <ng-container *ngIf="formUtils.isValidField(masterGuideForm, 'waybillNumber')">
+            <small class="form-text form-text-error">
+              {{ formUtils.getFieldError(masterGuideForm, 'waybillNumber') }}
+            </small>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Gross Weight Measure -->
+      <div class="col-md-4 col-sm-6">
+        <div class="form-group">
+          <label class="control-label">Gross Weight Measure*:</label>
+          <app-tooltip text="Peso Bruto"></app-tooltip>
+          <input
+            type="text"
+            class="form-control"
+            integerOnly
+            formControlName="grossWeightMeasure"
+            [ngClass]="{
+              'form-control-error': formUtils.isValidField(masterGuideForm, 'grossWeightMeasure')
+            }"
+          />
+          <ng-container *ngIf="formUtils.isValidField(masterGuideForm, 'grossWeightMeasure')">
+            <small class="form-text form-text-error">
+              {{ formUtils.getFieldError(masterGuideForm, 'grossWeightMeasure') }}
+            </small>
+          </ng-container>
+        </div>
+      </div>
+      <!-- Gross Weight Unit Code -->
+      <div class="col-md-8 col-sm-6">
+        <div class="form-group">
+          <label class="control-label">Gross Weight Measure - unit Code*:</label>
+          <app-tooltip text="Unidad de Medida de Peso Bruto"></app-tooltip>
+          <select
+            class="form-control"
+            formControlName="grossWeightUnitCode"
+            [ngClass]="{
+              'form-control-error': formUtils.isValidField(masterGuideForm, 'grossWeightUnitCode')
+            }"
+          >
+            <option [ngValue]="null">Selecciona una opción</option>
+            <option *ngFor="let unit of weightUnits" [value]="unit.clave">
+              {{ unit.valor }}
+            </option>
+          </select>
+          <ng-container *ngIf="formUtils.isValidField(masterGuideForm, 'grossWeightUnitCode')">
+            <small class="form-text form-text-error">
+              {{ formUtils.getFieldError(masterGuideForm, 'grossWeightUnitCode') }}
+            </small>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Total Piece Quantity -->
+      <div class="col-md-4 col-sm-6">
+        <div class="form-group">
+          <label class="control-label">Total Piece Quantity*:</label>
+          <app-tooltip text="Número de Piezas"></app-tooltip>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="totalPieceQuantity"
+            integerOnly
+            [ngClass]="{
+              'form-control-error': formUtils.isValidField(masterGuideForm, 'totalPieceQuantity')
+            }"
+          />
+          <ng-container *ngIf="formUtils.isValidField(masterGuideForm, 'totalPieceQuantity')">
+            <small class="form-text form-text-error">
+              {{ formUtils.getFieldError(masterGuideForm, 'totalPieceQuantity') }}
+            </small>
+          </ng-container>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="col-md-8 col-sm-12">
+        <div class="form-group">
+          <label class="control-label">Description*:</label>
+          <app-tooltip text="Descripción del Manifiesto"></app-tooltip>
+          <textarea
+            class="form-control"
+            rows="4"
+            formControlName="description"
+            [ngClass]="{
+              'form-control-error': formUtils.isValidField(masterGuideForm, 'description')
+            }"
+          >
+          </textarea>
+          <ng-container *ngIf="formUtils.isValidField(masterGuideForm, 'description')">
+            <small class="form-text form-text-error">
+              {{ formUtils.getFieldError(masterGuideForm, 'description') }}
+            </small>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORIGIN LOCATION -->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <label class="control-label">Origin Location*:</label>
+          <div class="mt-2">
+            <label class="radio-inline mr-5">
+              <input type="radio" [value]="locationEnum.IATA" formControlName="originType" /> IATA
+            </label>
+            <label class="radio-inline">
+              <input type="radio" [value]="locationEnum.CONTROLLED_PREMISES" formControlName="originType" /> Recinto Fiscalizado
+            </label>
+          </div>
+          <ng-container *ngIf="formUtils.isValidField(masterGuideForm, 'originType')">
+            <small class="form-text form-text-error">
+              {{ formUtils.getFieldError(masterGuideForm, 'originType') }}
+            </small>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-sm-6" *ngIf="radioHasValue('originType')">
+        <div class="form-group">
+          <label class="control-label">I D*:</label>
+          <app-tooltip text="Código del lugar de Destino"></app-tooltip>
+          <select
+            class="form-control"
+            formControlName="originId"
+            [ngClass]="{
+              'form-control-error': formUtils.isValidField(masterGuideForm, 'originId')
+            }"
+          >
+            <option [ngValue]="null">Selecciona un valor</option>
+            <option *ngFor="let id of originIds" [value]="id.valor">{{ id.clave }}</option>
+          </select>
+          <ng-container *ngIf="formUtils.isValidField(masterGuideForm, 'originId')">
+            <small class="form-text form-text-error">
+              {{ formUtils.getFieldError(masterGuideForm, 'originId') }}
+            </small>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-sm-6">
+        <div class="form-group">
+          <label class="control-label">Name:</label>
+          <app-tooltip text="Nombre del lugar de Origen"></app-tooltip>
+          <input type="text" class="form-control" formControlName="originName" readonly/>
+        </div>
+      </div>
+    </div>
+
+    <!-- FINAL DESTINATION -->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <label class="control-label">Final Destination Location:</label>
+          <div class="mt-2">
+            <label class="radio-inline mr-5">
+              <input type="radio" [value]="locationEnum.IATA" formControlName="finalType" /> IATA
+            </label>
+            <label class="radio-inline">
+              <input type="radio" [value]="locationEnum.CONTROLLED_PREMISES" formControlName="finalType" /> Recinto Fiscalizado
+            </label>
+          </div>
+          <ng-container *ngIf="formUtils.isValidField(masterGuideForm, 'finalType')">
+            <small class="form-text form-text-error">
+              {{ formUtils.getFieldError(masterGuideForm, 'finalType') }}
+            </small>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-sm-6" *ngIf="radioHasValue('finalType')">
+        <div class="form-group">
+          <label class="control-label">I D*:</label>
+          <app-tooltip text="Código del lugar de Destino"></app-tooltip>
+          <select
+            class="form-control"
+            formControlName="finalId"
+            [ngClass]="{
+              'form-control-error': formUtils.isValidField(masterGuideForm, 'finalId')
+            }"
+          >
+            <option [ngValue]="null">Selecciona un valor</option>
+            <option *ngFor="let id of finalIds" [value]="id.valor">{{ id.clave }}</option>
+          </select>
+          <ng-container *ngIf="formUtils.isValidField(masterGuideForm, 'finalId')">
+            <small class="form-text form-text-error">
+              {{ formUtils.getFieldError(masterGuideForm, 'finalId') }}
+            </small>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-sm-6">
+        <div class="form-group">
+          <label class="control-label">Name:</label>
+          <app-tooltip text="Nombre del lugar de Destino"></app-tooltip>
+          <input type="text" class="form-control" formControlName="finalName" readonly/>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUBJECT CODE -->
+    <div class="row mt-1">
+      <div class="col-md-4 col-sm-6">
+        <div class="form-group">
+          <label class="control-label">Subject Code*:</label>
+          <app-tooltip text="Tipo de Operación"></app-tooltip>
+          <select
+            class="form-control"
+            formControlName="subjectCode"
+            [ngClass]="{
+              'form-control-error': formUtils.isValidField(masterGuideForm, 'subjectCode')
+            }"
+          >
+            <option [ngValue]="null">Selecciona una opción</option>
+            <option *ngFor="let option of operationTypes" [value]="option.clave">
+              {{ option.valor }}
+            </option>
+          </select>
+          <ng-container *ngIf="formUtils.isValidField(masterGuideForm, 'subjectCode')">
+            <small class="form-text form-text-error">
+              {{ formUtils.getFieldError(masterGuideForm, 'subjectCode') }}
+            </small>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <!-- SERVICIO DE MANIOBRAS -->
+    <h3>Servicio de maniobras/ Servicio especial</h3>
+    <hr class="red" />
+    <div class="row">
+      <div class="col-md-12">
+        <label class="control-label">Servicio de maniobras:</label>
+        <div class="mt-1">
+          <label class="radio-inline mr-5">
+            <input type="radio" value="Special Handling Codes" formControlName="maneuverType" /> Special Handling Codes
+          </label>
+          <label class="radio-inline">
+            <input type="radio" value="Dangerous" formControlName="maneuverType" /> Dangerous
+          </label>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-sm-6 mt-2">
+        <div class="form-group">
+          <label class="control-label">Description:</label>
+          <app-tooltip text="Descripción del servicio de maniobras"></app-tooltip>
+          <input type="text" class="form-control" formControlName="maneuverDescription" />
+        </div>
+      </div>
+
+      <div class="col-md-4 col-sm-6 mt-2">
+        <div class="form-group">
+          <label class="control-label">Description Code:</label>
+          <app-tooltip text="Código para del Servicio de maniobras"></app-tooltip>
+          <select class="form-control" formControlName="maneuverCode">
+            <option [ngValue]="null">Selecciona una opción</option>
+            <option *ngFor="let code of codesHandling" [value]="code.clave">{{ code.valor }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- SERVICIO ESPECIAL -->
+    <div class="row">
+      <div class="col-md-12">
+        <label class="control-label">Servicio especial:</label>
+        <div class="mt-1">
+          <label class="radio-inline mr-5">
+            <input type="radio" value="Special Handling Codes" formControlName="specialType" /> Special Handling Codes
+          </label>
+          <label class="radio-inline">
+            <input type="radio" value="Dangerous" formControlName="specialType" /> Dangerous
+          </label>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-sm-6 mt-2">
+        <div class="form-group">
+          <label class="control-label">Description:</label>
+          <app-tooltip text="Descripción del servicio de maniobras"></app-tooltip>
+          <input type="text" class="form-control" formControlName="specialDescription" />
+        </div>
+      </div>
+
+      <div class="col-md-4 col-sm-6 mt-2">
+        <div class="form-group">
+          <label class="control-label">Description Code:</label>
+          <app-tooltip text="Código para del Servicio de maniobras"></app-tooltip>
+          <select class="form-control" formControlName="specialCode">
+            <option [ngValue]="null">Selecciona una opción</option>
+            <option *ngFor="let code of codesSpecial" [value]="code.clave">{{ code.valor }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="text-right mt-3">
+      <gob-button
+        type="button"
+        className="btn-primary mr-1"
+        label="Agregar"
+        (clicked)="onSubmit()"
+      ></gob-button>
+      <gob-button
+        type="button"
+        className="btn-danger"
+        label="Cancelar"
+        (clicked)="onCancel()"
+      ></gob-button>
+    </div>
+  </form>
+</div>
+
+<app-dialog [id]="'guideExists'" [content]="'Guía master no existe'"/>
+

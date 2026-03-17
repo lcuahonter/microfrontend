@@ -1,0 +1,489 @@
+<div class="col-md-12">
+  <ng-titulo titulo="Destinatario (destino final)" />
+  <app-tabla-dinamica
+    (filaClic)="onRowClick($event)"
+    [configuracionTabla]="configuracionColumnasoli"
+    [tipoSeleccionTabla]="tipoSeleccionsoliMercancias"
+    [datos]="tableData"
+    (listaDeFilaSeleccionada)="onfilaSeleccionadasChange($event)"
+  >
+  </app-tabla-dinamica>
+  <div *ngIf="(isSubmitted$ | async) && (!tableData || tableData.length === 0)" 
+     class="mensaje-error mt-1">
+    Debe agregar al menos un registro en la tabla.
+</div>
+  <div class="col-md-12 d-flex justify-content-end mt-3">
+    <div class="btn-group">
+      <button
+        class="btn btn-primary me-3"
+        type="button"
+        *ngIf="!tableData?.length"
+        (click)="onAgregar()"
+        data-bs-toggle="modal"
+        data-bs-target="#tercerosRelacionadosModal"
+      >
+        Agregar
+      </button>
+      @if(filaSeleccionada){
+      <button
+        class="btn btn-default me-3"
+        type="button"
+        *ngIf="filaSeleccionadas.size > 0"
+        [disabled]="!filaSeleccionada || esFormularioSoloLectura"
+        (click)="enModificar()"
+        data-bs-toggle="modal"
+       
+      >
+        Modificar
+      </button>
+      <button
+        class="btn btn-danger me-3"
+        type="button"
+        *ngIf="filaSeleccionadas.size > 0"
+        [disabled]="filaSeleccionadas.size === 0 || esFormularioSoloLectura"
+        (click)="onDeletefilaSeleccionadas()"
+      >
+        Eliminar
+      </button>
+      }
+    </div>
+  </div>
+</div>
+<div
+  class="modal fade"
+  id="tercerosRelacionadosModal"
+  data-bs-backdrop="static"
+  tabindex="-1"
+  aria-labelledby="tercerosRelacionadosModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-xl custom-modal-size">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="tercerosRelacionadosModalLabel">
+          Datos personales
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+           (click)="close()"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="container" *ngIf="esFormularioVisible" id="form-contain">
+          <form [formGroup]="destinatarioForm" (ngSubmit)="enEnviar($event)">
+            <ng-titulo titulo="Datos personales" />
+            <ng-container formGroupName="datosDelTramiteRealizar">
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <label class="form-label" for="tipoPersona"
+                    >Tipo persona*:</label
+                  >
+                </div>
+                <div class="col-md-6">
+                  <app-input-radio
+                    [radioOptions]="tipoPersonaRadioOptions"
+                    [selectedValue]="tipoPersonaSeleccionada"
+                    [isRequired]="true"
+                    (valueChange)="setTipoPersona($event)"
+                    formControlName="tipoPersona"
+                    (change)="
+                      setValoresStore(
+                        datosDelTramiteRealizar,
+                        'tipoPersona',
+                        'setTipoPersona'
+                      )
+                    "
+                    [disabled]="esFormularioSoloLectura"
+                  >
+                  </app-input-radio>
+                </div>
+                <div
+                  *ngIf="
+                    datosDelTramiteRealizar.get('tipoPersona')?.touched &&
+                    datosDelTramiteRealizar.get('tipoPersona')?.invalid
+                  "
+                  class="text-danger validation-message"
+                >
+                  Este campo es obligatorio.
+                </div>
+              </div>
+              @if (tipoPersonaSeleccionada === 'moral') {
+              <div class="row">
+                <div class="col-md-8 mb-3">
+                  <label class="form-label" for="denominación"
+                    >Denominación/razón social*:</label
+                  >
+                  <input
+                    class="form-control"
+                    id="denominacion"
+                    type="text"
+                    formControlName="denominacion"
+                    (change)="
+                      setValoresStore(
+                        datosDelTramiteRealizar,
+                        'denominacion',
+                        'setDenominacion'
+                      )
+                    "
+                    [disabled]="esFormularioSoloLectura"
+                    [ngClass]="{
+                      'is-invalid':
+                        destinatarioForm.get(
+                          'datosDelTramiteRealizar.denominacion'
+                        )?.touched &&
+                        destinatarioForm.get(
+                          'datosDelTramiteRealizar.denominacion'
+                        )?.invalid
+                    }"
+                  />
+
+                  <div
+                    *ngIf="
+                      datosDelTramiteRealizar.get('denominacion')?.touched &&
+                      datosDelTramiteRealizar.get('denominacion')?.invalid
+                    "
+                    class="text-danger validation-message"
+                  >
+                    Este campo es obligatorio.
+                  </div>
+                </div>
+              </div>
+              } @if (tipoPersonaSeleccionada === 'fisica') {
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label class="form-label" for="nombre">Nombre(s)*:</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="nombre"
+                      formControlName="nombre"
+                      (change)="
+                        setValoresStore(
+                          datosDelTramiteRealizar,
+                          'nombre',
+                          'setNombre'
+                        )
+                      "
+                      [ngClass]="{
+                        'is-invalid':
+                          destinatarioForm.get('datosDelTramiteRealizar.nombre')
+                            ?.touched &&
+                          destinatarioForm.get('datosDelTramiteRealizar.nombre')
+                            ?.invalid
+                      }"
+                    />
+                    <div
+                      *ngIf="
+                        destinatarioForm.get('datosDelTramiteRealizar.nombre')
+                          ?.touched &&
+                        destinatarioForm.get('datosDelTramiteRealizar.nombre')
+                          ?.invalid
+                      "
+                      class="text-danger validation-message"
+                    >
+                      Este campo es obligatorio.
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label class="form-label" for="primerApellido"
+                      >Primer apellido*:</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="primerApellido"
+                      formControlName="primerApellido"
+                      (change)="
+                        setValoresStore(
+                          datosDelTramiteRealizar,
+                          'primerApellido',
+                          'setPrimerApellido'
+                        )
+                      "
+                      [ngClass]="{
+                        'is-invalid':
+                          destinatarioForm.get(
+                            'datosDelTramiteRealizar.primerApellido'
+                          )?.touched &&
+                          destinatarioForm.get(
+                            'datosDelTramiteRealizar.primerApellido'
+                          )?.invalid
+                      }"
+                    />
+                    <div
+                      *ngIf="
+                        destinatarioForm.get(
+                          'datosDelTramiteRealizar.primerApellido'
+                        )?.touched &&
+                        destinatarioForm.get(
+                          'datosDelTramiteRealizar.primerApellido'
+                        )?.invalid
+                      "
+                      class="text-danger validation-message"
+                    >
+                      Este campo es obligatorio.
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label class="form-label" for="segundoApellido"
+                      >Segundo apellido:</label
+                    >
+                    <input
+                      type="text"
+                      value=""
+                      class="form-control"
+                      id="segundoApellido"
+                      formControlName="segundoApellido"
+                      (change)="
+                        setValoresStore(
+                          datosDelTramiteRealizar,
+                          'segundoApellido',
+                          'setSegundoApellido'
+                        )
+                      "
+                    />
+                  </div>
+                </div>
+              </div>
+              }
+
+              <div class="row">
+                <div class="col-md-8">
+                  <div class="form-group">
+                    <label class="form-label" for="domicilio"
+                      >Domicilio*:</label
+                    >
+                    <textarea
+                      class="form-control"
+                      id="domicilio"
+                      rows="2"
+                      height="50"
+                      style="height: 100px"
+                      formControlName="domicilio"
+                     [placeholder]="placeholderDomicilio"
+  (focus)="placeholderDomicilio = ''"
+  (blur)="placeholderDomicilio = 'Calle, No Ext, No Int, Ciudad, C.P.'"
+                      (change)="
+                        setValoresStore(
+                          datosDelTramiteRealizar,
+                          'domicilio',
+                          'setDomicilio'
+                        )
+                      "
+                      [disabled]="esFormularioSoloLectura"
+                     [ngClass]="{
+        'is-invalid': destinatarioForm.get('datosDelTramiteRealizar.domicilio')?.touched &&
+                          destinatarioForm.get('datosDelTramiteRealizar.domicilio')?.invalid
+
+      }"
+                    ></textarea>
+                     <div
+    *ngIf="
+      destinatarioForm.get('datosDelTramiteRealizar.domicilio')?.touched &&
+      destinatarioForm.get('datosDelTramiteRealizar.domicilio')?.hasError('pattern')
+    "
+    class="text-danger validation-message"
+  >
+    Existen datos incorrectos que no cumplen con el formato esperado.
+  </div>
+                   <div
+      *ngIf="
+        destinatarioForm.get('datosDelTramiteRealizar.domicilio')?.touched &&
+        destinatarioForm.get('datosDelTramiteRealizar.domicilio')?.hasError('pattern')
+      "
+      class="text-danger validation-message"
+    >
+      Por favor, no uses caracteres especiales.
+    </div>
+    <div
+      *ngIf="
+        destinatarioForm.get('datosDelTramiteRealizar.domicilio')?.touched &&
+        destinatarioForm.get('datosDelTramiteRealizar.domicilio')?.hasError('required')
+      "
+      class="text-danger validation-message"
+    >
+    Existen datos incorrectos que no cumplen con el formato esperado.
+    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <app-catalogo-select
+                      id="paisData"
+                      formControlName="pais"
+                      [catalogo]="paisData.catalogos"
+                      [label]="'País*'"
+                      [placeholder]="paisData.primerOpcion"
+                      [markTouched]="datosDelTramiteRealizar.get('pais')?.touched??false"
+  
+                      (change)="
+                        setValoresStore(
+                          datosDelTramiteRealizar,
+                          'pais',
+                          'setPais'
+                        )
+                      "
+                    
+                      [disabled]="esFormularioSoloLectura"
+                    ></app-catalogo-select>
+                    @if(isPaisRequired){
+                    <small class="text-danger validation-message">
+                      Por favor, selecciona una opción.
+                    </small>
+                    } @if(isPaisInvalid){
+                    <small class="text-danger validation-message">
+                      Este campo es obligatorio.
+                    </small>
+                    }
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4 mb-3">
+  <div class="form-group">
+    <label class="form-label" for="codigopostal">Codigo postal:</label>
+    <input
+      class="form-control"
+      id="codigopostal"
+      type="text"
+      formControlName="codigopostal"
+      maxlength="12"
+      
+      (change)="
+        setValoresStore(
+          datosDelTramiteRealizar,
+          'codigopostal',
+          'setCodigopostal'
+        )
+      "
+      [disabled]="esFormularioSoloLectura"
+      [ngClass]="{ 'is-invalid': isCodigoPostalInvalid || isCodigoPostalPatternInvalid }"
+    />
+    <div *ngIf="isCodigoPostalPatternInvalid" class="text-danger validation-message">
+      Por favor, no escribas más de 5 caracteres.
+    </div>
+<div *ngIf="isCodigoPostalInvalid" class="text-danger validation-message">
+  Por favor, sólo escribe dígitos.
+</div>
+  </div>
+</div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <label class="form-label" for="telefono">Telefono:</label>
+                  <input
+                    class="form-control"
+                    id="telefono"
+                    type="text"
+                    formControlName="telefono"
+                    (change)="
+                      setValoresStore(
+                        datosDelTramiteRealizar,
+                        'telefono',
+                        'setTelefono'
+                      )
+                    "
+                    [disabled]="esFormularioSoloLectura"
+                    [ngClass]="{
+      'is-invalid': destinatarioForm.get('datosDelTramiteRealizar.telefono')?.touched &&
+                    destinatarioForm.get('datosDelTramiteRealizar.telefono')?.hasError('pattern'),
+    }"
+                  />
+                  <div
+                    *ngIf="
+                      destinatarioForm.get('datosDelTramiteRealizar.telefono')
+                        ?.touched &&
+                      destinatarioForm
+                        .get('datosDelTramiteRealizar.telefono')
+                        ?.hasError('pattern')
+                    "
+                    class="text-danger"
+                  >
+                    Existen datos incorrectos que no cumplen con el formato
+                    esperado.
+                  </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label class="form-label" for="correoelectronico"
+                    >Correo electronico:</label
+                  >
+                  <input
+                    class="form-control"
+                    id="correoelectronico"
+                    type="text"
+                    formControlName="correoelectronico"
+                    (change)="
+                      setValoresStore(
+                        datosDelTramiteRealizar,
+                        'correoelectronico',
+                        'setCorreoelectronico'
+                      )
+                    "
+                    [disabled]="esFormularioSoloLectura"
+                    [ngClass]="{
+                      'is-invalid':
+                        destinatarioForm.get(
+                          'datosDelTramiteRealizar.correoelectronico'
+                        )?.touched &&
+                        destinatarioForm
+                          .get('datosDelTramiteRealizar.correoelectronico')
+                          ?.hasError('email')
+                    }"
+                  />
+                  <div
+                    *ngIf="
+                      destinatarioForm.get(
+                        'datosDelTramiteRealizar.correoelectronico'
+                      )?.touched &&
+                      destinatarioForm
+                        .get('datosDelTramiteRealizar.correoelectronico')
+                        ?.hasError('email')
+                    "
+                    class="text-danger"
+                  >
+                    Por favor, escribe una dirección de correo válida.
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+            <div class="modal-footer d-flex justify-content-end flex-wrap">
+            <div class="col-md-12 d-flex justify-content-end">
+              <div class="btn-group" style="margin-bottom: 20px">
+                <button
+                  class="btn btn-default me-2"
+                  type="button"
+                  (click)="onCancelar()"
+                  data-bs-dismiss="modal"
+                >
+                  Cancelar
+                </button>
+                <button
+                  class="btn btn-primary me-2"
+                  type="button"
+                  (click)="onLimpiar()"
+                >
+                  Limpiar
+                </button>
+                <button class="btn btn-primary me-2" type="submit">
+                  Guardar
+                </button>
+              </div>
+            </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

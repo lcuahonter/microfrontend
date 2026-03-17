@@ -1,0 +1,78 @@
+<div class="row mt-5">
+  <!-- First column -->
+  <div class="col-md-4 col-sm-4 col-xs-6">
+    <div class="radio">
+      <label>
+        <input type="radio" [(ngModel)]="searchType" [value]="searchTypeEnum.MANIFEST" (ngModelChange)="onSearchTypeChange()"/>
+        Manifiesto
+      </label>
+    </div>
+
+    <div class="radio mt-1">
+      <label>
+        <input type="radio" [(ngModel)]="searchType" [value]="searchTypeEnum.FLIGHT" (ngModelChange)="onSearchTypeChange()"/>
+        No. Vuelo
+      </label>
+    </div>
+  </div>
+
+  <!-- Second column -->
+  <div class="col-md-4 col-sm-4 col-xs-6">
+    <div class="radio">
+      <label>
+        <input type="radio" [(ngModel)]="searchType" [value]="searchTypeEnum.MASTER" (ngModelChange)="onSearchTypeChange()"/>
+        Master
+      </label>
+    </div>
+
+    <div class="radio mt-1" *ngIf="authInformationService.authInfo.rol === 'funcionario'">
+      <label>
+        <input type="radio" [(ngModel)]="searchType" [value]="searchTypeEnum.CAAT" (ngModelChange)="onSearchTypeChange()"/>
+        CAAT
+      </label>
+    </div>
+  </div>
+
+  <!-- Third column -->
+  <div class="col-md-4 col-sm-4 col-xs-6">
+    <div class="radio">
+      <label>
+        <input type="radio" [(ngModel)]="searchType" [value]="searchTypeEnum.HOUSE" (ngModelChange)="onSearchTypeChange()"/>
+        House
+      </label>
+    </div>
+  </div>
+</div>
+
+<app-manifest-form *ngIf="searchType === searchTypeEnum.MANIFEST" [customs]="customs" (onSubmitForm)="displayTable($event)"/>
+<app-master-form *ngIf="searchType === searchTypeEnum.MASTER" [customs]="customs" (onSubmitForm)="displayTable($event)"/>
+<app-house-form *ngIf="searchType === searchTypeEnum.HOUSE" [customs]="customs" (onSubmitForm)="displayTable($event)"/>
+<app-flight-form *ngIf="searchType === searchTypeEnum.FLIGHT" [customs]="customs" (onSubmitForm)="displayTable($event)"/>
+<app-caat-form *ngIf="searchType === searchTypeEnum.CAAT" [customs]="customs" (onSubmitForm)="displayTable($event)"/>
+
+<div class="row" *ngIf="!!searchType">
+  <div class="col-md-12 mt-3 text-right">
+    <gob-button
+      type="button"
+      className="btn-primary"
+      label="Buscar"
+      (clicked)="submitForm()"
+      class="mr-1">
+    </gob-button>
+    <gob-button
+      type="button"
+      className="btn-default"
+      label="Limpiar"
+      (clicked)="resetForm()"
+    ></gob-button>
+  </div>
+</div>
+
+<app-manifest-table *ngIf="displayManifestTable()" />
+<app-manifest-table *ngIf="displayCaatTable()" />
+<app-master-table *ngIf="displayMasterTable()"/>
+<app-house-table *ngIf="displayHouseTable()"/>
+<app-flight-table *ngIf="displayFlightTable()"/>
+
+
+

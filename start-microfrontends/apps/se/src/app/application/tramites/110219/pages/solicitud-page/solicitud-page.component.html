@@ -1,0 +1,79 @@
+<div class="page">
+  <div class="container">
+    <div class="row">
+      <div *ngIf="indice === 1" class="col-md-12">
+        <h2>Cancelación de certificado</h2>
+      </div>
+      <div *ngIf="indice === 2" class="col-md-12">
+        <h1>Firmar</h1>
+        <ng-alert [CONTENIDO]="TERCEROS_TEXTO_DE_ALERTA"></ng-alert>
+      </div>
+      @if (isNumeroDe) {
+      <div
+        class="alert alert-danger text-center"
+        role="alert"
+      >
+        <p>Corrija los siguientes errores:</p>
+        <span style="color: rgb(134, 17, 17)">
+          (Número de certificado) es un campo requerido
+        </span>
+      </div>
+      }
+      @if (isCancelacionPattern) {
+        <div
+          class="alert alert-danger text-center"
+          role="alert"
+        >
+          <p>Corrija los siguientes errores:</p>
+          <span style="color: rgb(134, 17, 17)">
+            Motivo de cancelación NO debe tener más de 1,500 caracteres de longitud
+          </span>
+        </div>
+        }
+      @if (isNumeroPattern) {
+      <div
+        class="alert alert-danger text-center"
+        role="alert"
+      >
+        <p>Corrija los siguientes errores:</p>
+        <span style="color: rgb(134, 17, 17)">
+          El certificado de origen no existe
+        </span>
+      </div>
+      }
+      @if (isNumeroDatos) {
+      <div
+        class="col-md-12 alert alert-danger"
+        style="text-align: center"
+        role="alert"
+      >
+        Favor de verificar los campos que marcan error
+      </div>
+      }
+      @if(esFormaValido){
+      <div class="col-md-12">
+        <ng-alert [CONTENIDO]="formErrorAlert" [CUSTOMECLASS]="'alert-danger'"></ng-alert>
+      </div> }
+      <app-wizard [listaPasos]="pasos"></app-wizard>
+    </div>
+    <div class="row">
+      @switch (indice) { @case (1) {
+      <app-paso-uno
+        (eventoNumeroDePattern)="isNumeroDePattern($event)"
+        (eventoNumeroDe)="isNumeroDeCertificado($event)"
+        (miEvento)="alEventoHijo($event)"
+        (eventoDatosHijoCertificado)="getDatosCertificado($event)"
+        (isDatosNumero)="isDatosNumero($event)"
+        (eventoCancelacionPattern)="onCancelacionPatternError($event)"
+      ></app-paso-uno>
+      } @case (2) { 
+         <paso-firma [idSolicitud]="solicitudState.idSolicitud" [procedure]="110219" [procedureUrl]="'certificado/solicitud'"></paso-firma>
+      } }
+      <btn-continuar
+        [datos]="datosPasos"
+        (continuarEvento)="getValorIndice($event)"
+        (anteriorEvento)="getValorIndice($event)"
+      ></btn-continuar>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,36 @@
+<div class="container">
+  <div class="row mt-5">
+
+    <form [formGroup]="solicitud" class="pl-16">
+      <div *ngIf="esFormularioSoloLectura" class="row mb-3">
+        <ng-titulo titulo="Folio original" />
+        <div class="col-md-4 mb-3 form-group">
+          <label>Folio Original a Desistir:</label>
+          <input [value]="folioTramitePadre" type=" text" class="form-control" disabled />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label for="justificacion">Justificación<span
+                [ngClass]="
+                solicitud.get('justificacion')?.invalid && solicitud.get('justificacion')?.touched ? 'has-error' : ''">*</span>:</label>
+            <textarea rows="5" cols="70" class="justificacionTextArea" formControlName="justificacion"
+              id="justificacion" (change)="setValoresStore(solicitud,'justificacion')"
+              [ngClass]="{'border-danger': solicitud.get('justificacion')?.touched && solicitud.get('justificacion')?.invalid}"></textarea>
+
+            <div *ngIf="solicitud.get('justificacion')?.touched && solicitud.get('justificacion')?.invalid"
+              class="text-danger">
+              <div *ngIf="solicitud.get('justificacion')?.errors?.['required']">
+                Este campo es obligatorio.
+              </div>
+              <div *ngIf="solicitud.get('justificacion')?.errors?.['maxlength']">
+                La justificación no puede tener más de 4000 caracteres.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

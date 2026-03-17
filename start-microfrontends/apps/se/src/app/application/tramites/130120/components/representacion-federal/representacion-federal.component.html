@@ -1,0 +1,52 @@
+<div class="container">
+  <form [formGroup]="datosFederal">
+    <ng-titulo [titulo]="'Representación federal'"></ng-titulo>
+    <div class="row align-items-end">
+      <!-- Entidad federativa -->
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="">Entidad federativa
+            <span
+              [ngClass]="datosFederal.get('entidad_federativa')?.errors?.['required'] && datosFederal.get('entidad_federativa')?.touched ? 'text-danger' : ''">*</span>:
+          </label>
+          <select class="form-control form-select" formControlName="entidad_federativa"
+            [disabled]="esFormularioSoloLectura" (change)="onEntidadSeleccionado()">
+            <option [ngValue]="null">Seleccione una opción</option>
+            <option *ngFor="let entidad of entidadOpcion" [title]="entidad.descripcion" [value]="entidad.clave">
+              {{ entidad.descripcion }}
+            </option>
+          </select>
+          <div
+            *ngIf="datosFederal.get('entidad_federativa')?.touched && datosFederal.get('entidad_federativa')?.invalid">
+            <small *ngIf="datosFederal.get('entidad_federativa')?.errors?.['required']" class="text-danger">Este campo
+              es obligatorio</small>
+          </div>
+        </div>
+      </div>
+      <!-- Representación federal -->
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="">Representación federal
+            <span
+              [ngClass]="datosFederal.get('representacion_federal')?.errors?.['required'] && datosFederal.get('representacion_federal')?.touched ? 'text-danger' : ''">*</span>:
+          </label>
+          <select class="form-control form-select" formControlName="representacion_federal"
+            [disabled]="esFormularioSoloLectura"
+            (change)="setValoresStore(datosFederal, 'representacion_federal', 'setRepresentacion_federal')">
+            <option [ngValue]="null">Seleccione una opción</option>
+            <option *ngFor="let representacion of representacionOpcion" [title]="representacion.descripcion"
+              [value]="representacion.clave">
+              {{ representacion.descripcion }}
+            </option>
+          </select>
+          <div
+            *ngIf="datosFederal.get('representacion_federal')?.touched && datosFederal.get('representacion_federal')?.invalid">
+            <small *ngIf="datosFederal.get('representacion_federal')?.errors?.['required']" class="text-danger">Este
+              campo
+              es obligatorio</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

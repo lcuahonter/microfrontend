@@ -1,0 +1,29 @@
+<div class="container">
+    <!-- Contenedor principal -->
+    <div class="row">
+        <!-- Fila principal -->
+        <ul class="nav nav-tabs">
+            <!-- Lista de pestañas de navegación -->
+            <li [ngClass]="indice === 1 ? 'active' : ''">
+                <!-- Pestaña activa si el índice es 1 -->
+                <a data-toggle="tab" tabindex="0" (keyup)="seleccionaTab(1)" (click)="seleccionaTab(1)">Solicitante</a>
+                <!-- Enlace para seleccionar la pestaña "Solicitante" -->
+            </li>
+            @if (!consultaState.readonly) {
+            <li [ngClass]="indice === 2 ? 'active' : ''">
+                <!-- Pestaña activa si el índice es 2 -->
+                <a data-toggle="tab" tabindex="0" (keyup)="seleccionaTab(1)" (click)="seleccionaTab(2)">Cancelación de autorizaciones</a>
+                <!-- Enlace para seleccionar la pestaña "Cancellation de autorizaciones" -->
+            </li>
+        }
+        </ul>
+        <ng-container>
+            <!-- Caso 1: Mostrar componente "Solicitante" -->
+            <solicitante [hidden]="indice !== 1" #Solicitante></solicitante>
+               @if (!consultaState.readonly) {
+            <!-- Caso 2: Mostrar componente "app-programa-a-cancelar" -->
+            <app-programa-a-cancelar [hidden]="indice !== 2" [idTipoTramite]="idTipoTramite" #programaACancelarComponent></app-programa-a-cancelar>
+                }
+        </ng-container>
+    </div>
+</div>

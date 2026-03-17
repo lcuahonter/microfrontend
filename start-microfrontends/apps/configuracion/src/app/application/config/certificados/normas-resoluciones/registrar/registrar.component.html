@@ -1,0 +1,120 @@
+<div class="container">
+  <div class="mb-3">
+    <span class="text-primary text-decoration-underline cursor-pointer" (click)="onCancelar()">Antecesor</span> | Activo
+  </div>
+  <ng-titulo [titulo]="esModificacion ? 'Modificación de Normas y Resoluciones' : 'Registro de Normas y Resoluciones'"></ng-titulo>
+  <div class="card shadow-sm">
+    <div class="card-header">
+      <h5 class="mb-0">Normas y Resoluciones</h5>
+    </div>
+    <div class="card-body p-4">
+      <form [formGroup]="formRegistro">
+        <div class="row mb-3 align-items-center">
+          <div class="col-md-3 text-end"><label class="fw-bold">Tratado Acuerdo:</label></div>
+          <div class="col-md-9">
+            <input type="text" formControlName="tratado" class="form-control" readonly>
+          </div>
+        </div>
+        <div class="row mb-3 align-items-center">
+          <div class="col-md-3 text-end"><label class="fw-bold">Bloque/País:</label></div>
+          <div class="col-md-9">
+            <input type="text" formControlName="bloquePais" class="form-control" readonly>
+          </div>
+        </div>
+        <div class="row mb-3 align-items-center">
+          <div class="col-md-3 text-end">
+            <label class="fw-bold"><span class="text-danger">* </span>Criterio(s):</label>
+          </div>
+          <div class="col-md-9">
+            <select formControlName="criterio" class="form-control form-select">
+              <option value="">Seleccione</option>
+              <option *ngFor="let c of criterios" [value]="c">{{ c }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="row mb-3 align-items-center">
+          <div class="col-md-3 text-end">
+            <label class="fw-bold"><span class="text-danger">* </span>Norma:</label>
+          </div>
+          <div class="col-md-9">
+            <input type="text" formControlName="norma" class="form-control">
+          </div>
+        </div>
+        <div class="row mb-3 align-items-center">
+          <div class="col-md-3 text-end"><label class="fw-bold">Calificación:</label></div>
+          <div class="col-md-9">
+            <select formControlName="calificacion" class="form-control form-select">
+              <option value="Aprobado">Aprobado</option>
+              <option value="Negado">Negado</option>
+            </select>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-3 text-end pt-1"><label class="fw-bold">Primer párrafo:</label></div>
+          <div class="col-md-9">
+            <textarea formControlName="primerParrafo" class="form-control" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-3 text-end pt-1"><label class="fw-bold">Segundo párrafo:</label></div>
+          <div class="col-md-9">
+            <textarea formControlName="segundoParrafo" class="form-control" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-3 text-end pt-1"><label class="fw-bold">Tercer párrafo:</label></div>
+          <div class="col-md-9">
+            <textarea formControlName="tercerParrafo" class="form-control" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-3 text-end pt-1"><label class="fw-bold">Cuarto párrafo:</label></div>
+          <div class="col-md-9">
+            <textarea formControlName="cuartoParrafo" class="form-control" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="row mb-3 align-items-center">
+          <div class="col-md-3 text-end"><label class="fw-bold">Exportador Autorizado:</label></div>
+          <div class="col-md-9">
+            <input type="checkbox" formControlName="exportadorAutorizado" class="form-check-input ms-0">
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-3 text-end pt-1"><label class="fw-bold">Párrafo exportador autorizado:</label></div>
+          <div class="col-md-9">
+            <textarea formControlName="parrafoExportadorAutorizado" class="form-control" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-3 text-end pt-1">
+            <label class="fw-bold"><span class="text-danger">* </span>Asunto:</label>
+          </div>
+          <div class="col-md-9">
+            <textarea formControlName="asunto" class="form-control" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="row mb-3 align-items-center">
+          <div class="col-md-3 text-end"><label class="fw-bold">Activo:</label></div>
+          <div class="col-md-9">
+            <input type="checkbox" formControlName="activo" class="form-check-input ms-0">
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col-12 d-flex justify-content-center gap-3">
+            <button type="button" class="btn btn-primary rounded-pill px-5" (click)="onGuardar()">
+              Guardar
+            </button>
+            <button type="button" class="btn btn-secondary rounded-pill px-5" (click)="onCancelar()">
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <lib-notificaciones
+    *ngIf="notificacion"
+    [notificacionInput]="notificacion"
+    (confirmacionModal)="onConfirmacion($event)"
+  ></lib-notificaciones>
+</div>

@@ -1,0 +1,51 @@
+<ng-container [formGroup]="inicializarFormulario">
+    <div class="form-wrap">
+    <ng-titulo [titulo]="titulo" />
+    <div class="row mt-2">
+      <div class="col-lg-6 col-md-6">
+        <div class="form-group">
+          <label class="form-label text-left">Número CAAT:</label>
+          <input
+            class="form-control"
+            id="caatRead"
+            placeholder=""
+            type="text"
+            [value]="cveFolioCaat$ | async"
+            name="cveFolioCaat"
+            formControlName="cveFolioCaat"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-6 col-md-6">
+        <div class="form-group" *ngIf="tipoTransitoList$ | async as tipoDeTransitoList">
+            <app-catalogo-select
+            [catalogo]="tipoDeTransitoList"
+            [label]="'Seleccione el tipo de tránsito que desea realizar'"
+            [placeholder]="'Seleccione un valor'"
+            [required]="true"
+            id="tipoTransito"
+            formControlName="tipoTransito"
+            (selectionChange)="
+              setValoresStore(
+                inicializarFormulario,
+                'tipoTransito'
+              )
+            "
+            [isDisabled]="esFormularioSoloLectura"
+          ></app-catalogo-select>
+          <div *ngIf="esInvalido('tipoTransito')" class="text-danger">
+            <small
+              *ngIf="
+                inicializarFormulario.controls['tipoTransito'].hasError('required')
+              "
+              >Este campo es obligatorio.</small
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </ng-container>

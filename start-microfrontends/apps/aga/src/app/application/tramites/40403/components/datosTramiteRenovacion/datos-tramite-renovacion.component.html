@@ -1,0 +1,82 @@
+<form [formGroup]="formulario">
+  <div>
+    <div class="row">
+      <div class="col-md-12">
+        <input type="hidden" name="idSolicitud" id="idSolicitud" />
+        <input type="hidden" name="idPersonaSolicitud" />
+        <input type="hidden" name="ideGenerica1" />
+        <input type="hidden" name="fechaInicioVigencia" id="fechaInicioVigencia" />
+        <input type="hidden" name="fechaFinVigencia" id="fechaFinVigencia" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-8">
+        <div class="mt-4">
+          <label for="claveFolioCAAT">Código Alfanumerico Armonizado del Transportista (CAAT) *:</label>
+        </div>
+        <div>
+          <input type="text" formControlName="claveFolioCAAT" id="claveFolioCAAT" maxlength="4"
+            (blur)="caatConMayusculas($event)" class="form-control"
+            (change)="setValoresStore(formulario,'claveFolioCAAT', 'establecerClaveFolioCAAT')" />
+        <small *ngIf="mostrarError" class="text-danger espaciador-campo-pequeño">No se ha proporcionado información que es requerida.</small>
+        <small *ngIf="formulario.get('claveFolioCAAT')?.errors?.['pattern']" class="text-danger espaciador-campo-pequeño">Existen datos incorrectos que no cumplen con el formato esperado</small>
+        <small *ngIf="formulario.get('claveFolioCAAT')?.errors?.['maxlength']" class="text-danger espaciador-campo-pequeño">Por favor, no escribas menos de 4 caracteres</small>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <div class="pull-right">
+          <button type="button" class="btn btn-primary" name="buscarSolicitudPorCAAT" id="buscarSolicitudPorCAAT"
+            (click)="buscarSolicitudPorCAAT()" [disabled]="soloLectura">
+            
+            Buscar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col col-md-4 mt-4">
+        <div>
+          <label for="caatAereoRenovacionCaat">CAAT:</label>
+        </div>
+        <div>
+          <input type="text" formControlName="cveFolioCaat" name="caat" maxlength="4" class="form-control"
+            (change)="setValoresStore(formulario,'cveFolioCaat', 'establecerCveFolioCaat')" />
+        </div>
+      </div>
+      <div class="col col-md-4 mt-4">
+        <div>
+          <label for="descripcionTipoCaat">Perfil:</label>
+        </div>
+        <div>
+          <input type="text" formControlName="descripcionTipoCaat" id="descripcionTipoCaat" class="form-control"
+            (change)="setValoresStore(formulario,'descripcionTipoCaat', 'establecerDescripcionTipoCaat')" />
+        </div>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="tipoDeCaatAerea" formControlName="tipoDeCaatAerea"
+          [label]="'Tipo de CAAT Aéreo'" name="tipoDeCaatAerea" 
+          (change)="setValoresStore(formulario, 'tipoDeCaatAerea', 'establecerTipoDeCaatAerea')" [isDisabled]="true"></app-catalogo-select>
+      </div>
+
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="ideCodTransportacionAerea" formControlName="ideCodTransportacionAerea"
+          [label]="'Código de Transportación Aéreo'" name="ideCodTransportacionAerea" [isDisabled]="true"
+          (change)="setValoresStore(formulario, 'ideCodTransportacionAerea', 'establecerIdeCodTransportacionAerea')"></app-catalogo-select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <label for="solicitudIataIcao" class="form-label">Código:</label>
+        <input type="text" formControlName="codIataIcao" maxlength="3" class="form-control"
+          (change)="setValoresStore(formulario,'codIataIcao', 'establecerCodIataIcao')" />
+      </div>
+    </div>
+  </div>
+</form>

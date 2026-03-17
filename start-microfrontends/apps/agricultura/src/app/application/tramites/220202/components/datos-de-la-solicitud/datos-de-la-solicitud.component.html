@@ -1,0 +1,191 @@
+<div class="container">
+  <div class="row mt-4">
+    @if(mostrarSolicitudTabla){
+    <div class="col-md-12">
+      <div class="panel-group ficha-collapse" id="accordion">
+        <div class="panel panel-default">
+          <div class="panel-heading" (click)="mostrar_colapsable()">
+            <h4 class="panel-title">
+                 <a aria-label="Repeat"
+                  ><i class="bi bi-repeat" aria-hidden="true"></i
+                ></a>
+            </h4>
+            <button type="button" class="collpase-button" [class.collapsed]="!colapsable"></button>
+          </div>
+          <div *ngIf="colapsable" class="panel-collapse collapse in" id="panel-01">
+            <div class="panel-body">
+              <div class="row">
+                <ng-alert [CONTENIDO]="instruccionDobleClic"></ng-alert>
+              </div>
+              <div class="row">
+                <h5>Solicitud</h5>
+                <div class="row">
+                  <div class="col-md-12">
+                    <app-tabla-dinamica
+                    [tipoSeleccionTabla]="tipoSeleccionsoli"
+                    [configuracionTabla]="solicitudConfigurationColumnasoli"
+                    [datos]="cuerpoTablaSolicitud"
+                    [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+                    [esDobleClick]="true"
+                    (filaClic)="seleccionFila($event)">
+                  </app-tabla-dinamica>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <ng-titulo titulo="Datos del trámite a realizar"></ng-titulo>
+    </div>
+  </div>
+  <form [formGroup]="forma">
+    <div class="row" formGroupName="datos">
+
+      <div class="row">
+        <div class="col-md-12">
+          <app-catalogo-select
+            placeholder=" Selecciona un valor"
+            [catalogo]="aduanaList"
+            formControlName="aduanaDeIngreso"
+            [label]="'Aduana de ingreso'"
+            [required]="true"
+            [isDisabled]="esFormularioSoloLectura"
+            name="aduanaDeIngreso"
+            (change)="setValoresStore(); catalogoOficinas(forma);"
+            [markTouched]='markTouched'
+          ></app-catalogo-select>
+        </div>
+        <div class="col-md-12">
+          <app-catalogo-select
+            placeholder=" Selecciona un valor"
+            [catalogo]="agropecuariaList"
+            formControlName="oficinaDeInspeccion"
+            [label]="'Oficina de inspección de Sanidad Agropecuaria'"
+            [required]="true"
+               [isDisabled]="esFormularioSoloLectura"
+            name="oficinaDeInspeccion"
+            (change)="setValoresStore(); obtenerPuntoInspeccion(forma)"
+            [markTouched]='markTouched'
+          ></app-catalogo-select>
+        </div>
+        <div class="col-md-12">
+          <app-catalogo-select
+            placeholder=" Selecciona un valor"
+            [catalogo]="puntoList"
+            formControlName="puntoDeInspeccion"
+            [label]="'Punto de inspección'"
+            [required]="true"
+             [isDisabled]="esFormularioSoloLectura"
+            name="puntoDeInspeccion"
+            (change)="setValoresStore()"
+            [markTouched]='markTouched'
+          ></app-catalogo-select>
+        </div>
+
+
+      </div>
+      <div class="row">
+        <div class="col-md-6 mt-2">
+          <label class="control-label" for="guia">Número de guía:</label>
+          <input
+            class="form-control"
+            id="numeroDeGuia"
+            type="text"
+            name = "numeroDeGuia"
+            formControlName="numeroDeGuia"
+            maxlength="50"
+            (change)="setValoresStore()"
+          />
+        </div>
+        <div class="col-md-6">
+          <app-catalogo-select
+            placeholder=" Selecciona un valor"
+            [catalogo]="regimeList"
+            formControlName="regimen"
+            [label]="'Régimen'"
+            [required]="true"
+          [isDisabled]="esFormularioSoloLectura"
+            name="regimen"
+            [tooltipQuestionCircle]="true"
+            [tooltipQuestionCircleText]="'Régimen al que se destinará la mercancía'"
+            (change)="setValoresStore()"
+            [markTouched]='markTouched'
+          ></app-catalogo-select>
+        </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <label class="control-label" for="ferrocarril">Número de Carro de Ferrocarril:</label>
+            <input
+              class="form-control"
+              id="numeroDeCarro"
+              type="text"
+              formControlName="numeroDeCarro"
+              name="numeroDeCarro"
+              maxlength="50"
+              (change)="setValoresStore()"
+            />
+          </div>
+
+        </div>
+
+      <div class="row mt-5">
+        <div class="col-md-12">
+          <label for="mercancia">Mercancías:</label>
+        </div>
+        <div class="col-md-12">
+          <app-tabla-dinamica [tipoSeleccionTabla]="tipoSeleccionsoliMercancias" [nestedContent]="tablauno"
+                              [configuracionTabla]="configuracionColumnasoli" [datos]="cuerpoTabla" [expandible]="true"
+                              [tableId]="'tabla-mercancias'" (listaDeFilaSeleccionada)="seleccionTabla($event,[])" #tablaMercancias
+                              (rowExpanded)="onRowExpanded($event)" (listaDeFilaSeleccionada)="onfilasSeleccionadasChange($event)"
+                              [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"></app-tabla-dinamica>
+          <div *ngIf="mensajeErrorTabla && cuerpoTabla.length === 0 ">
+            <small class="mensaje-error">Este campo es obligatorio.</small>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <ng-template #tablauno let-row>
+            <app-tabla-expandida
+              [columns]="nestedColumns"
+              [data]="row.detalleVidaSilvestre"
+              [expandible]="false" [showPagination]="true" [mode]="'client'" #referenciaTabla
+              [totalItems]="row.detalleVidaSilvestre.length"
+              [itemsPerPage]="5">
+            </app-tabla-expandida>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+    </form>
+
+    <div class="row mt-5">
+      <div class="col-md-12 d-flex justify-content-end">
+        <button type="button" class="btn btn-default"   (click)="modificarMercancia()">Modificar</button>
+        <button type="button" class="btn btn-danger ms-3"  (click)="eliminarMercancia()">Eliminar</button>
+        <button type="button" class="btn btn-primary ms-3" (click)="agregarMercancia()">Agregar</button>
+      </div>
+    </div>
+
+  <div>
+    @if(moduloEmergente){
+    <lib-notificaciones
+      [notificacionInput]="nuevaNotificacion"
+      (confirmacionModal)="eliminarPedimento($event)"
+    ></lib-notificaciones>
+    } @if(eliminarDatosTabla){
+    <lib-notificaciones
+      [notificacionInput]="nuevaNotificacion"
+      (confirmacionModal)="eliminarPedimentoDatos($event)"
+    ></lib-notificaciones>
+    }
+  </div>
+
+</div>
+
+<app-modal #modalRef></app-modal>

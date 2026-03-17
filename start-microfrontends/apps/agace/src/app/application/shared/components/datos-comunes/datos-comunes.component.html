@@ -1,0 +1,625 @@
+<div class="conatiner">
+  <form [formGroup]="comunesForm">
+    <div class="row mb-3">
+      @if(!datosComunesObj.tieneProcedure.activo) {
+              <div class="w-100 p-3 mt-3">
+      <div class="form-group">
+          <label for="autorizacionIVAIEPS"><span class="text-danger">*</span> {{dinamicaRadio.radio1.descripcion}}</label>
+            <app-input-radio
+              [radioOptions]="radioOptions"
+              [isRequired]="true"
+              [layout]="'horizontal'"
+              [gridLayout]="true"
+              formControlName="autorizacionIVAIEPS"
+              [showDescription]="true"
+              (change)="setValoresStore(comunesForm,'autorizacionIVAIEPS', 'setAutorizacionIVAIEPS')"
+            ></app-input-radio>
+          </div>
+          @if(comunesForm.controls['autorizacionIVAIEPS'].invalid && comunesForm.controls['autorizacionIVAIEPS'].touched) {
+            <div class="mensaje-error">Este campo es obligatorio.</div>
+          }
+      </div>
+      }
+  </div>
+  @if(!datosComunesObj.tieneProcedure.activo) {
+      <div class="row mt-4">
+      <div class="d-flex align-items-center mt-4">
+        <div class="col-12 col-md-4 d-flex justify-content-center">
+          <fieldset class="border p-3 text-center">
+            <div class="w-auto">
+              Indique los regimenes aduaneros a los que pertenece
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="col-12 col-md-8">
+          <fieldset class="border p-3">
+            <legend class="w-auto">Régimen aduanero:</legend>
+
+            <lib-input-check 
+              [id]="'regimen_0'" 
+              formControlName="regimenUno"
+              [label]="'Importación temporal para la elaboración, transformación o reparación en programas de maquila o de exportación (IMMEX)'" 
+              [required]="false"
+              [isDisabled]="esFormularioSoloLectura"
+              (change)="setValoresStore(comunesForm,'regimenUno', 'setRegimenUno')">
+          </lib-input-check>
+
+          <lib-input-check 
+              [id]="'regimen_1'" 
+              formControlName="regimenDos"
+              [label]="'Depósito fiscal para someterse al proceso de ensamble y fabricación de vehículo a empresas de la industria automotriz terminal'" 
+              [required]="false"
+              [isDisabled]="esFormularioSoloLectura"
+              (change)="setValoresStore(comunesForm,'regimenDos', 'setRegimenDos')">
+          </lib-input-check>
+
+          <lib-input-check 
+              [id]="'regimen_2'" 
+              formControlName="regimenTres"
+              [label]="'Elaboración, transformación o reparación en recinto fiscalizado'" 
+              [required]="false"
+              [isDisabled]="esFormularioSoloLectura"
+              (change)="setValoresStore(comunesForm,'regimenTres', 'setRegimenTres')">
+          </lib-input-check>
+
+          <lib-input-check 
+              [id]="'regimen_3'" 
+              formControlName="regimenCuatro"
+              [label]="'Recinto Fiscalizado Estratégico'" 
+              [isDisabled]="esFormularioSoloLectura"
+              [required]="false"
+              (change)="setValoresStore(comunesForm,'regimenCuatro', 'setRegimenCuatro')">
+          </lib-input-check>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+  }
+    <div class="w-100 p-3 mt-4">
+      <label class="form-label fw-bold mb-3" for="">
+        Se&ntilde;ale el sector productivo o servicio al que pertenece
+      </label>
+      <div class="row mb-5">
+        <div class="col-md-6">
+          <app-catalogo-select
+            [label]="'Sector Productivo'"
+            [catalogo]="sectorProductivoAgace"
+            formControlName="sectorProductivo"
+            [isDisabled]="esFormularioSoloLectura"
+            (change)="setValoresStore(comunesForm,'sectorProductivo', 'setSectorProductivo')"
+          >
+          </app-catalogo-select>
+        </div>
+        <div class="col-md-6">
+          <app-catalogo-select
+            [label]="'Servicio'"
+            [catalogo]="serviciosAgace"
+            formControlName="servicio"
+            [isDisabled]="esFormularioSoloLectura"
+            (change)="setValoresStore(comunesForm,'servicio', 'setServicio')"
+          >
+          </app-catalogo-select>
+        </div>
+      </div>
+      <ng-alert [CONTENIDO]="TEXTOS.alerta"></ng-alert>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+          <div class="form-group">
+              <label for="preOperativo"><span class="text-danger">*</span> {{dinamicaRadio.radio2.descripcion}}</label>
+                <app-input-radio
+                  [radioOptions]="radioOptions"
+                  [isRequired]="true"
+                  [layout]="'horizontal'"
+                  [gridLayout]="true"
+                  formControlName="preOperativo"
+                  [showDescription]="true"
+                  (change)="setValoresStore(comunesForm,'preOperativo', 'setPreOperativo')"
+                ></app-input-radio>
+              </div>
+              @if(comunesForm.controls['preOperativo'].invalid && comunesForm.controls['preOperativo'].touched) {
+                <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+          </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+          <div class="form-group">
+              <label for="indiqueSi"><span class="text-danger">*</span> {{dinamicaRadio.radio3.descripcion}}</label>
+                <app-input-radio
+                  [radioOptions]="radioOptions"
+                  [isRequired]="true"
+                  [layout]="'horizontal'"
+                  [gridLayout]="true"
+                  formControlName="indiqueSi"
+                  [showDescription]="true"
+                  (change)="setValoresStore(comunesForm,'indiqueSi', 'setIndiqueSi')"
+                ></app-input-radio>
+              </div>
+              @if(comunesForm.controls['indiqueSi'].invalid && comunesForm.controls['indiqueSi'].touched) {
+                <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+          </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+          <div class="form-group">
+              <label for="senale"><span class="text-danger">*</span> {{dinamicaRadio.radio4.descripcion}}</label>
+                <app-input-radio
+                  [radioOptions]="radioOptions"
+                  [isRequired]="true"
+                  [layout]="'horizontal'"
+                  (valueChange)="onRadioCambio($event,'empleadosPropios')"
+                  [gridLayout]="true"
+                  formControlName="senale"
+                  [showDescription]="true"
+                  (change)="setValoresStore(comunesForm,'senale', 'setSenale')"
+                ></app-input-radio>
+              </div>
+              @if(comunesForm.controls['senale'].invalid && comunesForm.controls['senale'].touched) {
+                <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+          </div>
+    </div>
+    @if(cambioObj.empleadosPropios) {
+      <ng-alert [CONTENIDO]="TEXTOSDOS.alerta" [CUSTOMECLASS]="infoAlert"></ng-alert>
+      <p class="fw-bold mb-5">
+          Cual es el número de empleados propios con los que contó en el último
+          bimestre anterior a su solicitud
+      </p>
+      <div class="row mb-5">
+        <div class="d-flex justify-content-center">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="empPropios" class="form-label mb-5"
+                >Número de empleados</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="empPropios"
+                name="empPropios"
+                formControlName="empPropios"
+                (change)="setValoresStore(comunesForm,'empPropios', 'setEmpPropios')"
+              />
+            </div>
+            @if(comunesForm.controls['empPropios'].invalid && comunesForm.controls['empPropios'].touched) {
+              <div class="mensaje-error">Este campo es obligatorio.</div>
+            }
+          </div>
+          <div class="col-md-4">
+            <app-catalogo-select
+              [label]="'Bimestre'"
+              [showSemiColon]="false"
+              [isLabelBottomSpace]="true"
+              formControlName="bimestre"
+              [isDisabled]="esFormularioSoloLectura"
+              [catalogo]="comboBimestresIDC"
+              (change)="setValoresStore(comunesForm,'bimestre', 'setBimestre')"
+            >
+            </app-catalogo-select>
+          </div>
+        </div>
+        @if (mostrarEmpPropiosError) {
+          <div class="text-center mt-3">
+            <p class="mensaje-error">Se debe agregar los datos del número de empleados propios del último bimestre</p>
+          </div>
+        }
+      </div>
+    }
+        @if(datosComunesObj.tieneProcedure.activo) {
+    <div class="row mb-3">
+      <div class="col-md-12">
+          <div class="form-group">
+              <label for="cumpleCon"><span class="text-danger">*</span> {{dinamicaRadio.radio21.descripcion}}</label>
+                <app-input-radio
+                  [radioOptions]="radioOptions"
+                  [isRequired]="true"
+                  [layout]="'horizontal'"
+                  [gridLayout]="true"
+                  formControlName="cumpleCon"
+                  [showDescription]="true"
+                  (change)="setValoresStore(comunesForm,'cumpleCon', 'setCumpleCon')"
+                ></app-input-radio>
+              </div>
+              @if(comunesForm.controls['cumpleCon'].invalid && comunesForm.controls['cumpleCon'].touched) {
+                <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+          </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+          <div class="form-group">
+              <label for="acreditaRealizar"><span class="text-danger">*</span> {{dinamicaRadio.radio22.descripcion}}</label>
+                <app-input-radio
+                  [radioOptions]="radioOptions"
+                  [isRequired]="true"
+                  [layout]="'horizontal'"
+                  [gridLayout]="true"
+                  formControlName="acreditaRealizar"
+                  [showDescription]="true"
+                  (change)="setValoresStore(comunesForm,'acreditaRealizar', 'setAcreditaRealizar')"
+                ></app-input-radio>
+              </div>
+              @if(comunesForm.controls['acreditaRealizar'].invalid && comunesForm.controls['acreditaRealizar'].touched) {
+                <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+          </div>
+    </div>
+    }
+    <div class="row mb-3">
+      <div class="col-md-12">
+          <div class="form-group">
+              <label for="senaleSi"><span class="text-danger">*</span> {{dinamicaRadio.radio5.descripcion}}</label>
+                <app-input-radio
+                  [radioOptions]="radioOptions"
+                  [isRequired]="true"
+                  [layout]="'horizontal'"
+                  (valueChange)="onRadioCambio($event,'deTrabajao')"
+                  [gridLayout]="true"
+                  formControlName="senaleSi"
+                  [showDescription]="true"
+                  (change)="setValoresStore(comunesForm,'senaleSi', 'setSenaleSi')"
+                ></app-input-radio>
+              </div>
+              @if(comunesForm.controls['senaleSi'].invalid && comunesForm.controls['senaleSi'].touched) {
+                <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+          </div>
+    </div>
+    @if(cambioObj.deTrabajao) {
+      <app-federal-de-trabajao></app-federal-de-trabajao>
+    }
+    @if(!datosComunesObj.tieneProcedure.activo) {
+      <div class="row mb-3">
+        <div class="col-md-12">
+            <div class="form-group">
+              <label for="cumpleConDos"><span class="text-danger">*</span> {{dinamicaRadio.radio7.descripcion}}</label>
+                <app-input-radio
+                  [radioOptions]="radioOptions"
+                  [isRequired]="true"
+                  [layout]="'horizontal'"
+                  [gridLayout]="true"
+                  formControlName="cumpleConDos"
+                  [showDescription]="true"
+                  (change)="setValoresStore(comunesForm,'cumpleConDos', 'setCumpleConDos')"
+                ></app-input-radio>
+            </div>
+            @if(comunesForm.controls['cumpleConDos'].invalid && comunesForm.controls['cumpleConDos'].touched) {
+              <div class="mensaje-error">Este campo es obligatorio.</div>
+            }
+        </div>
+      </div>
+          <div class="row mb-3">
+      <div class="col-md-12">
+          <div class="form-group">
+              <label for="encuentra"><span class="text-danger">*</span> {{dinamicaRadio.radio9.descripcion}}</label>
+                <app-input-radio
+                  [radioOptions]="radioOptions"
+                  [isRequired]="true"
+                  [layout]="'horizontal'"
+                  [gridLayout]="true"
+                  formControlName="encuentra"
+                  [showDescription]="true"
+                  (change)="setValoresStore(comunesForm,'encuentra', 'setEncuentra')"
+                ></app-input-radio>
+              </div>
+              @if(comunesForm.controls['encuentra'].invalid && comunesForm.controls['encuentra'].touched) {
+                <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+          </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+          <div class="form-group">
+              <label for="delMismo"><span class="text-danger">*</span> {{dinamicaRadio.radio10.descripcion}}</label>
+                <app-input-radio
+                  [radioOptions]="radioOptions"
+                  [isRequired]="true"
+                  [layout]="'horizontal'"
+                  [gridLayout]="true"
+                  formControlName="delMismo"
+                  [showDescription]="true"
+                  (change)="setValoresStore(comunesForm,'delMismo', 'setDelMismo')"
+                ></app-input-radio>
+              </div>
+              @if(comunesForm.controls['delMismo'].invalid && comunesForm.controls['delMismo'].touched) {
+                <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+          </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+          <div class="form-group">
+              <label for="senaleMomento"><span class="text-danger">*</span> {{dinamicaRadio.radio11.descripcion}}</label>
+                <app-input-radio
+                  [radioOptions]="radioOptions"
+                  [isRequired]="true"
+                  [layout]="'horizontal'"
+                  [gridLayout]="true"
+                  formControlName="senaleMomento"
+                  [showDescription]="true"
+                  (change)="setValoresStore(comunesForm,'senaleMomento', 'setSenaleMomento')"
+                ></app-input-radio>
+              </div>
+              @if(comunesForm.controls['senaleMomento'].invalid && comunesForm.controls['senaleMomento'].touched) {
+                <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+          </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+          <div class="form-group">
+              <label for="enCaso"><span class="text-danger">*</span> {{dinamicaRadio.radio12.descripcion}}</label>
+                <app-input-radio
+                  [radioOptions]="radioOptions"
+                  [isRequired]="true"
+                  [layout]="'horizontal'"
+                  [gridLayout]="true"
+                  formControlName="enCaso"
+                  [showDescription]="true"
+                  (change)="setValoresStore(comunesForm,'enCaso', 'setEnCaso')"
+                ></app-input-radio>
+              </div>
+              @if(comunesForm.controls['enCaso'].invalid && comunesForm.controls['enCaso'].touched) {
+                <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+          </div>
+    </div>
+    }
+  </form> 
+</div>
+<app-datos-comunes-dos 
+  [datosComunesObj]="datosComunesObj"
+  (radioChanged)="onRadioChanged($event)">
+</app-datos-comunes-dos>
+
+<div class="container">
+  @if(!datosComunesObj.tieneProcedure.activo) {
+  <div class="row">
+    <ng-titulo [titulo]="'Agregar Miembro de la Empresa'"></ng-titulo>
+    <div class="col-md-12">
+      <p>
+        <span class="text-danger text-justify">*</span> Opinión positiva vigente del
+        cumplimiento de obligaciones fiscales de la solicitante, los socios,
+        accionistas, representante legal, administrador único o miembros del consejo
+        de administración, según sea el caso.
+      </p>
+      </div>
+      <div class="col-md-12 mt-3">
+      <h5 class="mb-3">Miembro de la empresa</h5>
+      <app-tabla-dinamica 
+        [configuracionTabla]="agregarMiembroTabla"
+        [datos]="agregarMiembroTablaDatos" 
+        [tipoSeleccionTabla]="tablaSeleccionCheckbox">
+      </app-tabla-dinamica>
+    </div>
+    <div class="d-flex justify-content-end mb-4">
+      <button type="button" class="btn btn-primary me-2" [disabled]="esFormularioSoloLectura" (click)="abrirModal(agregar, 'agregar')">
+        Agregar
+      </button>
+      <button class="btn btn-danger me-2" type="button" [disabled]="esFormularioSoloLectura">
+        Modificar
+      </button>
+      <button class="btn btn-default" type="button" [disabled]="esFormularioSoloLectura">Eliminar</button>
+    </div>
+  </div>
+  }
+  <div class="row mt-3">
+    <div class="col-md-12">
+      <form [formGroup]="manifestadoForm">
+          <lib-input-check 
+            [id]="'manifestado'" 
+            formControlName="manifestado"
+            [isDisabled]="esFormularioSoloLectura"
+            [label]="'Una vez manifestado lo anterior, se solicita al SAT, a través de AGACE, que realice las inspecciones a que hace referencia la fracción IX de la regla 7.1.1, a las instalaciones señaladas en las que se realizan las operaciones de comercio exterior con el propósito de verificar la información plasmada en la presente solicitud del Registro en el Esquema Integral de Certificación.'" 
+            [required]="false"
+            (change)="setValoresStore(manifestadoForm,'manifestado', 'setManifestado')">
+          </lib-input-check>
+      <div class="mt-4">
+          <lib-input-check 
+            [id]="'protesta'" 
+            formControlName="protesta"
+            [isDisabled]="esFormularioSoloLectura"
+            [label]="'Bajo protesta de decir verdad,manifiesto que los datos asentados en el presente documento son ciertos y que las facultades que me fueron otorgadas para representar al solicitante no me han sido modificadas y/o revocadas.'" 
+            [required]="false"
+            (change)="setValoresStore(manifestadoForm,'protesta', 'setProtesta')">
+          </lib-input-check>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal empezar -->
+
+  <ng-template #agregar>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Agregar miembro de la empresa</h4>
+    </div>
+    <div class="modal-body">
+      <form class="form-group" [formGroup]="agregarMiembroDeLaEmpresaFrom">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <app-catalogo-select
+                [label]="'En su carácter de'"
+                [required]="true"
+                [catalogo]="enSuCaracterDeOptions"
+                formControlName="enSuCaracterDe"
+              ></app-catalogo-select>
+            </div>
+          </div>
+          @if(cambioObj.obligadoaTributaren === 'Si') {
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="rfc" class="form-label">RFC *:</label>
+                <input
+                  type="text"
+                  id="rfc"
+                  formControlName="rfc"
+                  class="form-control"
+                />
+              </div>
+              @if(agregarMiembroDeLaEmpresaFrom.controls['rfc'].invalid && agregarMiembroDeLaEmpresaFrom.controls['rfc'].touched) {
+                <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+            </div>
+            <div class="col-2 mt-5">
+              <div class="form-group">
+                <button type="button" class="btn btn-primary" (click)="buscarRFC()">Buscar</button>
+              </div>
+            </div>
+          }
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="obligadoaTributarenMéxico" class="form-label"
+                >Obligado a tributar en México *:</label
+              >
+              <app-input-radio
+                [radioOptions]="radioOptions"
+                [isRequired]="true"
+                [layout]="'horizontal'"
+                [gap]="'50px'"
+                formControlName="obligadoaTributarenMexico"
+                (valueChange)="onRadioCambio($event,'obligadoaTributaren')"
+              ></app-input-radio>
+            </div>
+            @if(agregarMiembroDeLaEmpresaFrom.controls['obligadoaTributarenMexico'].invalid && agregarMiembroDeLaEmpresaFrom.controls['obligadoaTributarenMexico'].touched) {
+              <div class="mensaje-error">Este campo es obligatorio.</div>
+            }
+          </div>
+          @if(cambioObj.obligadoaTributaren === 'Si') {
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="registroFederaldeContribuyentes" class="form-label"
+                  >Registro Federal de Contribuyentes *:</label
+                >
+                <input
+                  type="text"
+                  id="registroFederaldeContribuyentes"
+                  formControlName="registroFederaldeContribuyentes"
+                  class="form-control"
+                />
+              </div>
+              @if(agregarMiembroDeLaEmpresaFrom.controls['registroFederaldeContribuyentes'].invalid && agregarMiembroDeLaEmpresaFrom.controls['registroFederaldeContribuyentes'].touched) {
+                <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+            </div>
+          } @else if(cambioObj.obligadoaTributaren === 'No') {
+            <div class="col-md-8">
+              <div class="col-md-6">
+                <app-catalogo-select
+                    formControlName="tipoDePersona"
+                    [catalogo]="tipoDePersona" 
+                    [label]="'Tipo de persona'"
+                    [required]="true"
+                    name="tipoDePersona">
+                </app-catalogo-select>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <app-catalogo-select
+                [label]="'Nacionalidad'"
+                [required]="true"
+                [catalogo]="nacionalidadOptions"
+                formControlName="nacionalidad"
+              ></app-catalogo-select>
+            </div>
+          </div>
+          @if(cambioObj.obligadoaTributaren === 'Si') {
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="nombreCompleto" class="form-label"
+                  >Nombre completo *:</label
+                >
+                <input
+                  type="text"
+                  id="nombreCompleto"
+                  class="form-control"
+                  formControlName="nombreCompleto"
+                />
+              </div>
+              @if(agregarMiembroDeLaEmpresaFrom.controls['nombreCompleto'].invalid && agregarMiembroDeLaEmpresaFrom.controls['nombreCompleto'].touched) {
+                <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+            </div>
+          }
+
+          @if (agregarMiembroDeLaEmpresaFrom.get('tipoDePersona')?.value === '2') {
+            <div class="col-md-8">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="nombreDeLaEmpresa" class="form-label">Nombre de la empresa*:</label>
+                  <input
+                    type="text"
+                    id="nombreDeLaEmpresa"
+                    class="form-control"
+                    formControlName="nombreDeLaEmpresa"
+                  />
+                </div>
+              </div>
+            </div>
+          } @else if (agregarMiembroDeLaEmpresaFrom.get('tipoDePersona')?.value === '1'){
+            <div class="col-md-8">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="nombre" class="form-label">Nombre (s)*:</label>
+                  <input
+                    type="text"
+                    id="nombre"
+                    class="form-control"
+                    formControlName="nombre"
+                  />
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="apellidoPaterno" class="form-label">Apellido paterno*:</label>
+                  <input
+                    type="text"
+                    id="apellidoPaterno"
+                    class="form-control"
+                    formControlName="apellidoPaterno"
+                  />
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="apellidoMaterno" class="form-label">Apellido materno*:</label>
+                  <input
+                    type="text"
+                    id="apellidoMaterno"
+                    class="form-control"
+                    formControlName="apellidoMaterno"
+                  />
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer d-flex justify-content-end mt-3 mb-3">
+      <button type="submit" class="btn btn-primary me-2" (click)="miembroModalAceptar()">
+        Aceptar
+      </button>
+      <button
+        type="button"
+        class="btn btn-default me-md-3" (click)="modalRef?.hide()">
+        Cancelar
+      </button>
+    </div>
+  </ng-template>
+
+  <!-- Modal fin -->
+</div>

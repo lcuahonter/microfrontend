@@ -1,0 +1,29 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h1>Solicitud de modificación y/o prórroga del permiso previo por retorno de productos </h1>
+    </div>
+  </div>
+  @if (isPeligro) {
+  <div class="col-md-12">
+    <ng-alert [CONTENIDO]="formErrorAlert" [CUSTOMECLASS]="'alert-danger'"></ng-alert>
+  </div>
+  }
+  <app-wizard [listaPasos]="pantallasPasos"></app-wizard>
+  <div>
+    @switch (indice) {
+    @case (1) {
+    <app-paso-uno #pasoUnoRef [isContinuarTriggered]="isContinuarTriggered"></app-paso-uno>
+    }
+    @case (2) {
+    <app-paso-carga-documento  [idSolicitud]="guardarIdSolicitud" [idTipoTRamite]="'260703'" [cargaArchivosEvento]="cargarArchivosEvento"
+      (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)" (reenviarCargaRealizada)="cargaRealizada($event)"
+      (cargaEnProgreso)="onCargaEnProgreso($event)"></app-paso-carga-documento>
+    } @case (3) {
+    <paso-firma [idSolicitud]="guardarIdSolicitud" [procedure]="260703" [procedureUrl]="'solicitud-permiso/datos'"></paso-firma>
+    }
+    }
+  </div>
+  <btn-continuar [dePadre]="true"  [datos]="datosPasos" (continuarEvento)="getValorIndice($event)"></btn-continuar>
+  <ng-alert [CONTENIDO]="mensajeAlertaAvisoPrivacidad" [CUSTOMECLASS]="'alert-info'"></ng-alert>
+</div>

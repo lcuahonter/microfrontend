@@ -1,0 +1,48 @@
+<div class="container">
+  <ng-titulo titulo="Concluir relación con industria automotriz" />
+
+  <form [formGroup]="formularioConcluirRelacion">
+    <div class="row">
+      <div class="">
+        <div class="mb-3 row">
+          <label for="rfc" class="col-sm-2 col-form-label">RFC:</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="rfc" 
+            formControlName="rfc"
+            [ngClass]="{'border-danger': formularioConcluirRelacion.get('rfc')?.touched && formularioConcluirRelacion.get('rfc')?.invalid}">
+            <div *ngIf="formularioConcluirRelacion.get('rfc')?.touched && formularioConcluirRelacion.get('rfc')?.invalid" class="text-danger mt-1">
+            <div *ngIf="formularioConcluirRelacion.get('rfc')?.errors?.['required']">
+              El campo RFC es obligatorio.
+            </div>
+            <div *ngIf="formularioConcluirRelacion.get('rfc')?.errors?.['pattern']">
+              Ingrese un RFC válido
+            </div>
+          </div>
+          </div>
+        </div>
+        <button class="col-md-offset-2" (click)="buscarDatosRelacion()" [disabled]="esFormularioSoloLectura">Buscar</button>
+      </div>
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-md-6"><input-fecha
+        class="width"
+        [setFecha]="formularioConcluirRelacion.get('fechaInicial')?.value"
+        [datos]="configuracionFechaInicial"
+      ></input-fecha></div>
+      <div class="col-md-6">
+        <input-fecha
+            class="width"
+            [setFecha]="formularioConcluirRelacion.get('fechaInicial')?.value"
+            [datos]="configuracionFechaFinal"
+          ></input-fecha>
+      </div>
+    </div>
+  </form>
+
+  <div class="row mt-5">
+    <app-tabla-dinamica [tipoSeleccionTabla]="seleccionTabla" [configuracionTabla]="configuracionTabla"
+      [datos]="datosTabla" [isDisabled]="esFormularioSoloLectura"></app-tabla-dinamica>
+  </div>
+  <button class="col-md-offset-11" [disabled]="esFormularioSoloLectura">Limpiar</button>
+</div>

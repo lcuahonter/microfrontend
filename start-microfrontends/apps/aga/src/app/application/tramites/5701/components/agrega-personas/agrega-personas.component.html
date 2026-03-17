@@ -1,0 +1,125 @@
+<div class="row" *ngIf="!isDisabled">
+  <div class="col-md-4 form-group">
+    <label class="form-label" for="gafeteRespoDespacho">Gafete:</label>
+      <input
+      class="form-control"
+      id="gafeteRespoDespacho"
+      [formControl]="gafeteRespoDespacho"
+      placeholder=""
+      type="text"
+      maxlength="30"
+      [readonly]="isDisabled"
+      [ngClass]="gafeteIsValid ? 'required' : ''"
+      libUppercase
+      soloLetrasNumeros
+    />
+  </div>
+  <div class="col-md-4 d-flex align-items-end">
+    <div class="btn-group">
+      <button [disabled]="isDisabled" class="btn btn-default" type="button" (click)="buscarGafete()">
+        Buscar
+      </button>
+      <button
+        class="btn btn-primary ms-2"
+        type="button"
+        [disabled]="isDisabled"
+        (click)="agregarPersona()"
+      >
+        Agregar
+      </button>
+    </div>
+  </div>
+</div>
+<div class="row mt-3">
+  <div class="col-md-12">
+    <div
+      *ngIf="mostrarMensajeError && personas?.length === 0"
+      class="mensaje-error"
+    >
+      Se debe agregar por lo menos una persona responsable del despacho.
+
+    </div>
+    </div>
+</div>
+
+<form action="" [formGroup]="personaForm" *ngIf="!isDisabled">
+  <div class="row mt-5">
+    <div class="col-md-4 form-group">
+      <label class="form-label" for="nombreRespoDespacho">Nombre(s):</label>
+      <input
+        class="form-control"
+        id="nombreRespoDespacho"
+        placeholder=""
+        type="text"
+        formControlName="nombreRespoDespacho"
+        maxlength="30"
+        [ngClass]="isValid('nombreRespoDespacho') || claseFormaNovalida ? 'required' : ''"
+      />
+    </div>
+    <div class="col-md-4 form-group">
+      <label class="form-label" for="paternoRespoDespacho"
+        >Apellido paterno:</label
+      >
+      <input
+        class="form-control"
+        id="paternoRespoDespacho"
+        placeholder=""
+        type="text"
+        formControlName="paternoRespoDespacho"
+        maxlength="30"
+        [ngClass]="isValid('paternoRespoDespacho') || claseFormaNovalida ? 'required' : ''"
+      />
+    </div>
+    <div class="col-md-4 form-group">
+      <label class="form-label" for="maternoRespoDespacho"
+        >Apellido materno:</label
+      >
+      <input
+        class="form-control"
+        id="maternoRespoDespacho"
+        placeholder=""
+        type="text"
+        formControlName="maternoRespoDespacho"
+        maxlength="30"
+        [ngClass]="isValid('maternoRespoDespacho') || claseFormaNovalida ? 'required' : ''"
+      />
+    </div>
+  </div>
+</form>
+
+<div class="row mt-5">
+  <div class="col-md-12">
+    <app-tabla-dinamica
+      [tipoSeleccionTabla]="tablaSeleccion.CHECKBOX"
+      [configuracionTabla]="encabezadoDeTablaResponsablesDespacho"
+      [datos]="personas"
+      (listaDeFilaSeleccionada)="responsableSeleccionado = $event"
+    >
+    </app-tabla-dinamica>
+  </div>
+</div>
+
+<div class="row"  *ngIf="!isDisabled">
+  <div class="col-md-12">
+    <div class="pull-right">
+      @if(personas.length > 0){
+      <button
+        type="button"
+        name="Eliminar"
+        [disabled]="isDisabled"
+        class="btn btn-danger ms-2"
+        (click)="eliminarResponsables()"
+      >
+        Eliminar
+      </button>
+      }
+    </div>
+  </div>
+</div>
+
+@if(nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+  </lib-notificaciones>
+</section>
+}

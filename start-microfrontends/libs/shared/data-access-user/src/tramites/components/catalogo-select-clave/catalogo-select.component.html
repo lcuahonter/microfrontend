@@ -1,0 +1,41 @@
+<div [formGroup]="formSelect" [ngClass]="{ row: isInline, 'has-error': isInvalid() }">
+  <label
+    for="{{id}}"
+    class="form-label text-left"
+    [ngClass]="{ 'col-sm-3': isInline, 'mb-5': isLabelBottomSpace, 'fw-bold': isBold  }"
+    *ngIf="label"
+    >{{ label }}@if(required){<span class="require">*</span>}@if (showSemiColon) {<span>: </span>}@if(tooltipQuestionCircle){
+    <span
+      tooltip="{{
+        tooltipQuestionCircleText ? tooltipQuestionCircleText : label
+      }}"
+    >
+      <i class="bi bi-question-circle-fill"></i></span
+    >}
+  </label>
+  <label *ngIf="!label" for="{{ id }}" class="form-label label-height"></label>
+  <select
+    class="form-select form-control"
+    [id]="id"
+    [disabled]="isDisabled"
+    formControlName="selectControl"
+    title="Seleccione una opción"
+    (change)="handleChange($event)"
+    [ngClass]="{ required: isInvalid(), 'col-sm-9': isInline }"
+  >
+    <option
+      value="{{ primerOptionValue }}"
+      selected
+      [hidden]="hiddenPrimerOption"
+      [disabled]="disabledPrimerOption"
+    >
+      {{ placeholder ? placeholder : 'Seleccione una opción' }}
+    </option>
+    <option *ngFor="let option of catalogo" [value]="option.clave">
+      {{ option.descripcion }}
+    </option>
+  </select>
+  <div *ngIf="mostrarErrores && isInvalid()" class="mensaje-error">
+    Este campo es obligatorio
+  </div>
+</div>

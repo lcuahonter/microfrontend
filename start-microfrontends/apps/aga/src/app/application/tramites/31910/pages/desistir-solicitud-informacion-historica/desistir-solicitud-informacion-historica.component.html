@@ -1,0 +1,58 @@
+<div class="page">
+  <div class="container">
+    <div class="row">
+      @if (indice ===1) {
+      <div class="col-md-12">
+        <h1 class="titulo titulo-gold">
+          <h2>Desistir Solicitud de Información Histórica </h2>
+        </h1>
+      </div>
+      } @if (indice === 2) {
+      <div class="col-md-12">
+        <h1 class="titulo titulo-gold">Firmar</h1>
+      </div>
+      }
+
+
+      <div class="col-12">
+        @if (!esFormaValido) {
+        <div class="alert alert-info alert-danger" [innerHTML]="formErrorAlert"></div>
+        }
+      </div>
+
+      <div class="row mt-5" *ngIf="indice === 2">
+        <div class="col-md-12">
+          <lib-notificaciones [notificacionInput]="alertaNotificacion"></lib-notificaciones>
+        </div>
+      </div>
+
+      <app-wizard [listaPasos]="pasosSolicitar"></app-wizard>
+    </div>
+
+    <div class="row">
+      @switch(indice){ @case(1){
+      <app-paso-uno (folioPadre)="manejarFolioPadre($event)"></app-paso-uno>
+      } @case(2){
+      <app-paso-dos [procedureUrl]="''" [procedure]="31910"></app-paso-dos>
+      }
+      }
+    </div>
+    <btn-continuar [datos]="datosPasos" (anteriorEvento)="getValorIndice($event)"
+      (continuarEvento)="getValorIndice($event)"></btn-continuar>
+    @if(1 === indice) {
+    <div class="row mt-5">
+      <div class="col-12 text-justify">
+        <ng-alert [CONTENIDO]="TEXTOS.ADJUNTAR" [CUSTOMECLASS]="infoAlert"></ng-alert>
+      </div>
+    </div>
+    }
+  </div>
+</div>
+
+
+@if(nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+  </lib-notificaciones>
+</section>
+}

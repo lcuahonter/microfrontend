@@ -1,0 +1,265 @@
+<div class="modal-dialog modal-dialog-centered modal-fullscreen">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Datos de la unidad de arrastre</h5>
+            <button type="button" class="btn-close" (click)="cancelar.emit()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="container-fluid">
+                <form [formGroup]="unidadForm">
+                    @if (contexto === 'alta') {
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>Número de identificación de unidad*:</label><span class="bi bi-question-circle-fill mx-2" tooltip="Número de identificación vehícular (NIV) o serie de la unidad de arrastre" placement="top"></span>
+                                <input type="text" class="form-control" formControlName="numero" [required]="true"
+                                    minlength="17" maxlength="17"/>
+                                @if (unidadForm.get('numero')?.invalid && (unidadForm.get('numero')?.dirty || unidadForm.get('numero')?.touched)) {
+                                    <div class="text-danger">
+                                        @if (unidadForm.get('numero')?.errors?.['required']) {
+                                            <small>Este campo es obligatorio.</small>
+                                        } @else if (unidadForm.get('numero')?.errors?.['minlength']) {
+                                            <small>Por favor, no escribas menos de 17 caracteres.</small>
+                                        } @else if (unidadForm.get('numero')?.errors?.['maxlength']) {
+                                            <small>Por favor, no escribas más de 17 caracteres.</small>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-md-4">
+                                <app-catalogo-select [catalogo]="tipoDeUnidadCatalogo" [label]="'Tipo de unidad*'" [required]="true" id="tipoDeUnidad" formControlName="tipoDeUnidad"></app-catalogo-select>
+                                @if (unidadForm.get('tipoDeUnidad')?.invalid && unidadForm.get('tipoDeUnidad')?.touched) {
+                                    <div class="text-danger">
+                                        @if (unidadForm.get('tipoDeUnidad')?.errors?.['required']) {
+                                            <small>Este campo es obligatorio.</small>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-md-4">
+                                <label>ID de unidad*:</label><span class="bi bi-question-circle-fill mx-2" tooltip="Identificador único de la unidad de arrastre en el sistema" placement="top"></span>
+                                <input type="text" class="form-control" formControlName="idDeUnidad" />
+                                @if (unidadForm.get('idDeUnidad')?.invalid && (unidadForm.get('idDeUnidad')?.dirty || unidadForm.get('idDeUnidad')?.touched)) {
+                                    <div class="text-danger">
+                                        @if (unidadForm.get('idDeUnidad')?.errors?.['required']) {
+                                            <small>Este campo es obligatorio.</small>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-md-4">
+                                <label for="numeroPlaca" class="form-label">Número de placas*:</label>
+                                <input id="numeroPlaca" type="text" class="form-control" formControlName="numeroPlaca"
+                                    [readonly]="readonly" maxlength="10" />
+                                @if (unidadForm.get('numeroPlaca')?.invalid && (unidadForm.get('numeroPlaca')?.dirty || unidadForm.get('numeroPlaca')?.touched)) {
+                                    <div class="text-danger">
+                                        <small>Este campo es obligatorio.</small>
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-md-4">
+                                <app-catalogo-select [catalogo]="paisEmisorCatalogo" [label]="'País emisor*'"
+                                    [required]="true" id="paisEmisor" formControlName="paisEmisor"></app-catalogo-select>
+                                @if (unidadForm.get('paisEmisor')?.invalid && unidadForm.get('paisEmisor')?.touched) {
+                                    <div class="text-danger">
+                                        <small>Este campo es obligatorio.</small>
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-md-4">
+                                <label for="estado" class="form-label">Estado o provincia*:</label>
+                                <input id="estado" type="text" class="form-control" formControlName="estado"
+                                    [readonly]="readonly" />
+                                @if (unidadForm.get('estado')?.invalid && (unidadForm.get('estado')?.dirty || unidadForm.get('estado')?.touched)) {
+                                    <div class="text-danger">
+                                        <small>Este campo es obligatorio.</small>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    } @else {
+                        <div class="row">
+                            <div class="col-md-8">
+                                <label>Número de identificación de unidad*:</label><span class="bi bi-question-circle-fill mx-2" tooltip="Número de identificación vehícular (NIV) o serie de la unidad de arrastre" placement="top"></span>
+                                <input type="text" class="form-control" formControlName="numero" [required]="true"
+                                    minlength="17" maxlength="17"/>
+                                @if (unidadForm.get('numero')?.invalid && (unidadForm.get('numero')?.dirty || unidadForm.get('numero')?.touched)) {
+                                    <div class="text-danger">
+                                        @if (unidadForm.get('numero')?.errors?.['required']) {
+                                            <small>Este campo es obligatorio.</small>
+                                        } @else if (unidadForm.get('numero')?.errors?.['minlength']) {
+                                            <small>Por favor, no escribas menos de 17 caracteres.</small>
+                                        } @else if (unidadForm.get('numero')?.errors?.['maxlength']) {
+                                            <small>Por favor, no escribas más de 17 caracteres.</small>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-md-4">
+                                <label for="numeroPlaca" class="form-label">Número de placas*:</label>
+                                <input id="numeroPlaca" type="text" class="form-control" formControlName="numeroPlaca"
+                                    [readonly]="readonly" maxlength="10" />
+                                @if (unidadForm.get('numeroPlaca')?.invalid && (unidadForm.get('numeroPlaca')?.dirty || unidadForm.get('numeroPlaca')?.touched)) {
+                                    <div class="text-danger">
+                                        <small>Este campo es obligatorio.</small>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-4">
+                                <label>ID de unidad*:</label><span class="bi bi-question-circle-fill mx-2" tooltip="Identificador único de la unidad de arrastre en el sistema" placement="top"></span>
+                                <input type="text" class="form-control" formControlName="idDeUnidad" />
+                                @if (unidadForm.get('idDeUnidad')?.invalid && (unidadForm.get('idDeUnidad')?.dirty || unidadForm.get('idDeUnidad')?.touched)) {
+                                    <div class="text-danger">
+                                        @if (unidadForm.get('idDeUnidad')?.errors?.['required']) {
+                                            <small>Este campo es obligatorio.</small>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-md-8 d-flex align-items-center justify-content-end">
+                                <button type="button" class="btn btn-primary" (click)="buscarUnidad()">
+                                    Buscar
+                                </button>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row mt-3">
+                            <div class="col-md-4">
+                                <app-catalogo-select [catalogo]="tipoDeUnidadCatalogo" [label]="'Tipo de unidad*'" [required]="true" id="tipoDeUnidad" formControlName="tipoDeUnidad"></app-catalogo-select>
+                                @if (unidadForm.get('tipoDeUnidad')?.invalid && unidadForm.get('tipoDeUnidad')?.touched) {
+                                    <div class="text-danger">
+                                        @if (unidadForm.get('tipoDeUnidad')?.errors?.['required']) {
+                                            <small>Este campo es obligatorio.</small>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-md-4">
+                                <app-catalogo-select [catalogo]="paisEmisorCatalogo" [label]="'País emisor*'"
+                                    [required]="true" id="paisEmisor" formControlName="paisEmisor"></app-catalogo-select>
+                                @if (unidadForm.get('paisEmisor')?.invalid && unidadForm.get('paisEmisor')?.touched) {
+                                    <div class="text-danger">
+                                        <small>Este campo es obligatorio.</small>
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-md-4">
+                                <label for="estado" class="form-label">Estado o provincia*:</label>
+                                <input id="estado" type="text" class="form-control" formControlName="estado"
+                                    [readonly]="readonly" />
+                                @if (unidadForm.get('estado')?.invalid && (unidadForm.get('estado')?.dirty || unidadForm.get('estado')?.touched)) {
+                                    <div class="text-danger">
+                                        <small>Este campo es obligatorio.</small>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <label for="marca" class="form-label">Marca*:</label>
+                            <input id="marca" type="text" class="form-control" formControlName="marca"
+                                [readonly]="readonly" maxlength="50" />
+                            @if (unidadForm.get('marca')?.invalid && (unidadForm.get('marca')?.dirty || unidadForm.get('marca')?.touched)) {
+                                <div class="text-danger">
+                                    <small>Este campo es obligatorio.</small>
+                                </div>
+                            }
+                        </div>
+                        <div class="col-md-4">
+                            <label for="modelo" class="form-label">Modelo*:</label>
+                            <input id="modelo" type="text" class="form-control" formControlName="modelo"
+                                [readonly]="readonly" maxlength="50" />
+                            @if (unidadForm.get('modelo')?.invalid && (unidadForm.get('modelo')?.dirty || unidadForm.get('modelo')?.touched)) {
+                                <div class="text-danger">
+                                    <small>Este campo es obligatorio.</small>
+                                </div>
+                            }
+                        </div>
+                        <div class="col-md-4">
+                            <app-catalogo-select [catalogo]="anoCatalogo" [label]="'Año*'" [required]="true" id="ano"
+                                formControlName="ano"></app-catalogo-select>
+                            @if (unidadForm.get('ano')?.invalid && unidadForm.get('ano')?.touched) {
+                                <div class="text-danger">
+                                    <small>Este campo es obligatorio.</small>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <label for="transponder" class="form-label">Transponder*:</label>
+                            <input id="transponder" type="text" class="form-control" formControlName="transponder"
+                                [readonly]="readonly" maxlength="50" />
+                            @if (unidadForm.get('transponder')?.invalid && (unidadForm.get('transponder')?.dirty || unidadForm.get('transponder')?.touched)) {
+                                <div class="text-danger">
+                                    <small>Este campo es obligatorio.</small>
+                                </div>
+                            }
+                        </div>
+                        <div class="col-md-4">
+                            <app-catalogo-select [catalogo]="tipoArrastre" [label]="'Color de unidad*'"
+                                [required]="true" id="colorUnidad"
+                                formControlName="colorUnidad"></app-catalogo-select>
+                            @if (unidadForm.get('colorUnidad')?.invalid && unidadForm.get('colorUnidad')?.touched) {
+                                <div class="text-danger">
+                                    <small>Este campo es obligatorio.</small>
+                                </div>
+                            }
+                        </div>
+                        <div class="col-md-4">
+                            <label for="numeroEconomico" class="form-label">Número económico*:</label>
+                            <input id="numeroEconomico" type="text" class="form-control"
+                                formControlName="numeroEconomico" [readonly]="readonly" maxlength="50" />
+                            @if (unidadForm.get('numeroEconomico')?.invalid && (unidadForm.get('numeroEconomico')?.dirty || unidadForm.get('numeroEconomico')?.touched)) {
+                                <div class="text-danger">
+                                    <small>Este campo es obligatorio.</small>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <label for="numero2daPlaca" class="form-label">Número 2da placa:</label>
+                            <input id="numero2daPlaca" type="text" class="form-control" formControlName="numero2daPlaca"
+                                [readonly]="readonly" maxlength="20" />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="estado2daPlaca" class="form-label">Estado emisor de 2da placa:</label>
+                            <input id="estado2daPlaca" type="text" class="form-control" formControlName="estado2daPlaca"
+                                [readonly]="readonly" maxlength="50" />
+                        </div>
+                        <div class="col-md-4">
+                            <app-catalogo-select [catalogo]="paisEmisorCatalogo" [label]="'País emisor 2da placa'"
+                                [required]="false" id="paisEmisor2daPlaca"
+                                formControlName="paisEmisor2daPlaca"></app-catalogo-select>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-8">
+                            <label for="descripcion" class="form-label">Descripción de la unidad de arrastre:</label>
+                             <input id="descripcion" type="text" class="form-control" formControlName="descripcion"
+                                [readonly]="readonly" maxlength="200" />
+                        </div>
+                    </div>
+
+                    <div class="modal-footer custom-footer justify-content-end mt-4">
+                        <button type="button" class="btn btn-primary" (click)="limpiarDatosUnidad()">
+                            Limpiar
+                        </button>
+                        <button type="button" class="btn btn-danger" (click)="cancelar.emit()"> Cancelar </button>
+                        <button type="button" class="btn btn-primary" (click)="guardarDatosUnidad()"> Guardar </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,248 @@
+<div class="conatiner">
+    <form [formGroup]="represtantanteLegalForma">
+        <div class="row mb-3"> 
+            <formas-dinamicas 
+                [formularioTitulo]="'Representante Legal'"
+                [forma]="represtantanteLegalFormGroup" 
+                [formularioDatos]="represtantanteLegalDatos"
+                [estado]="importacionstate"
+                [soloLectura]="consultaState.readonly"
+                (emitirCambioDeValor)="establecerCambioDeValor($event)"
+                (emitirEventoDeClic)="buscarEvento()"
+                >
+            </formas-dinamicas>
+        </div>
+    </form>
+    <div class="row mb-3">
+        <ng-titulo titulo="Enlace Operativo" />
+        <h5 class="mb-3">Enlace Operativo</h5>
+        <app-tabla-dinamica
+        [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+            [configuracionTabla]="configuracionTabla"
+            [datos]="enlaceOperativoDatos"
+            [tipoSeleccionTabla]="checkbox"
+            (listaDeFilaSeleccionada)="onSeleccionCambiada($event)">
+        </app-tabla-dinamica>
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-primary me-2" [disabled]="esFormularioSoloLectura" (click)="abrirModalAgregar(template)">
+                Agregar
+            </button>
+            <button class="btn btn-danger me-2" type="button" [disabled]="esFormularioSoloLectura || elementosSeleccionados.length !== 1" (click)="abrirModalModificar(template)">
+                Modificar
+            </button>
+            <button class="btn btn-default" type="button" [disabled]="esFormularioSoloLectura || elementosSeleccionados.length === 0" (click)="eliminarElementosSeleccionados()">
+                Eliminar
+            </button>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <ng-titulo titulo="Personas para oir y recibir notificaciones" />
+        <h5 class="mb-3">Personas para oir y recibir notificaciones</h5>
+        <app-tabla-dinamica
+        [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+            [configuracionTabla]="personasConfiguracionTabla"
+            [datos]="personaParas">
+        </app-tabla-dinamica>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<ng-template #template>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">{{ esModalEdicion ? 'Modificar' : 'Agregar' }}</h4>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="enlaceOperativoForm">
+          <h6><span class="text-danger">* </span>Registro Federal de Contribuyentes:</h6>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <input
+                  class="form-control"
+                  id="resigtro"
+                  formControlName="resigtro"
+                  type="text"
+                  (change)="eventoDeCambioDeValor($event, 'resigtro')"
+                />
+              </div>
+              @if(enlaceOperativoForm.controls['resigtro'].invalid && enlaceOperativoForm.controls['resigtro'].touched) {
+                <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+            </div>
+            <div class="col-md-8">
+                <div class="btn-group">
+                  <button class="btn btn-default" type="button" (click)="buscarRFC()">Buscar</button>
+                </div>
+              </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="rfc">RFC:</label>
+                <input
+                  class="form-control"
+                  id="rfc"
+                  formControlName="irfc"
+                  (change)="eventoDeCambioDeValor($event, 'irfc')"
+                  type="text"
+                  readonly
+                />
+              </div>
+              @if(enlaceOperativoForm.controls['irfc'].invalid && enlaceOperativoForm.controls['irfc'].touched) {
+                <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="nombre">Nombre:</label>
+                <input
+                  class="form-control"
+                  id="nombre"
+                  formControlName="inombre"
+                  (change)="eventoDeCambioDeValor($event, 'inombre')"
+                  type="text"
+                  readonly
+                />
+              </div>
+              @if(enlaceOperativoForm.controls['inombre'].invalid && enlaceOperativoForm.controls['inombre'].touched) {
+                <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="apellidoPaterno"
+                  >Apellido Paterno:</label
+                >
+                <input
+                  class="form-control"
+                  id="apellidoPaterno"
+                  formControlName="apellidoPaterno"
+                  (change)="eventoDeCambioDeValor($event, 'apellidoPaterno')"
+                  type="text"
+                  readonly
+                />
+              </div>
+              @if(enlaceOperativoForm.controls['apellidoPaterno'].invalid && enlaceOperativoForm.controls['apellidoPaterno'].touched) {
+                <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="apellidoMaterno"
+                  >Apellido Materno:</label
+                >
+                <input
+                  class="form-control"
+                  id="apellidoMaterno"
+                  formControlName="apellidoMaterno"
+                  (change)="eventoDeCambioDeValor($event, 'apellidoMaterno')"
+                  type="text"
+                  readonly
+                />
+              </div>
+              @if(enlaceOperativoForm.controls['apellidoMaterno'].invalid && enlaceOperativoForm.controls['apellidoMaterno'].touched) {
+                <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8">
+              <div class="form-group">
+                <label class="form-label" for="cuidad"
+                  >Ciudad o Estado de Residencia:</label
+                >
+                <input
+                  class="form-control"
+                  id="cuidad"
+                  formControlName="cuidad"
+                  (change)="eventoDeCambioDeValor($event, 'cuidad')"
+                  type="text"
+                  readonly
+                />
+              </div>
+              @if(enlaceOperativoForm.controls['cuidad'].invalid && enlaceOperativoForm.controls['cuidad'].touched) {
+                <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="cargo">Cargo o Puesto:</label>
+                <input
+                  class="form-control"
+                  id="cargo"
+                  formControlName="cargo"
+                  (change)="eventoDeCambioDeValor($event, 'cargo')"
+                  type="text"
+                />
+              </div>
+              @if(enlaceOperativoForm.controls['cargo'].invalid && enlaceOperativoForm.controls['cargo'].touched) {
+                <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="telefono">Teléfono:</label>
+                <input
+                  class="form-control"
+                  id="telefono"
+                  formControlName="telefono"
+                  (change)="eventoDeCambioDeValor($event, 'telefono')"
+                  type="text"
+                />
+              </div>
+              @if(enlaceOperativoForm.controls['telefono'].invalid && enlaceOperativoForm.controls['telefono'].touched) {
+                <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="correo"
+                  >Correo Electrónico:</label
+                >
+                <input
+                  class="form-control"
+                  id="correo"
+                  formControlName="correo"
+                  (change)="eventoDeCambioDeValor($event, 'correo')"
+                  type="text"
+                />
+              </div>
+              @if(enlaceOperativoForm.controls['correo'].invalid && enlaceOperativoForm.controls['correo'].touched) {
+                <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="suplente">Suplente</label>
+                <div class="form-check-input-container">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value=""
+                    id="suplente"
+                    (change)="eventoDeCambioDeValor($event, 'suplente')"
+                    formControlName="suplente"
+                  />
+                </div>
+              </div>
+              @if(enlaceOperativoForm.controls['suplente'].invalid && enlaceOperativoForm.controls['suplente'].touched) {
+                <div class="mensaje-error">Este campo es obligatorio.</div>
+              }
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer d-flex justify-content-end mt-3 mb-3">
+        <button type="button" class="btn btn-primary" (click)="guardarDatosFormulario()">
+          Aceptar
+        </button>
+        <button type="button" class="btn btn-danger" (click)="modalRef?.hide()">
+          Cancelar
+        </button>
+      </div>
+</ng-template>

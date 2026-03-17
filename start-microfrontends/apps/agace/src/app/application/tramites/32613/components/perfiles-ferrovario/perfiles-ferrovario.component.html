@@ -1,0 +1,85 @@
+<form [formGroup]="perfilesFerrovarioForm">
+    <div class="page">
+        <div class="container">
+            <div class="row mt-5">
+                <label class="form-label text-start fw-medium">SINALOA AHOME MIGUEL HIDALGO CAMINO VIEJO 1353 C.P. 81210 Planta Productiva SAT</label>
+            </div>
+            <div class="row">
+                <formas-dinamicas
+                formularioTitulo="Perfil Transportista Ferroviario"
+                [forma]="ninoFormGroup"
+                [formularioDatos]="formDataInformacionGeneral"
+                [templateMap]="templateMap"
+                [estado]="rubroTransporteFerrovariostate"
+                [soloLectura]="consultaState.readonly"
+                (emitirCambioDeValor)="establecerCambioDeValor($event)"
+                ></formas-dinamicas>
+            </div>
+        </div>
+    </div>
+
+    <ng-template #customTemplate1>
+        <row-type-form-input [form]="customTemplate1Form" [fields]="template1Array" (emitirValorDeCampo)="customTemplateEvents($event)"></row-type-form-input>
+    </ng-template>
+
+    <ng-template #customTemplate2>
+        @if (mostarCustomtemplate2) {
+            <row-type-form-input [form]="customTemplate2Form" [fields]="template2Array" (emitirValorDeCampo)="customTemplateEvents($event)"></row-type-form-input>
+        }
+    </ng-template>
+
+    <ng-template #customTemplate3>
+        @if (mostarCustomtemplate3) {
+            <row-type-form-input [form]="customTemplate3Form" [fields]="template3Array" (emitirValorDeCampo)="customTemplateEvents($event)"></row-type-form-input>
+        }
+    </ng-template>
+
+    <ng-template #customTemplate4>
+        @if (mostarCustomtemplate4) {
+            <row-type-form-input [form]="customTemplate4Form" [fields]="template4Array" (emitirValorDeCampo)="customTemplateEvents($event)"></row-type-form-input>
+        }
+    </ng-template>
+
+    <ng-template #customTemplate5>
+        @if (mostarCustomtemplate5) {
+            <row-type-form-input [form]="customTemplate5Form" [fields]="template5Array" (emitirValorDeCampo)="customTemplateEvents($event)"></row-type-form-input>
+        }
+    </ng-template>
+
+    <ng-template #customTemplate6>
+        <div formArrayName="otrasCertificaciones">
+            <label class="form-label text-start">Otras Certificaciones</label>
+            @for (otrasGroup of otrasCertificaciones.controls; track $index) {
+                <div class="mt-5" [formGroupName]="$index">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <label for="nombre-{{ $index }}">Nombre</label>
+                            <input type="text" class="form-control" id="nombre-{{ $index }}" formControlName="nombre" (change)="textValorCambio($event, 'nombre', $index)"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <label for="categoria-{{ $index }}">Categoria</label>
+                            <input type="text" class="form-control" id="categoria-{{ $index }}" formControlName="categoria" (change)="textValorCambio($event, 'categoria', $index)"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="vigencia-{{ $index }}">Vigencia</label>
+                            <input type="date" class="form-control" id="vigencia-{{ $index }}" formControlName="vigencia" (change)="textValorCambio($event, 'vigencia', $index)"/>
+                        </div>
+                    </div>
+                </div>
+            } 
+            @if (otrasCertificaciones.invalid && perfilesFerrovarioForm.get('otrasCertificaciones')?.touched) {
+                <div class="row text-danger mt-2">
+                    Respuesta Obligatoria
+                </div>
+            }
+        </div>
+    </ng-template>
+</form>
+
+<div class="row mt-5">
+    <seccion-dinamica [secciones]="perfilesSecciones"></seccion-dinamica>
+</div>

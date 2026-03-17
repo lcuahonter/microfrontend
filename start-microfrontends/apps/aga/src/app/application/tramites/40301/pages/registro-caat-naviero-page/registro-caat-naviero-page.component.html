@@ -1,0 +1,37 @@
+<div class="page">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h1>Registro del código alfanumérico armonizado del transportista</h1>
+      </div>
+      
+      @if(nuevaNotificacion) {
+        <section>
+          <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+          </lib-notificaciones>
+        </section>
+      }
+
+      @if (!tieneTramiteActivo) {
+        
+        <app-wizard [listaPasos]="pasos"></app-wizard>
+
+        <div class="row">
+          @if(storeData$ | async; as storeData){
+            @switch (indice) {
+              @case (1) {
+                <app-paso-uno (pestanaCambiado)="pestanaCambiado($event)"></app-paso-uno>
+              }
+              @case (2) {
+                <paso-firma [idSolicitud]="storeData.idSolicitud" [procedure]="40301" [procedureUrl]="'solicitud'"></paso-firma>
+              }
+            }
+          }
+        </div>
+
+        <btn-continuar [datos]="datosPasos" (continuarEvento)="getValorIndice($event)"></btn-continuar>
+      }
+      
+    </div>
+  </div>
+</div>

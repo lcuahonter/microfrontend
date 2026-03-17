@@ -1,0 +1,293 @@
+<form [formGroup]="dictamenForm">
+    <div class="row ">
+        @if (mostrarTitulo) {
+        <div class="col-md-12">
+            <h3 class="titulo-dictamen">{{titulo}}</h3>
+        </div>
+        }
+        @if (nombreAccion) {
+        <div class="col-md-12">
+            <h3 class="titulo-dictamen">{{ nombreAccion }}</h3>
+        </div>
+        }
+        <div class="col-md-12">
+            <div class="col-md-3 d-flex align-items-center">
+                <label class="form-label" style="min-width: 150px;">Sentido dictamen<span
+                        [ngClass]="dictamenForm.get('sentidoDictamen')?.errors?.['required'] ? 'mensaje-error' : ''">*</span>:</label>
+            </div>
+            @if(inputSentidos === true) {
+            <div class="col-md-5">
+                <input type="text" class="form-control" [value]="resultadoEvaluacion" [disabled]="true">
+            </div>
+            }
+            @else {
+
+            @if(opcionesSentidosDisponibles.length === 0) {
+            <div class="col-md-8 d-flex justify-content-center">
+                <div class="d-flex gap-3">
+                    <div *ngFor="let opcion of opcionesSentidosDisponibles"
+                        class="border px-4 py-2 d-flex align-items-center radio-button">
+                        <input class="form-check-input me-3 seleccion-radio" type="radio" formControlName="sentidoDictamen"
+                            name="sentidoDictamen" [value]="opcion.clave" [id]="'sentidoDictamen' + opcion.clave"
+                            [ngClass]="{ 'radio-invalid': dictamenForm.get('sentidoDictamen')?.invalid && dictamenForm.get('sentidoDictamen')?.touched }" />
+                        <label class="control-label mb-0" [for]="'sentidoDictamen' + opcion.clave">
+                            {{ opcion.descripcion }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            }
+
+            @else {
+            <div class="col-md-8 d-flex justify-content-center">
+                <div class="d-flex gap-3">
+                    <div class="border px-4 py-2 d-flex align-items-center radio-button">
+                        <input class="form-check-input me-3 seleccion-radio" type="radio" formControlName="sentidoDictamen"
+                            name="sentidoDictamen" value="SEDI.AC" id="sentidoDictamenAceptado"
+                            [ngClass]="{ 'radio-invalid': dictamenForm.get('sentidoDictamen')?.invalid && dictamenForm.get('sentidoDictamen')?.touched }">
+                        <label class="control-label mb-0" for="sentidoDictamenAceptado">Aceptado</label>
+                    </div>
+                    <div class="border px-4 py-2 d-flex align-items-center radio-button">
+                        <input class="form-check-input me-3 seleccion-radio" type="radio" formControlName="sentidoDictamen"
+                            name="sentidoDictamen" value="SEDI.RZ" id="sentidoDictamenRechazado"
+                            [ngClass]="{ 'radio-invalid': dictamenForm.get('sentidoDictamen')?.invalid && dictamenForm.get('sentidoDictamen')?.touched }">
+                        <label class="control-label mb-0" for="sentidoDictamenRechazado">Rechazado</label>
+                    </div>
+                    <div class="border px-4 py-2 d-flex align-items-center radio-button">
+                        <input class="form-check-input me-3 seleccion-radio" type="radio" formControlName="sentidoDictamen"
+                            name="sentidoDictamen" value="SEDI.PA" id="sentidoDictamenParcial"
+                            [ngClass]="{ 'radio-invalid': dictamenForm.get('sentidoDictamen')?.invalid && dictamenForm.get('sentidoDictamen')?.touched }">
+                        <label class="control-label mb-0" for="sentidoDictamenParcial">Parcial</label>
+                    </div>
+                </div>
+            </div>
+            }
+            }
+        </div>
+        <div class="col-md-12 d-flex align-items-center text-danger mt-2"
+            *ngIf="dictamenForm.get('sentidoDictamen')?.invalid && dictamenForm.get('sentidoDictamen')?.touched">
+            Este campo es obligatorio.
+        </div>
+
+    </div>
+
+
+    <div class="row mt-4">
+        @if (mostrarCamposFechaAc || mostrarCamposFechaPl) {
+        <div class="col-md-12">
+            <h3 class="titulo-dictamen">Datos de Autorización</h3>
+        </div>
+        <div class="col-md-12">
+            <label for="decripcionObjetoimportacion" class="form-label">
+                Objeto de la importación<span
+                    [ngClass]="dictamenForm.get('decripcionObjetoimportacion')?.errors?.['required'] ? 'text-danger' : ''">*</span>:</label>
+            <textarea id="decripcionObjetoimportacion" class="form-control text-height"
+                formControlName="decripcionObjetoimportacion"
+                [ngClass]="{ 'is-invalid': dictamenForm.get('decripcionObjetoimportacion')?.invalid && dictamenForm.get('decripcionObjetoimportacion')?.touched }">
+            </textarea>
+            @if (dictamenForm.get('decripcionObjetoimportacion')?.touched &&
+            dictamenForm.get('decripcionObjetoimportacion')?.errors) {
+            <div class="mensaje-error" *ngIf="dictamenForm.get('decripcionObjetoimportacion')?.errors?.['required']">
+                Este campo es obligatorio.
+            </div>
+            <div class="mensaje-error"
+                *ngIf="dictamenForm.get('decripcionObjetoimportacion')?.errors?.['soloEspacios']">
+                No se permiten solo espacios en blanco.
+            </div>
+            <div class="mensaje-error" *ngIf="dictamenForm.get('decripcionObjetoimportacion')?.errors?.['maxlength']">
+                No puede exceder los 400 caracteres.
+            </div>
+            }
+        </div>
+        @if (mostrarPaisFabrica) {
+            <div class="col-md-12">
+            <label for="paisFabrica" class="form-label">
+                País donde se fabrica el ingrediente activo (TÉCNICO)
+            </label>
+        </div>
+        <div class="col-md-12">
+            <crosslist
+                [fechas]="paisesBloquesDescripcion"
+                [botones]="botonesFabrica"
+                [label]="paisFabricaLabel"
+                [isDisabled]="soloLectura"
+                [mostrarPaisesSeleccionados]="mostrarPaisesSeleccionados"
+                [fechasSeleccionadas]="seleccionadasPaisFabricaDatos"
+                (fechasSeleccionadasChange)="
+                paisFabricaSeleccionadasChange($event)
+                "
+            ></crosslist>
+        </div>
+        }
+        @if (mostrarPaisElabora) {
+            <div class="col-md-12">
+            <label for="paisElabora" class="form-label">
+                País donde se elabora el producto (FORMULADO)
+            </label>
+        </div>
+        <div class="col-md-12">
+            <crosslist
+                [fechas]="paisesBloquesDescripcion"
+                [botones]="botonesElabora"
+                [label]="paisElaboraLabel"
+                [isDisabled]="soloLectura"
+                [mostrarPaisesSeleccionados]="mostrarPaisesSeleccionados"
+                [fechasSeleccionadas]="seleccionadasPaisElaboraDatos"
+                (fechasSeleccionadasChange)="
+                paisElaboraSeleccionadasChange($event)
+                "
+            ></crosslist>
+        </div>
+        }
+        
+        <div class="col-md-12 mt-4">
+            <app-catalogo-select [catalogo]="restriccioneOpcions"
+                formControlName="idRestriccionTipoTramite" [label]="'Restricciones'" name="Restricciones"
+                [required]="true" [isDisabled]="soloLectura"
+                [markTouched]="dictamenForm.get('idRestriccionTipoTramite')?.touched ?? false"></app-catalogo-select>
+        </div>
+    }
+    </div>
+
+
+    @if((mostrarCamposFechaRe || mostrarCamposFechaPl) && !mostrarCamposFechaAc) {
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h3 class="titulo-dictamen">Datos del Rechazo</h3>
+        </div>
+        <div class="col-md-8">
+            <label for="justificacionDictamen" class="form-label">
+                Justificación del dictamen<span
+                    [ngClass]="dictamenForm.get('justificacion')?.errors?.['required'] ? 'text-danger' : ''">*</span>:</label>
+            <textarea id="justificacionDictamen" class="form-control text-height" formControlName="justificacion"
+                [ngClass]="{ 'is-invalid': dictamenForm.get('justificacion')?.invalid && dictamenForm.get('justificacion')?.touched }"></textarea>
+
+            @if (dictamenForm.get('justificacion')?.touched && dictamenForm.get('justificacion')?.errors) {
+            <div class="mensaje-error" *ngIf="dictamenForm.get('justificacion')?.errors?.['required']">
+                Este campo es obligatorio.
+            </div>
+            <div class="mensaje-error" *ngIf="dictamenForm.get('justificacion')?.errors?.['soloEspacios']">
+                No se permiten solo espacios en blanco.
+            </div>
+            }
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="full-width-select">
+            <app-catalogo-select [catalogo]="motivoOpcions" [isDisabled]="soloLectura"
+                formControlName="idMotivoTipoTramite" [label]="motivoLabel" [required]="true" name="motivo"
+                [markTouched]="dictamenForm.get('idMotivoTipoTramite')?.touched ?? false"></app-catalogo-select>
+        </div>
+    </div>
+    }
+
+    <div class="row mt-4 d-flex align-items-center justify-content-space-between">
+        <div class="col-md-6">
+            <label for="siglas" class="form-label">
+                Siglas del dictaminador<span
+                    [ngClass]="dictamenForm.get('siglasDictaminador')?.errors?.['required'] ? 'text-danger' : ''">*</span>:
+            </label>
+        </div>
+        <div class="col-md-6">
+            <input type="text" class="form-control text-uppercase" formControlName="siglasDictaminador"
+                [ngClass]="{ 'is-invalid': dictamenForm.get('siglasDictaminador')?.invalid && dictamenForm.get('siglasDictaminador')?.touched }">
+            @if (dictamenForm.get('siglasDictaminador')?.touched && dictamenForm.get('siglasDictaminador')?.errors) {
+            <div class="mensaje-error" *ngIf="dictamenForm.get('siglasDictaminador')?.errors?.['required']">
+                Este campo es obligatorio.
+            </div>
+            <div class="mensaje-error" *ngIf="dictamenForm.get('siglasDictaminador')?.errors?.['soloEspacios']">
+                No se permiten solo espacios en blanco.
+            </div>
+            <div class="mensaje-error" *ngIf="dictamenForm.get('siglasDictaminador')?.errors?.['maxlength']">
+                No puede exceder los 20 caracteres.
+            </div>
+            }
+        </div>
+    </div>
+    @if (isFechaFinVigencia && procedureId !== 260510 && procedureId !== 260507) {
+    <div class="row mt-4">
+        <div class="col-md-12 d-flex align-items-center mb-2">
+            <input type="checkbox" id="blnGenerico1" formControlName="blnGenerico1" class="form-check-input me-2"
+                (change)="blnChange($event)">
+            <label for="blnGenerico1" class="form-label mb-0">
+                Desea establecer la fecha fin de vigencia de acuerdo al Registro Sanitario
+            </label>
+        </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-4">
+            <input-fecha [setFecha]="dictamenForm.get('fechaFinVigencia')?.value" [datos]="fechaConfig" [icono]="true"
+                    (valorCambiado)="valorCambiado($event)" [deshabilitarPasadas]="true" ></input-fecha>
+             @if (dictamenForm.get('fechaFinVigencia')?.touched && dictamenForm.get('fechaFinVigencia')?.errors)
+                {
+                <div class="mensaje-error mb-1" *ngIf="dictamenForm.get('fechaFinVigencia')?.errors?.['required']">
+                    Este campo es obligatorio.
+                </div>
+                }
+            </div>
+    </div>
+}
+
+@if (isAsignarAutorizador) {
+    <div class="row mt-3">
+        <div class="col-md-12">
+        <app-catalogo-select [catalogo]="autorizadorOpcions"
+            formControlName="numeroGenerico1" [label]="'Asignar autorizador'" [required]="dictamenForm.get('sentidoDictamen')?.value === 'SEDI.AC' || dictamenForm.get('sentidoDictamen')?.value === 'SEDI.PA'"
+            name="Asignar autorizador" [isDisabled]="soloLectura"
+            [markTouched]="dictamenForm.get('numeroGenerico1')?.touched ?? false"></app-catalogo-select>
+        </div>
+    </div>
+}
+    @if ((dictamenForm.get('sentidoDictamen')?.value === 'SEDI.AC' && sentidoDictamenValues ==='SEDI.AC') && esVistaPrevia){
+    <div class="row">
+        <div class="col-md-12 text-end d-flex align-items-center justify-content-end" style="gap: 1rem;">
+            <button type="button" class="btn btn-primary ms-3" style="margin-top: 12px; margin-bottom: 12px;"
+                (click)="vistaPreliminar('VistaPreliminarAceptado')">
+                Vista Preliminar Aceptado
+            </button>
+        </div>
+    </div>
+    }
+
+    @if ((dictamenForm.get('sentidoDictamen')?.value === 'SEDI.RZ' && sentidoDictamenValues ==='SEDI.RZ') && esVistaPrevia) {
+    <div class="row">
+        <div class="col-md-12 text-end d-flex align-items-center justify-content-end" style="gap: 1rem;">
+            <button type="button" class="btn btn-primary ms-3" style="margin-top: 12px; margin-bottom: 12px;"
+                (click)="vistaPreliminar('VistaPreliminarRechazado')">
+                Vista Preliminar Rechazado
+            </button>
+        </div>
+    </div>
+    }
+    @else if (dictamenForm.get('sentidoDictamen')?.value ==='SEDI.PA' && esVistaPrevia){
+        <div class="row mt-3">
+            <div class="col-md-12 d-flex justify-content-end align-items-center gap-3">
+                <button
+                type="button"
+                class="btn btn-primary"
+                (click)="vistaPreliminar('VistaPreliminarAceptado')">
+                Vista Preliminar Aceptado
+                </button>
+
+                <button
+                type="button"
+                class="btn btn-primary"
+                (click)="vistaPreliminar('VistaPreliminardelOficio')">
+                Vista Preliminar del oficio
+                </button>
+            </div>
+        </div>
+    }
+
+
+    @if(!soloLectura) {
+    <div class="row mt-5 mb-5">
+        <div class="col-md-12 d-flex justify-content-end">
+            <button type="button" class="btn btn-primary me-3" (click)="firmar()">Guardar y firmar</button>
+            <button type="button" class="btn btn-primary me-3" (click)="guardar()">Guardar</button>
+            <button type="button" class="btn btn-default me-3" (click)="cancelar()">Cancelar</button>
+        </div>
+    </div>
+    }
+</form>

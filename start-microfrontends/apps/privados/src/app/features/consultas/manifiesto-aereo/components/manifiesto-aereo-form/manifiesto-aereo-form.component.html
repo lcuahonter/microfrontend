@@ -1,0 +1,246 @@
+<form [formGroup]="myForm" (ngSubmit)="submitForm()" autocomplete="off">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group">
+        <h5>
+          Buscar por
+          <span class="form-text form-text-error">*</span>
+        </h5>
+        <hr class="red" />
+        <div class="col-md-6">
+          <label class="radio-inline"
+            ><input type="radio" formControlName="searchType" [value]="searchBy.document" />Documento de
+            Transporte</label
+          >
+        </div>
+        <div class="col-md-6">
+          <label class="radio-inline"
+            ><input
+              type="radio"
+              formControlName="searchType"
+              [value]="searchBy.date"
+              [ngClass]="{ 'form-control-error': formUtils.isValidField(myForm, 'searchType') }"
+            />Fecha</label
+          >
+        </div>
+
+        <small class="form-text form-text-error" *ngIf="formUtils.isValidField(myForm, 'searchType')">
+          {{ formUtils.getFieldError(myForm, 'searchType') }}
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="formUtils.valueSelected(myForm, 'searchType', 'document')">
+    <div class="col-md-12">
+      <div class="form-group">
+        <h5>
+          Buscar tipo de documento de transporte
+          <span class="form-text form-text-error">*</span>
+        </h5>
+        <hr class="red" />
+        <div class="col-md-4">
+          <label class="radio-inline"
+            ><input type="radio" formControlName="typeDocument" [value]="typeDocument.house" />Guía Aérea
+            House</label
+          >
+        </div>
+        <div class="col-md-4">
+          <label class="radio-inline"
+            ><input type="radio" formControlName="typeDocument" [value]="typeDocument.master" />Guía Aérea
+            Master</label
+          >
+        </div>
+        <div class="col-md-4">
+          <label class="radio-inline"
+            ><input type="radio" formControlName="typeDocument" [value]="typeDocument.manifest" />Manifiesto de
+            Carga</label
+          >
+        </div>
+        <div class="col-md-12">
+          <small class="form-text form-text-error" *ngIf="formUtils.formHasError(myForm, 'typeDocumentRequired', 'typeDocument')">
+            {{ formUtils.getFieldError(myForm, 'typeDocument') }}
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="formUtils.valueSelected(myForm, 'searchType', searchBy.date)">
+    <div class="col-md-12">
+      <div class="form-group">
+        <h5>
+          Periodo
+          <span class="form-text form-text-error">*</span>
+        </h5>
+        <hr class="red" />
+        <div class="col-md-6">
+          <date-picker
+            label="Fecha"
+            formControlName="date"
+            [maxDate]="today"
+            [hasError]="formUtils.formHasError(myForm, 'dateRequired', searchBy.date)">
+          </date-picker>
+          <small class="form-text form-text-error" *ngIf="formUtils.formHasError(myForm, 'dateRequired', searchBy.date)">
+            {{ formUtils.getFieldError(myForm, 'date') }}
+          </small>
+		      <p>El rango máximo de fechas es de 1 día.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group">
+        <h5>Empresa transportista</h5>
+        <hr class="red" />
+        <div class="col-md-6">
+          <label class="radio-inline"
+            ><input type="radio" formControlName="transportCompany" [value]="typeCode.caat" />Código
+            CAAT</label
+          >
+        </div>
+        <div class="col-md-6">
+          <label class="radio-inline"
+            ><input type="radio" formControlName="transportCompany" [value]="typeCode.iata" />Código
+            IATA</label
+          >
+        </div>
+        <div class="mt-5">
+          <div class="col-md-12">
+            <div class="form-group" *ngIf="!formUtils.valueSelected(myForm, 'transportCompany', 'IATA')">
+              <label
+                >CAAT <span class="form-text form-text-error" *ngIf="formUtils.valueSelected(myForm, 'transportCompany', 'CAAT')">*</span>
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="caat"
+                [ngClass]="{
+                  'form-control-error': formUtils.formHasError(myForm, 'caatRequired', 'caat')
+                }"
+              />
+              <small class="form-text form-text-error" *ngIf="formUtils.formHasError(myForm, 'caatRequired', 'caat')">
+                {{ formUtils.getFieldError(myForm, 'caat') }}
+              </small>
+            </div>
+            <div class="form-group" *ngIf="formUtils.valueSelected(myForm, 'transportCompany', 'IATA')">
+              <label
+                >IATA <span class="form-text form-text-error" *ngIf="formUtils.valueSelected(myForm, 'transportCompany', 'IATA')">*</span></label
+              >
+              <input
+                type="text"
+                class="form-control"
+                formControlName="iata"
+                [ngClass]="{
+                  'form-control-error': formUtils.formHasError(myForm, 'iataRequired', 'iata')
+                }"
+              />
+              <small class="form-text form-text-error" *ngIf="formUtils.formHasError(myForm, 'iataRequired', 'iata')">
+                {{ formUtils.getFieldError(myForm, 'iata') }}
+              </small>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Nombre / Denominación o Razón Social</label>
+              <input type="text" class="form-control" formControlName="companyName" />
+            </div>
+          </div>
+          <div class="col-md-6">
+
+              <div class="form-group">
+                <label *ngIf="formUtils.valueSelected(myForm, 'transportCompany', 'IATA')">Código CAAT</label>
+                <label *ngIf="!formUtils.valueSelected(myForm, 'transportCompany', 'IATA')">Código IATA</label>
+                <input type="text" class="form-control" formControlName="otherCode"/>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <h5>Buscar por aduana</h5>
+      <hr class="red" />
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Aduana de despacho</label>
+          <select formControlName="customClearance" class="form-control">
+            <option value="">Seleccione un valor</option>
+            <option *ngFor="let aduana of aduanas; let i = index" [value]="aduana.idClave">
+              {{ aduana.aduanaNombre }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Aduana de Transbordo</label>
+          <select formControlName="customsTransshipment" class="form-control">
+            <option value="">Seleccione un valor</option>
+            <option *ngFor="let aduana of aduanas; let i = index" [value]="aduana.idClave">
+              {{ aduana.aduanaNombre }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group">
+        <h5>Buscar por número de documento de transporte</h5>
+        <hr class="red" />
+        <div class="col-md-6">
+          <label
+            >Número de manifiesto / Guía <span class="form-text form-text-error" *ngIf="formUtils.valueSelected(myForm, 'searchType', 'document')">*</span></label
+          >
+          <input
+            type="text"
+            class="form-control"
+            formControlName="guideNumber"
+            [ngClass]="{
+              'form-control-error': formUtils.formHasError(
+                myForm,
+                'guideNumberRequired',
+                'guideNumber'
+              )
+            }"
+          />
+          <small class="form-text form-text-error" *ngIf="formUtils.formHasError(myForm, 'guideNumberRequired', 'guideNumber')">
+            {{ formUtils.getFieldError(myForm, 'guideNumber') }}
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group">
+        <h5>Estatus del documento de transporte</h5>
+        <hr class="red" />
+        <div class="col-md-6">
+          <label>Guía</label>
+          <select formControlName="guideSelect" class="form-control">
+            <option value="">Seleccione un valor</option>
+            <option *ngFor="let estadoDocumento of estadoDocumentos; let i = index" [value]="estadoDocumento.idClave">
+              {{ estadoDocumento.cveNumeracion }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-12 mt-3">
+    <gob-button type="submit" className="btn-primary" label="Consultar" class="mr-1"></gob-button>
+    <gob-button
+      type="button"
+      className="btn-default"
+      label="Limpiar"
+      (clicked)="myForm.reset()"
+    ></gob-button>
+  </div>
+</form>

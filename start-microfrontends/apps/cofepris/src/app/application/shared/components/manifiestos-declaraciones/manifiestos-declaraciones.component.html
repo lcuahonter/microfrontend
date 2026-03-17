@@ -1,0 +1,48 @@
+   <ng-titulo titulo="Manifiestos y declaraciones"></ng-titulo>
+   <form [formGroup]="manifiestos" *ngIf="manifiestos">
+      <div class="mt-5">
+         <div class="alert alert-info">
+            <div class="row align-items-center justify-content-start py-2">
+               <div class="col-auto d-flex align-items-start pt-1">
+                  <input class="form-check-input me-3" type="checkbox" id="mensaje" formControlName="mensaje"  (change)="setValoresStore(manifiestos,'mensaje', 'setMensaje')"/>
+                  <label class="form-check-label ms-2 mt-2" for="mensaje" >
+                  <span [ngClass]="
+                     manifiestos.get('mensaje')?.invalid &&
+                     (manifiestos.get('mensaje')?.touched ||
+                     manifiestos.get('mensaje')?.dirty)
+                     ? 'mensaje-error'
+                     : ''
+                     ">
+                  *</span>
+                  </label>
+               </div>
+               <div class="col align-items-center ml-38">
+                  <label for="mensaje" class="">{{ mensajeManifiestos }}</label>
+               </div>
+            </div>
+         </div>
+      <div class="mensaje-error"
+  *ngIf="manifiestos.get('mensaje')?.invalid &&(manifiestos.get('mensaje')?.touched ||manifiestos.get('mensaje')?.dirty)">
+  Este campo es obligatorio.
+</div>
+
+      </div>
+      <div class="row mt-2">
+         <div class="col-md-12">
+            <label class="control-label" for="buscar">Los datos o anexos pueden contener información confidencial ¿Está de
+            acuerdo en hacerlos públicos?<span [ngClass]="{'tiene-error':manifiestos.get('cumplimiento')?.touched && manifiestos.get('cumplimiento')?.errors?.['required']}" class="fw-bold align-middle">*</span>:</label>
+         </div>
+         <div class="col-md-2">
+            <app-input-radio [radioOptions]="cumplimientoOptions" [isRequired]="true" formControlName="cumplimiento"
+            [layout]="'horizontal'"
+            (change)="setValoresStore(manifiestos,'cumplimiento', 'setCumplimiento')"></app-input-radio>
+         </div>
+         @if (manifiestos.get('cumplimiento')?.touched && manifiestos.get('cumplimiento')?.errors?.['required']) {
+         <div class="col-md-12">
+            <div class="mensaje-error mt-2">
+               Este campo es obligatorio.
+            </div>
+         </div>
+         }
+      </div>
+   </form>

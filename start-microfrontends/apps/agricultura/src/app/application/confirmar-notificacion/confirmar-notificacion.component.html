@@ -1,0 +1,51 @@
+<div class="container">
+  @if(indiceDePaso === PasoNotificacion.CONFIRMAR_NOTIFICACION) {
+    <div class="row">
+      <ng-titulo [titulo]="'Confirmar notificación'"></ng-titulo>
+    </div>
+    <app-detalles-folio *ngIf="notificacionData" [folioTramite]="notificacionData.num_folio_tramite"
+                        [tipoSolicitud]="notificacionData.desc_modalidad">
+    </app-detalles-folio>
+  } @if(indiceDePaso === PasoNotificacion.ACUSES){
+  <app-acuse-recibo [banderaVista]="banderaVistaAcuse" [guardarDatos]="guardarDatos" [datosTabla]="datosTabla" [datosTablaAcuseNotificacion]="notificacionAcusesData"></app-acuse-recibo>
+}@else if(indiceDePaso === PasoNotificacion.CONFIRMAR_NOTIFICACION) {
+  <app-notificacion-acto-administrativo [datosNotificacion]="notificacionData"></app-notificacion-acto-administrativo>
+} @if(indiceDePaso === PasoNotificacion.FIRMAR) {
+  <div class="row mt-5 mb-5">
+    <ng-titulo [titulo]="'Firmar'"></ng-titulo>
+    <div class="col-md-6">
+      <firma-electronica [tipo]="''" [cadenaOriginal]="cadenaOriginal"
+                         (datosFirma)="datosFirma($event)"></firma-electronica>
+    </div>
+  </div>
+
+
+} @if(indiceDePaso === PasoNotificacion.CONFIRMAR_NOTIFICACION) {
+  <div class="row mt-5 mb-5">
+    <div class="col-md-12">
+      <div class="pull-right">
+        <button type="button" name="eliminarMercancias" class="btn btn-primary ms-2" (click)="alContinuar()">
+          Continuar
+        </button>
+      </div>
+    </div>
+  </div>
+} @else if(indiceDePaso === PasoNotificacion.ACUSES) {
+  <div class="row mt-5 mb-5">
+    <div class="col-md-12">
+      <div class="pull-right">
+        <button type="button" name="eliminarMercancias" class="btn btn-primary" (click)="cerrar()">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+}
+</div>
+
+@if(nuevaNotificacion) {
+  <section>
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+    </lib-notificaciones>
+  </section>
+}

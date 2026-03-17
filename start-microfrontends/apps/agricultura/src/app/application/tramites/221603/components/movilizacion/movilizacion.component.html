@@ -1,0 +1,86 @@
+<div class="container" [formGroup]="medioForm">
+  <ng-titulo titulo="Medio de transporte" />
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <app-catalogo-select
+          [catalogo]="sanidadService.medio"
+          [label]="'Medio de transporte'"
+          [required]="true"
+          [isDisabled]="esFormularioSoloLectura"
+          name="medio"
+          formControlName="medio"
+          (change)="setValoresStore('medio', 'setMedio')"
+        >
+        </app-catalogo-select>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="form-label" for="transporte"
+          >Identificación del transporte:</label
+        >
+        <input
+          class="form-control"
+          id="transporte"
+          formControlName="transporte"
+          type="text"
+          (change)="setValoresStore('transporte', 'setTransporte')"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8">
+      <div class="form-group">
+        <app-catalogo-select
+          [catalogo]="sanidadService.verificacion"
+          [label]="'Punto de verificación federal'"
+          [required]="false"
+          [tooltipQuestionCircleText]="'Es el primer punto de Inspección Federal dentro del territorio nacional por donde cruzará el embarque'" 
+          [tooltipQuestionCircle]="true"
+          [isDisabled]="esFormularioSoloLectura"
+          name="verificacion"
+          formControlName="verificacion"
+          (change)="setValoresStore('verificacion', 'setVerificacion')"
+        >
+        </app-catalogo-select>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8">
+      <div class="form-group">
+        <label class="form-label" for="empresa"
+          >Nombre de la empresa transportista*:</label
+        >
+        <input
+          class="form-control"
+          id="empresa"
+          formControlName="empresa"
+          type="text"
+          (change)="setValoresStore('empresa', 'setEmpresa')"
+          [class.is-invalid]="
+            medioForm.get('empresa')?.touched &&
+            medioForm.get('empresa')?.invalid
+          "
+        />
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            medioForm.get('empresa')?.touched &&
+            medioForm.get('empresa')?.invalid
+          "
+        >
+          <span *ngIf="medioForm.get('empresa')?.hasError('required')"
+            >Este campo es obligatorio.</span
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

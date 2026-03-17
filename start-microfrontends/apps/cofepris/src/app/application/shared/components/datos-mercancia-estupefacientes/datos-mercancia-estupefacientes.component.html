@@ -1,0 +1,574 @@
+<div class="container">
+  <ng-titulo titulo="Datos mercancía"></ng-titulo>
+
+  <form [formGroup]="mercanciaForm">
+    <div class="row">
+      <div class="col-md-10">
+        <div class="ml-2">
+          <app-catalogo-select
+            [catalogo]="clasificacionProductoDatos"
+            formControlName="clasificacionProducto"
+            [label]="'Clasificación del producto'"
+            [required]="true"
+            name="clasificacionProducto"
+             [placeholder]="'Selecciona una opción'"
+          ></app-catalogo-select>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-10 ml-2">
+        <div class="form-group">
+          <app-catalogo-select
+            [catalogo]="especificarClasificacionProductoDatos"
+            formControlName="especificarClasificacionProducto"
+            [label]="'Especificar clasificación del producto'"
+            [required]="true"
+            name="especificarClasificacionProducto"
+             [placeholder]="'Selecciona una opción'"
+          ></app-catalogo-select>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-10">
+        <div class="form-group">
+          <label class="form-label" for="denominacionCumonInternacional"
+            >Denominación común internacional (DCI)*:</label
+          >
+          <span
+            class="bi bi-question-circle-fill"
+            title="Denominación común internacional (DCI)"
+            data-bs-toggle="tooltip"
+          ></span>
+          <input
+            class="form-control"
+            id="denominacionCumonInternacional"
+            type="textarea"
+            formControlName="denominacionCumonInternacional"
+            [ngClass]="
+              isValid(mercanciaForm, 'denominacionCumonInternacional')
+                ? 'required'
+                : ''
+            "
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-10">
+        <div class="form-group">
+          <label class="form-label" for="marcaComercialDenominación"
+            >Marca comercial o denominación distintiva*:
+          </label>
+          <input
+            class="form-control"
+            id="marcaComercialDenominación"
+            type="text"
+            formControlName="marcaComercialDenominación"
+            [ngClass]="
+              isValid(mercanciaForm, 'marcaComercialDenominación')
+                ? 'required'
+                : ''
+            "
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-10 ml-2">
+        <app-catalogo-select
+          [catalogo]="tipoProductoDatos"
+          formControlName="tipoProducto"
+          [label]="'Tipo de producto'"
+          [required]="true"
+          name="tipoProducto"
+           [placeholder]="'Selecciona una opción'"
+        ></app-catalogo-select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-10 ml-2">
+        <app-catalogo-select
+          [catalogo]="estadoFisicoDatos"
+          formControlName="estadoFisico"
+          [label]="'Estado físico'"
+          [required]="true"
+          name="estadoFisico"
+           [placeholder]="'Selecciona una opción'"
+        ></app-catalogo-select>
+      </div>
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-md-12 mt-3">
+        <div class="panel-group ficha-collapse" id="accordion">
+          <div class="panel panel-default">
+            <div class="panel-heading" (click)="mostrarColapsable(1)">
+              <h4 class="panel-title">
+                <a> Forma farmacéutica </a>
+              </h4>
+              <button
+                type="button"
+                class="collpase-button"
+                [class.collapsed]="!formFormaceuticaColapsable"
+              ></button>
+            </div>
+            @if(formFormaceuticaColapsable){
+            <div class="panel-collapse collapse in" id="panel-01">
+              <div class="panel-body">
+                <crosslist
+                  [fechas]="seleccionarOrigenFormaFormaceutica"
+                  [label]="formaFaramaceuticaLabel"
+                  [fechasSeleccionadas]="seleccionadasFormaFormaceuticaDatos"
+                  (fechasSeleccionadasChange)="formaFarmaceuticaSeleccionadasChange($event)"
+                  [botones]="paisDeProcedenciaBotons"
+                ></crosslist>
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-10">
+        <div class="form-group">
+          <label class="form-label" for="fraccionArancelaria"
+            >Fracción arancelaria*:</label
+          >
+          <span
+            class="bi bi-question-circle-fill"
+            title="Fracción arancelaria"
+            data-bs-toggle="tooltip"
+          ></span>
+          <input
+            class="form-control"
+            id="fraccionArancelaria"
+            type="text"
+            formControlName="fraccionArancelaria"
+            [ngClass]="
+              isValid(mercanciaForm, 'fraccionArancelaria') ? 'required' : ''
+            "
+          />
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-10">
+        <div class="form-group">
+          <label class="form-label" for="descripcionFraccion"
+            >Descripción de la fracción arancelaria*:</label
+          >
+          <input
+            class="form-control"
+            id="descripcionFraccion"
+            disable
+            type="text"
+            formControlName="descripcionFraccion"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-5">
+        <div class="form-group">
+          <label class="form-label" for="cantidadUmtValor"
+            >Cantidad UMT*:</label
+          >
+          <input
+            class="form-control"
+            id="cantidadUmtValor"
+            type="text"
+            formControlName="cantidadUmtValor"
+            [ngClass]="
+              isValid(mercanciaForm, 'cantidadUmtValor') ? 'required' : ''
+            "
+          />
+        </div>
+      </div>
+      <div class="col-md-5">
+        <div class="form-group">
+          <label class="form-label" for="cantidadUmt">UMT*:</label>
+          <span
+            class="bi bi-question-circle-fill"
+            title="UMT"
+            data-bs-toggle="tooltip"
+          ></span>
+          <input
+            class="form-control"
+            id="cantidadUmt"
+            type="text"
+            formControlName="cantidadUmt"
+            [ngClass]="isValid(mercanciaForm, 'cantidadUmt') ? 'required' : ''"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-5">
+        <div class="form-group">
+          <label class="form-label" for="cantidadUmcValor"
+            >Cantidad UMC*:</label
+          >
+          <input
+            class="form-control"
+            id="cantidadUmcValor"
+            type="text"
+            formControlName="cantidadUmcValor"
+            [ngClass]="
+              isValid(mercanciaForm, 'cantidadUmcValor') ? 'required' : ''
+            "
+          />
+        </div>
+      </div>
+      <div class="col-md-5 ml-2">
+        <app-catalogo-select
+          [catalogo]="cantidadUmcDatos"
+          formControlName="cantidadUmc"
+          [label]="'UMC'"
+          [required]="true"
+          [tooltipQuestionCircle]="true"
+          name="cantidadUmc"
+           [placeholder]="'Selecciona una opción'"
+        ></app-catalogo-select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-10">
+        <div class="form-group">
+          <label class="form-label" for="numeroCAS">Número CAS:</label>
+          <input
+            class="form-control"
+            id="marcaComercialDenominación"
+            type="text"
+            formControlName="numeroCAS"
+            [ngClass]="isValid(mercanciaForm, 'numeroCAS') ? 'required' : ''"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-10">
+        <div class="form-group">
+          <label class="form-label" for="cantidadDeLotes"
+            >Cantidad de lotes*:
+          </label>
+          <input
+            class="form-control"
+            id="cantidadDeLotes"
+            type="textarea"
+            formControlName="cantidadDeLotes"
+            [ngClass]="
+              isValid(mercanciaForm, 'cantidadDeLotes') ? 'required' : ''
+            "
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-10">
+        <div class="form-group">
+          <label class="form-label" for="kgPorLote">Kg o g por lote*:</label>
+          <input
+            class="form-control"
+            id="kgPorLote"
+            type="textarea"
+            formControlName="kgPorLote"
+            [ngClass]="isValid(mercanciaForm, 'kgPorLote') ? 'required' : ''"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-10 ml-2">
+        <app-catalogo-select
+          [catalogo]="paisDeDestinoDatos"
+          formControlName="paisDeDestino"
+          [label]="'País de destino '"
+          [required]="true"
+          name="paisDeDestino"
+           [placeholder]="'Selecciona una opción'"
+        ></app-catalogo-select>
+      </div>
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-md-12 mt-3">
+        <div class="panel-group ficha-collapse" id="accordion">
+          <div class="panel panel-default">
+            <div class="panel-heading" (click)="mostrarColapsable(2)">
+              <h4 class="panel-title">
+                <a> País de origen </a>
+              </h4>
+              <button
+                type="button"
+                class="collpase-button"
+                [class.collapsed]="!paisDeOriginColapsable"
+              ></button>
+            </div>
+            @if(paisDeOriginColapsable){
+            <div class="panel-collapse collapse in" id="panel-01">
+              <div class="panel-body">
+                <crosslist
+                  [fechas]="seleccionarOrigenDelPais"
+                  [label]="paisDeOriginLabel"
+                  [fechasSeleccionadas]="seleccionadasPaisDeOriginDatos"
+                  (fechasSeleccionadasChange)="paisDeOriginSeleccionadasChange($event)"
+                  [botones]="paisDeProcedenciaBotonsDos"
+                ></crosslist>
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-md-12">
+        <div class="panel-group ficha-collapse" id="accordion">
+          <div class="panel panel-default">
+            <div class="panel-heading" (click)="mostrarColapsable(3)">
+              <h4 class="panel-title">
+                <a> País de Procedencia</a>
+              </h4>
+              <button
+                type="button"
+                class="collpase-button"
+                [class.collapsed]="!usoEspesificoColapsable"
+              ></button>
+            </div>
+            @if(usoEspesificoColapsable){
+            <div class="panel-collapse collapse in" id="panel-01">
+              <div class="panel-body">
+                <crosslist
+                  [fechas]="usoEspesificoDatos"
+                  [label]="UsoEspesificoLabel"
+                  [fechasSeleccionadas]="seleccionadasUsoEspesificoDatos"
+                  (fechasSeleccionadasChange)="
+                    usoEspesificoSeleccionadasChange($event)
+                  "
+                  [botones]="paisDeProcedenciaBotonsTres"
+                ></crosslist>
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+<div class="row mt-3">
+      <div class="col-md-12">
+        <div class="panel-group ficha-collapse" id="accordion">
+          <div class="panel panel-default">
+            <div class="panel-heading" (click)="mostrarColapsable(3)">
+              <h4 class="panel-title">
+                <a> Uso específico </a>
+              </h4>
+              <button
+                type="button"
+                class="collpase-button"
+                [class.collapsed]="!usoEspesificoColapsable"
+              ></button>
+            </div>
+            @if(usoEspesificoColapsable){
+            <div class="panel-collapse collapse in" id="panel-01">
+              <div class="panel-body">
+                <crosslist
+                  [fechas]="usoEspesificoDatos"
+                  [label]="usoEspesificoLabel"
+                  [fechasSeleccionadas]="seleccionadasUsoEspesificoDatos"
+                  (fechasSeleccionadasChange)="
+                    usoEspesificoSeleccionadasChange($event)
+                  "
+                  [botones]="paisDeProcedenciaBotonsTres"
+                ></crosslist>
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="detallarUsoEspecifico"
+            >Detallar uso específico</label
+          >
+          <input
+            class="form-control"
+            id="detallarUsoEspecifico"
+            type="textarea"
+            formControlName="detallarUsoEspecifico"
+            style="height: 70px"
+            [ngClass]="
+              isValid(mercanciaForm, 'detallarUsoEspecifico') ? 'required' : ''
+            "
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="nummeroDePiezasAFabricar"
+            >Número de piezas a fabricar*:</label
+          >
+          <input
+            class="form-control"
+            id="denominacionEspecificaProducto"
+            type="text"
+            formControlName="nummeroDePiezasAFabricar"
+            [ngClass]="
+              isValid(mercanciaForm, 'nummeroDePiezasAFabricar')
+                ? 'required'
+                : ''
+            "
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-2">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="descripcionNumeroDePiezas"
+            >Descripción del número de piezas a fabricar*:</label
+          >
+          <textarea
+            class="form-control"
+            id="descripcionNumeroDePiezas"
+            formControlName="descripcionNumeroDePiezas"
+            style="height: 90px"
+            [ngClass]="
+              isValid(mercanciaForm, 'descripcionNumeroDePiezas')
+                ? 'required'
+                : ''
+            "
+          ></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-2">
+    <div class="col-md-8">
+      <div class="form-group">
+        <label class="form-label" for="numeroRegistroSanitario"
+          >Número de registro sanitario*:</label
+        >
+        <input
+          class="form-control"
+          id="numeroRegistroSanitario"
+          type="number"
+          formControlName="numeroRegistroSanitario"
+          [ngClass]="
+            isValid(mercanciaForm, 'numeroRegistroSanitario') ? 'required' : ''
+          "
+        />
+      </div>
+    </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-8">
+        <label class="form-label text-start" for="presentacion">
+          Presentación*:
+        </label>
+        <textarea
+          id="presentacion"
+          class="form-control height"
+          formControlName="presentacion"
+          style="height: 120px"
+        ></textarea>
+      </div>
+    </div>
+  </form>
+
+  <div class="row mt-5">
+    <div class="col-md-4"></div>
+    <div class="col-md-8">
+            <hr />
+    </div>
+  </div>
+
+  <div class="row mt-3">
+      <div class="pull-right ml-2 col text-end">
+        <button
+          type="button"
+          name="eliminarScian"
+          class="btn btn-danger ms-2"
+          (click)="eliminarDetalleMercancia()"
+        >
+          Eliminar Detalle
+        </button>
+        <button
+          type="button"
+          name="eliminarScian"
+          class="btn btn-primary ms-2"
+          (click)="agregarDetalleMercancia()"
+        >
+        Agregar Detalle
+        </button>
+        
+    </div>
+    </div>
+
+        <div class="row mt-5">
+          <div class="col-md-12">
+          <h5 class="mt-3">Detalle mercancía producto terminado*:</h5>
+          <app-tabla-dinamica
+            [tipoSeleccionTabla]="tipoSeleccionTabla"
+            [configuracionTabla]="tablaDetalleMercancia"
+            [datos]="detalleMercanciaDatos"
+            (listaDeFilaSeleccionada)="tablaMercanciasLista = $event"
+          ></app-tabla-dinamica>
+          </div>
+        </div>
+
+  <div class="row mt-3">
+    <div class="col-md-12">
+      <div class="pull-right ml-2">
+        <button
+          type="button"
+          name="eliminarScian"
+          class="btn btn-danger ms-2"
+          (click)="limpiarMercancia()"
+        >
+          Limpiar
+        </button>
+        <button
+          type="button"
+          name="eliminarScian"
+          class="btn btn-danger ms-2"
+          (click)="cancelar()"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          name="agregarScian"
+          class="btn btn-primary ms-2"
+          data-bs-toggle="modal"
+          data-bs-target="#modalAgregarScain"
+          (click)="agregarMercancia()"
+        >
+          Agregar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

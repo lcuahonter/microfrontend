@@ -1,0 +1,126 @@
+<div class="container form-container">
+  <ng-titulo titulo="Datos del Solicitante" />
+  <div>
+    <form [formGroup]="formSolicitud">
+      <ng-container formGroupName="datosSolicitante">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="numeroExpediente">No. Expediente<span [ngClass]="formSolicitud.get('datosSolicitante.numeroExpediente')?.invalid && formSolicitud.get('datosSolicitante.numeroExpediente')?.touched ?'text-danger':''">*</span>:</label>
+              <input class="form-control" 
+               [class.is-invalid]="formSolicitud.get('datosSolicitante.numeroExpediente')?.invalid && formSolicitud.get('datosSolicitante.numeroExpediente')?.touched"
+               id="numeroExpediente" 
+               formControlName="numeroExpediente" 
+               type="text" 
+               [maxlength]="6" 
+               (change)="setValoresStore(datosSolicitante, 'numeroExpediente')" />
+            @if(
+            formSolicitud.get('datosSolicitante.numeroExpediente')?.invalid &&
+            formSolicitud.get('datosSolicitante.numeroExpediente')?.touched
+            ) {
+            <div class="mensaje-error">
+              @if(formSolicitud.get('datosSolicitante.numeroExpediente')?.errors?.['required']) {
+              Este campo es obligatorio.
+              }
+              @if(formSolicitud.get('datosSolicitante.numeroExpediente')?.errors?.['pattern']) {
+              Solo se permiten números.
+              }
+            </div>
+            }
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <app-catalogo-select [catalogo]="tipoOperacionCatalogo.catalogos"
+                [placeholder]="tipoOperacionCatalogo.primerOpcion" formControlName="tipoOperacion"
+                [label]="tipoOperacionCatalogo.labelNombre" [required]="true" [isDisabled]="esFormularioSoloLectura" (change)="setValoresStore(datosSolicitante,'tipoOperacion'); obtenerTipoOperacionSeleccionado()"></app-catalogo-select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <app-catalogo-select [catalogo]="finalidadCatalogo.catalogos"
+                [placeholder]="finalidadCatalogo.primerOpcion" formControlName="finalidad"
+                [isDisabled]="esFormularioSoloLectura"
+                [label]="finalidadCatalogo.labelNombre" [required]="true" (change)="
+                    setValoresStore(
+                      datosSolicitante,
+                      'finalidad'
+                    )
+                  "></app-catalogo-select>
+            </div>
+          </div>
+        </div>
+        <div class="row"  style="margin-top: 20px; margin-bottom: 10px">
+          <div class="col-md-4">
+            <div class="form-group">
+              <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [isBold]="true"
+                  [layout]="'horizontal'" formControlName="isExento"
+                  (change)="setValoresStore(datosSolicitante,'isExento')"></app-input-radio>
+            </div>
+          </div>
+          <div class="col-md-1">
+            A00.
+          </div>
+          <div class="col-md-1">
+            <div class="form-group"> <input type="text" id="numAutorizacion1" formControlName="numAutorizacion1"  maxlength="3" style="width: 50px"
+              (change)="setValoresStore(datosSolicitante,'numAutorizacion1')"/>
+            </div>
+            @if(
+            formSolicitud.get('datosSolicitante.numAutorizacion1')?.invalid &&
+            formSolicitud.get('datosSolicitante.numAutorizacion1')?.touched
+            ) {
+            <div class="mensaje-error">
+              @if(formSolicitud.get('datosSolicitante.numAutorizacion1')?.errors?.['required']) {
+              Este campo es obligatorio.
+              }
+              @if(formSolicitud.get('datosSolicitante.numAutorizacion1')?.errors?.['pattern']) {
+              Solo se permiten números.
+              }
+            </div>
+            }
+          </div>
+          <div class="col-md-1 text-center">
+            /
+          </div>
+          <div class="col-md-1">
+            <div class="form-group"> <input type="text" id="numAutorizacion2" formControlName="numAutorizacion2"  maxlength="4" style="width: 50px"  (change)="setValoresStore(datosSolicitante,'numAutorizacion2')"/>
+            </div>  
+             @if(
+            formSolicitud.get('datosSolicitante.numAutorizacion2')?.invalid &&
+            formSolicitud.get('datosSolicitante.numAutorizacion2')?.touched
+            ) {
+            <div class="mensaje-error">
+              @if(formSolicitud.get('datosSolicitante.numAutorizacion2')?.errors?.['required']) {
+              Este campo es obligatorio.
+              }
+              @if(formSolicitud.get('datosSolicitante.numAutorizacion2')?.errors?.['pattern']) {
+              Solo se permiten números.
+              }
+            </div>
+            }
+          </div>
+          <div class="col-md-1 text-center">
+            /
+          </div>
+          <div class="col-md-1">
+            <div class="form-group"> <input type="text" id="numAutorizacion3" formControlName="numAutorizacion3"  maxlength="4" style="width: 50px"(change)="setValoresStore(datosSolicitante,'numAutorizacion3')"/>
+            </div> 
+            @if(
+            formSolicitud.get('datosSolicitante.numAutorizacion3')?.invalid &&
+            formSolicitud.get('datosSolicitante.numAutorizacion3')?.touched
+            ) {
+            <div class="mensaje-error">
+              @if(formSolicitud.get('datosSolicitante.numAutorizacion3')?.errors?.['required']) {
+              Este campo es obligatorio.
+              }
+              @if(formSolicitud.get('datosSolicitante.numAutorizacion3')?.errors?.['pattern']) {
+              Solo se permiten números.
+              }
+            </div>
+            }
+          </div>
+        </div>
+      </ng-container>
+    </form>
+  </div>
+</div>

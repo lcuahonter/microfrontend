@@ -1,0 +1,44 @@
+<div class="form-group">
+  <form [formGroup]="FormInputRadio">
+    <div [ngClass]="{ 'radio-row': gridLayout }">
+      <div
+        *ngFor="let option of radioOptions"
+        [ngStyle]="obtenerEstiloParaRadio()"
+        #radioContainer
+      >
+        <ng-container *ngFor="let part of getParts()">
+          <ng-container [ngSwitch]="part">
+            <input
+              *ngSwitchCase="'input'"
+              type="radio"
+              [value]="option.value"
+              [id]="option.value"
+              [attr.disabled]="disableLabel.includes(option.label) ? true : null"
+              [checked]="selectedValue === option.value"
+              (change)="onSelectionChange(option.value)"
+              formControlName="seleccion"
+            />
+            <span
+              *ngSwitchCase="'label'"
+              class="etiqueta-de-radio"
+              [ngClass]="{
+                'fw-bold': gridLayout || isBold,
+                'radio-label-margin-left': labelName === 'last',
+                'radio-label-margin-right': labelName !== 'last'
+              }"
+              [title]="option.label"
+              >{{ option.label }}</span
+            >
+          </ng-container>
+        </ng-container>
+        <span class="p-2" *ngIf="showTooltip && option.hint"
+          tooltip="{{
+           option.hint
+          }}"
+        >
+          <i class="bi bi-question-circle-fill"></i></span>
+      </div>
+    </div>
+
+  </form>
+</div>

@@ -1,0 +1,103 @@
+<div class="container">
+    <h2 class="titulo titulo-gold mb-5">Registrar Configuración de programa</h2>
+    @if(showAlert){
+        <ng-alert [CONTENIDO]="alertMessage" [CUSTOMECLASS]="classAlert"></ng-alert>
+    }
+    <section id="inmex-registrar" class="registrar-config-container bg-light p-5">
+        <div>
+            INMEX
+            <p class="required-text">Datos requeridos</p>
+        </div>
+        <div class="tipo-programa-container">
+            <div>
+                Tipo programa:
+            </div>
+            <div>INMEX</div>
+        </div>
+        <div>
+            <label for="tratamiento-especial">
+                <p><span style="color: red;">* </span> Tratamiento especial</p>
+            </label>
+            <br />
+            <select name="tratamiento-especial" id="tratamiento-especial" (change)="seleccionarTratamientoEspecial($event)">
+                @for (tratamiento of listaTratamientoEspecial; track tratamiento.id) {
+                <option [value]="tratamiento.id">{{ tratamiento.name }}</option>
+                }
+            </select>
+        </div>
+    </section>
+    <br />
+    <section class="bg-light p-5">
+        <article>
+            <p>Gestión de fracciones arancelarias</p>
+            <ol>
+                <li><span>Agregar: </span>En esta sección se agregará cada elemento de forma individual y realizando sus
+                    validaciones correspondientes según sea el caso.</li>
+                <li><span>Eliminar: </span>En esta sección se eliminarán los elementos ya sea de forma individual o por
+                    conjuntos por medio de filtros para su mejor visualización, además se cuenta con un botón dónde se
+                    podrán eliminar todos los elementos.</li>
+                <li><span>Consultar: </span>En esta sección se muestran los elementos cargados ya sea de forma manual o
+                    masiva (por archivo) por medio de filtros para una mejor visualización, además se podra descargar un
+                    archivo donde se muestran todos los elementos cargados.</li>
+                <li><span>Cargar archivo: </span>En esta sección se cargará un archivo con el formato predeterminado, en
+                    caso de ser exitoso los resultados se podrán observar en la sección de consulta, si el archivo
+                    contiene errores se muestra un botón donde se podrá descargar un archivo indicando la línea y una
+                    descripcion del error.</li>
+            </ol>
+        </article>
+        <div class="btn-container-gfa my-5">
+            <button class="btn btn-primary" (click)="abrirModal(1)">Agregar Fracción(es)</button>
+            <button class="btn btn-primary" (click)="abrirModal(2)">Eliminar Fracción(es)</button>
+            <button class="btn btn-primary" (click)="abrirModal(3)">Consultar Fracción</button>
+            <button class="btn btn-primary" (click)="abrirModal(4)">Cargar Archivo</button>
+        </div>
+    </section>
+    <br />
+    <section class="bg-light p-5">
+        <p>Vigencia</p>
+        <div style="width: 40rem;">
+            <input-fecha [datos]="fechaInicioInput" (valorCambiado)="cambioFechaInicio($event)">
+            </input-fecha>
+        </div>
+    </section>
+    <br />
+    <section class="btn-container-actions p-5 mb-5">
+        <button class="btn btn-primary" (click)="guardarRegistro()">Guardar</button>
+        <button class="btn btn-danger">Cancelar</button>
+        <button class="btn btn-primary" (click)="abrirModal(5)">Documentos</button>
+    </section>
+</div>
+@if(mostrarModalAgregarFraccion){
+<libs-modal (closed)="mostrarModalAgregarFraccion = false" tituloModal="Agregar Fracción(es)">
+    <modal-body>
+        <agregar-fraccion-component #agregarFraccionComp [fraccionesPreviamentSeleccionadas]="fraccionesAgregadas"
+            (fraccionesConfirmadas)="recibirFraccionesSeleccionadas($event)">
+        </agregar-fraccion-component>
+    </modal-body>
+    <modal-footer>
+        <button class="btn btn-primary" (click)="agregarFraccionComp.confirmarFracciones()">
+            Agregar
+        </button>
+    </modal-footer>
+</libs-modal>
+}
+@if(mostrarModalEliminarFraccion) {
+<eliminar-fraccion-component [datos]="fraccionesAgregadas" [showModal]="mostrarModalEliminarFraccion"
+    (cerrar)="mostrarModalEliminarFraccion = false" (actualizarDatos)="actualizarFracciones($event)" />
+}
+@if(mostrarModalConsultarFraccion){
+<consultar-fraccion-component [datos]="fraccionesAgregadas" [showModal]="mostrarModalConsultarFraccion"
+    (cerrar)="mostrarModalConsultarFraccion = false"></consultar-fraccion-component>
+}
+
+@if(mostrarCargarArchivo){
+<cargar-archivo-component [showModal]="mostrarCargarArchivo" (cerrar)="mostrarCargarArchivo = false" />
+}
+
+@if(mostrarDocumentos){
+<documentos-fraccion-component [showModal]="mostrarDocumentos"
+    (cerrar)="mostrarDocumentos=false"
+    (enviarDocumentos)="recibirDocumentosAgregados($event)"
+    [documentosAgregados]="documentosAgregados"
+    ></documentos-fraccion-component>
+}

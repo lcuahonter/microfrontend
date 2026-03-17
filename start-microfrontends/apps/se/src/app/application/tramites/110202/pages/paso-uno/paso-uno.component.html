@@ -1,0 +1,43 @@
+<div class="container">
+  <div class="row">
+    <ul class="nav nav-tabs">
+      <li [ngClass]="indice === 1 ? 'active' : ''">
+        <a (click)="seleccionaTab(1)" (keyup.enter)="seleccionaTab(1)" (keydown.space)="seleccionaTab(1)" tabindex="0"
+          data-toggle="tab">Solicitante</a>
+      </li>
+            @if(!consultaState.readonly){
+      <li [ngClass]="indice === 2 ? 'active' : ''">
+        <a (click)="seleccionaTab(2)" (keyup.enter)="seleccionaTab(2)" (keydown.space)="seleccionaTab(2)" tabindex="0"
+          data-toggle="tab">Certificado de origen</a>
+      </li>
+
+      <li [ngClass]="indice === 3 ? 'active' : ''">
+        <a (click)="seleccionaTab(3)" (keyup.enter)="seleccionaTab(3)" (keydown.space)="seleccionaTab(3)" tabindex="0"
+          data-toggle="tab">Destinatario</a>
+      </li>
+
+      <li [ngClass]="indice === 4 ? 'active' : ''">
+        <a (click)="seleccionaTab(4)" (keyup.enter)="seleccionaTab(4)" (keydown.space)="seleccionaTab(4)" tabindex="0"
+          data-toggle="tab">Datos certificado</a>
+      </li>
+    }
+    </ul>
+
+    <ng-container>
+      <solicitante #Solicitante [hidden]="indice !==1 || !esDatosRespuesta" [tabindex]="1"></solicitante>
+      @if(!consultaState.readonly){
+
+      @if(esDatosRespuesta){
+      <app-certificado-origen [hidden]="indice !== 2 || !esDatosRespuesta" [tabindex]="2"></app-certificado-origen>
+      }
+      @if(esDatosRespuesta){
+      <app-destinatario-de [hidden]="indice !== 3 || !esDatosRespuesta" [tabindex]="3"></app-destinatario-de>
+      }
+      @if(esDatosRespuesta){
+      <app-datos-certificado [hidden]="indice !== 4 || !esDatosRespuesta" [tabindex]="4"></app-datos-certificado>
+      }
+      }
+    </ng-container>
+
+  </div>
+</div>

@@ -1,0 +1,336 @@
+<div class="modal-header">
+    <h3 class="modal-title pull-left">{{titulo}}</h3>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="tercerosRelacionadosForm">
+        <h4>Datos generales</h4>
+        <div class="row mb-3">
+            <div class="col-md-6"></div>
+            <div class="col-md-6">
+                <p class="fw-bold">Tipo persona*:</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" 
+                        value="fisica"
+                        formControlName="tipoPersona"
+                        name="tipoPersona" 
+                        id="flexRadioDefault1"
+                        (change)="onChangeTipoPersona()">
+                    <label class="form-check-label" for="flexRadioDefault1">
+                        Física <i class="bi bi-question-circle-fill"></i>
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" 
+                        value="moral"
+                        formControlName="tipoPersona" 
+                        name="tipoPersona" 
+                        id="flexRadioDefault2"
+                        (change)="onChangeTipoPersona()">
+                    <label class="form-check-label" for="flexRadioDefault2">
+                        Moral <i class="bi bi-question-circle-fill"></i>
+                    </label>
+                  </div>
+                  @if(tercerosRelacionadosForm.get('tipoPersona')?.invalid && tercerosRelacionadosForm.get('tipoPersona')?.touched) {
+                    <div class="d-grid">
+                        @if(tercerosRelacionadosForm.get('tipoPersona')?.errors?.['required']) {
+                            <span class="mensaje-error">Este campo es obligatorio.</span>
+                        }
+                    </div>
+                  }
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="rfc" class="form-label">RFC*:</label>
+                    <input type="text" id="rfc" 
+                        formControlName="rfc"
+                        class="form-control"
+                        (change)="setValoresStore(tercerosRelacionadosForm,'rfc', 'setTercerosRelacionadosRfc')">
+                </div>
+                @if(tercerosRelacionadosForm.get('rfc')?.invalid && tercerosRelacionadosForm.get('rfc')?.touched) {
+                    <div class="d-grid">
+                        @if(tercerosRelacionadosForm.get('rfc')?.errors?.['required']) {
+                            <span class="mensaje-error">Este campo es obligatorio.</span>
+                        }
+                    </div>
+                  }
+            </div>
+        </div>
+        @if(radioObjeto.moral) {
+            <div class="row mb-5">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="denominacion">Denominación/razón social*:</label>
+                        <input type="text" class="form-control" 
+                            formControlName="denominacionSocial" 
+                            id="denominacion"
+                            (change)="setValoresStore(tercerosRelacionadosForm,'denominacionSocial', 'setDenominacionSocial')">
+                    </div>
+                    @if(tercerosRelacionadosForm.get('denominacionSocial')?.invalid && tercerosRelacionadosForm.get('denominacionSocial')?.touched) {
+                        <div class="d-grid">
+                            @if(tercerosRelacionadosForm.get('denominacionSocial')?.errors?.['required']) {
+                                <span class="mensaje-error">Este campo es obligatorio.</span>
+                            }
+                        </div>
+                      }
+                </div>
+            </div>
+            }
+            @if(radioObjeto.fisica) {
+                <div class="row mb-5 mt-4">
+                    <h4 class="fw-bold">Datos personales</h4>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="nombreDescripcion">Nombre(s)*:</label>
+                            <input type="text" class="form-control" 
+                            formControlName="terceroNombre" 
+                            id="nombreDescripcion"
+                            (change)="setValoresStore(tercerosRelacionadosForm,'terceroNombre', 'setTerceroNombre')">
+                        </div>
+                        @if(tercerosRelacionadosForm.get('terceroNombre')?.invalid && tercerosRelacionadosForm.get('terceroNombre')?.touched) {
+                            <div class="d-grid">
+                                @if(tercerosRelacionadosForm.get('terceroNombre')?.errors?.['required']) {
+                                    <span class="mensaje-error">Este campo es obligatorio.</span>
+                                }
+                            </div>
+                          }
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="primerApellido">Primer apellido*:</label>
+                            <input type="text" class="form-control" 
+                            formControlName="primerApellido"
+                            id="primerApellido"
+                            (change)="setValoresStore(tercerosRelacionadosForm,'primerApellido', 'setPrimerApellido')">
+                        </div>
+                        @if(tercerosRelacionadosForm.get('primerApellido')?.invalid && tercerosRelacionadosForm.get('primerApellido')?.touched) {
+                            <div class="d-grid">
+                                @if(tercerosRelacionadosForm.get('primerApellido')?.errors?.['required']) {
+                                    <span class="mensaje-error">Este campo es obligatorio.</span>
+                                }
+                            </div>
+                          }
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="segundoApellido">Segundo apellido:</label>
+                            <input type="text" class="form-control" 
+                            formControlName="segundoApellido"
+                            id="segundoApellido">
+                        </div>
+                        @if(tercerosRelacionadosForm.get('segundoApellido')?.invalid && tercerosRelacionadosForm.get('segundoApellido')?.touched) {
+                            <div class="d-grid">
+                                @if(tercerosRelacionadosForm.get('segundoApellido')?.errors?.['required']) {
+                                    <span class="mensaje-error">Este campo es obligatorio.</span>
+                                }
+                            </div>
+                          }
+                    </div>
+                </div>
+            }
+            <h4>Domicilio</h4>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="pais" class="form-label">País*:</label>
+                        <input type="text" id="pais" 
+                            formControlName="pais"
+                            class="form-control"
+                            (change)="setValoresStore(tercerosRelacionadosForm,'pais', 'setPais')">
+                    </div>
+                    @if(tercerosRelacionadosForm.get('pais')?.invalid && tercerosRelacionadosForm.get('pais')?.touched) {
+                        <div class="d-grid">
+                            @if(tercerosRelacionadosForm.get('pais')?.errors?.['required']) {
+                                <span class="mensaje-error">Este campo es obligatorio.</span>
+                            }
+                        </div>
+                      }
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="estado" class="form-label">Estado/localidad*:</label>
+                        <input type="text" id="estado" 
+                            formControlName="estado"
+                            class="form-control"
+                            (change)="setValoresStore(tercerosRelacionadosForm,'tercerosRelacionadosEstado', 'setTercerosRelacionadosEstado')">
+                    </div>
+                    @if(tercerosRelacionadosForm.get('estado')?.invalid && tercerosRelacionadosForm.get('estado')?.touched) {
+                        <div class="d-grid">
+                            @if(tercerosRelacionadosForm.get('estado')?.errors?.['required']) {
+                                <span class="mensaje-error">Este campo es obligatorio.</span>
+                            }
+                        </div>
+                      }
+                </div>
+                <div class="col-md-4">
+                     <div class="form-group">
+                        <label for="municipio" class="form-label">Municipio/alcaldia</label>
+                        <input type="text" id="estado" 
+                            formControlName="municipio" 
+                            class="form-control"
+                            (change)="setValoresStore(tercerosRelacionadosForm,'tercerosRelacionadosMunicipio', 'setTercerosRelacionadosMunicipio')">
+                    </div>
+                    @if(tercerosRelacionadosForm.get('municipio')?.invalid && tercerosRelacionadosForm.get('municipio')?.touched) {
+                        <div class="d-grid">
+                            @if(tercerosRelacionadosForm.get('municipio')?.errors?.['required']) {
+                                <span class="mensaje-error">Este campo es obligatorio.</span>
+                            }
+                        </div>
+                      }
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                     <div class="form-group">
+                        <label for="localidad" class="form-label">Localidad*:</label>
+                        <input type="text" id="localidad" 
+                            formControlName="localidad" 
+                            class="form-control"
+                            (change)="setValoresStore(tercerosRelacionadosForm,'tercerosRelacionadosLocalidad', 'setTercerosRelacionadosLocalidad')">
+                    </div>
+                    @if(tercerosRelacionadosForm.get('localidad')?.invalid && tercerosRelacionadosForm.get('localidad')?.touched) {
+                        <div class="d-grid">
+                            @if(tercerosRelacionadosForm.get('localidad')?.errors?.['required']) {
+                                <span class="mensaje-error">Este campo es obligatorio.</span>
+                            }
+                        </div>
+                    }
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                       <label for="estado" class="form-label">Código postal o equivalente</label>
+                       <input type="text" id="estado" 
+                           formControlName="codigoPostal" 
+                           class="form-control"
+                           (change)="setValoresStore(tercerosRelacionadosForm,'tercerosRelacionadosCodigoPostal', 'setTercerosRelacionadosCodigoPostal')">
+                   </div>
+                   @if(tercerosRelacionadosForm.get('codigoPostal')?.invalid && tercerosRelacionadosForm.get('codigoPostal')?.touched) {
+                    <div class="d-grid">
+                        @if(tercerosRelacionadosForm.get('codigoPostal')?.errors?.['required']) {
+                            <span class="mensaje-error">Este campo es obligatorio.</span>
+                        }
+                    </div>
+                }
+               </div>
+               <div class="col-md-4">
+                <div class="form-group">
+                   <label for="colonia" class="form-label">Colonia:</label>
+                   <input type="text" id="colonia" 
+                       formControlName="colonia" 
+                       class="form-control"
+                       (change)="setValoresStore(tercerosRelacionadosForm,'tercerosRelacionadosColonia', 'setTercerosRelacionadosColonia')">
+               </div>
+               @if(tercerosRelacionadosForm.get('colonia')?.invalid && tercerosRelacionadosForm.get('colonia')?.touched) {
+                <div class="d-grid">
+                    @if(tercerosRelacionadosForm.get('colonia')?.errors?.['required']) {
+                        <span class="mensaje-error">Este campo es obligatorio.</span>
+                    }
+                </div>
+            }
+           </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="calle" class="form-label">Calle*:</label>
+                        <input type="text" id="calle" 
+                            formControlName="calle" 
+                            class="form-control"
+                            (change)="setValoresStore(tercerosRelacionadosForm,'tercerosRelacionadosCalle', 'setTercerosRelacionadosCalle')">
+                    </div>
+                    @if(tercerosRelacionadosForm.get('calle')?.invalid && tercerosRelacionadosForm.get('calle')?.touched) {
+                        <div class="d-grid">
+                            @if(tercerosRelacionadosForm.get('calle')?.errors?.['required']) {
+                                <span class="mensaje-error">Este campo es obligatorio.</span>
+                            }
+                        </div>
+                    }
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="numeroExterior" class="form-label">Número exterior*:</label>
+                        <input type="text" id="numeroExterior" 
+                            formControlName="numeroExterior"
+                            class="form-control"
+                            (change)="setValoresStore(tercerosRelacionadosForm,'numeroExterior', 'setNumeroExterior')">
+                    </div>
+                    @if(tercerosRelacionadosForm.get('numeroExterior')?.invalid && tercerosRelacionadosForm.get('numeroExterior')?.touched) {
+                        <div class="d-grid">
+                            @if(tercerosRelacionadosForm.get('numeroExterior')?.errors?.['required']) {
+                                <span class="mensaje-error">Este campo es obligatorio.</span>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="numeroInterior" class="form-label">Número interior:</label>
+                        <input type="text" id="numeroInterior" 
+                            formControlName="numeroInterior"
+                            class="form-control"
+                            (change)="setValoresStore(tercerosRelacionadosForm,'numeroInterior', 'setNumeroInterior')">
+                    </div>
+                    @if(tercerosRelacionadosForm.get('numeroInterior')?.invalid && tercerosRelacionadosForm.get('numeroInterior')?.touched) {
+                        <div class="d-grid">
+                            @if(tercerosRelacionadosForm.get('numeroInterior')?.errors?.['required']) {
+                                <span class="mensaje-error">Este campo es obligatorio.</span>
+                            }
+                        </div>
+                    }
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex">
+                        <div class="form-group">
+                            <label for="lada" class="form-label">Lada:</label>
+                            <input type="text" id="lada" 
+                                formControlName="lada"
+                                class="form-control lada"
+                                (change)="setValoresStore(tercerosRelacionadosForm,'tercerosRelacionadosLada', 'setTercerosRelacionadosLada')">
+                        </div>
+                        <div class="form-group">
+                            <label for="telefono" class="form-label">Teléfono*:</label>
+                            <input type="text" id="telefono" 
+                                formControlName="telefono"
+                                class="form-control"
+                                (change)="setValoresStore(tercerosRelacionadosForm,'tercerosRelacionadosTelefono', 'setTercerosRelacionadosTelefono')">
+                        </div>
+                        @if(tercerosRelacionadosForm.get('telefono')?.invalid && tercerosRelacionadosForm.get('telefono')?.touched) {
+                            <div class="d-grid">
+                                @if(tercerosRelacionadosForm.get('telefono')?.errors?.['required']) {
+                                    <span class="mensaje-error">Este campo es obligatorio.</span>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex">
+                        <div class="form-group">
+                            <label for="correoElectronico" class="form-label">Correo electrónico: </label>
+                            <input type="text" id="correoElectronico" 
+                                formControlName="correoElectronico"
+                                class="form-control"
+                                (change)="setValoresStore(tercerosRelacionadosForm,'tercerosRelacionadosCorreoElectronico', 'setTercerosRelacionadosCorreoElectronico')">
+                        </div>
+                        @if(tercerosRelacionadosForm.get('correoElectronico')?.invalid && tercerosRelacionadosForm.get('correoElectronico')?.touched) {
+                            <div class="d-grid">
+                                @if(tercerosRelacionadosForm.get('correoElectronico')?.errors?.['required']) {
+                                    <span class="mensaje-error">Este campo es obligatorio.</span>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+    </form>
+  </div>
+  <div class="modal-footer justify-content-end">
+    <div class="d-flex">
+        <button type="button" class="btn btn-danger me-2" (click)="bsModalRef.hide()">Cancelar</button>
+        <button type="button" class="btn btn-default me-2" (click)="limpiarFormulario()">Limpiar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarFormulario()">Guardar</button>
+    </div>
+  </div>

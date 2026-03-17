@@ -1,0 +1,42 @@
+<form [formGroup]="forma">
+  <div class="row">
+    <formas-dinamicas
+      formularioTitulo="Consultar instrumento de cupo TPL"
+      [forma]="ninoFormGroup"
+      [formularioDatos]="consultarCupoFormData"
+      [estado]="solicitudDeRegistroState"
+      [soloLectura]="consultaState.readonly"
+      (emitirCambioDeValor)="establecerCambioDeValor($event)"
+    ></formas-dinamicas>
+  </div>
+</form>
+<div class="row mt-5">
+  <div class="col-md-4">
+    <p *ngIf="obligatoriosVisible">* Campos obligatorios</p>
+  </div>
+    <div class="col-md-4 text-end">
+      <button type="button" class="btn btn-primary" (click)="buscar()" [disabled]="consultaState.readonly">
+        Buscar
+      </button>
+    </div>
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-md-12">
+      <app-tabla-dinamica
+        [configuracionTabla]="configuracionParaEncabezadoDeTabla"
+        [datos]="cuerpoTabla"
+        [desactivarEmitirEvento]="!consultaState.readonly"
+        (filaClic)="controladorDeClicsArchivo($event)"
+      >
+
+      </app-tabla-dinamica>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+        <label class="text-label">* El monto disponible mostrado del cupo puede variar de acuerdo a las transacciones
+            constantes que se realizan en el sistema.</label>
+    </div>
+  </div>

@@ -1,0 +1,108 @@
+<div class="container">
+    <ng-titulo titulo="Datos generales del registro"></ng-titulo>
+    <form [formGroup]="formDatosGenerales">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label">No. Autorización para actuar en aduana adicional:</label>
+                    <input class="form-control" type="text" formControlName="aduanaAdicional">
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="titulo-seccion">
+                <h4 class="mb-5">Datos generales del solicitante</h4>
+            </div>
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label class="form-label">Nombre o denominación social:</label>
+                    <input class="form-control" type="text" formControlName="nombre">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label">Registro federal de contribuyentes:</label>
+                    <input class="form-control" type="text" formControlName="federalDeContribuyentes">
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label class="form-label">Tipo de persona:</label>
+                    <input class="form-control" type="text" formControlName="tipoDePersona">
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="row mb-3">
+        <div class="titulo-seccion">
+            <h4>Sociedad</h4>
+        </div>
+        <div class="col-md-12">
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th class="fw-bold">Nombre</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (datos of sociedadDatos; let i = $index; track i) {
+                    <tr [ngClass]="{'selected-row': selectedRowIndex === i}" (click)="selectedRowIndex = i">
+                        <td>{{datos?.id}}</td>
+                        <td>{{datos?.descripcion}}</td>
+
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <ng-titulo titulo="Registro de solicitudes"></ng-titulo>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <app-tabla-dinamica [configuracionTabla]="configuracionTabla"
+                                [datos]="registroDeSolicitudesTablaDatos">
+            </app-tabla-dinamica>
+            <ul class="pagination d-flex justify-content-center">
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <button class="btn btn-primary" (click)="altaDeCuenta()">Alta de cuenta</button>
+            <button class="btn btn-danger" (click)="bajaDeCuentas()">Baja de cuentas</button>
+        </div>
+        <div class="col-md-8">
+            <h5 class="text-center">Acciones en la solicitud</h5>
+            <button class="btn btn-danger me-2" (click)="eliminarRegistroSolicitud()">Eliminar registro de solicitud</button>
+            <button class="btn btn-default" (click)="editarRegistroSolicitud()">Editar registro de solicitud</button>
+        </div>
+    </div>
+</div>
+
+@if (confirmarNotificacion) {
+  <section>
+      <lib-notificaciones 
+          [notificacionInput]="confirmarNotificacion" >
+      </lib-notificaciones>
+  </section>
+}
+
+@if(sociedadNotificacion) {
+    <section>
+        <lib-notificaciones 
+            [notificacionInput]="sociedadNotificacion" >
+        </lib-notificaciones>
+    </section>
+}

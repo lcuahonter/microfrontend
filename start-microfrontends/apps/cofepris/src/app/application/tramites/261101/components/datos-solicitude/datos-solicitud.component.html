@@ -1,0 +1,52 @@
+<div class="container">
+  <form [formGroup]="preOperativeForm">
+    <div class="row mb-4">
+      <div class="col-md-12">
+       <label class="mt-5 mb-3">
+         Seleccione el tipo de operación que desea realizar*: 
+        </label>
+        <app-input-radio 
+        [radioOptions]="radioOptions" 
+        [isRequired]="true" 
+        formControlName="ideGenerica1"
+        [layout]="'horizontal'"
+        (change)="setValoresStore(preOperativeForm,'ideGenerica1'); 
+        tipoTramiteChange.emit(preOperativeForm.get('ideGenerica1')?.value)" >
+        </app-input-radio>
+        <span
+                *ngIf="preOperativeForm.controls['ideGenerica1']?.errors?.['required'] && preOperativeForm.controls['ideGenerica1']?.touched"
+                class="mensaje-error">Este campo es obligatorio.
+        </span>
+      </div>
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-md-12">
+        <div>
+        <label for="observaciones">Justificación*:</label>
+        </div>
+        <div>
+         <textarea formControlName="observaciones" id="motivoDesistimiento" name="motivoDesistimiento" rows="4" cols="115"
+           [ngClass]="isValid('motivoDesistimiento') ? 'required' : ''"
+           (change)="setValoresStore(preOperativeForm,'observaciones')">
+         </textarea>
+         <br>
+         <span class="mensaje-error" *ngIf="preOperativeForm.controls['observaciones']?.errors?.['required'] && preOperativeForm.controls['observaciones']?.touched">
+                        Este campo es obligatorio.
+          </span>        
+        </div>        
+      </div>
+    </div>
+    
+    </form>
+    <app-datosestablecimiento></app-datosestablecimiento>
+    <app-domicilio-establecimientos></app-domicilio-establecimientos>
+    <app-mercancias></app-mercancias>
+    <!-- <app-manifiestos [hidden]="indice !== 2" [tipoTramite]="tipoTramite" #manifestosDeclaraciones></app-manifiestos>
+    <app-representante-legal [hidden]="indice !== 2" (datasolicituActualizar)="datasolicituActualizar($event)"
+    [tipoTramite]="tipoTramite" #representeLegal [idProcedimiento]= "261101"></app-representante-legal> -->
+ 
+</div>
+  
+
+<!-- <ng-alert [CONTENIDO]="TEXTOS" [CUSTOMECLASS]="'info-alert'"></ng-alert> -->

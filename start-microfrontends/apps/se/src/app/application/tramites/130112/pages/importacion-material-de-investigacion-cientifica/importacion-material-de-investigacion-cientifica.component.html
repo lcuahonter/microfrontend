@@ -1,0 +1,40 @@
+<div class="page">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h3>Solicitud importación material de investigación científica</h3>
+        </div>
+      <div class="col-12">
+        @if(esFormaValido){
+        <div class="col-md-12">
+          <ng-alert [CONTENIDO]="formErrorAlert" [CUSTOMECLASS]="'alert-danger'"></ng-alert>
+        </div>
+        }
+      </div>
+        <app-wizard [listaPasos]="pasosSolicitar"></app-wizard>
+      </div>
+  
+      <div class="row">
+        @switch(indice){
+                @case(1){
+                <app-paso-uno></app-paso-uno>
+                }@case(2){
+                  <app-paso-carga-documento [idSolicitud]="folioTemporal" [idTipoTRamite]="'130112'"
+                    [cargaArchivosEvento]="cargarArchivosEvento"
+                    (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+                    (reenviarCargaRealizada)="cargaRealizada($event)"
+                    (cargaEnProgreso)="onCargaEnProgreso($event)">
+                  </app-paso-carga-documento>
+                }@case(3){
+                  <paso-firma [idSolicitud]="folioTemporal" [procedure]="130112" [procedureUrl]="'importacion/material-de-investigacion-cientifica'"></paso-firma>
+                }
+        }
+        <btn-continuar [datos]="datosPasos" (continuarEvento)="getValorIndice($event)" (anteriorEvento)="getValorIndice($event)"></btn-continuar>
+    </div>
+    <div class="container">
+      <div class="row">    
+        <ng-alert [CONTENIDO]="TEXTOS.AVISO.Aviso"></ng-alert>
+      </div>   
+    </div>
+  </div>
+  

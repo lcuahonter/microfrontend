@@ -1,0 +1,112 @@
+<div class="container mt-4">
+  <ng-titulo titulo="Datos generales"></ng-titulo>
+  <form [formGroup]="representanteLegalForm">
+
+    <div class="row">
+      <div class="col-md-6"></div>
+      <div class="col-md-6 offset-md-6">
+        <label class="form-label">Tipo persona*:</label>
+        <app-input-radio
+        [radioOptions]="radioOpcions"
+        (valueChange)="onTipoPersonaChange('tipoPersona')"
+        id="tipoPersona"
+        [layout]="'vertical'"
+        formControlName="tipoPersona"
+        [isRequired]="true">
+      </app-input-radio>
+      </div>
+    </div>
+
+    @if(representanteLegalForm.get('tipoPersona')?.value ===
+    tipoPersona.MORAL) {
+    <div class="row">
+      <div class="form-group">
+        <label class="form-label row mt-3 mover-izquierda fs-2" for="denominacionRazon">Denominación/razón
+          social*:</label>
+        <input class="form-control col-md-4" id="denominacionRazon" type="text" formControlName="denominacionRazon" />
+      </div>
+    </div>
+    }
+
+    <!-- Datos Personales -->
+    @if(representanteLegalForm.get('tipoPersona')?.value ===
+    tipoPersona.FISICA) {
+    <div class="row mt-3">
+      <h4 class="mt-5">Datos personales*</h4>
+      <div class="col-md-4">
+        <label class="form-label">Nombre(s)*:</label>
+        <input type="text" class="form-control" formControlName="nombres" />
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Primer apellido*:</label>
+        <input type="text" class="form-control" formControlName="primerApellido" />
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Segundo apellido*:</label>
+        <input type="text" class="form-control" formControlName="segundoApellido" />
+      </div>
+    </div>
+    }
+
+    <div class="row mt-5">
+      <div class="col-md-4 px-5">
+        <app-catalogo-select [catalogo]="paisesDatos" [isDisabled]="esFormularioSoloLectura" formControlName="pais" [label]="'País'"
+          [required]="true"></app-catalogo-select>
+      </div>
+      <div class="col-md-4 px-5">
+        <label class="form-label">Código postal o equivalente*:</label>
+        <input type="text" class="form-control" formControlName="codigoPostal" />
+      </div>
+      <div class="col-md-4 px-5">
+
+        <label class="form-label">Estado/localidad*:</label>
+        <input type="text" class="form-control" formControlName="estadoLocalidad" />
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-md-9">
+        <label class="form-label">Calle*:</label>
+        <input type="text" class="form-control" formControlName="calle" />
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Número exterior*:</label>
+        <input type="text" class="form-control" formControlName="numeroExterior" />
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-4">
+        <label class="form-label">Número interior*:</label>
+        <input type="text" class="form-control" formControlName="numeroInterior" />
+      </div>
+      <div class="col-md-1">
+        <label class="form-label">Lada*:</label>
+        <input type="text" class="form-control" formControlName="lada" />
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Teléfono*:</label>
+        <input type="text" class="form-control" formControlName="telefono" [readonly]="(tramiteQuery.esRepresentanteLegalElModoDeEdicion$ | async)"/>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Correo electrónico*:</label>
+        <input type="email" class="form-control" formControlName="correoElectronico" />
+      </div>
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-md-12">
+        <div class="pull-right">
+          <button type="button" name="modificarMercancias" class="btn btn-default" (click)="cancelar()">
+            Cancelar
+          </button>
+          <button type="button" name="eliminarMercancias" class="btn btn-danger ms-2" (click)="limpiarFormulario()">
+            Limpar
+          </button>
+          <button type="button" name="agregarMercancias" class="btn btn-primary ms-2" (click)="guardarRepresentante()">
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

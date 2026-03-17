@@ -1,0 +1,157 @@
+<div class="mt-4">
+    <form [formGroup]="cambioDeModalidadForm">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label" for="seleccionaLaModalidad">Selecciona la modalidad:</label>
+                    <input class="form-control" id="seleccionaLaModalidad" type="text"
+                        formControlName="seleccionaLaModalidad" name="seleccionaLaModalidad" size="30" maxlength="13">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label" for="folio">Folio:</label>
+                    <input class="form-control" id="folio" type="text" formControlName="folio" name="folio" size="30" maxlength="13">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label" for="año">Año:</label>
+                    <input class="form-control" id="año" type="text" formControlName="ano" name="ano" size="30" maxlength="13">
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label class="form-label" for="seleccionaModalidad">Selecciona la modalidad:</label>
+                    <input class="form-control" id="seleccionaModalidad" type="text" formControlName="seleccionaModalidad" name="seleccionaModalidad" size="30" maxlength="13">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <app-catalogo-select formControlName="cambioDeModalidad" [label]="'Cambio de modalidad'"
+                        id="clave"
+                        [required]="false"  [catalogo]="cambioDeModalidad"
+                        (change)="setValoresStore(cambioDeModalidadForm,'cambioDeModalidad', 'setCambioDeModalidad'); seleccionarDesplegable()"
+                        [primerOptionValue]="predeterminado" [hiddenPrimerOption]="false" [disabledPrimerOption]="false"
+                        [isDisabled]="esFormularioSoloLectura">
+                    </app-catalogo-select>
+                </div>
+            </div>
+        </div>
+        <div class="container mt-4" *ngIf="espectaculoServiciosImmx">
+            <ng-titulo titulo="Servicios IMMEX"></ng-titulo>
+            <div class="row">
+                <div class="col-md-8">
+                        <div class="form-group">
+                            <app-catalogo-select formControlName="serviciosImmx" [label]="'Servicios IMMEX'" [required]="false"
+                                name="serviciosImmx" [catalogo]="serviciosImmx" [primerOptionValue]="predeterminado" [hiddenPrimerOption]="false" [disabledPrimerOption]="false" id="immex" (change)="setValoresStore(cambioDeModalidadForm,'serviciosImmx', 'setServiciosImmx'); seleccionarDesplegableServicios()"
+                                [isDisabled]="esFormularioSoloLectura"></app-catalogo-select>
+                        </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="d-flex justify-content-end">
+                    <div class="btn-group">
+                        <button class="btn btn-danger me-2" type="button" (click)="doConfirmEliminar()" [disabled]="esFormularioSoloLectura">Eliminar</button>
+                        <button class="btn btn-primary" type="button" (click)="agregarServiciosAmpliacion()" [disabled]="esFormularioSoloLectura">Agregar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row my-4">
+                <div class="col-md-12">
+                    <label class="form-label mb-4" for="serviciosImmx">Servicios IMMEX:</label>
+                    <app-tabla-dinamica #tablaA [tipoSeleccionTabla]="tablaSeleccion" [configuracionTabla]="configuracionTabla"
+                    [disableSeleccionTablaRadio]="esFormularioSoloLectura" (filaSeleccionada)="seleccionarDomicilios($event)" [datos]="ServiciosDatos"></app-tabla-dinamica>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <label class="form-label mb-4" for="serviciosImmx">Servicios autorizados:</label>
+                    <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccion" [configuracionTabla]="configuracionTabla"
+                        [datos]="autorizadosDatos" [disableSeleccionTablaRadio]="esFormularioSoloLectura" (filaSeleccionada)="seleccionarAutorizados($event)"></app-tabla-dinamica>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>
+                        <label for="solicitud.immex.empresasNacionales">Empresas (Nacionales) a las que se les otorgaran
+                            servicios</label>
+                    </h3>
+                    <hr class="red" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="rfdecontri">Registro federal de contribuyentes:</label>
+                        <input type="text" id="rfcEmpresa" formControlName="rfcEmpresa" [disabled]="esFormularioSoloLectura"
+                            name="rfcEmpresa" class="form-control" (change)="setValoresStore(cambioDeModalidadForm,'rfcEmpresa', 'setRfcEmpresa')"/>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="numeroProgramaImmex">Número del Programa IMMEX:</label>
+                        <input type="text" id="numeroPrograma" formControlName="numeroPrograma" [disabled]="esFormularioSoloLectura"
+                            name="numeroProgramaImmex" class="form-control"
+                            (change)="setValoresStore(cambioDeModalidadForm,'numeroPrograma', 'setNumeroPrograma')"/>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="tiempoPrograma">Año del Programa IMMEX:</label>
+                        <input type="text" id="tiempoPrograma" formControlName="tiempoPrograma" name="tiempoPrograma"
+                            [disabled]="esFormularioSoloLectura" class="form-control"
+                            (change)="setValoresStore(cambioDeModalidadForm,'tiempoPrograma', 'setTiempoPrograma')"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row my-4">
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <button name="eliminar" (click)="eliminarEmpresa()" class="btn btn-danger"
+                            [disabled]="esFormularioSoloLectura">
+                            Eliminar
+                        </button>
+                        <button name="agregar" (click)="agregarEmpresa()" class="btn btn-primary mx-2"
+                            [disabled]="esFormularioSoloLectura">
+                            Agregar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="serviciosAutorizados">Empresas (Nacionales) a las que se les otorgaran servicios:</label>
+                    </div>
+                </div>
+            </div>
+
+            <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccion" (filaSeleccionada)="seleccionarEmpresas($event)"
+                [configuracionTabla]="configuracionTablaImmex" [disableSeleccionTablaRadio]="esFormularioSoloLectura"
+                [datos]="datos"></app-tabla-dinamica>
+        </div>
+    </form>
+</div>
+
+@if(nuevaNotificacion){
+    <lib-notificaciones *ngIf="esHabilitarElDialogo" [notificacionInput]="nuevaNotificacion" (confirmacionModal)="cerrarModal()"></lib-notificaciones>
+    
+    <lib-notificaciones *ngIf="esEliminar" [notificacionInput]="nuevaNotificacion" (confirmacionModal)="cerrarModalEliminar($event)"></lib-notificaciones>
+    <lib-notificaciones *ngIf="noRowSelected" [notificacionInput]="nuevaNotificacion" (confirmacionModal)="cerrarNoRow()"></lib-notificaciones>
+
+    <lib-notificaciones *ngIf="esAgregarDos" [notificacionInput]="nuevaNotificacion" (confirmacionModal)="cerrarModalAgregar()"></lib-notificaciones>
+    <lib-notificaciones *ngIf="esEliminarDos" [notificacionInput]="nuevaNotificacion" (confirmacionModal)="cerrarEliminarDos($event)"></lib-notificaciones>
+    <lib-notificaciones *ngIf="rowNotSeleccionada" [notificacionInput]="nuevaNotificacion" (confirmacionModal)="cerrarNotSeleccainda()"></lib-notificaciones>
+    <lib-notificaciones *ngIf="noRowSelectedTablaC" [notificacionInput]="nuevaNotificacion" (confirmacionModal)="cerrarNoRowTablaC()"></lib-notificaciones>
+
+}  

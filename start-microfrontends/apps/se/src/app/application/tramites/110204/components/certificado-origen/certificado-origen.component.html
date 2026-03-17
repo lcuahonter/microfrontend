@@ -1,0 +1,35 @@
+<app-certificado-de-origen #certificadoDeOrigen
+    [operador]="operador"
+    [paisBloqu]="(pais$ | async) || []"
+    (tipoEstadoSeleccionEvent)="tipoEstadoSeleccion($event)"
+    (paisBloquEvent)="tipoSeleccion($event)"
+    [paises]="(pais$ | async) || []"
+    (setbuscarMercanciaEvent)="buscarrMercancia()"
+    [tableData]="(datos1 | async) ||  []"
+    (filaClicsMercanciaDisponibles)="abrirModificarModal($event, true)"
+    (filaClicsMercanciaSelecction)="abrirModificarModal($event, false)"
+    [tablaSeleccionEvent]="tablaSeleccionEvent"
+    [guardarClicado]="(datosTabla$ | async) ||  []"
+    (guardarClicadoEvent)="guardarClicado($event)"
+    (formaValida)="setFormValida($event)"
+    [datosForm]="formCertificado"
+    [cargoDeMercancias]="cargoDeMercancias"
+    [mercanciasDisponibles]="mercanciasDisponibles"
+    [mercanciasDisponiblesTabla]="mercanciasDisponiblesTabla"
+    [esFormularioSoloLectura]="esFormularioSoloLectura"
+    (formCertificadoEvent)="setValoresStore($event)"
+    [idProcedimiento]="idProcedimiento"
+    (setModelCargaPorArchivo)="abrirModalCargaPorArchivo()"
+    [domicilioTercer]="true"
+    [domicilio]="false" >
+</app-certificado-de-origen>
+
+<div class="modal fade" #modifyModal tabindex="-1" aria-labelledby="modifyModalLabel" aria-hidden="true">
+      @if(isEnableMercancia){
+    <app-datos-mercancia-model [esFormularioSoloLectura]="esFormularioSoloLectura" [datosSeleccionados]="datosSeleccionados"  [fromMercanciasDisponibles]="fromMercanciasDisponibles" (guardarClicado)="updatedModificarModal($event, false)"
+        (cerrarClicado)="cerrarModificarModal()" [idProcedimiento]="idProcedimiento" (EMITMERCANIAS)="emitmercaniasDatos($event)"></app-datos-mercancia-model>
+    }
+</div>
+<div class="modal fade" #buscarMercanciaModal tabindex="-1" aria-labelledby="modifyModalLabel" aria-hidden="true">
+    <app-carga-por-archivo></app-carga-por-archivo>
+</div>

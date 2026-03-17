@@ -1,0 +1,321 @@
+<div [formGroup]="busquedaPermisosForm">
+  <!--Datos del trámite a realizar-->
+  <ng-titulo titulo="Datos del trámite a realizar"></ng-titulo>
+
+  <div class="row">
+    <div class="col-md-7">
+      <label
+        class="form-label"
+        for="folioTramiteBusqueda"
+        name="numFolioTramite"
+        >Folio trámite*:</label
+      >
+      <input
+        type="text"
+        class="form-control"
+        name="folioTramiteBusqueda"
+        formControlName="folioTramiteBusqueda"
+        size="30"
+        id="parametroBusqueda"
+        (change)="
+          setValoresStore(
+            busquedaPermisosForm,
+            'folioTramiteBusqueda',
+            'setFolioTramiteBusqueda'
+          )
+        "
+      />
+    </div>
+    <div class="col-md-2 btn-buscar">
+      <button
+        type="button"
+        name="buscarFolio"
+        class="btn btn-primary pull-right"
+        value="Buscar"
+        [disabled]="formularioDeshabilitado"
+        (click)="
+          relanzarGrid(
+            busquedaPermisosForm.get('folioTramiteBusqueda')?.getRawValue()
+          )
+        "
+      >
+        Buscar
+      </button>
+    </div>
+    <div class="col-md-3 btn-cancelar">
+      <button
+        type="button"
+        name="cancelarFolio"
+        class="btn btn-danger"
+        value="Cancelar"
+        [disabled]="formularioDeshabilitado"
+        (click)="limpiarGrid()"
+      >
+        Cancelar
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-7">
+      @if(busquedaPermisosForm.get('folioTramiteBusqueda')?.touched &&
+      busquedaPermisosForm.get('folioTramiteBusqueda')?.invalid) {
+      @if(busquedaPermisosForm.get('folioTramiteBusqueda')?.errors?.['required'])
+      {
+      <span class="mensaje-error"> Este campo es obligatorio </span>
+      } }
+    </div>
+  </div>
+
+  <label for="Permisos vigentes" class="margin-top-4"
+    >Permisos vigentes encontrados</label
+  >
+
+  <div class="row mt-3">
+    <div class="col-md-12">
+      <app-tabla-dinamica
+        [tipoSeleccionTabla]="tablaSeleccionCheckbox"
+        [disableSeleccionTablaCheckBox]="formularioDeshabilitado"
+        [configuracionTabla]="permisosVigentesEncabezadoDeTabla"
+        (listaDeFilaSeleccionada)="listaDeFilaSeleccionada($event)"
+        [datos]="permisosVigentesTabla"
+      >
+      </app-tabla-dinamica>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <div class="pull-right">
+        <button
+          type="button"
+          name="detallePermiso"
+          class="btn btn-default"
+          value="Detalle del permiso"
+          [disabled]="formularioDeshabilitado"
+          (click)="obtenerDetallePermiso()"
+        >
+          Detalle del permiso
+        </button>
+        <button
+          type="button"
+          name="detalleTitular"
+          class="btn btn-default mx-2"
+          value="Detalle titular"
+          [disabled]="formularioDeshabilitado"
+          (click)="obtenerDetalleTitular()"
+        >
+          Detalle titular
+        </button>
+        <button
+          type="button"
+          name="detallePersonas"
+          class="btn btn-default"
+          value="Personas a notificar"
+          [disabled]="formularioDeshabilitado"
+          (click)="obtenerPersonasNotificacion()"
+        >
+          Personas a notificar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-12">
+      <div class="form-group">
+        <label for="motivoSuspension" class="form-label"
+          >Motivo suspensión<span
+            [ngClass]="
+              isValid(busquedaPermisosForm, 'motivoSuspension')
+                ? 'require'
+                : ''
+            "
+            >*</span
+          >:</label
+        >
+        <textarea
+          class="form-control"
+          [ngClass]="
+            isValid(busquedaPermisosForm, 'motivoSuspension') ? 'required' : ''
+          "
+          cols="80"
+          rows="5"
+          id="motivoText"
+          formControlName="motivoSuspension"
+          (change)="
+            setValoresStore(
+              busquedaPermisosForm,
+              'motivoSuspension',
+              'setMotivoSuspension'
+            )
+          "
+        ></textarea>
+        @if(busquedaPermisosForm.get('motivoSuspension')?.touched &&
+        busquedaPermisosForm.get('motivoSuspension')?.invalid) {
+        @if(busquedaPermisosForm.get('motivoSuspension')?.errors?.['required'])
+        {
+        <span class="mensaje-error"> Este campo es obligatorio </span>
+        }
+        @if(busquedaPermisosForm.get('motivoSuspension')?.errors?.['maxlength'])
+        {
+        <span class="mensaje-error">
+          Por favor,no escribas más de 5000 caracteres
+        </span>
+        } }
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <label class="form-label" for="numAutorizacion" name="numAutorizacion"
+        >Número de oficido de suspensión<span
+          [ngClass]="
+            isValid(busquedaPermisosForm, 'numAutorizacion') ? 'require' : ''
+          "
+          >*</span
+        >:</label
+      >
+      <input
+        type="text"
+        class="form-control"
+        name="numAutorizacion"
+        formControlName="numAutorizacion"
+        size="30"
+        id="numOficioText"
+        [ngClass]="
+          isValid(busquedaPermisosForm, 'numAutorizacion') ? 'required' : ''
+        "
+        (change)="
+          setValoresStore(
+            busquedaPermisosForm,
+            'numAutorizacion',
+            'setNumAutorizacion'
+          )
+        "
+      />
+      @if(busquedaPermisosForm.get('numAutorizacion')?.touched &&
+      busquedaPermisosForm.get('numAutorizacion')?.invalid) {
+      @if(busquedaPermisosForm.get('numAutorizacion')?.errors?.['required']) {
+      <span class="mensaje-error"> Este campo es obligatorio </span>
+      } @if(busquedaPermisosForm.get('numAutorizacion')?.errors?.['maxlength'])
+      {
+      <span class="mensaje-error">
+        Por favor,no escribas más de 20 caracteres
+      </span>
+      } }
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <input-fecha
+        [setFecha]="busquedaPermisosForm.get('fechaSuspension')?.value"
+        [datos]="fechaFinalInput"
+        [isDisabled]="formularioDeshabilitado"
+        (valorCambiado)="cambioFechaSuspension($event)"
+      ></input-fecha>
+      @if(busquedaPermisosForm.get('fechaSuspension')?.touched &&
+      busquedaPermisosForm.get('fechaSuspension')?.invalid) {
+      @if(busquedaPermisosForm.get('fechaSuspension')?.errors?.['required']) {
+      <span class="mensaje-error"> Este campo es obligatorio </span>
+      } }
+    </div>
+  </div>
+</div>
+
+@if (nuevaAlertaNotificacion) {
+<lib-notificaciones [notificacionInput]="nuevaAlertaNotificacion">
+</lib-notificaciones>
+} @if(alertaFolioNotificacion) {
+<lib-notificaciones [notificacionInput]="alertaFolioNotificacion">
+</lib-notificaciones>
+} @if (alertaFolioIncorrectoNotificacion) {
+<lib-notificaciones [notificacionInput]="alertaFolioIncorrectoNotificacion">
+</lib-notificaciones>
+}
+
+<!-- Modal para detalle del permiso -->
+<div
+  class="modal fade"
+  id="detalle-del-permiso"
+  tabindex="-1"
+  aria-labelledby="modalDetalleDelPermisoLabel"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <app-detalle-del-permiso></app-detalle-del-permiso>
+      </div>
+      <div class="container mb-5">
+        <div class="pull-right">
+          <button
+            type="button"
+            class="btn btn-default"
+            name="cerrar"
+            data-bs-dismiss="modal"
+            #closeModal
+          >
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para detalle titular -->
+<div
+  class="modal fade"
+  id="detalle-rfc-facultad"
+  tabindex="-1"
+  aria-labelledby="modalDetalleRfcFacultadLabel"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <app-detalle-titular></app-detalle-titular>
+      </div>
+      <div class="container mb-5">
+        <div class="pull-right">
+          <button
+            type="button"
+            class="btn btn-default"
+            name="cerrar"
+            data-bs-dismiss="modal"
+            #closeModal
+          >
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para personas a notificar -->
+<div
+  class="modal fade"
+  id="personas-notificar"
+  tabindex="-1"
+  aria-labelledby="modalPersonasNotificarLabel"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <app-personas-notificar></app-personas-notificar>
+      </div>
+      <div class="container mb-5">
+        <div class="pull-right">
+          <button
+            type="button"
+            class="btn btn-default"
+            name="cerrar"
+            data-bs-dismiss="modal"
+            #closeModal
+          >
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

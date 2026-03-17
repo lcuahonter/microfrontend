@@ -1,0 +1,202 @@
+<div class="container mt-4">
+  <ng-titulo titulo="Datos del aviso del que procede el acta"></ng-titulo>
+  <form [formGroup]="solicitudForm">
+    <div class="row">
+      <div class="col-md-10">
+        <div class="form-group">
+          <app-catalogo-select 
+            [label]="'Aviso del que procede el acta de hechos'" 
+            [catalogo]="actaDeHechos"
+            [placeholder]="'Selecciona un valor'" 
+            formControlName="descripcionGenerica1" 
+            [required]="true"
+            name="actaDeHechos" 
+            [isDisabled]="esFormularioSoloLectura"
+            [tooltipQuestionCircle]="true"
+            ></app-catalogo-select>
+        </div>
+      </div>
+    </div>
+
+    <ng-titulo titulo="Datos de la ADACE que asistió a la destrucción"></ng-titulo>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group d-flex align-items-center">
+          <label>&iquest;Acudió la ADACE?</label>
+          <div class="form-check ms-3">
+            <app-input-radio [radioOptions]="radioOpcion" formControlName="capacidadAlmacenamiento"
+              [layout]="'horizontal'" [disabled]="esFormularioSoloLectura"></app-input-radio>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group text-left">
+          <app-catalogo-select [label]="'ADACE a la que le corresponde levantar el acta'" [catalogo]="levantarActa"
+            [tooltipQuestionCircle]="true" [placeholder]="'Selecciona un valor'" formControlName="descripcionGenerica2"
+            [required]="true" name="levantarActa" [isDisabled]="esFormularioSoloLectura"></app-catalogo-select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección: Datos de la destrucción en relación con el Acta de Hechos -->
+    <div class="row">
+      <div class="col-md-12">
+        <ng-titulo
+          titulo="Datos de la destrucci&oacute;n en relaci&oacute;n con la cual se presenta el Acta de Hechos"></ng-titulo>
+      </div>
+      <div class="col-md-12">
+        <div class="form-group d-flex align-items-center">
+          <label class="me-5">¿Cuenta con el ID de transacción de VUCEM por la presentación del aviso de destrucción?</label>
+          <app-input-radio [radioOptions]="radioOpcion" formControlName="cantidadBienes" [layout]="'horizontal'"
+            [disabled]="esFormularioSoloLectura"></app-input-radio>
+        </div>
+      </div>
+    </div>
+
+    <!-- Condicional: Mostrar campo ID de transacción -->
+    <div id="dos" *ngIf="solicitudForm.get('cantidadBienes')?.value === 'true'">
+      <div class="row mb-4">
+        <div class="col-md-4">
+          <label for="numeroIMMEX">ID de transacción de VUCEM*:</label>
+          <span class="glyphicon glyphicon-question-sign" data-bs-toggle="tooltip" data-bs-placement="top"
+            title="ID de transacci&oacute;n de VUCEM" for="numeroIMMEX" aria-hidden="true"></span>
+        </div>
+        <div class="col-md-4">
+          <input type="text" formControlName="descripcionGenerica3" id="numeroIMMEX" maxlength="250"
+            class="form-control" [required]="true"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla de Entrega Act -->
+    <div class="row">
+      <div class="col-md-12 mt-4">
+        <div class="table-responsive">
+          <div class="table-container">
+            <app-tabla-dinamica 
+              [tipoSeleccionTabla]="tablaSeleccionCheckbox"
+              [configuracionTabla]="hechosTabla"
+              [datos]="datosTabla"
+              (listaDeFilaSeleccionada)="onSeleccionChange($event)"
+              [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+              ></app-tabla-dinamica>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botones Agregar -->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="d-flex justify-content-end mt-4">
+          <button type="button" class="btn btn-primary me-2" 
+            data-bs-toggle="modal" data-bs-target="#modalMercancias"
+            [disabled]="esFormularioSoloLectura">Agregar</button>
+          <button type="button" class="btn btn-danger" 
+            *ngIf="filasSeleccionadas.length > 0"
+            [disabled]="esFormularioSoloLectura"
+            (click)="eliminarFilasSeleccionadas()">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="modal fade" id="modalMercancias" tabindex="-1" #modalMercancias aria-labelledby="modalMercancias"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-body">
+        <ng-titulo titulo="Datos de las mercancias destruidas" />
+        <div class="container-fluid">
+          <form [formGroup]="mercanciaForm" novalidate>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="row">
+                  <div class="col-md-2">
+                    <label for="consecutivo">Consecutivo*:</label>
+                    <input type="text" formControlName="consecutivo" id="consecutivo" maxlength="3"
+                      class="form-control" (keyup)="limpiarNumeroDecimal($event)"
+                      [ngClass]="mercanciaForm.get('consecutivo')?.invalid && mercanciaForm.get('consecutivo')?.touched ? 'required' : ''"
+                      (keypress)="onKeyPress($event)" />
+                    @if (mercanciaForm.get('consecutivo')?.hasError('required') &&
+                    mercanciaForm.get('consecutivo')?.touched) {
+                    <div class="text-danger">
+                      <small>Este campo es obligatorio</small>
+                    </div>
+                    }
+                  </div>
+                  <div class="col-md-10">
+                    <label for="descripcion">Descripcion*:</label>
+                    <input type="text" formControlName="descripcion" id="descripcion" maxlength="250"
+                      class="form-control"
+                      [ngClass]="mercanciaForm.get('descripcion')?.invalid && mercanciaForm.get('descripcion')?.touched ? 'required' : ''"
+                       />
+                    @if (mercanciaForm.get('descripcion')?.hasError('required') &&
+                    mercanciaForm.get('descripcion')?.touched) {
+                    <div class="text-danger">
+                      <small>Este campo es obligatorio</small>
+                    </div>
+                    }
+                  </div>
+                </div>
+                <div class="row my-4">
+                  <div class="col-md-4">
+                    <label for="cantidad">Cantidad*:</label>
+                    <input type="text" formControlName="cantidad" id="cantidad" maxlength="16" class="form-control"
+                      [ngClass]="mercanciaForm.get('cantidad')?.invalid && mercanciaForm.get('cantidad')?.touched ? 'required' : ''"
+                      (keypress)="onKeyPress($event)"
+                      (keyup)="limpiarNumeroDecimal($event)"
+                       />
+                    @if (mercanciaForm.get('cantidad')?.hasError('required') &&
+                    mercanciaForm.get('cantidad')?.touched) {
+                    <div class="text-danger">
+                      <small>Este campo es obligatorio</small>
+                    </div>
+                    }
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group text-left">
+                      <app-catalogo-select 
+                        [label]="'Unidad de medida'" 
+                        [catalogo]="unidadMedida"
+                        formControlName="unidadMedida" name="unidadMedida" 
+                        [isDisabled]="esFormularioSoloLectura"
+                        [required]="true"
+                        [markTouched]="mercanciaForm.get('unidadMedida')?.touched || false"
+                      ></app-catalogo-select>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <label for="peso">Peso (Kg)*:</label>
+                    <input type="text" formControlName="peso" id="peso" maxlength="16" class="form-control"
+                      [ngClass]="mercanciaForm.get('peso')?.invalid && mercanciaForm.get('peso')?.touched ? 'required' : ''"
+                      (keypress)="onKeyPress($event)"
+                      (keyup)="limpiarNumeroDecimal($event)"
+                       />
+                    @if (mercanciaForm.get('peso')?.hasError('required') &&
+                    mercanciaForm.get('peso')?.touched) {
+                    <div class="text-danger">
+                      <small>Este campo es obligatorio</small>
+                    </div>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer custom-footer mt-4">
+        <button type="submit" class="btn btn-primary mx-2" (click)="agregarMercancia()">
+          Agregar
+        </button>
+        <button type="button" class="btn btn-danger me-5" data-bs-dismiss="modal" #closeModal (click)="cancelarMercancia()">
+          Cancelar </button>
+      </div>
+    </div>
+  </div>
+</div>

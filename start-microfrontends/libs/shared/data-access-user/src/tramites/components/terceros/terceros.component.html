@@ -1,0 +1,83 @@
+<ng-titulo titulo="Terceros relacionados" />
+<div class="row d-flex">
+  <div class="col-md-8" [formGroup]="FormPersona">
+    <div class="col-md-6 form-group">
+      <label class="form-label" for="nombre_rfc">Nombre / Razón Social:</label>
+      <input
+        class="form-control"
+        id="nombre_rfc"
+        placeholder=""
+        type="text"
+        formControlName="nombre"
+        maxlength="30"
+        [ngClass]="isValid('nombre') ? 'required' : ''"
+        libUppercase
+      />
+    </div>
+    <div class="col-md-6 form-group">
+      <label class="form-label" for="nombre_imp">Correo electrónico:</label>
+      <input
+        class="form-control"
+        id="correo"
+        placeholder=""
+        type="text"
+        formControlName="correo"
+        maxlength="50"
+        [ngClass]="isValid('correo') ? 'required' : ''"
+      />
+      @if (correoValido()) {
+      <p>Formato incorrecto</p>
+      }
+    </div>
+  </div>
+
+  <div class="col-md-4 d-flex align-items-end">
+    <button
+      class="btn btn-primary ms-2 d-flex"
+      type="button"
+      (click)="agregaPersona()"
+      [disabled]="esFormularioSoloLectura"
+    >
+      Agregar
+    </button>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col-md-2"></div>
+  <div class="col-md-8">
+    <app-tabla-dinamica
+      [tipoSeleccionTabla]="tablaSeleccion.CHECKBOX"
+      [configuracionTabla]="encabezadoDeTablaTerceros"
+      [datos]="personas"
+      (listaDeFilaSeleccionada)="tercerosSeleccionados = $event"
+      [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+    >
+    </app-tabla-dinamica>
+  </div>
+  <div class="col-md-2"></div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="pull-right">
+      @if(personas.length > 0){
+      <button
+        type="button"
+        name="Eliminar"
+        class="btn btn-danger ms-2"
+        (click)="eliminarTerceros()"
+      >
+        Eliminar
+      </button>
+      }
+    </div>
+  </div>
+</div>
+
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+  </lib-notificaciones>
+</section>
+}

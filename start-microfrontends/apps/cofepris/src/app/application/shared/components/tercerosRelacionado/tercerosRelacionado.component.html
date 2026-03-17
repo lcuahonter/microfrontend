@@ -1,0 +1,178 @@
+<div class="container table-container">
+  <ng-titulo titulo="Terceros relacionados" />
+  <ng-alert [CONTENIDO]="TEXTOS.ADJUNTAR" [CUSTOMECLASS]="infoAlert"></ng-alert>
+  <div class="row">
+      <div class="col-md-12">
+  <h6 class="mb-5">Facturador/Consignatario*</h6>
+
+<app-tabla-dinamica
+[configuracionTabla]="configuracionTabla"
+[datos]="tercerosProd"
+[tipoSeleccionTabla]="tipoSeleccionTabla.CHECKBOX" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura" >
+</app-tabla-dinamica>
+
+<div class="custom-ms-2">
+  <button 
+          type="button"
+          class="btn btn-primary ms-2 custom-ms-2"
+          data-bs-toggle="modal"
+          data-bs-target="#modalfacurator"
+          (click)="abrirModalfacurator()"
+          [disabled]="esFormularioSoloLectura"
+        >
+          Agregar
+        </button>
+       </div>
+  </div>
+  </div>
+  
+<div class="container mt-4">
+      <div
+        class="modal fade"
+        id="modalfacurator"
+        tabindex="-1"
+        aria-labelledby="modalfacuratorLabel"
+        aria-hidden="true"
+      >
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <ng-titulo titulo="Agregar Facturador" />
+             
+            </div>
+            <div class="modal-body">
+              <form [formGroup]="facturatorForm" >
+                  <h6>Datos generales</h6>
+                       <div class="row">
+                        <div class="col-md-6 offset-md-6">
+                          <div>
+                            <h6>Tipo persona*:</h6>
+                            <div class="mt-2">
+                              <app-input-radio
+                                [radioOptions]="tipoPersonaOptions"
+                                [isRequired]="true"
+                                formControlName="tipoPersona"
+                                [layout]="'vertical'"
+                                (valueChange)="cambiarRadioFisica($event)"
+                                (change)="setValoresStore(facturatorForm,'tipoPersona','settipoPersona')"
+                              ></app-input-radio>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                      <hr />
+                
+                <div *ngIf="facturatorForm.get('tipoPersona')?.value === 'fisica'">
+
+                    <div class="row">
+                      <h6>Datos Personales</h6>
+                      <div class="col-md-4">
+                        <label class="form-label" for="nombre">Nombre(s)*</label>
+                        <input type="text" class="form-control" id="nombre" formControlName="nombre" 
+                        maxlength="200" size="29"  (change)="setValoresStore(facturatorForm,'nombre','setnombre')">
+                      </div>
+                      <div class="col-md-4">
+                          <label class="form-label" for="apellidoPrimer">Primer apellido*:</label>
+                        <input type="text" class="form-control" id="apellidoPrimer" formControlName="apellidoPrimer"
+                        (change)="setValoresStore(facturatorForm,'apellidoPrimer','setapellidoPrimer')" >
+                      </div>
+                      <div class="col-md-4">
+                          <label class="form-label" for="apellidoSegundo">segundo Apellido</label>
+                        <input type="text" class="form-control" id="apellidoSegundo" formControlName="apellidoSegundo"
+                        (change)="setValoresStore(facturatorForm,'apellidoSegundo','setapellidoSegundo')">
+                      </div>
+
+                    </div>
+                    </div>
+                    
+                <div *ngIf="facturatorForm.get('tipoPersona')?.value === 'moral'">
+                    <div class="row">
+                      <div class="col-md-8">
+                        <label class="form-label" for="denominacionRazonSocial">Denominación/razón social*:</label>
+                        <input type="text" class="form-control" id="denominacionRazonSocial" formControlName="denominacionRazonSocial" 
+                        size="75" maxlength="254" (change)="setValoresStore(facturatorForm,'denominacionRazonSocial','setdenominacionRazonSocial')">
+                       </div>
+                    </div>
+                 </div>
+                   <ng-titulo titulo="Domicilio" />
+                <div class="row d-flex domicilio-form-container">
+                    <div class="col-md-4">
+                      <app-catalogo-select
+                      [catalogo]="localidadList"
+                      formControlName="selectPais"
+                      [label]="'País*'"
+                      [placeholder]="'Seleccione una opción'"
+                      (change)="setValoresStore(facturatorForm,'selectPais','setselectPais')"
+                    ></app-catalogo-select>
+                      
+                    </div>
+                    <div class="col-md-4">
+                      
+                      <label class="form-label" for="estadoLocalidad">Estado*:</label>
+                      <input type="text" class="form-control" id="estadoLocalidad" formControlName="estadoLocalidad" maxlength="255" size="29"
+                      (change)="setValoresStore(facturatorForm,'estadoLocalidad','setestadoLocalidad')">
+                     </div>
+                    <div class="col-md-4 custom-mt">
+                      <label class="form-label" for="codPostal1">Código postal o equivalente</label>
+                        <input type="text" class="form-control" id="codPostal1" formControlName="codPostal1"
+                        (change)="setValoresStore(facturatorForm,'codPostal1','setcodPostal1')">
+                    </div>
+                  </div>
+                <div class="row">
+                    <div class="col-md-8">
+                      <label class="form-label" for="calle">Calle*:</label>
+                      <input type="text" class="form-control" id="calle" formControlName="calle" maxlength="300"
+                      (change)="setValoresStore(facturatorForm,'calle','setcalle')">
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label" for="numExterior">Número Exterior*:</label>
+                      <input type="text" class="form-control" id="numExterior" formControlName="numExterior" maxlength="55" size="29"
+                      (change)="setValoresStore(facturatorForm,'numExterior','setnumExterior')">
+                    </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <label class="form-label" for="numInterior">Número Interior:</label>
+                    <input type="text" class="form-control" id="numInterior" formControlName="numInterior" maxlength="55" size="29"
+                  
+                    (change)="setValoresStore(facturatorForm,'numInterior','setnumInterior')">
+                  </div>
+                  <div class="col-md-1 ">
+                    <label class="form-label" for="lada">Lada:</label>
+                    <input type="text" class="form-control" id="lada" formControlName="lada"
+                    (change)="setValoresStore(facturatorForm,'lada','setlada')">
+                  </div>
+                  <div class="col-md-3">
+                    <label class="form-label" for="telefono">Teléfono:</label>
+                    <input type="text" class="form-control" id="telefono" formControlName="telefono"
+                    (change)="setValoresStore(facturatorForm,'telefono','settelefono')">
+                   
+                  </div>
+                  <div class="col-md-4 ">
+                    <label class="form-label" for="correoElectronico">Correo electrónico:</label>
+                    <div class="input-group">
+                      <input type="email" class="form-control" id="correoElectronico" formControlName="correoElectronico"
+                      (change)="setValoresStore(facturatorForm,'correoElectronico','setcorreoElectronico')">
+                      
+                      </div>
+                  </div>
+                </div>
+          </form>
+  </div>
+  
+  <div class="modal-footer custom-footer">
+      <button type="button" class="btn btn-primary">Cancelar</button>
+      <button
+        type="button"
+        class="btn btn-default"
+        data-bs-dismiss="modal"
+        #closeModal
+      >
+        Limpiar
+      </button>
+      <button type="button" class="btn btn-primary">Guardar</button>
+    </div>     
+  </div>
+</div>
+</div>
+

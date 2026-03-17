@@ -1,0 +1,245 @@
+<div class="container">
+  <form [formGroup]="datosDeLaSolicitudForm">
+    <div class="row mt-5">
+      <div class="col-md-12">
+        <div class="panel-group ficha-collapse" id="accordion">
+          <div class="panel panel-default">
+            <div class="panel-heading" (click)="mostrarColapsable()">
+              <h4 class="panel-title">
+                <a aria-label="Repeat"
+                  ><i class="bi bi-repeat" aria-hidden="true"></i
+                ></a>
+              </h4>
+              <button type="button" class="collpase-button collapsed"></button>
+            </div>
+            @if(colapsable) {
+            <div class="panel-collapse collapse in" id="panel-01">
+              <div class="panel-body">
+                <div class="row">
+                  <ng-alert [CONTENIDO]="instruccionDobleClic"></ng-alert>
+                  
+                    <div class="d-flex justify-content-end">
+                      <div class="btn-group m-4">
+                        <button class="btn btn-primary me-2" type="submit">
+                          Cargar
+                        </button>
+                      </div>
+                    </div>
+                  
+                </div>
+              </div>
+            </div>
+            }
+            
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-8 mb-4">
+        <label for="justificación" class="form-label text-start"
+          >Justificación*:</label
+        >
+        <textarea
+          id="justificación"
+          class="form-control"
+          formControlName="justificacion"
+          (change)="cambioJustificacion($event)"
+          style="height: 100%; resize: none;"
+        ></textarea>
+      </div>
+    </div>
+
+    <div class="container mt-5">
+      <div class="row mt-5">
+        <ng-titulo titulo="Datos del trámite a realizar" />
+        <div class="col-md-4 form-group">
+          <label class="form-label" for="certificadosAutorizados"
+            >Certificados autorizados pendientes*:</label
+          >
+          <input
+            type="text"
+            id="certificadosAutorizados"
+            class="form-control"
+            formControlName="certificadosAutorizados"
+          />
+        </div>
+        
+      <div class="col-md-4">
+        <div class="form-field">
+          <input-fecha
+            [datos]="configuracionFechaFinVigencia"
+            (valorCambiado)="cambioFechaInicio($event)"
+            [setFecha]="this.tramiteState.fechaDeInspeccion"
+            [isDisabled]="campoDeshabilitar"
+            formControlName="fechaDeInspeccion"
+          ></input-fecha>
+        </div>
+      </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <app-catalogo-select
+              [catalogo]="horaDeInspeccion.catalogos"
+              [label]="horaDeInspeccion.labelNombre"
+              [placeholder]="horaDeInspeccion.primerOpcion"
+              formControlName="horaDeInspeccion"
+              [isDisabled]="true"
+            ></app-catalogo-select>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <app-catalogo-select
+              [catalogo]="aduanaDeIngreso.catalogos"
+              [label]="aduanaDeIngreso.labelNombre"
+              [placeholder]="aduanaDeIngreso.primerOpcion"
+              formControlName="aduanaDeIngreso"
+              [isDisabled]="campoDeshabilitar"
+              (selectionChange)="cambioAduanaDeIngreso($event)"
+            ></app-catalogo-select>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="form-group">
+            <app-catalogo-select
+              [catalogo]="oficinaDeInspeccion.catalogos"
+              [label]="oficinaDeInspeccion.labelNombre"
+              [placeholder]="oficinaDeInspeccion.primerOpcion"
+              formControlName="oficinaDeInspeccion"
+              [isDisabled]="true"
+            ></app-catalogo-select>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="form-group">
+            <app-catalogo-select
+              [catalogo]="puntoDeInspeccion.catalogos"
+              [label]="puntoDeInspeccion.labelNombre"
+              [placeholder]="puntoDeInspeccion.primerOpcion"
+              formControlName="puntoDeInspeccion"
+              [isDisabled]="true"
+            ></app-catalogo-select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <ng-titulo titulo="Responsable inspección en punto" />
+        <div class="col-md-4 form-group">
+          <label for="nombreInspector" class="form-label">Nombre(s):</label>
+          <input
+            class="form-control"
+            type="text"
+            id="nombreInspector"
+            formControlName="nombreInspector"
+          />
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="primerapellido" class="form-label"
+            >Primer apellido:</label
+          >
+          <input
+            class="form-control"
+            type="text"
+            id="primerapellido"
+            formControlName="primerApellido"
+          />
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="segundoapellido" class="form-label"
+            >Segundo apellido:</label
+          >
+          <input
+            class="form-control"
+            type="text"
+            id="segundoapellido"
+            formControlName="segundoApellido"
+          />
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="mercancia" class="form-label" id="mercancia">
+            Cantidad de contenedores en que arriba la mercancía*:
+            <span
+              class="bi bi-question-circle-fill"
+              title="Número de tolvas, furgones o contenedores en que arriba la mercancía"
+              data-bs-toggle="tooltip"
+            ></span>
+          </label>
+          <input
+            class="form-control"
+            type="text"
+            id="mercancia"
+            formControlName="cantidadContenedores"
+          />
+        </div>
+        <div class="col-md-4 form-group">
+          <app-catalogo-select
+            [catalogo]="tipoContenedor.catalogos"
+            [label]="tipoContenedor.labelNombre"
+            [placeholder]="tipoContenedor.primerOpcion"
+            formControlName="tipoContenedor"
+            (selectionChange)="cambioTipoContenedor($event)"
+            [isDisabled]="campoDeshabilitar"
+          ></app-catalogo-select>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <ng-titulo titulo="Medio de transporte" />
+        <div class="col-md-4 mb-4 form-group">
+          <app-catalogo-select
+            [catalogo]="medioDeTransporte.catalogos"
+            [label]="medioDeTransporte.labelNombre"
+            [placeholder]="medioDeTransporte.primerOpcion"
+            formControlName="medioDeTransporte"
+            [isDisabled]="true"
+            
+          ></app-catalogo-select>
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="identificacionTransporte" class="form-label"
+            >Identificación del transporte:</label
+          >
+          <input
+            class="form-control"
+            type="text"
+            size="30"
+            id="identificacionTransporte"
+            formControlName="identificacionTransporte"
+            (change)="cambioIdentificacionTransporte($event)"
+          />
+        </div>
+       <div class="row">
+        <div class="col-md-12">
+          <div class="row mt-2">
+              <div class="col-md-12">
+                  <label for="certficacion_a">¿La solicitud de Inspección Física es para trámites que arriban por
+                    Ferrocarril o por Partes II?*:</label>
+              </div>
+              <div class="col-md-4">
+                  <app-input-radio [radioOptions]="radioOpcions" 
+                  (valueChange)="cambiarRadio($event)" formControlName="esSolicitudFerros" 
+                      [isRequired]="true" [layout]="'vertical'"></app-input-radio>
+              </div>
+          </div>
+      </div>
+
+       </div>
+
+
+        <h6>Datos de la mercancía:</h6>
+        <app-tabla-dinamica
+          [tipoSeleccionTabla]="tablaSeleccionCheckbox"
+          [configuracionTabla]="exportadorTabla"
+          [datos]="mercanciaDatos"
+          [disableSeleccionTablaCheckBox]="campoDeshabilitar"
+        ></app-tabla-dinamica>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,188 @@
+<div class="container">
+  <div class="d-flex align-items-center mb-3">
+    <a href="javascript:void(0)" class="text-primary text-decoration-none">Antecesor</a>
+    <span class="text-muted mx-2">|</span>
+    <span class="text-muted">Activo</span>
+  </div>
+  <ng-titulo [titulo]="'Alta Fracción Arancelaria'"></ng-titulo>
+
+  @if (successMessage) {
+    <div class="alert alert-info border-0 shadow-sm rounded-3 py-3 px-4 mb-4 d-flex align-items-center animate__animated animate__fadeIn">
+      <div class="flex-grow-1 text-center fw-bold text-primary">
+        {{ successMessage }}
+      </div>
+    </div>
+  }
+
+  <app-error-messages [errors]="errors"></app-error-messages>
+
+  <div class="card mt-4 shadow-sm border-0">
+    <div class="card-body bg-light rounded shadow-inner p-4">
+      <p class="text-danger small mb-4">Datos requeridos</p>
+      <form [formGroup]="form">
+        <div class="row g-4 align-items-center mb-4 rounded p-3">
+          <div class="col-md-6 d-flex align-items-center gap-2">
+            <label class="form-label text-nowrap mb-0"><span class="text-danger">*</span> Fracción Arancelaria:</label>
+            <input type="text" 
+                   class="form-control" 
+                   [class.is-invalid]="form.get('fraccionArancelaria')?.invalid && (form.get('fraccionArancelaria')?.touched || form.get('fraccionArancelaria')?.dirty)"
+                   formControlName="fraccionArancelaria" 
+                   maxlength="8" 
+                   (blur)="updateErrorMessages()"
+                   [placeholder]="''">
+          </div>
+          <div class="col-md-6 d-flex align-items-center gap-2">
+            <label class="form-label text-nowrap mb-0"><span class="text-danger">*</span> Tipo de Operación:</label>
+            <select class="form-control form-select" 
+                    [class.is-invalid]="form.get('tipoOperacion')?.invalid && form.get('tipoOperacion')?.touched"
+                    formControlName="tipoOperacion"
+                    (change)="updateErrorMessages()">
+              <option [value]="null">Seleccione un valor</option>
+              <option value="importacion">Importación</option>
+              <option value="exportacion">Exportación</option>
+            </select>
+          </div>
+        </div>
+        <div class="row g-4 align-items-center mb-4">
+          <div class="col-md-6 d-flex align-items-center gap-2">
+            <label class="form-label text-nowrap mb-0"><span class="text-danger">*</span> Tipo de Unidad de Medida de Tarifa:</label>
+            <select class="form-control form-select" 
+                    [class.is-invalid]="form.get('unidadMedida')?.invalid && form.get('unidadMedida')?.touched"
+                    formControlName="unidadMedida"
+                    (blur)="updateErrorMessages()"
+                    (change)="updateErrorMessages()">
+              <option [value]="null">Seleccione un valor</option>
+              @for (option of unidadMedidaOptions; track option) {
+                <option [value]="option">{{ option }}</option>
+              }
+            </select>
+          </div>
+          <div class="col-md-6 d-flex align-items-center gap-4">
+            <label class="form-label text-nowrap mb-0"><span class="text-danger">*</span> Prohibida:</label>
+            <div class="d-flex gap-3 align-items-center">
+              <div class="form-check form-check-inline mb-0">
+                <input class="form-check-input" type="radio" [value]="true" formControlName="prohibida" id="prohibidaSi">
+                <label class="form-check-label" for="prohibidaSi">Si</label>
+              </div>
+              <div class="form-check form-check-inline mb-0">
+                <input class="form-check-input" type="radio" [value]="false" formControlName="prohibida" id="prohibidaNo">
+                <label class="form-check-label" for="prohibidaNo">No</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row g-4 align-items-center mb-4">
+          <div class="col-md-6 offset-md-6 d-flex align-items-center gap-4">
+            <label class="form-label text-nowrap mb-0"><span class="text-danger">*</span> Exenta:</label>
+            <div class="d-flex gap-3 align-items-center">
+              <div class="form-check form-check-inline mb-0">
+                <input class="form-check-input" type="radio" [value]="true" formControlName="exenta" id="exentaSi">
+                <label class="form-check-label" for="exentaSi">Si</label>
+              </div>
+              <div class="form-check form-check-inline mb-0">
+                <input class="form-check-input" type="radio" [value]="false" formControlName="exenta" id="exentaNo">
+                <label class="form-check-label" for="exentaNo">No</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row g-4 align-items-center mb-4">
+          <div class="col-md-6 d-flex align-items-center gap-2">
+            <label class="form-label text-nowrap mb-0"><span class="text-danger">*</span> Impuesto Ad. Valorem:</label>
+            <div class="input-group">
+              <input type="text" class="form-control" 
+                     [class.is-invalid]="form.get('impuestoAdValorem')?.invalid && form.get('impuestoAdValorem')?.touched"
+                     formControlName="impuestoAdValorem" maxlength="18"
+                     (blur)="updateErrorMessages()">
+              <span class="input-group-text">%</span>
+            </div>
+          </div>
+        </div>
+        <div class="row g-4 align-items-center mb-4">
+          <div class="col-md-6 d-flex align-items-center gap-2">
+            <label class="form-label text-nowrap mb-0"><span class="text-danger">*</span> Impuesto Específico:</label>
+            <input type="text" class="form-control" 
+                   [class.is-invalid]="form.get('impuestoEspecifico')?.invalid && form.get('impuestoEspecifico')?.touched"
+                   formControlName="impuestoEspecifico" maxlength="18"
+                   (blur)="updateErrorMessages()">
+          </div>
+          <div class="col-md-6 d-flex align-items-center gap-2">
+            <label class="form-label text-nowrap mb-0">Tipo Impuesto Específico:</label>
+            <select class="form-control form-select bg-light" formControlName="tipoImpuestoEspecifico">
+              <option value="Dlls/Kg">Dlls/Kg</option>
+            </select>
+          </div>
+        </div>
+        <div class="row g-4 align-items-start mb-4">
+          <div class="col-12 d-flex align-items-start gap-2">
+            <label class="form-label text-nowrap mt-2"><span class="text-danger">*</span> Descripción de la Fracción:</label>
+            <textarea class="form-control" 
+                      [class.is-invalid]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched"
+                      formControlName="descripcion" rows="3"
+                      (blur)="updateErrorMessages()"></textarea>
+          </div>
+        </div>
+        <div class="row align-items-center mb-4">
+          <div class="col-md-6 d-flex align-items-center">
+            <input-fecha [datos]="fechaInicioConfig" 
+                         [marcarError]="!!(form.get('fechaInicio')?.invalid && form.get('fechaInicio')?.touched)"
+                         (valorCambiado)="form.get('fechaInicio')?.setValue($event); updateErrorMessages()"></input-fecha>
+          </div>
+          <div class="col-md-6 d-flex align-items-center">
+            <input-fecha [datos]="fechaFinConfig" 
+                         [marcarError]="!!(form.get('fechaFin')?.invalid && form.get('fechaFin')?.touched)"
+                         (valorCambiado)="form.get('fechaFin')?.setValue($event); updateErrorMessages()"></input-fecha>
+          </div>
+        </div>
+        <div class="row mt-5">
+          <div class="col-12 d-flex justify-content-center gap-3 py-3">
+            <button type="button" class="btn btn-primary rounded-pill" (click)="onAceptar()">Aceptar</button>
+            <button type="button" class="btn btn-primary rounded-pill" (click)="onAltaCargaMasiva()">Alta Carga Masiva</button>
+            <button type="button" class="btn btn-default rounded-pill" (click)="onCancelar()">Cancelar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para Carga Masiva -->
+<div class="modal fade" id="modalCargaMasiva" tabindex="-1" #modalCarga>
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content overflow-hidden rounded-4 shadow border-0">
+      <div class="modal-header border-0 bg-dark">
+        <h5 class="modal-title fw-bold text-white">Carga Masiva Alta Fracción Arancelaria TIGIE</h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="border rounded p-4 bg-white">
+          <h6 class="text-muted border-bottom pb-2 mb-4">Alta Fracción Arancelaria</h6>
+          <div class="d-flex align-items-center gap-3">
+            <app-cargar-archivo-menus titulo="Seleccione Archivo a Procesar:" (cancel)="closeModal()"></app-cargar-archivo-menus>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Validando -->
+<div class="modal fade" id="modalValidando" tabindex="-1" #modalValidando>
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content text-center p-4 rounded-4 shadow border-0">
+      <div class="mb-3">
+        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+      </div>
+      <h6 class="fw-bold mb-0 text-primary">Validando Fracción Arancelaria...</h6>
+    </div>
+  </div>
+</div>
+
+@if (notificacionConfig) {
+  <lib-notificaciones 
+    [notificacionInput]="notificacionConfig" 
+    (confirmacionModal)="onConfirmarAlta($event)">
+  </lib-notificaciones>
+}

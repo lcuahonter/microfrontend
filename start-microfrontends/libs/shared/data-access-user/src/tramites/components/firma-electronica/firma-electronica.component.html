@@ -1,0 +1,73 @@
+<div class="rows">
+  <form action="" [formGroup]="FormCertificado" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <lib-input-fila
+        [labelNombre]="'Certificado (cer)'"
+        [formControl]="FormCertificado.controls.cer"
+        [required]="true"
+        [id]="'cer'"
+        [accept]="'.cer'"
+        (filaSeleccionadaEvento)="handleFile('cer', $event)"
+        (archivoDialogCancelar)="dialogoCancelar('cerFileName')"
+        ></lib-input-fila>
+      @if (!FormCertificado.get('cerFileName')?.value && FormCertificado.get('cerFileName')?.touched) {
+        <div class="d-grid mt-2">
+          <span class="mensaje-error">Este campo es obligatorio.</span>
+        </div>
+      }
+      @if (certFileError) {
+        <div class="d-grid mt-2">
+          <span class="mensaje-error">{{ certFileError }}</span>
+        </div>
+      }
+    </div>
+    <div class="form-group">
+      <lib-input-fila
+        [labelNombre]="'Clave privada (key)'" 
+        [formControl]="FormCertificado.controls.key"
+        [required]="true" 
+        [id]="'key'" 
+        [accept]="'.key'" 
+        (filaSeleccionadaEvento)="handleFile('key', $event)"
+        (archivoDialogCancelar)="dialogoCancelar('keyFileName')"
+        ></lib-input-fila>
+        @if (!FormCertificado.get('keyFileName')?.value && FormCertificado.get('keyFileName')?.touched) {
+          <div class="d-grid mt-2">
+            <span class="mensaje-error">Este campo es obligatorio.</span>
+          </div>
+        }
+        @if (keyFileError) {
+        <div class="d-grid mt-2">
+          <span class="mensaje-error">{{ keyFileError }}</span>
+        </div>
+        }
+    </div>
+
+    <div class="form-group mt-2">
+      <label class="form-label" for="password">Contraseña de clave privada
+        <span
+          [ngClass]="FormCertificado.get('password')?.errors?.['required'] && FormCertificado.get('password')?.touched ? 'text-danger' : ''">*</span>:
+      </label>
+      <input type="password" class="form-control" [ngClass]="isValid('password') ? 'required' : ''" id="password"
+        formControlName="password">
+      @if (FormCertificado.controls['password'].touched && FormCertificado.controls['password'].invalid) {
+      <div class="d-grid">
+        @if (FormCertificado.controls['password'].errors?.['required']) {
+        <span class="mensaje-error">Este campo es obligatorio.</span>
+        }
+      </div>
+      }
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 d-flex justify-content-end mt-3">
+        @if (login) {
+        <button type="submit" class="btn btn-primary me-2">Ingresar</button>
+        <button type="button" class="btn btn-default">Registrarse</button>
+        } @else {
+        <button type="submit" class="btn btn-primary mt-4">Firmar</button>
+        }
+      </div>
+    </div>
+  </form>
+</div>

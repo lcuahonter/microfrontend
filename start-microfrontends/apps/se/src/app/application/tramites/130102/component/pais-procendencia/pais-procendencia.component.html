@@ -1,0 +1,92 @@
+<div class="container">
+  <form [formGroup]="paisForm">
+    
+  <div class="row">
+    <ng-titulo titulo="País(es) procedencia"> </ng-titulo>
+
+    <div class="row mb-5">
+      <div class="col-md-4">
+        <label for="bloque" class="form-label">Bloque:</label>
+          <select class="form-control form-select" formControlName="bloque" (change)="setValoresStore(paisForm,'bloque', 'setBloque'); changeBloque(paisForm)">
+            <option [ngValue]="null">Seleccione una opción</option>
+            <option *ngFor="let bloq of paisProc" [value]="bloq.clave">
+              {{ bloq.descripcion }}
+            </option>
+          </select>
+
+        
+      </div>
+      <div
+        class="col-md-4 d-flex justify-content-center align-items-center mt-5 mx-4"
+      >
+        <button type="button" class="btn-primary btn" name="todos países" [disabled]="esFormularioSoloLectura">Todos los países</button>
+      </div>
+      <div class="col-md-4"></div>
+    </div>
+      <crosslist
+        [fechas]="selectRangoDias"
+        [showSearchInput1]="true"
+        [showSearchInput2]="true"
+        [searchInput1Label]="'País disponible:'"
+        [searchInput2Label]="'País seleccionado*:'"
+        [botonField]="paisDeProcedenciaBotons"
+        [isDisabled]="esFormularioSoloLectura"
+        (fechasSeleccionadasChange)="changeCrosslist($event)"
+        (fechasSeleccionadas)="changeCrosslist($event)"
+      ></crosslist>
+
+  </div>
+  <div class="row mt-4">
+    <div class="col-md-8">
+      <div class="form-group">        
+        <label for="descripcion">Justificación y beneficio que se obtiene*:</label>
+        <textarea
+          class="form-control"
+          rows="3"
+          id="descripcion"
+          placeholder="Justificación y beneficio que se obtiene"
+          formControlName="descripcionJustificacion"
+          (change)="setValoresStore(paisForm,'descripcionJustificacion', 'setDescripcionJustificacion')"
+        ></textarea>
+        @if (paisForm.controls['descripcionJustificacion'].invalid && paisForm.controls['descripcionJustificacion'].touched) {
+          <div class="text-danger">
+            @if (paisForm.controls['descripcionJustificacion'].errors?.['required']) {
+              <small>La justificación es obligatoria.</small>
+            }
+            @if (paisForm.controls['descripcionJustificacion'].errors?.['leadingSpaces']) {
+              <small>No se permiten espacios al inicio del campo.</small>
+            }
+          </div>
+        }
+        
+      </div>
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-md-8">
+      <div class="form-group">
+        <label for="descripcion" class="form-label">Observaciones:</label>
+        <textarea
+          class="form-control"
+          rows="3"
+          id="descripcion"
+          placeholder="Observaciones"
+          formControlName="observaciones"
+          (change)="setValoresStore(paisForm,'observaciones', 'setObservaciones')"
+        ></textarea>
+        @if (paisForm.controls['observaciones'].invalid && paisForm.controls['observaciones'].touched) {
+          <div class="text-danger">
+            @if (paisForm.controls['observaciones'].errors?.['leadingSpaces']) {
+              <small>No se permiten espacios al inicio del campo.</small>
+            }
+          </div>
+        }
+        
+      </div>
+    </div>
+  </div>
+  </form>
+
+
+
+</div>

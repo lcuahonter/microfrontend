@@ -1,0 +1,177 @@
+<div class="container">
+  <form [formGroup]="datosDeLaSolicitudForm">
+    <div class="row mt-5">
+      <div class="col-md-12">
+        <div class="panel-group ficha-collapse" id="accordion">
+          <div class="panel panel-default">
+            <div class="panel-heading" (click)="mostrarColapsable()">
+              <h4 class="panel-title">
+                <a aria-label="Repeat"><i class="bi bi-repeat" aria-hidden="true"></i></a>
+              </h4>
+              <button type="button" class="collpase-button collapsed" [disabled]="esFormularioSoloLectura"></button>
+            </div>
+            @if(colapsable) {
+            <div class="panel-collapse collapse in" id="panel-01">
+              <div class="panel-body">
+                <div class="row">
+                  <ng-alert [CONTENIDO]="instruccionDobleClic"></ng-alert>
+                </div>
+              </div>
+            </div>
+             <div class="row">
+              <div class="d-flex justify-content-end">
+                <div class="btn-group m-4">
+                  <button class="btn btn-primary me-2" type="submit">
+                    Cargar
+                  </button>
+                </div>
+              </div>
+            </div>
+            }
+           
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-8 mb-4">
+        <label for="justificación" class="form-label text-start">Justificación*:</label>
+        <textarea id="justificación" class="form-control" formControlName="justificacion"
+          style="height: 100%; resize: vertical" [disabled]="esFormularioSoloLectura"></textarea>
+      </div>
+    </div>
+
+    <div class="container mt-5">
+      <div class="row mt-5">
+        <ng-titulo titulo="Datos del trámite a realizar" />
+        <div class="row">
+          <div class="col-md-4 form-group">
+            <label for="certificadosAutorizados">Certificados autorizados pendientes*:</label>
+            <input type="text" id="certificadosAutorizados" class="form-control"
+              formControlName="certificadosAutorizados" [disabled]="esFormularioSoloLectura"/>
+          </div>
+          <div class="col-md-4">
+            <input-fecha [datos]="fechaInicioInput" formControlName="fechaInicio" [setFecha]="datosDeLaSolicitudForm.get('fechaInicio')?.value" [isDisabled]="esFormularioSoloLectura" (valorCambiado)="cambioFechaInicio($event)"></input-fecha>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <app-catalogo-select [catalogo]="horaDeInspeccion.catalogos" [label]="horaDeInspeccion.labelNombre"
+                [placeholder]="horaDeInspeccion.primerOpcion"
+                [required]="true"
+                formControlName="horaDeInspeccion" [isDisabled]="esFormularioSoloLectura"></app-catalogo-select>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <app-catalogo-select [catalogo]="aduanaDeIngreso.catalogos" [label]="aduanaDeIngreso.labelNombre"
+                [placeholder]="aduanaDeIngreso.primerOpcion" [isDisabled]="esFormularioSoloLectura"
+                formControlName="aduanaDeIngreso"></app-catalogo-select>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="form-group">
+              <app-catalogo-select [catalogo]="oficinaDeInspeccion.catalogos" [label]="oficinaDeInspeccion.labelNombre"
+                [placeholder]="oficinaDeInspeccion.primerOpcion" [isDisabled]="esFormularioSoloLectura"
+                formControlName="oficinaDeInspeccion"></app-catalogo-select>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-8">
+            <div class="form-group">
+              <app-catalogo-select [catalogo]="puntoDeInspeccion.catalogos" [label]="puntoDeInspeccion.labelNombre"
+                [placeholder]="puntoDeInspeccion.primerOpcion" [isDisabled]="esFormularioSoloLectura"
+                formControlName="puntoDeInspeccion"></app-catalogo-select>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <ng-titulo titulo="Responsable inspección en punto" />
+        <div class="col-md-4 form-group">
+          <label for="nombreInspector" class="form-label">Nombre(s):</label>
+          <input class="form-control" type="text" id="nombreInspector" formControlName="nombreInspector" />
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="primerapellido" class="form-label">Primer apellido:</label>
+          <input class="form-control" type="text" id="primerapellido" formControlName="primerApellido" />
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="segundoapellido" class="form-label">Segundo apellido:</label>
+          <input class="form-control" type="text" id="segundoapellido" formControlName="segundoApellido" />
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="mercancia" id="mercancia">
+            Cantidad de contenedores en que arriba la mercancía<br>
+            *:
+            <span class="bi bi-question-circle-fill"
+              title="Número de tolvas, furgones o contenedores en que arriba la mercancía"
+              data-bs-toggle="tooltip"></span>
+          </label>
+          <input class="form-control" type="text" id="mercancia"
+            formControlName="cantidadContenedores" />
+        </div>
+        <div class="col-md-4 form-group">
+          <app-catalogo-select [catalogo]="tipoContenedor.catalogos" [label]="tipoContenedor.labelNombre"
+            [placeholder]="tipoContenedor.primerOpcion" [isDisabled]="esFormularioSoloLectura"
+            formControlName="tipoContenedor"></app-catalogo-select>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <ng-titulo titulo="Medio de transporte" />
+        <div class="col-md-4 mb-4 form-group">
+          <app-catalogo-select [catalogo]="medioDeTransporte.catalogos" [label]="medioDeTransporte.labelNombre"
+            [placeholder]="medioDeTransporte.primerOpcion" [required]="true" [isDisabled]="esFormularioSoloLectura"
+            formControlName="medioDeTransporte"></app-catalogo-select>
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="identificacionTransporte" class="form-label">Identificación del transporte:</label>
+          <input class="form-control" type="text" size="30" id="identificacionTransporte"
+            formControlName="identificacionTransporte" [disabled]="esFormularioSoloLectura"/>
+        </div>
+
+        <div class="col-md-12 mt-5">
+          <label for="esSolicitudFerros">¿La solicitud de Inspección Física es para trámites que arriban por
+            Ferrocarril o por Partes II?*:</label>
+        </div>
+
+        <div class="col-md-12">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="esSolicitudFerros" id="esSolicitudFerrosSi" value="1"
+             formControlName="esSolicitudFerros"/>
+            <label class="form-check-label" for="esSolicitudFerrosSi">Sí</label>
+          </div>
+        </div>
+
+        <div class="col-md-12 mb-4">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="esSolicitudFerros" id="esSolicitudFerrosNo" value="0"
+              formControlName="esSolicitudFerros"/>
+            <label class="form-check-label" for="esSolicitudFerrosNo">No</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <h6>Datos de la mercancía:</h6>
+          </div>
+          <div class="col-md-12 mt-5">
+            <div class="table-container">
+              <app-tabla-dinamica *ngIf="medioTableDatos.length > 0" [tipoSeleccionTabla]="tablaSeleccionCheckbox"
+                [configuracionTabla]="exportadorTabla" [datos]="medioTableDatos" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"></app-tabla-dinamica>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

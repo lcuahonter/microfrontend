@@ -1,0 +1,716 @@
+<div class="container">
+  <ng-titulo titulo="Anexo I" />
+  <ng-alert [CONTENIDO]="anexoUnoAlerta"></ng-alert>
+  <form [formGroup]="anexoUnoFormGroup">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="fraccionArancelaria"
+            >Fracción arancelaria del producto:</label
+          >
+          <input
+            class="form-control min-hgt"
+            id="fraccionArancelaria"
+            formControlName="fraccionArancelaria"
+            type="text" 
+            maxlength="10"
+            (change)="actualizarControl('anexoUnoFormGroup', 'fraccionArancelaria')"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label for="descripcion" class="form-label text-start"
+            >Descripción:</label
+          >
+          <textarea
+            id="descripcion"
+            class="form-control , txtarea "
+            maxlength="1000"
+            formControlName="descripcion"
+            (change)="actualizarControl('anexoUnoFormGroup', 'descripcion')"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 container text-end mt-5">
+        <button class="btn btn-danger me-2" (click)="eliminarAnexoUno()" [disabled]="esFormularioSoloLectura">Eliminar</button>
+        <button class="btn btn-primary me-2" (click)="agregarAnexoUno()" [disabled]="esFormularioSoloLectura">
+          Agregar
+        </button>
+        <button class="btn btn-primary" (click)="abrirCargaPorArchivo()" [disabled]="esFormularioSoloLectura">Carga por archivo</button>
+      </div>
+    </div>
+
+    <div class="row mt-5">
+      <app-tabla-dinamica
+        [configuracionTabla]="tablaSociaAccionistas"
+        [tipoSeleccionTabla]="tablaSeleccion.CHECKBOX"
+        [datos]="anexoUnoTablaLista"
+        (filaSeleccionada)="setAnexoUnoLista($event)"
+        [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+      ></app-tabla-dinamica>
+    </div>
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center">
+        <li class="page-item"><a class="page-link">1</a></li>
+      </ul>
+    </nav>
+
+  </form>
+  <div class="row">
+    <div class="col-12 container text-end mt-5">
+      <button
+        class="btn btn-danger me-2"
+        (click)="abrirComplementarFraccionModalUno()"
+        [disabled]="esFormularioSoloLectura"
+      >
+        Complementar Fracción
+      </button>
+
+      <button
+        class="btn btn-danger me-2"
+        (click)="abrirProveedorClienteModal('cliente')"
+        [disabled]="esFormularioSoloLectura"
+      >
+        Proveedor Cliente
+      </button>
+      <button
+        class="btn btn-danger me-2"
+        (click)="abrirProyectoImmexModal()"
+        [disabled]="esFormularioSoloLectura"
+      >
+        Proyecto IMMEX
+      </button>
+
+      <button class="btn btn-primary" [disabled]="esFormularioSoloLectura" (click)="abrirProveedorPorArchivo()">Proveedor Cliente por Archivo</button>
+    </div>
+  </div>
+  <form class="row mt-5" [formGroup]="anexoDosFormGroup">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="fraccionArancelaria"
+            >Fracción arancelaria de la mercancía:</label
+          >
+          <input
+            class="form-control min-hgt"
+            id="fraccionArancelaria"
+            formControlName="fraccionArancelarias"
+            type="text"
+            maxlength="8"
+            (change)="actualizarControl('anexoDosFormGroup', 'fraccionArancelarias')"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label for="descripcion" class="form-label text-start"
+            >Descripción:</label
+          >
+          <textarea
+            id="descripcion"
+            class="form-control , txtarea"
+            formControlName="anexoDosDescripcion"
+            maxlength="1000"
+            (change)="actualizarControl('anexoDosFormGroup', 'anexoDosDescripcion')"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 container text-end mt-5">
+        <button class="btn btn-danger me-2" (click)="eliminarAnexoDos()" [disabled]="esFormularioSoloLectura">
+          Eliminar
+        </button>
+        <button class="btn btn-primary me-2" (click)="agregarFraccionAnarelaria()" [disabled]="esFormularioSoloLectura"  >
+          Agregar
+        </button>
+      </div>
+    </div>
+
+    <div class="row mt-5">
+
+        <app-tabla-dinamica
+            [configuracionTabla]="tableFracionAnarelaria"
+            [tipoSeleccionTabla]="tablaSeleccion.CHECKBOX"
+            [datos]="anexoFraccionAnarelaria"
+            (filaSeleccionada)="setAnexoDosLista($event)"
+            [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+          ></app-tabla-dinamica>
+    </div>
+     <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center">
+        <li class="page-item"><a class="page-link">1</a></li>
+      </ul>
+    </nav>
+  </form>
+  <div class="row">
+    <div class="col-12 container text-end mt-5">
+   <button
+  class="btn btn-danger me-2"
+  (click)="abrirComplementarFraccionModalDos()"
+  [disabled]="esFormularioSoloLectura"
+>
+  Complementar Fracción
+</button>
+    <button
+        class="btn btn-danger me-2" (click)="abrirProveedorClienteModal('proveedor')"
+        [disabled]="esFormularioSoloLectura"
+      >
+        Proveedor Cliente
+      </button>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="complementarFuncionModal"
+  tabindex="-1"
+  aria-labelledby="complementarFuncionModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="complementarFuncionModalLabel">
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          [disabled]="esFormularioSoloLectura"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="form-group">
+              <h5 class="form-label text-start">Fracción arancelaria:</h5>
+              <p class="form-label text-start">
+           {{ selectedRowFields['fraccionArancelaria'] }}
+        </p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <h5 class="form-label text-start">Anexo II:</h5>
+              <p class="form-label text-start">
+          {{ selectedRowFields['anexoII'] }}
+        </p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <h5 class="form-label text-start">Tipo:</h5>
+              <p class="form-label text-start">
+          {{ selectedRowFields['tipo'] }}
+        </p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <h5 class="form-label text-start">UMT:</h5>
+              <p class="form-label text-start">{{ selectedRowFields['umt'] }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <ng-titulo titulo="Fracción arancelaria del producto" />
+          </div>
+        </div>
+
+        <form [formGroup]="complimentarForm">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <app-catalogo-select
+            [catalogo]="catagoriaSeleccionDatos"
+            formControlName="catagoria"
+            [label]="'Categoría'"
+            [required]="true"
+            name="catagoria"
+            [isDisabled]="esFormularioSoloLectura"
+          ></app-catalogo-select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label for="descripcion" class="form-label text-start"
+                  >Descripción comercial*:</label
+                >
+                <textarea
+                  id="descripcion"
+                  class="form-control , txtarea"
+                  formControlName="complimentarDescripcion"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-md-10">
+              <label for="monedaNacionalMensual" class="form-label text-start"
+                >Valor en moneda nacional de la producción o del servicio a realizarse mensualmente*:</label
+              >
+            </div>
+            <div class="col-md-2">
+              <input
+                class="form-control min-hgt"
+                id="monedaNacionalMensual"
+                formControlName="monedaNacionalMensual"
+                type="text"
+                  pattern="^[0-9]*$"
+  (input)="onSoloDigitosInput($event, 'monedaNacionalMensual')"
+              />
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-10">
+              <label
+                for="monedaNacionalDeDosPeriodos"
+                class="form-label text-start"
+                >Valor en moneda nacional de la producción o del servicio a realizarse en 2 años*:</label
+              >
+            </div>
+            <div class="col-md-2">
+              <input
+                class="form-control min-hgt"
+                id="monedaNacionalDeDosPeriodos"
+                formControlName="monedaNacionalDeDosPeriodos"
+                type="text"
+                  pattern="^[0-9]*$"
+  (input)="onSoloDigitosInput($event, 'monedaNacionalDeDosPeriodos')"
+                
+              />
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-10">
+              <label for="volumenMensual" class="form-label text-start">
+                Volúmen de la producción o del servicio a realizarse mensualmente*:
+              </label>
+            </div>
+            <div class="col-md-2">
+              <input
+                class="form-control min-hgt"
+                id="volumenMensual"
+                formControlName="volumenMensual"
+                type="text"
+                  pattern="^[0-9]*$"
+  (input)="onSoloDigitosInput($event, 'volumenMensual')"
+              />
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-10">
+              <label for="twoPeriodVolume" class="form-label text-start">
+                Volúmen de la producción o del servicio a realizarse en 2 años*:
+              </label>
+            </div>
+            <div class="col-md-2">
+              <input
+                class="form-control min-hgt"
+                id="twoPeriodVolume"
+                formControlName="twoPeriodVolume"
+                type="text"
+                  pattern="^[0-9]*$"
+  (input)="onSoloDigitosInput($event, 'twoPeriodVolume')"
+              />
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <div class="col-12 container text-end mt-5 mb-5">
+            <button class="btn btn-primary me-2" [disabled]="esFormularioSoloLectura" (click)="guardarComplementarFraccion()">Guardar</button>
+            <button class="btn btn-danger me-2" data-bs-dismiss="modal" [disabled]="esFormularioSoloLectura">Regresar Anexo I</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="proveedorClienteModal"
+  tabindex="-1"
+  aria-labelledby="proveedorClienteModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="proveedorClienteModalLabel">
+          Proveedor Cliente
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <!-- Modal content goes here -->
+        <ng-titulo titulo="Proveedor Cliente" />
+        <form [formGroup]="formularioProveedorCliente">
+          <div class="row">
+            <div class="col-md-8">
+              <div class="form-group">
+                <label for="descripcion" class="form-label text-start"
+                  >Descripción comercial*:</label
+                >
+                <textarea
+                  id="descripcion"
+                  class="form-control , txtarea"
+                  required
+                  formControlName="descripcionComercial"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-4">
+              <div class="form-group">
+                <app-catalogo-select
+                  [catalogo]="paisDestinoCatalog"
+                  [label]="proveedorClienteModalContext === 'cliente' ? 'País destino' : 'País de origen'"
+                  [required]="true"
+                  [isDisabled]="false"
+                  name="paisDestino"
+                  formControlName="paisDestino"
+                  [isDisabled]="esFormularioSoloLectura"
+                ></app-catalogo-select>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-4">
+              <div class="form-group">
+                 <label class="form-label" for="rfc">{{ proveedorClienteModalContext === 'cliente' ? 'RFC/TAX ID Cliente*:' : 'RFC/TAX ID Proveedor*:' }}</label>
+                <input
+                  class="form-control min-hgt"
+                  id="rfc"
+                  formControlName="rfc"
+                  type="text"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="razonSocialCliente">{{ proveedorClienteModalContext === 'cliente' ? 'Razón social Cliente*:' : 'Razón social Proveedor*:' }}</label>
+                <input
+                  class="form-control min-hgt"
+                  id="razonSocialCliente"
+                  formControlName="razonSocialCliente"
+                  type="text"
+                />
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <div class="row justify-content-end">
+          <button type="button" class="btn btn-danger col-auto mt-3 me-3" [disabled]="esFormularioSoloLectura">
+            Limpar
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-primary col-auto pull-right float-end mt-3"
+            (click)="agregarProveedorCliente()"
+            [disabled]="esFormularioSoloLectura"
+          >
+            Agregar
+          </button>
+        </div>
+
+        <div class="row mt-5">
+          <app-tabla-dinamica
+            [configuracionTabla]="tableProveedorCliente"
+            [tipoSeleccionTabla]="tablaSeleccion.CHECKBOX"
+            [datos]="proveedorClienteModalContext === 'cliente' ? clienteTablaLista : proveedorTablaLista"
+             [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+          ></app-tabla-dinamica>
+        </div>
+
+        <div class="row justify-content-end">
+          <button type="button" class="btn btn-danger col-auto mt-3 me-3 mb-5" [disabled]="esFormularioSoloLectura">
+            Eliminar
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-primary col-auto pull-right float-end mt-3 ml-3 mb-5"
+            [disabled]="esFormularioSoloLectura"
+          >
+            Editar
+          </button>
+        </div>
+
+        <div class="row justify-content-end">
+          <button
+            type="button"
+            class="btn btn-danger col-auto pull-right float-end mt-3 mb-5"
+            data-bs-dismiss="modal"
+            [disabled]="esFormularioSoloLectura"
+          >
+            Regresar Anexo I
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="proyectoImmexModal"
+  tabindex="-1"
+  aria-labelledby="proyectoImmexModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="proyectoImmexModalLabel">Proyecto IMMEX</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          [disabled]="esFormularioSoloLectura"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="form-group">
+              <h5 class="form-label text-start">Fracción arancelaria</h5>
+              <p class="form-label text-start">
+                {{ selectedRowFields['fraccionArancelaria'] }}
+              </p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <h5 class="form-label text-start">Anexo II</h5>
+              <p class="form-label text-start">{{ selectedRowFields['anexoII'] }}</p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <h5 class="form-label text-start">Tipo</h5>
+              <p class="form-label text-start">{{ selectedRowFields['tipo'] }}</p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <h5 class="form-label text-start">UMT</h5>
+              <p class="form-label text-start">{{ selectedRowFields['umt'] }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <ng-titulo titulo="Proyecto IMMEX" />
+          </div>
+        </div>
+        <form [formGroup]="proyectoForm">
+          <div class="row">
+            <div class="col-md-8">
+              <div class="form-group">
+                <label for="descripcion" class="form-label text-start"
+                  >Descripción comercial*:</label
+                >
+                <textarea
+                  id="descripcion"
+                  class="form-control ,txtarea"
+                  formControlName="textDescripcion"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-4">
+              <div class="form-group">
+                <app-catalogo-select
+            [catalogo]="tipoDeDocumenteCatalog"
+            [label]="'Tipo de documento'"
+            [required]="true"
+            [isDisabled]="false"
+          [isDisabled]="esFormularioSoloLectura"
+            formControlName="tipoDeDocumente"
+          ></app-catalogo-select>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="fechaDeFirma"
+                  >Fecha de firma*:</label
+                >
+                <input
+                  class="form-control min-hgt"
+                  id="fechaDeFirma"
+                  formControlName="fechaDeFirma"
+                  type="date"
+                />
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="fechaDeVigencia"
+                  >Fecha de fin de vigencia*:</label
+                >
+                <input
+                  class="form-control min-hgt"
+                  id="fechaDeVigencia"
+                  formControlName="fechaDeVigencia"
+                  type="date"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="rfcTaxId"
+                  >RFC de la parte firmante/ Tax ID*:</label
+                >
+                <input
+                  class="form-control min-hgt"
+                  id="rfcTaxId"
+                  formControlName="rfcTaxId"
+                  type="number"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-md-8">
+              <div class="form-group">
+                <label class="form-label" for="razonSocial"
+                  >Razón social de la parte firmante*:</label
+                >
+                <input
+                  class="form-control min-hgt"
+                  id="razonSocial"
+                  formControlName="razonSocial"
+                  type="text"
+                />
+              </div>
+            </div>
+          </div>
+          
+        </form>
+        <div class="row justify-content-end">
+          <button type="button" class="btn btn-default col-auto mt-3 mr-5 me-3" [disabled]="esFormularioSoloLectura">
+            Limpiar
+          </button>
+
+          <button
+            type="button"
+             (click)="agregarProyectoImmex()"
+            class="btn btn-primary col-auto pull-right float-end mt-3 me-3"
+            [disabled]="esFormularioSoloLectura"
+          >
+            Agregar
+          </button>
+        </div>
+
+        <div class="row mt-5">
+          <app-tabla-dinamica
+            [configuracionTabla]="tablaProyectoImmex"
+            [tipoSeleccionTabla]="tablaSeleccion.CHECKBOX"
+            [datos]="proyectoImmexTablaLista"
+             [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+          ></app-tabla-dinamica>
+        </div>
+        <div class="row justify-content-end">
+          <button type="button" class="btn btn-danger col-auto mt-3 mr-5 me-3"[disabled]="esFormularioSoloLectura" >
+            Eliminar
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-primary col-auto pull-right float-end mt-3 me-3" [disabled]="esFormularioSoloLectura"
+          >
+            Editar
+          </button>
+        </div>
+        <div class="row">
+          <div class="col-12 container text-end mt-5 mb-5">
+            <button class="btn btn-danger me-2" data-bs-dismiss="modal" [disabled]="esFormularioSoloLectura">Regresar Anexo</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="mostrarCargaPorArchivoModal" class="modal-backdrop">
+  <div class="modal-dialog">
+    <div class="modal-content p-0">
+      <div class="modal-header-custom">
+      </div>
+      <div class="p-4">
+        <div>
+          Al cargar el archivo perdera la información que haya capturado de las fracciones de importación/exportación
+        </div>
+        <div class="text-end mt-4">
+          <button class="btn btn-default" (click)="onCancelarCargaPorArchivo()">Cancelar</button>
+          <button class="btn btn-primary me-2" (click)="onAceptarCargaPorArchivo()">Aceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-container *ngIf="mostrarCargaDeFraccionesPopup">
+  <div class="tab-modal-overlay">
+    <div class="tab-modal-content">
+      <app-carga-de-fracciones (cerrarPopup)="cerrarCargaDeFracciones()"></app-carga-de-fracciones>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="mostrarProveedorClientesPopup">
+  <div class="tab-modal-overlay">
+    <div class="tab-modal-content">
+      <app-carga-proveedores-clientes (cerrarPopup)="cerrarProveedorClientesPopup()"></app-carga-proveedores-clientes>
+    </div>
+  </div>
+</ng-container>
+
+<section *ngIf="nuevaUnoNotificacion && nuevaUnoNotificacion.cerrar">
+    <lib-notificaciones [notificacionInput]="nuevaUnoNotificacion" (confirmacionModal)="abrirUnoModal()">
+    </lib-notificaciones>
+</section>
+<section *ngIf="nuevaDosNotificacion && nuevaDosNotificacion.cerrar">
+    <lib-notificaciones [notificacionInput]="nuevaDosNotificacion" (confirmacionModal)="abrirDosModal()">
+    </lib-notificaciones>
+</section>

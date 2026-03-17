@@ -1,0 +1,71 @@
+<div class="container">
+
+  <form [formGroup]="formCancelorSolicitud">
+    <div class="form">
+      <ng-titulo titulo="Cancelar solicitud de Servicios Extraordinarios" />
+      <ng-container>
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="precioUnitarioUSD" class="form-label">Folio SVEX:</label>
+              <input class="form-control" type="text" formControlName="folioSVEX" name="folioSVEX" id="folioSVEX"  appUpercase/>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="precioUnitarioUSD" class="form-label">Folio VUCEM:</label>
+              <input class="form-control" type="text" formControlName="folioVUCEM" name="folioVUCEM" id="folioVUCEM"  appUppercase />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <app-catalogo-select [catalogo]="tipoSolicitud" formControlName="tipoDeCancelacion"
+                [label]="'Tipo de cancelacion'" [isDisabled]="esFormularioSoloLectura" [required]="true" [mostrarErrores]="false" name="tipoDeCancelacion"
+                (change)="tipoSolicitudSeleccion()"></app-catalogo-select>
+            </div>
+            <div *ngIf="formCancelorSolicitud.get('tipoDeCancelacion')?.invalid && formCancelorSolicitud.get('tipoDeCancelacion')?.touched" class="text-danger">
+              Este campo es obligatorio
+            </div>
+          </div>
+        </div>
+        @if(esSeleccionadaTipoParcial)
+        {
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="horaInicio" class="form-label">Hora inicio:</label>
+                <input class="form-control" type="text" formControlName="horaInicio" name="horaInicio" id="horaInicio" />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="horaFin" class="form-label">Hora final:</label>
+                <input class="form-control" type="text" formControlName="horaFin" name="horaFin" id="horaFin"  />
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label>Especifique los días que se cancelarán dentro del periodo*:</label>
+            <crosslist [fechas]="selectRangoDias" formControlName="selectedFechas" [fechasSeleccionadas]="fechasSeleccionadas"
+            [label]="fechasCancelaranLabel" 
+            (fechasSeleccionadasChange)="onFechasSeleccionadasChange($event)"></crosslist>
+          </div>
+        }
+        <div class="row mb-3">
+          <div class="col-md-8">
+            <div class="form-group">
+              <label for="descripcion" class="form-label">Motivo de cancelación*:</label>
+              <textarea class="form-control" rows="6" id="descripcion" formControlName="descripcion"
+                maxlength="450"
+                
+                (change)="onDescripcionChange()"></textarea>
+              <div *ngIf="formCancelorSolicitud.get('descripcion')?.invalid && formCancelorSolicitud.get('descripcion')?.touched" class="text-danger">
+                Este campo es obligatorio
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </form>
+</div>

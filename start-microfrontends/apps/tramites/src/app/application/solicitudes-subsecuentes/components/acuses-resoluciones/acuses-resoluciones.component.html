@@ -1,0 +1,143 @@
+<div class="container">
+  <div class="d-flex align-items-center mb-3">
+    <a href="javascript:void(0)" (click)="onRegresar()" class="text-primary text-decoration-none">Antecesor</a>
+    <span class="text-muted mx-2">|</span>
+    <span class="text-muted">Activo</span>
+  </div>
+  <ng-titulo titulo="Acuses y resoluciones"></ng-titulo>
+  <div class="mb-4" *ngIf="solicitanteData">
+    @if (solicitanteData.tipoPersona === 'extranjero') {
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="d-block fw-bold text-muted">Nombre</label>
+          <span>{{ solicitanteData.nombre }}</span>
+        </div>
+        <div class="col-md-4">
+          <label class="d-block fw-bold text-muted">Apellido paterno</label>
+          <span>{{ solicitanteData.apellidoPaterno }}</span>
+        </div>
+        <div class="col-md-4">
+          <label class="d-block fw-bold text-muted">Apellido materno</label>
+          <span>{{ solicitanteData.apellidoMaterno }}</span>
+        </div>
+        <div class="col-md-3">
+          <label class="d-block fw-bold text-muted">Calle</label>
+          <span>{{ solicitanteData.calle }}</span>
+        </div>
+        <div class="col-md-3">
+          <label class="d-block fw-bold text-muted">Número exterior</label>
+          <span>{{ solicitanteData.numeroExterior }}</span>
+        </div>
+        <div class="col-md-3">
+          <label class="d-block fw-bold text-muted">Número interior</label>
+          <span>{{ solicitanteData.numeroInterior }}</span>
+        </div>
+        <div class="col-md-3">
+          <label class="d-block fw-bold text-muted">Código postal</label>
+          <span>{{ solicitanteData.codigoPostal }}</span>
+        </div>
+        <div class="col-md-6">
+          <label class="d-block fw-bold text-muted">País</label>
+          <span>{{ solicitanteData.pais }}</span>
+        </div>
+        <div class="col-md-6">
+          <label class="d-block fw-bold text-muted">Estado</label>
+          <span>{{ solicitanteData.estado }}</span>
+        </div>
+      </div>
+    }
+    @else if (solicitanteData.tipoPersona === 'extranjero_moral') {
+      <div class="row g-3">
+        <div class="col-md-12">
+          <label class="d-block fw-bold text-muted">Denominación o razón social</label>
+          <span>{{ solicitanteData.denominacionRazonSocial }}</span>
+        </div>
+        <div class="col-md-3">
+          <label class="d-block fw-bold text-muted">Calle</label>
+          <span>{{ solicitanteData.calle }}</span>
+        </div>
+        <div class="col-md-3">
+          <label class="d-block fw-bold text-muted">Número exterior</label>
+          <span>{{ solicitanteData.numeroExterior }}</span>
+        </div>
+        <div class="col-md-3">
+          <label class="d-block fw-bold text-muted">Número interior</label>
+          <span>{{ solicitanteData.numeroInterior }}</span>
+        </div>
+        <div class="col-md-3">
+          <label class="d-block fw-bold text-muted">Código postal</label>
+          <span>{{ solicitanteData.codigoPostal }}</span>
+        </div>
+        <div class="col-md-6">
+          <label class="d-block fw-bold text-muted">País</label>
+          <span>{{ solicitanteData.pais }}</span>
+        </div>
+        <div class="col-md-6">
+          <label class="d-block fw-bold text-muted">Estado</label>
+          <span>{{ solicitanteData.estado }}</span>
+        </div>
+      </div>
+    }
+    @else {
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="d-block fw-bold text-muted">Solicitante:</label>
+          <span>{{ solicitanteData.nombre || solicitanteData.denominacionRazonSocial }}</span>
+        </div>
+        <div class="col-md-6">
+          <label class="d-block fw-bold text-muted">{{ solicitanteData.rfc ? 'RFC' : 'CURP' }}</label>
+          <span>{{ solicitanteData.rfc || solicitanteData.curp }}</span>
+        </div>
+      </div>
+    }
+  </div>
+  <form [formGroup]="form" (ngSubmit)="onBuscar()" class="mb-5 row g-4 align-items-end">
+    <div class="col-md-6">
+      <div class="d-flex align-items-center gap-3">
+        <label class="fw-bold text-muted mb-0">Folio del trámite:</label>
+        <input type="text" class="form-control" formControlName="folio">
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="d-flex align-items-center gap-2">
+        <label class="fw-bold text-muted mb-0">Fecha Inicial:</label>
+        <input type="text" class="form-control" formControlName="fechaInicial" placeholder="DD/MM/YYYY">
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="d-flex align-items-center gap-2">
+        <label class="fw-bold text-muted mb-0">Fecha Final:</label>
+        <input type="text" class="form-control" formControlName="fechaFinal" placeholder="DD/MM/YYYY">
+      </div>
+    </div>
+    <div class="col-12 text-end mt-4">
+      <button type="submit" class="btn btn-primary px-5 py-1 rounded-pill shadow-sm" [disabled]="loading">
+        <span *ngIf="!loading">Buscar</span>
+        <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      </button>
+    </div>
+  </form>
+  <div class="mt-2">
+    <app-expandir-tabla 
+      [title]="'Acuses y resoluciones'" 
+      [isExpanded]="true"
+    >
+      <div class="mt-2">
+        <app-tabla-dinamica
+          [configuracionTabla]="configuracionTabla"
+          [datos]="results"
+        ></app-tabla-dinamica>
+        <div class="mt-3 d-flex justify-content-between align-items-center" *ngIf="searched">
+          <app-table-pagination
+            [totalItems]="results.length"
+            [itemsPerPage]="10"
+            [currentPage]="1"
+          ></app-table-pagination>
+        </div>
+        <div *ngIf="searched && results.length === 0" class="alert alert-warning mt-3 py-2 border-0 bg-transparent text-danger fw-bold">
+          No se encontraron resultados con la información proporcionada.
+        </div>
+      </div>
+    </app-expandir-tabla>
+  </div>
+</div>

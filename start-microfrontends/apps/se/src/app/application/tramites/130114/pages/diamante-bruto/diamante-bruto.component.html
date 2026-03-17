@@ -1,0 +1,76 @@
+<div class="page">
+  <div class="container">
+    <div class="row">
+      <div class="row">
+        @if(indice === 1){
+        <div class="col-md-12">
+          <h2>Solicitud Importación Diamantes en Bruto</h2>
+        </div>
+        }
+        @if(indice === 2){
+        <div class="col-md-12">
+          <h1>Cargar archivos</h1>
+        </div>
+        }
+        @if(indice === 3){
+        <div class="col-md-12">
+          <h1>Firmar</h1>
+        </div>
+        }
+        <div class="col-12">
+          @if(esFormaValido){
+          <div class="col-md-12">
+            <ng-alert [CONTENIDO]="formErrorAlert" [CUSTOMECLASS]="'alert-danger'"></ng-alert>
+          </div>
+          }
+        </div>
+      </div>
+      <div class="row mt-5" *ngIf="indice === 3">
+        <div class="col-md-12">
+          <lib-notificaciones [notificacionInput]="alertaNotificacion"></lib-notificaciones>
+        </div>
+      </div>
+      <app-wizard [listaPasos]="pasosSolicitar"></app-wizard>
+    </div>
+
+    <div class="row">
+      @switch(indice){
+      @case(1){
+      <app-paso-uno></app-paso-uno>
+      }@case(2){
+      <app-paso-carga-documento [idSolicitud]="solicitudState.idSolicitud || 0" [idTipoTRamite]="'130114'"
+        [cargaArchivosEvento]="cargarArchivosEvento" (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+        (reenviarCargaRealizada)="cargaRealizada($event)"
+        (cargaEnProgreso)="onCargaEnProgreso($event)"></app-paso-carga-documento>
+      }@case(3){
+      <paso-firma [idSolicitud]="solicitudState.idSolicitud || 0" [procedure]="130114"
+        [procedureUrl]="'diamante-bruto/diamante'"></paso-firma>
+      }
+      }
+      <div class="row">
+        <div class="col-md-12">
+          @if (indice !== 2) {
+          <btn-continuar [datos]="datosPasos" (continuarEvento)="getValorIndice($event)"></btn-continuar>
+          } @else {
+          <div class="mt-5 mb-3 d-flex justify-content-end">
+            <button type="button" class="btn btn-default" (click)="anterior()" *ngIf="seccionCargarDocumentos">
+              Anterior
+            </button>
+
+            <button class="btn btn-primary ms-3" (click)="
+              seccionCargarDocumentos ? onClickCargaArchivos() : siguiente()
+            "
+              [disabled]="(seccionCargarDocumentos && !activarBotonCargaArchivos) || (!seccionCargarDocumentos && cargaEnProgreso)">
+              {{ seccionCargarDocumentos ? 'Cargar archivos' : 'Continuar' }}
+            </button>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <ng-alert [CONTENIDO]="TEXTOS.AVISO.Aviso"></ng-alert>
+      </div>
+    </div>
+  </div>

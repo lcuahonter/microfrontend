@@ -1,0 +1,29 @@
+<div class="page">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h1>Registro de solicitud de Reporte Anual</h1>
+      </div>      
+      <div class="col-12">
+        <div *ngIf="esFormaValido" class="alert alert-danger" [innerHTML]="formErrorAlert"></div>
+        <div *ngIf="esFormaValidoDos" class="alert alert-danger" [innerHTML]="formErrorAlertDos"></div>
+        <div *ngIf="esFormaValidoTres" class="alert alert-danger" [innerHTML]="formErrorAlertTres"></div>
+        <div *ngIf="esFormaValidoCuatro" class="alert alert-danger" [innerHTML]="formErrorAlertQuad"></div>
+      </div>
+      <app-wizard [listaPasos]="pantallasPasos"></app-wizard>
+    </div>    
+    <div class="row">
+      @switch (indice) {
+      @case (1) {
+      <app-paso-uno #pasoUnoRef [solicitudState]="solicitudState" (cambioDePestana)="alCambiarPestana()"></app-paso-uno>
+      }
+      @case (2) {
+        <paso-firma [idSolicitud]="solicitudState.idSolicitud" [procedure]="150103" [procedureUrl]="'informe-anual-programa/solicitud-de-reporte'"></paso-firma>
+      }
+      }
+    
+      <btn-continuar [datos]="datosPasos" [dePadre]="true" (continuarEvento)="getValorIndice($event)"></btn-continuar>
+      
+    </div>
+  </div>
+</div>

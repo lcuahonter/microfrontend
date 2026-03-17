@@ -1,0 +1,133 @@
+<div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-between">
+        <h5 class="modal-title" id="exampleModalLabel">Datos de la mercancía</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cerrarModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" >
+        <form [formGroup]="mercanciaForm">
+          <div class="row">
+            <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="fraccionArancelaria">Fracción arancelaria:</label>
+            <input type="text" class="form-control" formControlName="fraccionArancelaria">
+          </div>
+          </div>
+          <div class="col-md-8">
+          <div class="form-group">
+            <label for="nombreComercial">Nombre comercial de la mercancía (igual que en la factura)*:</label>
+            <input type="text" class="form-control" formControlName="nombreComercial">
+            <div *ngIf="mercanciaForm.get('nombreComercial')?.touched && mercanciaForm.get('nombreComercial')?.invalid">
+              <small *ngIf="mercanciaForm.get('nombreComercial')?.errors?.['required']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+            </div>
+          </div>
+          </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8">
+          <div class="form-group">
+            <label for="nombreTecnico">Nombre técnico:</label>
+            <input type="text" class="form-control" formControlName="nombreTecnico">
+          </div>
+          </div>
+          <div class="col-md-4">
+          <div class="form-group">
+            <label for="criterioTratoPreferencial">Criterio para trato preferencial:</label>
+            <input type="text" class="form-control" formControlName="criterioTratoPreferencial">
+          </div>
+          </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+          <div class="form-group">
+            <label for="valorContenidoRegional">Valor de contenido regional:</label>
+            <input type="text" class="form-control" formControlName="valorContenidoRegional">
+          </div>
+          </div>
+          <div class="col-md-4">
+          <div class="form-group">
+            <label for="otrasInstancias">Otras instancias:</label>
+            <input type="text" class="form-control" formControlName="otrasInstancias">
+          </div>
+          </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+          <div class="form-group">
+            <label for="cantidad">Cantidad*:</label>
+            <input type="text" class="form-control" formControlName="cantidad">
+             <div *ngIf="mercanciaForm.get('cantidad')?.touched && mercanciaForm.get('cantidad')?.invalid">
+                <small *ngIf="mercanciaForm.get('cantidad')?.errors?.['required']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+                <small *ngIf="mercanciaForm.get('cantidad')?.errors?.['pattern']" class="text-danger espaciador-campo-pequeño">Formato inválido. Use números con hasta 3 decimales (ej: 123.456)</small>
+              </div>
+          </div>
+          </div>
+          <div class="col-md-4">
+              <app-catalogo-select [catalogo]="(umcs$ | async) || []" [label]="'UMC'"
+              [required]="true" name="estado" formControlName="umc" [tooltipQuestionCircle]="true"
+              [tooltipQuestionCircleText]="'Unidad de medida de comercialización'"
+              (selectionChange)="tipoUmcSeleccion($event)"></app-catalogo-select>
+              <div *ngIf="mercanciaForm.get('umc')?.touched && mercanciaForm.get('umc')?.invalid">
+                <small *ngIf="mercanciaForm.get('umc')?.errors?.['required']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+              </div>
+          </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8">
+              <label for="complementoDescripcion">Complemento de la descripción*:</label>
+              <textarea type="text" class="mb-4 h-20 w-100 form-control" formControlName="complementoDescripcion" rows="5" ></textarea>
+              <div *ngIf="mercanciaForm.get('complementoDescripcion')?.touched && mercanciaForm.get('complementoDescripcion')?.invalid">
+                <small *ngIf="mercanciaForm.get('complementoDescripcion')?.errors?.['required']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label for="valorMercancia">Valor de la mercancía (dólares)*:</label>
+              <input type="text" class="form-control" formControlName="valorMercancia"  />
+              <div *ngIf="mercanciaForm.get('valorMercancia')?.touched && mercanciaForm.get('valorMercancia')?.invalid">
+                <small *ngIf="mercanciaForm.get('valorMercancia')?.errors?.['required']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+                <small *ngIf="mercanciaForm.get('valorMercancia')?.errors?.['pattern']" class="text-danger espaciador-campo-pequeño">Formato inválido. Use números con hasta 2 decimales (ej: 1234.56)</small>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <input-fecha [datos]="fechaFinal" [setFecha]="mercanciaForm.get('fechaFactura')?.value" (valorCambiado)="cambioFechaFinal($event)"></input-fecha>
+              <div *ngIf="mercanciaForm.get('fechaFactura')?.touched && mercanciaForm.get('fechaFactura')?.invalid">
+                <small *ngIf="mercanciaForm.get('fechaFactura')?.errors?.['required']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+              </div>
+            </div>
+
+            <div class="col-md-4 mt-3">
+              <label for="numeroFactura" class="mb-3">N° factura*:</label>
+              <input type="text" class="form-control" formControlName="numeroFactura">
+              <div *ngIf="mercanciaForm.get('numeroFactura')?.touched && mercanciaForm.get('numeroFactura')?.invalid">
+                <small *ngIf="mercanciaForm.get('numeroFactura')?.errors?.['required']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+              </div>
+            </div>
+              <div class="col-md-4">
+              <app-catalogo-select [catalogo]="(facturas$ | async) || []" [label]="''"
+              [required]="true" name="selectValour" formControlName="selectValour" 
+              [placeholder]="'Selecciona un valor'"
+              (selectionChange)="tipoUmcSeleccion($event)" [markTouched]="mercanciaForm.get('selectValour')?.touched && mercanciaForm.get('selectValour')?.invalid && mercanciaForm.get('selectValour')?.errors?.['required']">
+            </app-catalogo-select>
+
+          </div>
+            
+          </div>
+            <div class="row">
+            <div class="col-md-12 mt-4 d-flex justify-content-end mb-4">
+            <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cerrarModal()">Cancelar</button>
+            <button type="button" class="btn btn-primary" (click)="activarModal()">Agregar</button>
+            </div>
+          </div>
+        </form>
+      </div>
+     
+    </div>
+</div>
+<div>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion" (confirmacionModal)="aceptar()" ></lib-notificaciones>
+</div>
+      

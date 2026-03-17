@@ -1,0 +1,235 @@
+<div class="container">
+  <ng-titulo titulo="Anexo I" />
+  <ng-alert [CONTENIDO]="anexoUnoAlerta"></ng-alert>
+
+  <form [formGroup]="anexoUnoFormGroup">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="fraccionArancelaria"
+            >Fracción arancelaria del producto:</label
+          >
+          <input
+            class="form-control min-hgt"
+            id="fraccionArancelaria"
+            formControlName="fraccionArancelaria"
+            type="text"
+            maxlength="10"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label for="descripcion" class="form-label text-start"
+            >Descripción:</label
+          >
+          <textarea
+            id="descripcion"
+            class="form-control uppercase txt-area-custom"
+            formControlName="descripcion"
+            maxlength="1000"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 container text-end mt-5">
+        <button class="btn btn-danger me-2" (click)="abrirUnoModal()"
+        [disabled]="formularioDeshabilitado">
+          Eliminar
+        </button>
+        <button class="btn btn-primary me-2" (click)="agregarAnexoUno()"
+        [disabled]="formularioDeshabilitado">
+          Agregar
+        </button>
+        <button
+          class="btn btn-primary"
+          (click)="abrirCargaPorArchivo()"
+        [disabled]="formularioDeshabilitado">
+          Carga por archivo
+        </button>
+      </div>
+    </div>
+
+    <div class="row mt-5">
+      <app-tabla-dinamica
+        [tipoSeleccionTabla]="anexoConfiguartion.anexoUnoTablaSeleccionRadio"
+        [configuracionTabla]="anexoConfiguartion.anexoUnoEncabezadoDeTabla"
+        [datos]="anexoUnoTablaLista"
+        (filaSeleccionada)="setAnexoUnoLista($event)"
+        [disableSeleccionTablaRadio]="formularioDeshabilitado"
+        [showPagination]="true" [mode]="'client'"
+        [totalItems]="anexoUnoTablaLista.length"
+      ></app-tabla-dinamica>
+    </div>
+  </form>
+  <div class="row">
+    <div class="col-12 container text-end mt-5">
+      <button
+        class="btn btn-danger me-2"
+        (click)="setRuta('complementar-fraccion', 'IMPORT')"
+        [disabled]="formularioDeshabilitado"
+      >
+        Complementar Fracción
+      </button>
+
+      <button
+        class="btn btn-danger me-2"
+        (click)="setRuta('contenedor-proveedor-cliente', 'IMPORT')"
+      [disabled]="formularioDeshabilitado">
+        Proveedor Cliente
+      </button>
+      <button
+        class="btn btn-danger me-2"
+         (click)="onProyectoImmexClick()"
+      [disabled]="formularioDeshabilitado">
+        Proyecto IMMEX
+      </button>
+
+      <button
+        class="btn btn-primary"
+        (click)="abrirCargaProveedoresClientesPopup()"
+      [disabled]="formularioDeshabilitado">
+        Proveedor Cliente por Archivo
+      </button>
+    </div>
+  </div>
+
+  <form class="row mt-5" [formGroup]="anexoDosFormGroup">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="fraccionArancelaria"
+            >Fracción arancelaria de la mercancía:</label
+          >
+          <input
+            class="form-control min-hgt"
+            id="fraccionArancelaria"
+            formControlName="fraccionArancelaria"
+            type="text"
+            maxlength="10"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label for="descripcion" class="form-label text-start"
+            >Descripción:</label
+          >
+          <textarea
+            id="descripcion"
+            class="form-control uppercase txt-area-custom"
+            formControlName="descripcion"
+            maxlength="1000"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 container text-end mt-5">
+        <button class="btn btn-danger me-2" (click)="abrirDosModal()"
+        [disabled]="formularioDeshabilitado">
+          Eliminar
+        </button>
+        <button class="btn btn-primary me-2" (click)="agregarAnexoDos()"
+        [disabled]="formularioDeshabilitado">
+          Agregar
+        </button>
+      </div>
+    </div>
+
+    <div class="row mt-5">
+      <app-tabla-dinamica
+        [tipoSeleccionTabla]="anexoDosConfiguartion.anexoDosTablaSeleccionRadio"
+        [configuracionTabla]="anexoDosConfiguartion.anexoDosEncabezadoDeTabla"
+        [datos]="anexoDosTablaLista"
+        (filaSeleccionada)="setAnexoDosLista($event)"
+        [disableSeleccionTablaRadio]="formularioDeshabilitado"
+      ></app-tabla-dinamica>
+    </div>
+  </form>
+  <div class="row">
+    <div class="col-12 container text-end mt-5">
+      <button
+        class="btn btn-danger me-2"
+        (click)="setRuta('complementar-fraccion', 'EXPORT')"
+        [disabled]="formularioDeshabilitado"
+      >
+        Complementar Fracción
+      </button>
+      <button
+        class="btn btn-danger me-2"
+        (click)="setRuta('contenedor-proveedor-cliente', 'EXPORT')"
+      [disabled]="formularioDeshabilitado">
+        Proveedor Cliente
+      </button>
+    </div>
+  </div>
+</div>
+
+@if (nuevaDosNotificacion && nuevaDosNotificacion.cerrar) {
+<section>
+    <lib-notificaciones [notificacionInput]="nuevaDosNotificacion" (confirmacionModal)="eliminarAnexoDos()">
+    </lib-notificaciones>
+</section>
+}
+@if (nuevaUnoNotificacion && nuevaUnoNotificacion.cerrar) {
+<section>
+    <lib-notificaciones [notificacionInput]="nuevaUnoNotificacion" (confirmacionModal)="eliminarAnexoUno()">
+    </lib-notificaciones>
+</section>
+}
+
+@if (notificacionSinPermiso) {
+<section>
+    <lib-notificaciones [notificacionInput]="notificacionSinPermiso">
+    </lib-notificaciones>
+</section>
+}
+
+<div *ngIf="mostrarCargaPorArchivoModal" class="modal-backdrop">
+  <div class="modal-dialog">
+    <div class="modal-content p-0">
+      <div class="modal-header-custom">
+      </div>
+      <div class="p-4">
+        <div>
+          Al cargar el archivo perdera la información que haya capturado de las fracciones de importación/exportación
+        </div>
+        <div class="text-end mt-4">
+          <button class="btn btn-default" (click)="onCancelarCargaPorArchivo()">Cancelar</button>
+          <button class="btn btn-primary me-2" (click)="onAceptarCargaPorArchivo()">Aceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-container *ngIf="mostrarCargaDeFraccionesPopup">
+  <div class="tab-modal-overlay">
+    <div class="tab-modal-content">
+      <app-carga-de-fracciones (cerrarPopup)="cerrarCargaDeFracciones()"></app-carga-de-fracciones>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="mostrarProveedorClientesPopup">
+  <div class="tab-modal-overlay">
+    <div class="tab-modal-content">
+      <app-carga-proveedores-clientes (cerrarPopup)="cerrarProveedorClientesPopup()"></app-carga-proveedores-clientes>
+    </div>
+  </div>
+</ng-container>
+@if (notificacionAgregarServicios) {
+<section>
+  <lib-notificaciones 
+    [notificacionInput]="notificacionAgregarServicios">
+  </lib-notificaciones>
+</section>
+}

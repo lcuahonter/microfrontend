@@ -1,0 +1,53 @@
+<div class="container">
+    <ng-titulo titulo="Transporte" />   
+    <form [formGroup]="transporteForm" (ngSubmit)="validarTransporteFormulario()">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">                
+                <app-catalogo-select [catalogo]="tiposTransporte" formControlName="tipoDeTransporte" [isDisabled]="esFormularioSoloLectura"
+                [label]="'Medio de transporte'" [required]="true" name="tipoDeTransporte"></app-catalogo-select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="identificationDelTransporte">Identificación del transporte:</label>
+                <input class="form-control" id="identificationDelTransporte" formControlName="identificationDelTransporte"
+                  placeholder="" type="text" (change)="setValoresStore(transporteForm,'identificationDelTransporte', 'setidentificationDelTransporte')">
+              </div>
+              @if (
+                transporteForm.controls['identificationDelTransporte'].invalid &&
+                transporteForm.controls['identificationDelTransporte'].touched
+                ) {
+                <div class="text-danger small">
+                  @if (transporteForm.controls['identificationDelTransporte'].errors?.['maxlength']) {
+                  <div>Por favor, no escribas más de 50 caracteres</div>
+                  }
+                </div>
+                }
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="numerodeContenedor">Número de Contenedor:</label>
+                  <input class="form-control" id="numerodeContenedor" placeholder="" maxlength="20" type="text"
+                    formControlName="numerodeContenedor" [ngClass]="isValid(transporteForm, 'numerodeContenedor') ? 'required' : ''"  (change)="setValoresStore(transporteForm,'numerodeContenedor','setnumerodeContenedor')">
+                </div>
+              </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="fechdeEmbarque">Fecha de Embarque:</label>
+                <input class="form-control" id="fechdeEmbarque" placeholder=""  type="date"
+                  formControlName="fechdeEmbarque" [ngClass]="isValid(transporteForm, 'fechdeEmbarque') ? 'required' : ''"  (change)="setValoresStore(transporteForm,'fechdeEmbarque','setfetchdeEmbarque')">
+              </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="numerodeFlejes">Número de Flejes:</label>
+                  <input class="form-control" id="numerodeFlejes" maxlength="100" placeholder="" type="text"
+                    formControlName="numerodeFlejes" [ngClass]="isValid(transporteForm, 'numerodeFlejes') ? 'required' : ''" (change)="setValoresStore(transporteForm,'numerodeFlejes','setnumerodeFlejes')">
+                </div>
+              </div>
+          </div> 
+      </form>
+  </div>

@@ -1,0 +1,287 @@
+<div class="container">
+  <form [formGroup]="FormSolicitud">
+
+    <ng-titulo titulo="Datos del trámite a realizar" />
+    <ng-container>
+      <div class="row">
+        <div class="col-md-12">
+          <app-solicitud-datos (filaSeleccionada)="enFilaSeleccionada($event)"  [tablaFilaDatos]="dSolicitud"
+          
+        ></app-solicitud-datos>
+        </div>
+      </div>
+    </ng-container>
+    <ng-titulo titulo="Tipo de r&eacute;gimen" />
+    <ng-container formGroupName="tipoRegimen">
+      <div class="row">
+        <div class="col-md-12">
+          <label class="form-label" for="claveDeReferencia">Número del registro ambiental*:</label>
+          <div class="form-check">
+            <input class="form-check-input me-2" type="radio" name="regimen" formControlName="regimen"
+              value="definitivos" id="definitivos"
+              (change)="cambiarTipoRegimen();setValoresStore(tipoRegimen,'regimen', 'setRegimen')" 
+              [disabled]="esFormularioSoloLectura"/>
+            <label class="form-check-label" for="definitivos">Definitivos</label>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-check">
+            <input class="form-check-input me-2" type="radio" name="regimen" formControlName="regimen"
+              value="temporales" id="temporales" (change)="cambiarTipoRegimen();setValoresStore(tipoRegimen,'regimen', 'setRegimen')" 
+              [disabled]="esFormularioSoloLectura"/>
+            <label class="form-check-label" for="temporales">Temporales</label>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-titulo titulo="Aduana" />
+    <ng-container formGroupName="aduanasSalida">
+      <div class="row">
+        <div class="col-md-12">
+          <label class="form-label">Aduanas de entradas (M&aacute;ximo 3 aduanas)</label>
+          <crosslist   
+          [fechasSeleccionadas]="seleccionarsRangoDiasAduanas"
+            [fechas]="seleccionarOrigenDelPais" 
+            [label]="aduanaLabel" 
+            [botones]="paisDeProcedenciaBotons"
+            [isDisabled]="esFormularioSoloLectura ? true : false"
+            ></crosslist>
+
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-md-4">
+          <app-catalogo-select [catalogo]="options" formControlName="tipoProducto" [label]="'Tipo de producto'"
+            [required]="true"
+            (change)="setValoresStore(aduanasSalida,'tipoProducto', 'setTipoProducto');"
+            [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+        </div>
+      </div>
+
+      <div class="row mt-5">
+        <div class="col-md-12">
+          <label class="form-label">Pa&iacute;s origen</label>
+          <crosslist  
+          [fechasSeleccionadas]="seleccionarsRangoDiasPaisOrigen"
+          [fechas]="seleccionarOrigenDelPaisDos" 
+          [label]="paisLabel"
+         [botones]="paisDeProcedenciaBotonsDos"
+         [isDisabled]="esFormularioSoloLectura ? true : false"></crosslist>
+
+        </div>
+      </div>
+
+      <div class="row mt-5">
+        <div class="col-md-4">
+          <app-catalogo-select [catalogo]="options" formControlName="paisProcedencia"
+            [label]="'Pa&iacute;s de procedencia'" [required]="true"
+            (change)="setValoresStore(aduanasSalida,'paisProcedencia', 'setPaisProcedencia');"
+            [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+        </div>
+      </div>
+
+      <div class="row mt-5">
+        <div class="col-md-12">
+          <label class="form-label">Destino dentro del país (Entidad federativa)</label>
+          <crosslist 
+          [fechasSeleccionadas]="seleccionarsRangoDiasDestino" 
+           [fechas]="seleccionarOrigenDelPaisTres" 
+           [label]="destinoLabel" 
+           [botones]="paisDeProcedenciaBotonsTres"
+           [isDisabled]="esFormularioSoloLectura ? true : false"></crosslist>
+
+        </div>
+      </div>
+
+      <div class="row mt-5">
+        <div class="col-md-12" *ngFor="let option of disponsibleAduanaCheckboxes; let i = index">
+          @if(!option.hide) {
+          <label>
+            <input type="checkbox" [checked]="selectedOptions.value[i]" (change)="cambiar($event, i)"
+              [disabled]="option.disabled" 
+              [disabled]="esFormularioSoloLectura"
+              />
+            {{ option.name }}
+          </label>
+          }
+        </div>
+      </div>
+
+      <div class="row mt-5">
+        <div class="col-md-4">
+          <app-catalogo-select [catalogo]="options" formControlName="clasificacionMercancia"
+            [label]="'Clasificaci&oacute;n mercanc&iacute;as'" [required]="true"
+            (change)="setValoresStore(aduanasSalida,'clasificacionMercancia', 'setClasificacionMercancia');"
+            [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+        </div>
+      </div>
+
+    </ng-container>
+
+    <ng-titulo titulo="Mercancía" />
+    <ng-container formGroupName="mercancia">
+      <div class="row">
+        <div class="col-md-4">
+          <app-catalogo-select [catalogo]="options" formControlName="fraccionArancelaria"
+            [label]="'Fracción arancelaria'" [required]="true"
+            (change)="setValoresStore(mercancia,'fraccionArancelaria', 'setFraccionArancelaria')"
+            [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+        </div>
+        <div class="col-md-5">
+          <div class="form-group">
+            <label class="form-label" for="descFraccionArancelaria">Descripción de la fracción arancelaria*:</label>
+            <input class="form-control" id="descFraccionArancelaria" placeholder="Decripción Fraccion Arancelaria"
+              type="text" formControlName="descFraccionArancelaria"
+              [ngClass]="isValid(mercancia,'descFraccionArancelaria') ? 'required' : ''"
+              (change)="setValoresStore(mercancia,'descFraccionArancelaria', 'setDescFraccionArancelaria')" 
+              [disabled]="esFormularioSoloLectura"/>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="form-group">
+            <label class="form-label" for="cantidad">Cantidad*:</label>
+            <input class="form-control" id="cantidad" placeholder="Cantidad" type="text" formControlName="cantidad"
+              [ngClass]="isValid(mercancia,'cantidad') ? 'required' : ''"
+              (change)="setValoresStore(mercancia,'cantidad', 'setCantidad')" 
+              [disabled]="esFormularioSoloLectura"/>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row mt-5">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="cantidadLetra">Cantidad(letra):</label>
+            <input class="form-control" id="cantidadLetra" placeholder="Cantidad Letra" type="text"
+              formControlName="cantidadLetra" [ngClass]="isValid(mercancia,'cantidadLetra') ? 'required' : ''"
+              (change)="setValoresStore(mercancia,'cantidadLetra', 'setCantidadLetra')" 
+              [disabled]="esFormularioSoloLectura"/>
+          </div>
+        </div>
+      </div>
+
+    </ng-container>
+
+    <ng-titulo titulo="Detalle" />
+    <ng-container formGroupName="detalle">
+      <div class="row">
+        <div class="col-md-4">
+          <app-catalogo-select [catalogo]="options" formControlName="genero" [label]="'Género'" [required]="true"
+            (change)="setValoresStore(detalle,'genero', 'setGenero')"
+            [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+        </div>
+        <div class="col-md-4">
+          <app-catalogo-select [catalogo]="options" formControlName="especie" [label]="'Especie'" [required]="true"
+            (change)="setValoresStore(detalle,'especie', 'setEspecie')"
+            [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+        </div>
+        <div class="col-md-4">
+          <app-catalogo-select [catalogo]="options" formControlName="nombreComun" [label]="'Nombre com&uacute;n'"
+            [required]="true" (change)="setValoresStore(detalle,'nombreComun', 'setNombreComun')"
+            [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-md-12 d-flex justify-content-end align-items-end">
+          <div class="btn-group">
+            <button class="btn btn-danger ms-3" type="button" name="aceptar" id="agregarAduana"
+            [disabled]="esFormularioSoloLectura">
+              Eliminar detalle
+            </button>
+            <button type="button" class="btn btn-primary ms-3" data-bs-toggle="modal"
+            [disabled]="esFormularioSoloLectura">
+              Agregar detalle
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-md-12">
+          <label class="form-label mb-5" for="">Detalle</label>
+          <ng-table [commonTableHeader]="detalleDatos.tableHeader"
+            [commonTableBody]="detalleDatos.tableBody"
+            [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+          ></ng-table>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-md-12 d-flex justify-content-end align-items-end">
+          <div class="btn-group">
+            <button type="button" class="btn btn-default btn-space" data-bs-toggle="modal"
+              data-bs-target="#modalAgregarMercancias"
+              [disabled]="esFormularioSoloLectura">
+              Cancelar
+            </button>
+            <button class="btn btn-default ms-3" type="button" name="aceptar" id="agregarAduana"
+            [disabled]="esFormularioSoloLectura">
+              Limpiar
+            </button>
+            <button type="button" class="btn btn-primary ms-3" data-bs-toggle="modal"
+            [disabled]="esFormularioSoloLectura">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-md-12">
+          <label class="form-label mb-5" for="">Mercancías</label>
+          <ng-table [commonTableHeader]="mercanicias.tableHeader" [commonTableBody]="mercanicias.tableBody"
+          [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"></ng-table>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-md-12 d-flex justify-content-end align-items-end">
+          <div class="btn-group">
+            <button type="button" class="btn btn-default btn-space" data-bs-toggle="modal"
+              data-bs-target="#modalAgregarMercancias"
+              [disabled]="esFormularioSoloLectura">
+              Modificar
+            </button>
+            <button class="btn btn-danger ms-3" type="button" name="aceptar" id="agregarAduana"
+            [disabled]="esFormularioSoloLectura">
+              Eliminar
+            </button>
+            <button type="button" class="btn btn-primary ms-3" data-bs-toggle="modal"
+            [disabled]="esFormularioSoloLectura">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-8">
+          <app-catalogo-select [catalogo]="options" formControlName="descripcionProducto"
+            [label]="'Descripción del producto'" [required]="true"
+            (change)="setValoresStore(detalle,'descripcionProducto', 'setDescripcionProducto')"
+            [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+        </div>
+        <div class="col-md-4">
+          <app-catalogo-select [catalogo]="options" formControlName="cantidadUMC" [label]="'Unidad de medida'"
+            [required]="true" (change)="setValoresStore(detalle,'cantidadUMC', 'setCantidadUMC')"
+            [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+        </div>
+      </div>
+    </ng-container>
+    <ng-titulo titulo="Manifiestos y declaraciones" />
+    <ng-container formGroupName="manifiestosForm">
+      <div class="row">
+        <div class="col-md-12">
+          <span class="checkbox-align">
+            <input class="form-check-input me-3" type="checkbox" value="" id="manifiestosYdesc"
+              formControlName="manifiestosYdesc"
+              (change)="setValoresStore(manifiestosForm,'manifiestosYdesc', 'setManifiestosYdesc')"
+              [disabled]="esFormularioSoloLectura">
+          </span>
+          <ng-alert [CONTENIDO]="'Protesto decir verdad*'"></ng-alert>
+        </div>
+      </div>
+    </ng-container>
+  </form>
+</div>

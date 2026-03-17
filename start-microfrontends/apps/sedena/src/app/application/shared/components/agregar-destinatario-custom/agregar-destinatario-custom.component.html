@@ -1,0 +1,292 @@
+<div class="container mt-4">
+
+  <ng-titulo *ngIf="!isDestinatarioModificar" titulo="Agregar destinatraio (destino final)"></ng-titulo>
+
+  <ng-titulo *ngIf="isDestinatarioModificar" titulo="Modificar destinatario (destino final)"></ng-titulo>
+
+  <form [formGroup]="agregarDestinatarioFinal">
+    <!-- Datos Generales -->
+    <h4>Datos generales</h4>
+    <div class="row">
+      <div class="col-md-6 offset-md-6">
+        <label class="form-label">Tipo persona*:</label>
+        <app-input-radio [showTooltip]="true" [radioOptions]="tipoPersonaRadioOpciones" [isRequired]="true" [layout]="'vertical'"
+          formControlName="tipoPersona" (valueChange)="tipoPersonaCambioDeValor($event)"></app-input-radio>
+      </div>
+    </div>
+
+    @if(agregarDestinatarioFinal.get('tipoPersona')?.value === tipoPersona.MORAL ||
+    agregarDestinatarioFinal.get('tipoPersona')?.untouched) {
+    <div class="row">
+      <div class="form-group">
+        <label class="form-label row mt-3 mover-izquierda fs-2" for="denominacionRazon">Denominación/razón
+          social*:</label>
+        <input class="form-control col-md-4" id="denominacionRazon" type="text" formControlName="denominacionRazon"
+          maxlength="254" />
+        <div class="error-message col-md-12">
+          <small
+            *ngIf="agregarDestinatarioFinal.get('denominacionRazon')?.touched && agregarDestinatarioFinal.get('denominacionRazon')?.hasError('required')"
+            class="text-danger">
+            Este campo es obligatorio.
+          </small>
+          <small
+            *ngIf="agregarDestinatarioFinal.get('denominacionRazon')?.touched && agregarDestinatarioFinal.get('denominacionRazon')?.hasError('maxlength')"
+            class="text-danger">
+            Máximo 254 caracteres permitidos.
+          </small>
+        </div>
+      </div>
+    </div>
+    }
+
+    <!-- Datos Personales -->
+    @if(agregarDestinatarioFinal.get('tipoPersona')?.value === tipoPersona.FISICA ||
+    agregarDestinatarioFinal.get('tipoPersona')?.untouched) {
+    <h4 class="mt-4">Datos personales</h4>
+    <div class="row">
+      <div class="col-md-4">
+        <label class="form-label">Nombre(s)*:</label>
+        <input type="text" class="form-control" formControlName="nombres" maxlength="165" />
+        <div class="error-message">
+          <small
+            *ngIf="agregarDestinatarioFinal.get('nombres')?.touched && agregarDestinatarioFinal.get('nombres')?.hasError('required')"
+            class="text-danger">
+            Este campo es obligatorio.
+          </small>
+          <small
+            *ngIf="agregarDestinatarioFinal.get('nombres')?.touched && agregarDestinatarioFinal.get('nombres')?.hasError('maxlength')"
+            class="text-danger">
+            Máximo 200 caracteres permitidos.
+          </small>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Primer apellido*:</label>
+        <input type="text" class="form-control" formControlName="primerApellido" maxlength="200" />
+        <div class="error-message">
+          <small
+            *ngIf="agregarDestinatarioFinal.get('primerApellido')?.touched && agregarDestinatarioFinal.get('primerApellido')?.hasError('required')"
+            class="text-danger">
+            Este campo es obligatorio.
+          </small>
+          <small
+            *ngIf="agregarDestinatarioFinal.get('primerApellido')?.touched && agregarDestinatarioFinal.get('primerApellido')?.hasError('maxlength')"
+            class="text-danger">
+            Máximo 200 caracteres permitidos.
+          </small>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Segundo apellido:</label>
+        <input type="text" class="form-control" formControlName="segundoApellido" maxlength="200" />
+        <div class="error-message">
+          <small
+            *ngIf="agregarDestinatarioFinal.get('segundoApellido')?.touched && agregarDestinatarioFinal.get('segundoApellido')?.hasError('maxlength')"
+            class="text-danger">
+            Máximo 200 caracteres permitidos.
+          </small>
+        </div>
+      </div>
+    </div>
+    }
+    <!-- Domicilio -->
+    <div class="row">
+      <h4 class="mt-4">Domicilio</h4>
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="paisesDatos" formControlName="pais" [label]="'País'" [required]="true"
+          [isDisabled]="agregarDestinatarioFinal.get('pais')?.disabled || esFormularioSoloLectura? true : false"
+          (selectionChange)="agregarDestinatarioFinal.get('pais')?.setValue($event.id)"></app-catalogo-select>
+        <div class="error-message">
+          <small
+            *ngIf="agregarDestinatarioFinal.get('pais')?.touched && agregarDestinatarioFinal.get('pais')?.hasError('required')"
+            class="text-danger">
+            Este campo es obligatorio.
+          </small>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Estado*:</label>
+        <input type="text" class="form-control" formControlName="estado" maxlength="120" />
+        <div class="error-message">
+          <small
+            *ngIf="agregarDestinatarioFinal.get('estado')?.touched && agregarDestinatarioFinal.get('estado')?.hasError('required')"
+            class="text-danger">
+            Este campo es obligatorio.
+          </small>
+          <small
+            *ngIf="agregarDestinatarioFinal.get('estado')?.touched && agregarDestinatarioFinal.get('estado')?.hasError('maxlength')"
+            class="text-danger">
+            Máximo 120 caracteres permitidos.
+          </small>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Código postal o equivalente*:</label>
+        <input type="text" class="form-control" formControlName="codigoPostal" maxlength="12" />
+        <div class="error-message">
+          <small
+            *ngIf="agregarDestinatarioFinal.get('codigoPostal')?.touched && agregarDestinatarioFinal.get('codigoPostal')?.hasError('required')"
+            class="text-danger">
+            Este campo es obligatorio.
+          </small>
+          <small
+            *ngIf="agregarDestinatarioFinal.get('codigoPostal')?.touched && agregarDestinatarioFinal.get('codigoPostal')?.hasError('maxlength')"
+            class="text-danger">
+            Máximo 12 caracteres permitidos.
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      @if(!colonia_visibilidad) {
+      <div class="col-md-4">
+        <label class="form-label">Colonia o equivalente*:</label>
+        <input type="text" class="form-control" formControlName="colonia" maxlength="100" />
+        <div class="error-message">
+           <small
+                *ngIf="agregarDestinatarioFinal.get('colonia')?.touched && agregarDestinatarioFinal.get('colonia')?.hasError('required')"
+                class="text-danger">
+                Este campo es obligatorio.
+              </small>
+          <small
+            *ngIf="agregarDestinatarioFinal.get('colonia')?.touched && agregarDestinatarioFinal.get('colonia')?.hasError('maxlength')"
+            class="text-danger">
+            Máximo 300 caracteres permitidos.
+          </small>
+        </div>
+      </div>
+      }
+
+      <div [ngClass]="(!colonia_visibilidad) ? 'col-md-4' : 'col-md-8'">
+        <label class="form-label">Calle*:
+          <span class="bi bi-question-circle-fill" title="Calle" data-bs-toggle="tooltip"></span>
+        </label>
+        <input type="text" class="form-control" formControlName="calle" maxlength="300" />
+        <div class="error-message">
+          <small
+            *ngIf="agregarDestinatarioFinal.get('calle')?.touched && agregarDestinatarioFinal.get('calle')?.hasError('required')"
+            class="text-danger">
+            Este campo es obligatorio.
+          </small>
+          <small
+            *ngIf="agregarDestinatarioFinal.get('calle')?.touched && agregarDestinatarioFinal.get('calle')?.hasError('maxlength')"
+            class="text-danger">
+            Máximo 300 caracteres permitidos.
+          </small>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label">Número exterior*:</label>
+        <input type="text" class="form-control" formControlName="numeroExterior" maxlength="55" />
+        <div class="error-message">
+          <small
+            *ngIf="agregarDestinatarioFinal.get('numeroExterior')?.touched && agregarDestinatarioFinal.get('numeroExterior')?.hasError('required')"
+            class="text-danger">
+            Este campo es obligatorio.
+          </small>
+          <small
+            *ngIf="agregarDestinatarioFinal.get('numeroExterior')?.touched && agregarDestinatarioFinal.get('numeroExterior')?.hasError('maxlength')"
+            class="text-danger">
+            Máximo 55 caracteres permitidos.
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-4">
+        <label class="form-label">Número interior*:</label>
+        <input type="text" class="form-control" formControlName="numeroInterior" maxlength="55" />
+        <div class="error-message">
+          <small *ngIf="agregarDestinatarioFinal.get('numeroInterior')?.touched &&
+               agregarDestinatarioFinal.get('numeroInterior')?.hasError('required')" class="text-danger">
+            Este campo es obligatorio.
+          </small>
+          <small
+            *ngIf="agregarDestinatarioFinal.get('numeroInterior')?.touched && agregarDestinatarioFinal.get('numeroInterior')?.hasError('maxlength')"
+            class="text-danger">
+            Máximo 55 caracteres permitidos.
+          </small>
+        </div>
+      </div>
+      <div class="col-md-1">
+        <label class="form-label">Lada*:</label>
+        <input type="text" class="form-control" formControlName="lada" maxlength="5" />
+        <div class="error-message">
+          <small
+            *ngIf="agregarDestinatarioFinal.get('lada')?.touched && agregarDestinatarioFinal.get('lada')?.hasError('maxlength')"
+            class="text-danger">
+            Máximo 5 caracteres permitidos.
+          </small>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Teléfono*:</label>
+        <input type="text" class="form-control" formControlName="telefono" maxlength="24" />
+        <div class="error-message">
+            <small *ngIf="agregarDestinatarioFinal.get('telefono')?.touched &&
+               agregarDestinatarioFinal.get('telefono')?.hasError('required')" class="text-danger">
+            Este campo es obligatorio.
+          </small>
+          <small
+            *ngIf="agregarDestinatarioFinal.get('telefono')?.touched && agregarDestinatarioFinal.get('telefono')?.hasError('maxlength')"
+            class="text-danger">
+            Máximo 24 caracteres permitidos.
+          </small>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Correo electrónico*:
+          <span class="bi bi-question-circle-fill" title="ejemplo@dominio.com" data-bs-toggle="tooltip"></span>
+        </label>
+        <input type="email" class="form-control" formControlName="correoElectronico" maxlength="320" />
+        <i class="fas fa-info-circle"></i>
+        <div class="error-message">
+           <small *ngIf="agregarDestinatarioFinal.get('correoElectronico')?.touched &&
+               agregarDestinatarioFinal.get('correoElectronico')?.hasError('required')" class="text-danger">
+            Este campo es obligatorio.
+          </small>
+          <small
+            *ngIf="agregarDestinatarioFinal.get('correoElectronico')?.touched && agregarDestinatarioFinal.get('correoElectronico')?.hasError('email')"
+            class="text-danger">
+            El correo electrónico no es válido.
+          </small>
+          <small
+            *ngIf="agregarDestinatarioFinal.get('correoElectronico')?.touched && agregarDestinatarioFinal.get('correoElectronico')?.hasError('maxlength')"
+            class="text-danger">
+            Máximo 320 caracteres permitidos.
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-5 mb-5">
+      <div class="col-md-4">
+          <p>* Campos obligatorios</p>
+      </div>
+      <div class="col-md-8">
+        <div class="pull-right">
+          <button type="button" name="modificarMercancias" class="btn btn-default" (click)="cancelar()"
+            [disabled]="esFormularioSoloLectura">
+            Cancelar
+          </button>
+          <button type="button" name="eliminarMercancias" class="btn btn-danger ms-2" (click)="limpiarFormulario()"
+            [disabled]="esFormularioSoloLectura">
+            Limpiar
+          </button>
+          <button type="button" name="agregarMercancias" class="btn btn-primary ms-2" (click)="guardarDestinatario()"
+            [disabled]="esFormularioSoloLectura">
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+  @if (nuevaNotificacion) {
+  <section>
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion"></lib-notificaciones>
+  </section>
+  }

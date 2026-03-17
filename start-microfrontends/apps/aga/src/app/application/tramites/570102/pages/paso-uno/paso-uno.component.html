@@ -1,0 +1,22 @@
+<div class="container">
+  <div class="row">
+    <ul class="nav nav-tabs">
+      <li [ngClass]="indice === 1 ? 'active' : ''">
+        <a data-toggle="tab" (click)="seleccionaTab(1)" (keydown.enter)="seleccionaTab(1)"
+          (keydown.space)="seleccionaTab(1)" role="button" tabindex="0">Solicitante</a>
+      </li>
+      <li [ngClass]="indice === 2 ? 'active' : ''">
+        <a data-toggle="tab" (click)="seleccionaTab(2)" (keydown.enter)="seleccionaTab(2)"
+          (keydown.space)="seleccionaTab(2)" role="button" tabindex="2">{{ consultaState.parameter === "READ_PROCEDURE" ? 'Datos generales original' : 'Solicitud' }}</a>
+      </li>
+    </ul>
+    <ng-container> @switch (indice) {
+      @case (1) { <solicitante [tabindex]="1" #Solicitante></solicitante>
+      }
+      @case (2) {
+      @if(esDatosRespuesta){
+      <app-solicitud (dataEvent)="emitirCancelacion($event)" (isdataEvent)="isDataEvent($event) " [tabIndex]="2"></app-solicitud> } }
+      }
+    </ng-container>
+  </div>
+</div>

@@ -1,0 +1,601 @@
+<div class="container mb-5">
+  <form [formGroup]="solicitudForm">
+    <ng-titulo titulo="Datos del generador de residuos" />
+    <div class="row mb-3">
+      <div class="col-md-4 mb-3 form-group">
+        <label for="numeroRegistroAmbiental"
+          >Número del registro ambiental<span
+            [ngClass]="
+              esControlInvalido(solicitudForm, 'numeroRegistroAmbiental')
+                ? 'has-error'
+                : ''
+            "
+            >*</span
+          >:</label
+        >
+        <input
+          [ngClass]="
+            esControlInvalido(solicitudForm, 'numeroRegistroAmbiental')
+              ? 'required'
+              : ''
+          "
+          type="text"
+          class="form-control"
+          formControlName="numeroRegistroAmbiental"
+          id="numeroRegistroAmbiental"
+          maxlength="13"
+          size="30"
+          (change)="actualizarCampoSolicitudForm('numeroRegistroAmbiental')"
+        />
+        <div
+          *ngIf="esControlInvalido(solicitudForm, 'numeroRegistroAmbiental')"
+        >
+          <div [innerHTML]="mensajeCampoObligatorio"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-6 mb-3 form-group">
+        <label for="descripcionGenerica1"
+          >Giro industrial del importador<span
+            [ngClass]="
+              esControlInvalido(solicitudForm, 'descripcionGenerica1')
+                ? 'has-error'
+                : ''
+            "
+            >*</span
+          >:
+        </label>
+        <input
+          [ngClass]="
+            esControlInvalido(solicitudForm, 'descripcionGenerica1')
+              ? 'required'
+              : ''
+          "
+          type="text"
+          class="form-control"
+          formControlName="descripcionGenerica1"
+          id="descripcionGenerica1"
+          maxlength="150"
+          size="105"
+          (change)="actualizarCampoSolicitudForm('descripcionGenerica1')"
+        />
+      </div>
+      <div *ngIf="esControlInvalido(solicitudForm, 'descripcionGenerica1')">
+        <div [innerHTML]="mensajeCampoObligatorio"></div>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-5 form-group">
+        <app-catalogo-select
+          [markTouched]="
+            esControlInvalido(solicitudForm, 'numeroProgramaImmex') ?? false
+          "
+          [catalogo]="immexCatalogo"
+          formControlName="numeroProgramaImmex"
+          [label]="'Número de autorización IMMEX'"
+          [required]="true"
+          (change)="actualizarCampoSolicitudForm('numeroProgramaImmex')"
+          [isDisabled]="esLectura"
+        ></app-catalogo-select>
+      </div>
+    </div>
+  </form>
+
+  <ng-titulo titulo="Administrar residuos"></ng-titulo>
+  <h6>
+    Datos de los residuos peligrosos a reciclar<span
+      [ngClass]="
+        !esFormValido && administrarResiduos.length === 0 ? 'has-error' : ''
+      "
+      >*</span
+    >:
+  </h6>
+  <div class="row mb-3">
+    <div class="col-md-12">
+      <app-tabla-dinamica
+        [styleCenter]="true"
+        [isInvalida]="!esFormValido && administrarResiduos.length === 0"
+        [configuracionTabla]="configuracionTabla"
+        [datos]="administrarResiduos"
+        [tipoSeleccionTabla]="tablaSeleccionCheckbox"
+        (listaDeFilaSeleccionada)="onFilasSeleccionadas($event)"
+        [disableSeleccionTablaCheckBox]="esLectura"
+        
+      >
+      </app-tabla-dinamica>
+      <nav aria-label="Page navigation example">
+        <ul class="pagination d-flex justify-content-center">
+          <li class="page-item"><a class="page-link">1</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  <div class="row mb-5">
+    <div class="col text-end">
+      <div class="btn-group">
+        <button
+          (click)="borrarResiduo()"
+          class="btn btn-danger me-2"
+          type="button"
+          [disabled]="!borrarHabilitado"
+        >
+          Borrar
+        </button>
+        <button
+          class="btn btn-primary"
+          type="button"
+          data-bs-toggle="modal"
+          data-bs-target="#modalAgregarMercancias"
+          [disabled]="esLectura"
+          (click)="agregarOperacionImp()"
+        >
+          Agregar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <ng-titulo titulo="Datos de la empresa transportista"></ng-titulo>
+  <form [formGroup]="formularioEmpresaTransportista">
+    <div class="row mb-3">
+      <div class="col-md-8">
+        <div class="form-group mb-3">
+          <label for="nombreEmpresaTransportistaResiduos" class="form-label">
+            Nombre de la empresa transportista de residuos peligrosos<span
+              [ngClass]="
+                esControlInvalido(
+                  formularioEmpresaTransportista,
+                  'nombreEmpresaTransportistaResiduos'
+                )
+                  ? 'has-error'
+                  : ''
+              "
+              >*</span
+            >:
+          </label>
+          <input
+            [ngClass]="
+              esControlInvalido(
+                formularioEmpresaTransportista,
+                'nombreEmpresaTransportistaResiduos'
+              )
+                ? 'required'
+                : ''
+            "
+            type="text"
+            maxlength="80"
+            class="form-control"
+            id="nombreEmpresaTransportistaResiduos"
+            formControlName="nombreEmpresaTransportistaResiduos"
+            (change)="
+              actualizarCampoEmpresaTransportista(
+                'nombreEmpresaTransportistaResiduos'
+              )
+            "
+          />
+        </div>
+        <div
+          *ngIf="
+            esControlInvalido(
+              formularioEmpresaTransportista,
+              'nombreEmpresaTransportistaResiduos'
+            )
+          "
+        >
+          <div [innerHTML]="mensajeCampoObligatorio"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-8">
+        <div class="form-group mb-3">
+          <label for="numeroAutorizacionSemarnat" class="form-label">
+            Número de autorización SEMARNAT<span
+              [ngClass]="
+                esControlInvalido(
+                  formularioEmpresaTransportista,
+                  'nombreEmpresaTransportistaResiduos'
+                )
+                  ? 'has-error'
+                  : ''
+              "
+              >*</span
+            >:
+          </label>
+          <input
+            [ngClass]="
+              esControlInvalido(
+                formularioEmpresaTransportista,
+                'numeroAutorizacionSemarnat'
+              )
+                ? 'required'
+                : ''
+            "
+            type="text"
+            maxlength="20"
+            class="form-control"
+            id="numeroAutorizacionSemarnat"
+            formControlName="numeroAutorizacionSemarnat"
+            (change)="
+              actualizarCampoEmpresaTransportista('numeroAutorizacionSemarnat')
+            "
+          />
+        </div>
+        <div
+          *ngIf="
+            esControlInvalido(
+              formularioEmpresaTransportista,
+              'numeroAutorizacionSemarnat'
+            )
+          "
+        >
+          <div [innerHTML]="mensajeCampoObligatorio"></div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <ng-titulo
+    titulo="Datos de la empresa de servicio que realizará el reciclaje"
+  ></ng-titulo>
+  <form [formGroup]="formularioEmpresaReciclaje">
+    <div class="row mb-3">
+      <div class="col-md-8">
+        <label required="true"
+          >¿Requiere de una empresa de servicio para realizar el reciclaje?<span
+            [ngClass]="
+              esControlInvalido(formularioEmpresaReciclaje, 'requiereEmpresa')
+                ? 'has-error'
+                : ''
+            "
+            >*</span
+          >:</label
+        >
+        <app-input-radio
+          [radioOptions]="etiquetasForm.requiereEmpresaServicioReciclaje"
+          [isRequired]="true"
+          [layout]="'horizontal'"
+          formControlName="requiereEmpresa"
+          (change)="actualizarCampoEmpresaReciclaje('requiereEmpresa')"
+        >
+          >
+        </app-input-radio>
+      </div>
+    </div>
+    <div
+      *ngIf="esControlInvalido(formularioEmpresaReciclaje, 'requiereEmpresa')"
+    >
+      <div [innerHTML]="mensajeCampoObligatorio"></div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-8">
+        <div class="form-group mb-3">
+          <label for="nombreEmpresaServicioReciclaje" class="form-label"
+            >Nombre de la empresa de servicios que realizará el reciclaje<span
+              [ngClass]="
+                esControlInvalido(
+                  formularioEmpresaTransportista,
+                  'nombreEmpresaTransportistaResiduos'
+                )
+                  ? 'has-error'
+                  : ''
+              "
+              >*</span
+            >:</label
+          >
+          <input
+            [ngClass]="
+              esControlInvalido(formularioEmpresaReciclaje, 'nombreEmpresa')
+                ? 'required'
+                : ''
+            "
+            type="text"
+            maxlength="80"
+            class="form-control"
+            id="nombreEmpresaServicioReciclaje"
+            formControlName="nombreEmpresa"
+            (change)="actualizarCampoEmpresaReciclaje('nombreEmpresa')"
+          />
+        </div>
+        <div
+          *ngIf="esControlInvalido(formularioEmpresaReciclaje, 'nombreEmpresa')"
+        >
+          <div [innerHTML]="mensajeCampoObligatorio"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-8">
+        <div class="form-group mb-3">
+          <label for="nombreRepresentanteLegal" class="form-label"
+            >Nombre del representante legal<span
+              [ngClass]="
+                esControlInvalido(
+                  formularioEmpresaTransportista,
+                  'nombreEmpresaTransportistaResiduos'
+                )
+                  ? 'has-error'
+                  : ''
+              "
+              >*</span
+            >:</label
+          >
+          <input
+            [ngClass]="
+              esControlInvalido(
+                formularioEmpresaReciclaje,
+                'representanteLegal'
+              )
+                ? 'required'
+                : ''
+            "
+            type="text"
+            maxlength="80"
+            class="form-control"
+            id="nombreRepresentanteLegal"
+            formControlName="representanteLegal"
+            (change)="actualizarCampoEmpresaReciclaje('representanteLegal')"
+          />
+        </div>
+        <div
+          *ngIf="
+            esControlInvalido(
+              formularioEmpresaReciclaje,
+              'nombreRepresentanteLegal'
+            )
+          "
+        >
+          <div [innerHTML]="mensajeCampoObligatorio"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <div class="form-group mb-3">
+          <label for="telefono" class="form-label"
+            >Teléfono<span
+              [ngClass]="
+                esControlInvalido(formularioEmpresaReciclaje, 'telefono')
+                  ? 'has-error'
+                  : ''
+              "
+              >*</span
+            >:</label
+          >
+          <input
+            [ngClass]="
+              esControlInvalido(formularioEmpresaReciclaje, 'telefono')
+                ? 'required'
+                : ''
+            "
+            type="text"
+            maxlength="20"
+            class="form-control"
+            id="telefono"
+            formControlName="telefono"
+            (change)="actualizarCampoEmpresaReciclaje('telefono')"
+          />
+        </div>
+        <div *ngIf="esControlInvalido(formularioEmpresaReciclaje, 'telefono')">
+          <div [innerHTML]="mensajeCampoObligatorio"></div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-group mb-3">
+          <label for="correoElectronico" class="form-label"
+            >Correo electrónico<span
+              [ngClass]="
+                esControlInvalido(
+                  formularioEmpresaReciclaje,
+                  'correoElectronico'
+                )
+                  ? 'has-error'
+                  : ''
+              "
+              >*</span
+            >:</label
+          >
+          <input
+            [ngClass]="
+              esControlInvalido(formularioEmpresaReciclaje, 'correoElectronico')
+                ? 'required'
+                : ''
+            "
+            type="email"
+            maxlength="50"
+            class="form-control"
+            id="correoElectronico"
+            formControlName="correoElectronico"
+            (change)="actualizarCampoEmpresaReciclaje('correoElectronico')"
+          />
+        </div>
+        <div
+          *ngIf="
+            esControlInvalido(formularioEmpresaReciclaje, 'correoElectronico')
+          "
+        >
+          <div [innerHTML]="mensajeCampoObligatorio"></div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<ng-titulo titulo="Información sobre precauciones"></ng-titulo>
+<form class="row mb-3" [formGroup]="formularioPrecaucionesManejo">
+  <div class="col-md-10">
+    <div class="form-group">
+      <label class="form-label"
+        >Información sobre las precauciones de manejo que se debe dar al residuo
+        peligroso<span
+          [ngClass]="
+            esControlInvalido(
+              formularioPrecaucionesManejo,
+              'precaucionesManejo'
+            )
+              ? 'has-error'
+              : ''
+          "
+          >*</span
+        >:</label
+      >
+      <textarea
+        [ngClass]="
+          esControlInvalido(formularioPrecaucionesManejo, 'precaucionesManejo')
+            ? 'required'
+            : ''
+        "
+        class="form-control disabled-color textarea-auto-height"
+        rows="4"
+        formControlName="precaucionesManejo"
+        (change)="actualizarCampoPrecaucionesManejo('precaucionesManejo')"
+      ></textarea>
+      <div
+        *ngIf="
+          esControlInvalido(formularioPrecaucionesManejo, 'precaucionesManejo')
+        "
+      >
+        <div [innerHTML]="mensajeCampoObligatorio"></div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<ng-titulo titulo="Lugar donde se realizará el reciclaje"></ng-titulo>
+<form [formGroup]="formularioLugarReciclaje">
+  <div class="row mb-3">
+    <div class="col-md-8">
+      <label required="true">
+        ¿El reciclaje se realizará dentro de las instalaciones donde se
+        generaron los residuos?<span
+          [ngClass]="
+            esControlInvalido(
+              formularioLugarReciclaje,
+              'reciclajeInstalaciones'
+            )
+              ? 'has-error'
+              : ''
+          "
+          >*</span
+        >:
+      </label>
+      <app-input-radio
+        [radioOptions]="etiquetasForm.reciclajeEnInstalaciones"
+        [isRequired]="true"
+        [layout]="'horizontal'"
+        formControlName="reciclajeInstalaciones"
+        (change)="actualizarCampoLugarReciclaje('reciclajeInstalaciones')"
+      >
+      </app-input-radio>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-8">
+      <div class="form-group mb-3">
+        <label for="lugarReciclaje" class="form-label"
+          >Lugar donde se realizará el reciclaje<span
+            [ngClass]="
+              esControlInvalido(formularioLugarReciclaje, 'lugarReciclaje')
+                ? 'has-error'
+                : ''
+            "
+            >*</span
+          >:</label
+        >
+        <input
+          [ngClass]="
+            esControlInvalido(formularioLugarReciclaje, 'lugarReciclaje')
+              ? 'required'
+              : ''
+          "
+          type="text"
+          class="form-control"
+          maxlength="80"
+          id="lugarReciclaje"
+          formControlName="lugarReciclaje"
+          (change)="actualizarCampoLugarReciclaje('lugarReciclaje')"
+        />
+      </div>
+      <div
+        *ngIf="esControlInvalido(formularioLugarReciclaje, 'lugarReciclaje')"
+      >
+        <div [innerHTML]="mensajeCampoObligatorio"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-8">
+      <div class="form-group mb-3">
+        <label for="numeroAutorizacionEmpresaReciclaje" class="form-label">
+          Número de autorización de la empresa del reciclaje<span
+            [ngClass]="
+              esControlInvalido(
+                formularioLugarReciclaje,
+                'numeroAutorizacionEmpresaReciclaje'
+              )
+                ? 'has-error'
+                : ''
+            "
+            >*</span
+          >:
+        </label>
+        <input
+          [ngClass]="
+            esControlInvalido(
+              formularioLugarReciclaje,
+              'numeroAutorizacionEmpresaReciclaje'
+            )
+              ? 'required'
+              : ''
+          "
+          type="text"
+          maxlength="80"
+          class="form-control"
+          id="numeroAutorizacionEmpresaReciclaje"
+          formControlName="numeroAutorizacionEmpresaReciclaje"
+          (change)="
+            actualizarCampoLugarReciclaje('numeroAutorizacionEmpresaReciclaje')
+          "
+        />
+      </div>
+      <div
+        *ngIf="
+          esControlInvalido(
+            formularioLugarReciclaje,
+            'numeroAutorizacionEmpresaReciclaje'
+          )
+        "
+      >
+        <div [innerHTML]="mensajeCampoObligatorio"></div>
+      </div>
+    </div>
+  </div>
+</form>
+<!-- Modal para agregar las materias primas -->
+<div
+  class="modal fade"
+  id="modalAgregarMercancias"
+  tabindex="-1"
+  aria-labelledby="modalAgregarMercanciasLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+  >
+    <div class="modal-content">
+      <app-datos-residuos-peligrosos
+        (residuoAgregado)="onResiduoAgregado($event)"
+      ></app-datos-residuos-peligrosos>
+    </div>
+  </div>
+</div>

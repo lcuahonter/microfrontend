@@ -1,0 +1,488 @@
+<div class="container">
+  <ng-titulo titulo="Propietario"></ng-titulo>
+  <label> Propietario<span>*</span>: </label>
+  <app-tabla-dinamica
+    [configuracionTabla]="configuracionTabla"
+    [datos]="propietarioData"
+    [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX"
+    [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+    (listaDeFilaSeleccionada)="seleccionarlistaPropietario($event)"
+    (filaClic)="onRowSelected($event)"
+  ></app-tabla-dinamica>
+  <div class="row mt-5">
+    <div class="col-md-12">
+      <div class="pull-right" *ngIf="!propietarioData?.length">
+        <button
+          name="agregarServicio"
+          class="btn btn-primary mx-2"
+          (click)="openPropietarioModal()"
+          [disabled]="esFormularioSoloLectura"
+        >
+          Agregar
+        </button>
+      </div>
+      <div class="pull-right" *ngIf="selectedRecord">
+        <button
+          name="modificarServicio"
+          class="btn btn-danger mx-2"
+          (click)="modificar()"
+        >
+          Modificar
+        </button>
+        <button
+          name="eliminarServicio"
+          class="btn btn-danger mx-2"
+          (click)="eliminarPropietario()"
+        >
+          Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+  <app-establecimiento #EstablecimientoComponent [tramites]="tramites" [idProcedimiento]="idProcedimiento"></app-establecimiento>
+</div>
+
+<div
+  class="modal fade"
+  #propietarioModal
+  tabindex="-1"
+  
+>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-body p-4">
+       <ng-titulo titulo="Agregar propietario"></ng-titulo>
+         <form [formGroup]="propietarioradioForm">
+          <label>Datos generales</label>
+          <div class="row">
+            <div class="col-md-6">
+              
+              <div class="campos">
+                <div id="contenidoEtiquetaOpcionNacionalidad">
+                  <label for="tercerosNacionalidad"
+                    >Terceros nacionalidad
+                    <span class="require">* : </span></label
+                  >
+                </div>
+              </div>
+              <app-input-radio
+                [radioOptions]="propietarioRadioData"
+                [isRequired]="true"
+                [layout]="'vertical'"
+                [gap]="'50px'"
+                formControlName="tercerosNacionalidad"
+                (valueChange)="onRadioChange($event)"
+              ></app-input-radio>
+            </div>
+            <div class="col-md-6">
+              <label class="mt-1 mb-3" for="tercerosTipoPersona">
+                Tipo persona*:
+              </label>
+              <div
+                *ngFor="let option of propietarioTipoPersonaData; let i = index"
+                class="vertical"
+              >
+                <input
+                  type="radio"
+                  [value]="option.value"
+                
+                  (change)="onSelectionChange(option.value)"
+                  formControlName="tercerosTipoPersona"
+                />
+                <span class="radio-label">
+                  {{ option.label }}
+                  <ng-container *ngIf="i < 2">
+                    <i
+                      class="bi bi-question-circle-fill"
+                      title="Title"
+                      data-bs-toggle="tooltip"
+                    ></i>
+                  </ng-container>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="mostrarTerceros !== 'Extranjero'">
+            <div class="col-md-4">
+              <label class="mt-1 mb-3" for="tercerosRfc"
+                >RFC*:</label
+              > <span class="require bi bi-question-circle-fill" tooltip="Registro Federal de Contribuyente"></span>
+
+              <div class="d-flex flex-column align-items-end">
+                <input
+                  type="text"
+                  id="tercerosRfc"
+                  formControlName="tercerosRfc"
+                  class="form-control"
+                  maxlength="254"
+                />
+                @if(showBuscarButton){
+                  <div class="mt-4">
+                    <button type="button" class="btn btn-primary mt-2"  (click)="buscarRepresentanteRfc()">
+                      Buscar
+                    </button>
+                  </div>
+                }
+               
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="mt-1 mb-3" for="tercerosCurp">
+                CURP<span class="require">*</span>:</label
+              >
+              <div>
+                <input
+                  type="text"
+                  id="tercerosCurp"
+                  formControlName="tercerosCurp"
+                  class="form-control"
+                 
+                />
+                @if(mostrarBuscarCurpBtn){
+                  <div class="mt-4">
+                    <button type="button" class="btn btn-primary mt-2"  (click)="curpBuscar()">
+                      Buscar
+                    </button>
+                  </div>
+                }
+              </div>
+            </div>
+            <div class="col-md-4"></div>
+          </div>
+         </form>
+      <form [formGroup]="formTercerosDatos">
+        <div *ngIf="mostrarTerceros === 'Extranjero' || mostrarTerceros === 'Nacional'">
+          <div *ngIf="showValue === 'Física' && (mostrarTerceros === 'Nacional' || mostrarTerceros === 'Extranjero')">
+            <label>Datos personales </label>
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label class="form-label" for="tercerosNombre"
+                  >Nombre(s)<span class="require">*</span>:</label
+                >
+                <input
+                  class="form-control"
+                  id="tercerosNombre"
+                  placeholder=""
+                  type="text"
+                  formControlName="tercerosNombre"
+                />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="tercerosPrimerApellido"
+                  >Primer apellido<span class="require">*</span>:</label
+                >
+                <input
+                  class="form-control"
+                  id="tercerosPrimerApellidoId"
+                  placeholder=""
+                  type="text"
+                  formControlName="tercerosPrimerApellido"
+                />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="tercerosSegundoApellido"
+                  >Segundo apellido<span class="require">*</span>:</label
+                >
+                <input
+                  class="form-control"
+                  id="tercerosSegundoApellidoId"
+                  placeholder=""
+                  type="text"
+                  formControlName="tercerosSegundoApellido"
+                />
+              </div>
+            </div>
+          </div>
+      
+            <div class="row" *ngIf="showValue === 'Moral' && (mostrarTerceros === 'Nacional' || mostrarTerceros === 'Extranjero')">
+              <div id="contenidoRazonSocial" class="col-md-8 mb-3">
+                <label for="tercerosDenominacionRazonSocial"
+                  >Denominación/razón social
+                  <span class="require">*</span>:</label
+                >
+  
+                <div>
+                  <input
+                    type="text"
+                    id="terceros_rSocial"
+                    formControlName="tercerosDenominacionRazonSocial"
+                    class="form-control"
+                    maxlength="254"
+                  />
+                </div>
+              </div>
+            </div>
+         
+          <div class="row" *ngIf="mostrarTerceros === 'Nacional' && showValue === 'No contribuyente'">
+           <label>Datos personales</label>
+            <div class="col-md-4 mb-3">
+              <label class="form-label" for="tercerosNombre">Nombre(s)<span class="require">*</span>:</label>
+              <input
+                class="form-control"
+                id="tercerosNombre"
+                placeholder=""
+                type="text"
+                formControlName="tercerosNombre"
+              />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="tercerosPrimerApellido">Primer apellido<span class="require">*</span>:</label>
+              <input
+                class="form-control"
+                id="tercerosPrimerApellidoId"
+                placeholder=""
+                type="text"
+                formControlName="tercerosPrimerApellido"
+              />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="tercerosSegundoApellido">Segundo apellido<span class="require">*</span>:</label>
+              <input
+                class="form-control"
+                id="tercerosSegundoApellidoId"
+                placeholder=""
+                type="text"
+                formControlName="tercerosSegundoApellido"
+              />
+            </div>
+          </div>
+        </div>
+
+         <div *ngIf="mostrarTerceros === 'Extranjero' && showValue !== 'Física' && showValue !== 'Moral'">
+            <label>Datos personales </label>
+            <div class="row mb-5">
+              <div class="col-md-4">
+                <label class="form-label" for="tercerosNombre"
+                  >Nombre(s)<span class="require">*</span>:</label
+                >
+                <input
+                  class="form-control"
+                  id="tercerosNombre"
+                  placeholder=""
+                  type="text"
+                  formControlName="tercerosNombre"
+                />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="tercerosPrimerApellido"
+                  >Primer apellido<span class="require">*</span>:</label
+                >
+                <input
+                  class="form-control"
+                  id="tercerosPrimerApellidoId"
+                  placeholder=""
+                  type="text"
+                  formControlName="tercerosPrimerApellido"
+                />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="tercerosSegundoApellido"
+                  >Segundo apellido<span class="require">*</span>:</label
+                >
+                <input
+                  class="form-control"
+                  id="tercerosSegundoApellidoId"
+                  placeholder=""
+                  type="text"
+                  formControlName="tercerosSegundoApellido"
+                />
+              </div>
+            </div>
+          </div>
+      
+            <div class="row" *ngIf="mostrarTerceros === 'Extranjero' && showValue !== 'Física' && showValue !== 'Moral'">
+              <div id="contenidoRazonSocial" class="col-md-8 mb-2">
+                <label for="tercerosDenominacionRazonSocial"
+                  >Denominación/razón social
+                  <span class="require">*</span>:</label
+                >
+  
+                <div>
+                  <input
+                    type="text"
+                    id="terceros_rSocial"
+                    formControlName="tercerosDenominacionRazonSocial"
+                    class="form-control"
+                    maxlength="254"
+                  />
+                </div>
+              </div>
+          </div>
+          <label>Domicillio </label>
+          <div class="row">
+            <div class="col-md-4">
+              <label class="form-label" for="tercerosPais"
+                >País<span class="require">*</span>:</label
+              > 
+              <input
+                class="form-control"
+                id="tercerosPaisID"
+                placeholder=""
+                type="text"
+                formControlName="tercerosPais"
+              />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="tercerosEstadoLocalidad"
+                >Estado/localidad<span class="require">*</span>:</label
+              >
+              <input
+                class="form-control"
+                id="tercerosPaisID"
+                placeholder=""
+                type="text"
+                formControlName="tercerosEstadoLocalidad"
+              />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="tercerosMunicipioAlcaldia"
+                >Municipio/alcaldía<span class="require">*</span>:</label
+              >
+              <input
+                class="form-control"
+                id="tercerosMunicipioAlcaldiaID"
+                placeholder=""
+                type="text"
+                formControlName="tercerosMunicipioAlcaldia"
+              />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <label class="form-label" for="tercerosLocalidad"
+                >Localidad<span class="require">*</span>:</label
+              >
+              <input
+                class="form-control"
+                id="tercerosLocalidadId"
+                placeholder=""
+                type="text"
+                formControlName="tercerosLocalidad"
+              />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="tercerosCodigoPostal"
+                >Código postal o equivalente<span class="require">*</span
+                >:</label
+              >
+              <input
+                class="form-control"
+                id="tercerosCodigoPostalId"
+                placeholder=""
+                type="text"
+                formControlName="tercerosCodigoPostal"
+              />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="tercerosColonia"
+                >Colonia<span class="require">*</span>:</label
+              >
+              <input
+                class="form-control"
+                id="tercerosColoniaId"
+                placeholder=""
+                type="text"
+                formControlName="tercerosColonia"
+              />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-8">
+              <label class="form-label" for="tercerosCalle"
+                >Calle<span class="require">*</span>:</label
+              >
+    <span tooltip="Domicilio, calle, número interior, número exterior, lote">
+            <i class="bi bi-question-circle-fill"></i>
+          </span>
+              <input
+                class="form-control"
+                id="tercerosCalleId"
+                placeholder=""
+                type="text"
+                formControlName="tercerosCalle"
+              />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="tercerosNumeroExterior"
+                >Número exterior<span class="require">*</span>:</label
+              >
+              <input
+                class="form-control"
+                id="tercerosNumeroExteriorId"
+                placeholder=""
+                type="text"
+                formControlName="tercerosNumeroExterior"
+              />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <label class="form-label" for="tercerosNumeroInterior"
+                >Número interior:</label
+              >
+              <input
+                class="form-control"
+                id="tercerosNumeroInteriorId"
+                placeholder=""
+                type="text"
+                formControlName="tercerosNumeroInterior"
+              />
+            </div>
+            <div class="col-md-1">
+              <label class="form-label" for="tercerosLada"
+                >Lada:</label
+              >
+              <input
+                class="form-control"
+                id="tercerosLadaId"
+                placeholder=""
+                type="text"
+                formControlName="tercerosLada"
+              />
+            </div>
+            <div class="col-md-3">
+              <label class="form-label" for="tercerosTelefono"
+                >Teléfono:</label
+              >
+              <input
+                class="form-control"
+                id="tercerosTelefonoId"
+                placeholder=""
+                type="text"
+                formControlName="tercerosTelefono"
+              />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="tercerosCorreoElectronico"
+                >Correo electrónico:</label
+              > <span class="bi bi-question-circle-fill" tooltip="ejemplo@dominio.com"
+               ></span>
+              <input
+                class="form-control"
+                id="tercerosCorreoElectronicoId"
+                placeholder=""
+                type="text"
+                formControlName="tercerosCorreoElectronico"
+              />
+            </div>
+          </div>
+          <div class="modal-footer mt-5">
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button type="button" class="btn btn-primary" (click)="limpiarFormulario()">Limpiar</button>
+            <button type="button" class="btn btn-primary" (click)="guardarPropietario()">Guardar</button>
+          </div>
+       
+      </form>
+    </div>
+    </div>
+  </div>
+</div>

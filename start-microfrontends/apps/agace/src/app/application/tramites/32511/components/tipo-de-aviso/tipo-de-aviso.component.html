@@ -1,0 +1,252 @@
+<div [formGroup]="avisoForm">
+    <!--Tipo de solicitud-->
+    <ng-titulo [titulo]="'Tipo de solicitud'"></ng-titulo>
+
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <label class="form-label">De la fracción II de la regla 4.2.8. de las RGCE, ¿Que trámite desea realizar
+                ?*:</label>
+            <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'vertical'"
+                id="rgceOpcion" formControlName="rgceOpcion" [disabled]="formularioDeshabilitado"
+                (change)="setValoresStore(avisoForm, 'rgceOpcion', 'setRgceOpcion')"></app-input-radio>
+        </div>
+    </div>
+
+    <!--Datos de la mercancía que se importó temporalmente-->
+    <ng-titulo [titulo]="'Datos de la mercancía que se importó temporalmente'"></ng-titulo>
+
+    <div class="row">
+        <div class="col-md-12">
+            <label class="form-label">Respecto a la información referente a la mercancía, llevar a cabo el llenado en la
+                plantilla anexa:*</label>
+            <label class="form-label">Para descargar plantilla del archivo excel da click <a
+                    href="/assets/pdf/plantilla_Mercancias.xlsx"> aquí</a></label>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <label class="form-label">Archivo excel a incorporar</label>
+        </div>
+        <div class="col-md-8">
+            <button type="button" for="archivoExcelIncorporar" class="file-upload" [disabled]="formularioDeshabilitado"
+                (click)="activarArchivoSeleccionArchivo()">
+                Seleccionar archivo
+            </button>
+            <span class="ms-2">{{ archivoSeleccionado }}</span>
+            <input type="file" id="archivoExcelIncorporar" (change)="onCambioDeIncorporarArchivo($event)"
+                class="file-upload" style="display: none;">
+        </div>
+        <div class="col-md-4">
+            <button class="btn btn-primary mr-5px" [disabled]="formularioDeshabilitado">Cargar archivo</button>
+        </div>
+    </div>
+
+    <!--Datos del evento-->
+    <ng-titulo [titulo]="'Datos del evento'"></ng-titulo>
+
+    <ng-container formGroupName="datosEvento">
+        <div class="row">
+            <div class="col-md-4">
+                <input-fecha [setFecha]="datosEvento.get('fechaInicioEvento')?.value" [datos]="fechaInicioEventoInput"
+                    [isDisabled]="formularioDeshabilitado"
+                    (valorCambiado)="cambioFechaInicioEvento($event)"></input-fecha>
+            </div>
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label for="calle" class="form-label">Calle*:</label>
+                    <input type="text" class="form-control" name="calle" id="calle" formControlName="calle"
+                        (change)="setValoresStore(datosEvento,'calle', 'setCalle')" />
+                    @if(datosEvento.controls['calle'].invalid && datosEvento.controls['calle'].touched) { <div
+                        class="d-grid"> @if(datosEvento.controls['calle'].errors?.['required']) { <span
+                            class="mensaje-error">Este campo es obligatorio.</span> } </div> }
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="numeroExterior" class="form-label">Número exterior*:</label>
+                    <input type="text" class="form-control" name="numeroExterior" id="numeroExterior"
+                        formControlName="numeroExterior"
+                        (change)="setValoresStore(datosEvento,'numeroExterior', 'setNumeroExterior')" />
+                    @if(datosEvento.controls['numeroExterior'].invalid &&
+                    datosEvento.controls['numeroExterior'].touched) { <div class="d-grid">
+                        @if(datosEvento.controls['numeroExterior'].errors?.['required']) { <span
+                            class="mensaje-error">Este campo es obligatorio.</span> } </div> }
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="numeroInterior" class="form-label">Número interior:</label>
+                    <input type="text" class="form-control" name="numeroInterior" id="numeroInterior"
+                        formControlName="numeroInterior"
+                        (change)="setValoresStore(datosEvento,'numeroInterior', 'setNumeroInterior')" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="codigoPostal" class="form-label">Código postal*:</label>
+                    <input type="text" class="form-control" name="codigoPostal" id="codigoPostal"
+                        formControlName="codigoPostal"
+                        (change)="setValoresStore(datosEvento,'codigoPostal', 'setCodigoPostal')" />
+                    @if(datosEvento.controls['codigoPostal'].invalid && datosEvento.controls['codigoPostal'].touched) {
+                    <div class="d-grid"> @if(datosEvento.controls['codigoPostal'].errors?.['required']) { <span
+                            class="mensaje-error">Este campo es obligatorio.</span> } </div> }
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="entidadFederativa" formControlName="entidadFederativa"
+                    [label]="'Entidad federativa'" [required]="true" name="entidadFederativa"
+                    [isDisabled]="formularioDeshabilitado"
+                    (change)="entidadFederativaSeleccion()"></app-catalogo-select>
+            </div>
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="alcaldiaMunicipio" formControlName="alcaldiaMunicipio"
+                    [label]="'Alcaldía o Municipio'" [required]="true" name="alcaldiaMunicipio"
+                    [isDisabled]="formularioDeshabilitado"
+                    (change)="alcaldiaMunicipioSeleccion()"></app-catalogo-select>
+            </div>
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="colonia" formControlName="colonia" [label]="'Colonia'"
+                    [isDisabled]="formularioDeshabilitado" [required]="true" name="colonia"
+                    (change)="coloniaSeleccion()"></app-catalogo-select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <input-fecha [setFecha]="datosEvento.get('fechaConclusionEvento')?.value"
+                    [datos]="fechaConclusionEventoInput" [isDisabled]="formularioDeshabilitado"
+                    (valorCambiado)="cambioFechaConclusionEvento($event)"></input-fecha>
+            </div>
+        </div>
+    </ng-container>
+
+    <!--Datos generales de la destrucción de las mercancías-->
+    <ng-titulo [titulo]="'Datos generales de la destrucción de las mercancías'"></ng-titulo>
+
+    <ng-titulo [titulo]="'Lugar donde se llevará a cabo la destrucción de la mercancía'"></ng-titulo>
+
+    <ng-container formGroupName="destruccionMercancia" class="mt-5">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="dmCalle" class="form-label">Calle*:</label>
+                    <input type="text" class="form-control" name="dmCalle" id="dmCalle" formControlName="dmCalle"
+                        (change)="setValoresStore(destruccionMercancia,'dmCalle', 'setDmCalle')" />
+                    @if(destruccionMercancia.controls['dmCalle'].invalid && destruccionMercancia.controls['dmCalle'].touched) { <div
+                        class="d-grid"> @if(destruccionMercancia.controls['dmCalle'].errors?.['required']) { <span
+                            class="mensaje-error">Este campo es obligatorio.</span> } </div> }
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="dmNumeroExterior" class="form-label">Número exterior*:</label>
+                    <input type="text" class="form-control" name="dmNumeroExterior" id="dmNumeroExterior"
+                        formControlName="dmNumeroExterior"
+                        (change)="setValoresStore(destruccionMercancia,'dmNumeroExterior', 'setDmNumeroExterior')" />
+                    @if(destruccionMercancia.controls['dmNumeroExterior'].invalid &&
+                    destruccionMercancia.controls['dmNumeroExterior'].touched) { <div class="d-grid">
+                        @if(destruccionMercancia.controls['dmNumeroExterior'].errors?.['required']) { <span
+                            class="mensaje-error">Este campo es obligatorio.</span> } </div> }
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="dmNumeroInterior" class="form-label">Número interior:</label>
+                    <input type="text" class="form-control" name="dmNumeroInterior" id="dmNumeroInterior"
+                        formControlName="dmNumeroInterior"
+                        (change)="setValoresStore(destruccionMercancia,'dmNumeroInterior', 'setDmNumeroInterior')" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="dmCodigoPostal" class="form-label">Código postal*:</label>
+                    <input type="text" class="form-control" name="dmCodigoPostal" id="dmCodigoPostal"
+                        formControlName="dmCodigoPostal"
+                        (change)="setValoresStore(destruccionMercancia,'dmCodigoPostal', 'setDmCodigoPostal')" />
+                    @if(destruccionMercancia.controls['dmCodigoPostal'].invalid && destruccionMercancia.controls['dmCodigoPostal'].touched) {
+                    <div class="d-grid"> @if(destruccionMercancia.controls['dmCodigoPostal'].errors?.['required']) { <span
+                            class="mensaje-error">Este campo es obligatorio.</span> } </div> }
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="dmEntidadFederativa" formControlName="dmEntidadFederativa"
+                    [label]="'Entidad federativa'" [required]="true" name="dmEntidadFederativa"
+                    [isDisabled]="formularioDeshabilitado"
+                    (change)="dmEntidadFederativaSeleccion()"></app-catalogo-select>
+            </div>
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="dmAlcaldiaMunicipio" formControlName="dmAlcaldiaMunicipio"
+                    [label]="'Alcaldía o Municipio'" [required]="true" name="dmAlcaldiaMunicipio"
+                    [isDisabled]="formularioDeshabilitado"
+                    (change)="dmAlcaldiaMunicipioSeleccion()"></app-catalogo-select>
+            </div>
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="dmColonia" formControlName="dmColonia" [label]="'Colonia'"
+                    [isDisabled]="formularioDeshabilitado" [required]="true" name="dmColonia"
+                    (change)="dmColoniaSeleccion()"></app-catalogo-select>
+            </div>
+        </div>
+    </ng-container>
+
+    <!--Datos de la mercancía que se destruirá-->
+    <ng-titulo [titulo]="'Datos de la mercancía que se destruirá'"></ng-titulo>
+
+    <div class="row">
+        <div class="col-md-12">
+            <label class="form-label">Respecto a la información referente a la mercancía que se destruirá, llevar a cabo
+                el llenado en la plantilla anexa:*</label>
+            <label class="form-label">Para descargar plantilla del archivo excel da click <a
+                    href="/assets/pdf/plantilla_Mercancias.xlsx"> aquí</a></label>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <label class="form-label">Archivo excel a incorporar</label>
+        </div>
+        <div class="col-md-8">
+            <button type="button" for="archivoIncorporar" class="file-upload" [disabled]="formularioDeshabilitado"
+                (click)="activarSeleccionArchivo()">
+                Seleccionar archivo
+            </button>
+            <span class="ms-2">{{ etiquetaDeArchivo }}</span>
+            <input type="file" id="archivoIncorporar" (change)="onCambioDeArchivo($event)" class="file-upload"
+                style="display: none;">
+        </div>
+        <div class="col-md-4">
+            <button class="btn btn-primary mr-5px" [disabled]="formularioDeshabilitado">Cargar archivo</button>
+        </div>
+    </div>
+
+    <!--El lugar, día y hora hábil en que se realizará la destrucción de las mercancías-->
+    <ng-titulo [titulo]="'El lugar, día y hora hábil en que se realizará la destrucción de las mercancías'"></ng-titulo>
+
+    <ng-alert [CONTENIDO]="TEXTOS.ALERTA"></ng-alert>
+
+    <div class="row">
+        <div class="col-md-8">
+            <input-fecha [setFecha]="avisoForm.get('fechaDestruccion')?.value" [datos]="fechaDestruccionInput"
+                [isDisabled]="formularioDeshabilitado" (valorCambiado)="cambioFechaDestruccion($event)"></input-fecha>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="destruccionHora" class="form-label">Hora en la que se llevará a cabo la
+                    destrucción*:</label>
+                <input type="text" class="form-control" name="destruccionHora" id="destruccionHora"
+                    formControlName="destruccionHora"
+                    (change)="setValoresStore(avisoForm,'destruccionHora', 'setDestruccionHora')" />
+                @if(avisoForm.controls['destruccionHora'].invalid && avisoForm.controls['destruccionHora'].touched) {
+                <div class="d-grid"> @if(avisoForm.controls['destruccionHora'].errors?.['required']) { <span
+                        class="mensaje-error">Este campo es obligatorio.</span> } </div> }
+            </div>
+        </div>
+    </div>
+</div>

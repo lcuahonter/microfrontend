@@ -1,0 +1,37 @@
+<div class="p-3 bg-light border mt-3">
+  <form [formGroup]="form" (ngSubmit)="onBuscar()" class="row align-items-end">
+    <div class="col-md-8">
+      <label class="form-label fw-bold"><span class="text-danger">*</span>RFC</label>
+      <input 
+        type="text" 
+        class="form-control" 
+        formControlName="rfc" 
+        [class.is-invalid]="isInvalid('rfc')"
+        placeholder="Ingrese RFC"
+        style="text-transform: uppercase;"
+      >
+      <div *ngIf="isInvalid('rfc')" class="invalid-feedback d-block">
+        <span *ngIf="hasError('rfc', 'required')">Este campo es obligatorio</span>
+        <span *ngIf="hasError('rfc', 'pattern')">El RFC no corresponde con el tipo de persona seleccionada.</span>
+      </div>
+    </div>
+    <div class="col-md-4 text-end">
+      <button type="submit" class="btn btn-primary rounded-pill" [disabled]="loading">
+        <span *ngIf="!loading">Buscar</span>
+        <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      </button>
+    </div>
+  </form>
+</div>
+<div class="table-section mt-4" *ngIf="searched && results.length > 0">
+  <app-tabla-dinamica
+    [configuracionTabla]="columnas"
+    [datos]="results"
+    (filaClic)="onFilaClic($event)"
+  ></app-tabla-dinamica>
+  <app-table-pagination
+    [totalItems]="results.length"
+    [itemsPerPage]="10"
+    [currentPage]="1"
+  ></app-table-pagination>
+</div>

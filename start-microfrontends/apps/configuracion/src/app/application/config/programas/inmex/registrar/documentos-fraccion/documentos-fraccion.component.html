@@ -1,0 +1,103 @@
+@if(showModal) {
+<libs-modal [show]="showModal" (closed)="cerrarModal()" tituloModal="Documentos" [textoBotonCerrar]="'Cancelar'">
+    <modal-body>
+        <section class="busqueda-documentos-container bg-ligth">
+            @if(vista === VistaDocumento.AGREGADOS){
+            <div class="agregar-documento-container">
+                <button class="btn btn-primary" (click)="cambioDeTabla(VistaDocumento.BUSQUEDA)">
+                    Agregar Documento
+                </button>
+            </div>
+            }@else{
+            <form>
+                <div>
+                    <label for="descripcion">Descripción:</label>
+                    <input id="descripcion" type="text">
+                </div>
+                <button type="button" class="btn btn-primary" (click)="buscarDocumento()">Buscar</button>
+            </form>
+            }
+        </section>
+        <br />
+        <section class="documentos-fraccion-tabla scrollable">
+            <table class=" tabla-fracciones table table-striped table-bordered mb-2">
+                <thead class="fixed-header">
+                    <tr>
+                        <th>
+                            <input type="checkbox" [checked]="todosSeleccionados"
+                                [indeterminate]="parcialmenteSeleccionados" (change)="marcarTodos($event)">
+
+                        </th>
+                        <th>Nombre</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @if (vista === VistaDocumento.AGREGADOS) {
+
+                    @if (documentosAgregados.length > 0) {
+                    @for (item of documentosAgregados; track item.id) {
+                    <tr>
+                        <td>
+                            <input type="checkbox" [checked]="estaSeleccionado(item)"
+                                (change)="marcarDocumento(item, $event)">
+                        </td>
+                        <td>{{ item.descripcion }}</td>
+                    </tr>
+                    }
+                    } @else {
+                    <tr>
+                        <td colspan="2">No hay documentos agregados</td>
+                    </tr>
+                    }
+
+                    }
+
+                    @if (vista === VistaDocumento.BUSQUEDA) {
+
+                    @if (documentosObtenidos.length > 0) {
+                    @for (item of documentosObtenidos; track item.id) {
+                    <tr>
+                        <td>
+                            <input type="checkbox" [checked]="estaSeleccionado(item)"
+                                (change)="marcarDocumento(item, $event)">
+                        </td>
+                        <td>{{ item.descripcion }}</td>
+                    </tr>
+                    }
+                    } @else {
+                    <tr>
+                        <td colspan="2">No hay documentos por mostrar</td>
+                    </tr>
+                    }
+
+                    }
+
+                </tbody>
+
+            </table>
+        </section>
+    </modal-body>
+    <modal-footer>
+        @if(vista === VistaDocumento.BUSQUEDA){
+        <button class="btn btn-primary"
+            (click)="agregarDocumentos(); cambioDeTabla(VistaDocumento.AGREGADOS)">Aceptar</button>
+        }@else{
+        <div class="botones-footer">
+            <button class="btn btn-primary" (click)="aceptarDocumentos()">Aceptar</button>
+            <button class="btn btn-danger" (click)="eliminarDocumentos()">Eliminar</button>
+        </div>
+        }
+    </modal-footer>
+</libs-modal>
+}
+@if(mostrarAlerta){
+<libs-modal tituloModal="Mensaje" [showCloseButton]="false" (closed)="cerrarAlerta()" [show]="mostrarAlerta">
+    <modal-body>
+        No existen documentos agregados en la configuracion
+    </modal-body>
+    <modal-footer>
+        <button class="btn btn-danger" (click)="cerrarAlerta()">Aceptar</button>
+    </modal-footer>
+</libs-modal>
+}

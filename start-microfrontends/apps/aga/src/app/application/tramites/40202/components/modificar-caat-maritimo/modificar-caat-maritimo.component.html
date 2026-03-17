@@ -1,0 +1,127 @@
+<div [formGroup]="buscarEmpresaForm">
+    <ng-titulo titulo="Tipo de empresa"></ng-titulo>
+
+    <div class="row">
+        <div class="col-md-12">
+            <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'vertical'"
+                formControlName="tipoDeEmpresa" [disabled]="formularioDeshabilitado"
+                (valueChange)="enCambioDeValor($event)"></app-input-radio>
+        </div>
+    </div>
+
+
+
+    <div id="tabBuscaNcional" class="row">
+        <div class="col col-md-8">
+            <div class="form-group">
+                <label class="form-label" for="buscarPorDenominacionNa">Nombre, denominación o razón
+                    social:</label>
+                <input type="text" class="form-control" name="razonSocialRFC" formControlName="razonSocialRFC"
+                    maxlength="50" id="buscarPorDenominacionNa">
+            </div>
+            <div *ngIf="buscarEmpresaForm.get('tipoDeEmpresa')?.value === '1'" class="form-group mt-4">
+                <label class="form-label" for="rfc">RFC: <span class="bi bi-question-circle-fill"
+                        title="{{ TEXTOS.RFC_TITULO_TOOLTIP }}" data-bs-toggle="tooltip"></span></label>
+                <input type="text" class="form-control" id="rfc" maxlength="20" formControlName="rfc">
+            </div>
+            <div class="form-group mt-4">
+                <label class="form-label" for="caat">CAAT: <span class="bi bi-question-circle-fill"
+                        title="{{ TEXTOS.CAAT_TITULO_TOOLTIP }}" data-bs-toggle="tooltip"></span></label>
+                <input type="text" class="form-control" name="caat" formControlName="caat" maxlength="50" id="caat">
+            </div>
+        </div>
+        <div class="col-md-offset-7 col-md-1 mt-5">
+            <button type="button" id="buscaCandidato1" name="buscaCandidato1" class="btn btn-primary pull-right"
+                [disabled]="formularioDeshabilitado" (click)="buscarEmpresa();">Buscar</button>
+        </div>
+
+        @if (nuevaAlertaNotificacion) {
+        <section>
+            <lib-notificaciones [notificacionInput]="nuevaAlertaNotificacion">
+            </lib-notificaciones>
+        </section>
+        }
+    </div>
+</div>
+
+
+
+<!--Empresa con CAAT registrado-->
+<label for="Empresa con CAAT registrado">Empresa con CAAT registrado:</label>
+
+<div class="row mt-5">
+    <div class="col-md-12">
+        <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccionCheckbox"
+            (listaDeFilaSeleccionada)="onSelectEmpresaCaatRegistrada($event)"
+            [disableSeleccionTablaCheckBox]="formularioDeshabilitado"
+            [configuracionTabla]="caatRegistradoEmpresaEncabezadoDeTabla" [datos]="caatRegistradoEmpresaTabla">
+        </app-tabla-dinamica>
+    </div>
+</div>
+@if(candidatoModificarCaatTabla.length === 0) {
+<div class="row top-buffer">
+    <div class="col-md-12">
+        <button type="button" (click)="agregarEmpresa()" id="guardarBuscado2" name="guardarBuscado2"
+            class="btn btn-primary pull-right" [disabled]="formularioDeshabilitado">Agregar
+        </button>
+    </div>
+</div>
+
+}
+
+<!--Agregar Seleccionado Modal Popup-->
+@if (nuevaAlertaSeleccionNotificacion) {
+<section>
+    <lib-notificaciones [notificacionInput]="nuevaAlertaSeleccionNotificacion">
+    </lib-notificaciones>
+</section>
+}
+
+<!--Candidato a modificar CAAT marítimo-->
+<label for="Candidato a modificar CAAT marítimo">Candidato a modificar CAAT marítimo:</label>
+<div class="row mt-5">
+    <div class="col-md-12">
+        <app-tabla-dinamica (listaDeFilaSeleccionada)="onSelectCandidatos($event)" [isInvalida]="mostrarError" [tipoSeleccionTabla]="tablaSeleccionCheckbox"
+            [disableSeleccionTablaCheckBox]="formularioDeshabilitado"
+            [configuracionTabla]="candidatoModificarCaatEncabezadoDeTabla" [datos]="candidatoModificarCaatTabla">
+        </app-tabla-dinamica>
+    </div>
+</div>
+
+<div class="mt-5 d-flex justify-content-end">
+    <button type="button" class="btn btn-danger ms-3" (click)="preguntarBorrarEmpresa()" [disabled]="candidatoModificarCaatTabla.length === 0">
+        Eliminar
+    </button>
+    <button type="button" class="btn btn-primary ms-3" (click)="modificarSeleccionado()" [disabled]="candidatoModificarCaatTabla.length === 0">
+        Modificar
+    </button>
+</div>
+
+
+<div class="modal fade" #modalAgregarEmpresa id="modalAgregarEmpresa" tabindex="-5"
+    aria-labelledby="modalAgregarEmpresaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <app-persona-moral-nacional (empresaCaat)="agregarSeleccionado($event)"
+                [empresaModificar]="empresaAmodificar" (cerrar)="cerrarModalEvent($event)" />
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" #modalAgregarEmpresaExtranjera id="modalAgregarEmpresa" tabindex="-2"
+    aria-labelledby="modalAgregarEmpresaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <app-persona-moral-extranjera (empresaCaat)="agregarSeleccionado($event)"
+                [empresaModificar]="empresaAmodificar" (cerrar)="cerrarModalEvent($event)" />
+        </div>
+    </div>
+</div>
+
+
+@if (mostrarInfo) {
+<lib-notificaciones [notificacionInput]="nuevaNotificacionInfo"
+  (confirmacionModal)="aceptarInfo($event)"></lib-notificaciones>
+}

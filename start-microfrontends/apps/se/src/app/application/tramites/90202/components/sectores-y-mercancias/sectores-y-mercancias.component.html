@@ -1,0 +1,106 @@
+<div class="container">
+    <form [formGroup]="sectoresYMercancias">
+        <div class="row">
+            <div class="col-md-12">
+                <ng-titulo titulo="Datos de la solicitud"></ng-titulo>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <div class="col-md-4">
+                    <app-catalogo-select [catalogo]="sectorLista" [label]="'Sector'" formControlName="sector" name="sector" 
+                    [isDisabled]="esFormularioSoloLectura"
+                    [required]="true"
+                    (change)="
+                    setValoresStore(
+                    sectoresYMercancias,
+                    'sector',
+                    'setSector'
+                    )"></app-catalogo-select>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class=" text-end mt-5">
+                <button class="btn btn-default me-2" [disabled]="esFormularioSoloLectura" (click)="eliminarSector()">Eliminar sector</button>
+                <button class="btn btn-primary" (click)="agregarSector()" [disabled]="esFormularioSoloLectura">Agregar sector</button>
+            </div>
+        </div>
+        <div class="row">
+            <h6>Solicitud PROSEC sector plural*:</h6>
+            <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.RADIO" [configuracionTabla]="sectorColumnsConfiguracion" [datos]="sectors" (filaClic)="seleccionarFila($event)" [disableSeleccionTablaRadio]="esFormularioSoloLectura" ></app-tabla-dinamica>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <ng-titulo titulo="Mercancías a producir"></ng-titulo>
+            </div>
+        </div>
+        <div class="row">
+            <ng-alert [CONTENIDO]="TEXTO"></ng-alert>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <label class="form-label" for="Fraccion_arancelaria">Fracción arancelaria<span
+                    [ngClass]="{'text-danger':sectoresYMercancias.get('Fraccion_arancelaria')?.errors?.['required']&& sectoresYMercancias.get('Fraccion_arancelaria')?.touched }"
+                  >*</span>:</label>
+                <input type="text" 
+                value=""
+                class="form-control" 
+                id="Fraccion_arancelaria"  
+                 [ngClass]="{
+                    'is-invalid':
+                    sectoresYMercancias.get('Fraccion_arancelaria')?.invalid &&
+                    sectoresYMercancias.get('Fraccion_arancelaria')?.touched
+                  }"
+                placeholder="Ingresa una fracción"
+                formControlName="Fraccion_arancelaria"
+                (change)="
+                setValoresStore(
+                    sectoresYMercancias,
+                  'Fraccion_arancelaria',
+                  'setFraccionArancelaria'
+                )"
+                maxlength="8"
+                libSoloNumeros
+                >
+                <div
+                *ngIf="sectoresYMercancias.get('Fraccion_arancelaria')?.errors?.['required']&& sectoresYMercancias.get('Fraccion_arancelaria')?.touched">
+                <small class="mensaje-error">Este campo es obligatorio.</small>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-5">
+            <div class=" text-end mt-5">
+                <button class="btn btn-default me-2" [disabled]="esFormularioSoloLectura" (click)="eliminarSectorProducir()">Eliminar</button>
+                <button class="btn btn-primary" (click)="agregarProducir()" [disabled]="esFormularioSoloLectura">Agregar</button>
+            </div>
+        </div>
+        <div class="row">
+            <h6>Solicitud PROSEC sector plural:</h6>
+            <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.RADIO" [configuracionTabla]="producirColumnConfiguracion" [datos]="producir" (filaSeleccionada)="seleccionarFilaProducir($event)" [disableSeleccionTablaRadio]="esFormularioSoloLectura"></app-tabla-dinamica>
+        </div>
+    </form>
+    <div>
+        @if(espectaculoAlerta){
+            <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+            (confirmacionModal)="eliminarPedimento($event)"></lib-notificaciones>
+        }
+        @if(espectaculoDuplicateAlerta){
+            <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+            (confirmacionModal)="eliminarDuplicate()"></lib-notificaciones>
+        }
+        @if(espectaculoConfirmar){
+            <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+            (confirmacionModal)="eliminarPedimentoDatos($event)"></lib-notificaciones>
+        }
+        @if(espectaculoAlertaProducir){
+            <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+            (confirmacionModal)="eliminarPedimentoProducirAlerta($event)"></lib-notificaciones>
+        }
+        @if(espectaculoConfirmarProducir){
+            <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+            (confirmacionModal)="eliminarPedimentoProducirDatos($event)"></lib-notificaciones>
+        }
+    </div>
+</div>

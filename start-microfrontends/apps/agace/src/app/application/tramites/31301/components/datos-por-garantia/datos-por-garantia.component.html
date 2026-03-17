@@ -1,0 +1,375 @@
+<div class="container">
+  @if(solicitud31301State.tipoDeEndoso === 3) {
+  <form [formGroup]="polizaDeFianzaForm">
+    <div class="row">
+      <div class="col-md-12">
+        <ng-titulo titulo="Datos de la póliza de fianza" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8">
+        <app-catalogo-select
+          id="cveGenerica1Carta"
+          [catalogo]="nombreInstitucionCatalogo.catalogos"
+          [label]="nombreInstitucionCatalogo.labelNombre"
+          [placeholder]="nombreInstitucionCatalogo.primerOpcion"
+          [isDisabled]="false"
+          [required]="nombreInstitucionCatalogo.required"
+          formControlName="polizaDeFianza"
+          (selectionChange)="seleccionaNombreInstitucion($event)"
+        >
+        </app-catalogo-select>
+      </div>
+      <div class="col-md-4"></div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="descripcionGenerica1Carta"
+            >Número de folio:
+            <span
+              tooltip="Número de folio de la póliza de fianza"
+              data-bs-toggle="tooltip"
+            >
+              <i class="bi bi-question-circle-fill"></i
+            ></span>
+          </label>
+          <input
+            class="form-control"
+            type="text"
+            size="80"
+            id="descripcionGenerica1Carta"
+            formControlName="numeroFolio"
+          />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="cveGenerica1Carta"
+            >RFC de la institución de fianza:</label
+          >
+          <input
+            class="form-control"
+            type="text"
+            id="cveGenerica1Carta"
+            size="80"
+            formControlName="rfcInstitucion"
+          />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="fechaGenerica1Carta"
+            >Fecha de expedición:</label
+          >
+          <input
+            class="form-control"
+            type="text"
+            id="fechaGenerica1Carta"
+            size="30"
+            formControlName="fechaExpedicion"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <input-fecha
+          class="width"
+          [isDisabled]="esFormularioSoloLectura"
+          [setFecha]="polizaDeFianzaForm.get('fechaInicioVigencia')?.value"
+          [datos]="configuracionFechaInicioVigencia"
+          [tooltipQuestionCircle]="true"
+          [tooltipQuestionCircleText]="
+            'Fecha inicio de la ampliación de vigencia'
+          "
+        ></input-fecha>
+      </div>
+      <div class="col-md-4">
+        <input-fecha
+          class="width"
+          [isDisabled]="esFormularioSoloLectura"
+          [setFecha]="polizaDeFianzaForm.get('fechaFinVigencia')?.value"
+          [datos]="configuracionFechaFinVigencia"
+          [tooltipQuestionCircle]="true"
+          [tooltipQuestionCircleText]="'Fecha fin de la ampliación de vigencia'"
+        ></input-fecha>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="importeGenerico1Carta"
+            >Importe total en moneda nacional que ampara la póliza de
+            fianza:</label
+          >
+          <input
+            class="form-control"
+            type="text"
+            id="importeGenerico1Carta"
+            size="30"
+            formControlName="importeTotal"
+          />
+        </div>
+      </div>
+      <div class="col-md-4"></div>
+    </div>
+  </form>
+  } @if(solicitud31301State.tipoDeEndoso === 1 ||
+  solicitud31301State.tipoDeEndoso === 2 || solicitud31301State.tipoDeEndoso ===
+  4) {
+  <form [formGroup]="polizaDeFianzaAnteriorForm">
+    <div class="row">
+      <div class="col-md-12">
+        <ng-titulo titulo="Datos de la póliza de fianza anterior" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8">
+        <app-catalogo-select
+          id="cveGenerica1Carta"
+          [catalogo]="nombreInstitucionAnteriorCatalogo.catalogos"
+          [label]="nombreInstitucionAnteriorCatalogo.labelNombre"
+          [placeholder]="nombreInstitucionAnteriorCatalogo.primerOpcion"
+          [isDisabled]="false"
+          [required]="nombreInstitucionAnteriorCatalogo.required"
+          formControlName="polizaDeFianzaAnterior"
+          (selectionChange)="seleccionaNombreInstitucionAnterior($event)"
+        >
+        </app-catalogo-select>
+      </div>
+      <div class="col-md-4"></div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="descripcionGenerica1Carta"
+            >Número de folio:
+            <span
+              tooltip="Número de folio de la póliza de fianza"
+              data-bs-toggle="tooltip"
+            >
+              <i class="bi bi-question-circle-fill"></i
+            ></span>
+          </label>
+          <input
+            class="form-control"
+            type="text"
+            size="80"
+            id="descripcionGenerica1Carta"
+            formControlName="numeroFolioAnterior"
+          />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="cveGenerica1Carta"
+            >RFC de la institución de fianza:</label
+          >
+          <input
+            class="form-control"
+            type="text"
+            id="cveGenerica1Carta"
+            size="80"
+            formControlName="rfcInstitucionAnterior"
+          />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="fechaGenerica1Carta"
+            >Fecha de expedición:</label
+          >
+          <input
+            class="form-control"
+            type="text"
+            id="fechaGenerica1Carta"
+            size="30"
+            formControlName="fechaExpedicionAnterior"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <input-fecha
+          class="width"
+          [isDisabled]="true"
+          [setFecha]="solicitud31301State.fechaInicioVigenciaAnterior"
+          [datos]="configuracionFechaInicioAnteriorVigencia"
+          [tooltipQuestionCircle]="(solicitud31301State.tipoDeEndoso === 1 || solicitud31301State.tipoDeEndoso === 2 || solicitud31301State.tipoDeEndoso === 4) ? false : true"
+          [tooltipQuestionCircleText]="
+            'Fecha inicio de la ampliación de vigencia'
+          "
+          [icono]="false"
+        ></input-fecha>
+      </div>
+      <div class="col-md-4">
+        <input-fecha
+          class="width"
+          [isDisabled]="true"
+          [setFecha]="solicitud31301State.fechaFinVigenciaAnterior"
+          [datos]="configuracionFechaFinAnteriorVigencia"
+          [tooltipQuestionCircle]="(solicitud31301State.tipoDeEndoso === 1 || solicitud31301State.tipoDeEndoso === 2 || solicitud31301State.tipoDeEndoso === 4) ? false : true"
+          [tooltipQuestionCircleText]="'Fecha fin de la ampliación de vigencia'"
+          [icono]="false"
+        ></input-fecha>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="importeGenerico1Carta"
+            >Importe total en moneda nacional que ampara la póliza de
+            fianza:</label
+          >
+          <input
+            class="form-control"
+            type="text"
+            id="importeGenerico1Carta"
+            size="30"
+            formControlName="importeTotalAnterior"
+          />
+        </div>
+      </div>
+      <div class="col-md-4"></div>
+    </div>
+  </form>
+  } @if(solicitud31301State.tipoDeEndoso === 1 ||
+  solicitud31301State.tipoDeEndoso === 2 || solicitud31301State.tipoDeEndoso ===
+  4) {
+  <form [formGroup]="polizaDeFianzaActualForm">
+    <div class="row">
+      <div class="col-md-12">
+        <ng-titulo titulo="Datos de la póliza de fianza actual" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8">
+        <app-catalogo-select
+          id="cveGenerica1Carta"
+          [catalogo]="nombreInstitucionActualCatalogo.catalogos"
+          [label]="nombreInstitucionActualCatalogo.labelNombre"
+          [placeholder]="nombreInstitucionActualCatalogo.primerOpcion"
+          [isDisabled]="false"
+          [required]="nombreInstitucionActualCatalogo.required"
+          formControlName="polizaDeFianzaActual"
+          (selectionChange)="seleccionaNombreInstitucionActual($event)"
+        >
+        </app-catalogo-select>
+      </div>
+      <div class="col-md-4"></div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="descripcionGenerica1Carta"
+            >Número de folio:
+            <span
+              tooltip="Número de folio de la póliza de fianza"
+              data-bs-toggle="tooltip"
+            >
+              <i class="bi bi-question-circle-fill"></i
+            ></span>
+          </label>
+          <input
+            class="form-control"
+            type="text"
+            size="80"
+            id="descripcionGenerica1Carta"
+            formControlName="numeroFolioActual"
+          />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="cveGenerica1Carta"
+            >RFC de la institución de fianza:</label
+          >
+          <input
+            class="form-control"
+            type="text"
+            id="cveGenerica1Carta"
+            size="80"
+            formControlName="rfcInstitucionActual"
+          />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="fechaGenerica1Carta"
+            >Fecha de expedición:</label
+          >
+          <input
+            class="form-control"
+            type="text"
+            id="fechaGenerica1Carta"
+            size="30"
+            formControlName="fechaExpedicionActual"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <input-fecha
+          class="width"
+          [isDisabled]="true"
+          [setFecha]="solicitud31301State.fechaInicioVigenciaActual"
+          [datos]="configuracionFechaInicioActualVigencia"
+          [tooltipQuestionCircle]="solicitud31301State.tipoDeEndoso === 1 ? false : true"
+          [tooltipQuestionCircleText]="
+            'Fecha inicio de la ampliación de vigencia'
+          "
+          [icono]="solicitud31301State.tipoDeEndoso === 2 ? true : false"
+        ></input-fecha>
+      </div>
+      <div class="col-md-4">
+        <input-fecha
+          class="width"
+          [isDisabled]="true"
+          [setFecha]="solicitud31301State.fechaFinVigenciaActual"
+          [datos]="configuracionFechaFinActualVigencia"
+          [tooltipQuestionCircle]="solicitud31301State.tipoDeEndoso === 1 ? false : true"
+          [tooltipQuestionCircleText]="'Fecha fin de la ampliación de vigencia'"
+          [icono]="solicitud31301State.tipoDeEndoso === 2 ? true : false"
+        ></input-fecha>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="montoAmpliaActual"
+            >Monto en el que se amplía:</label
+          >
+          <input
+            class="form-control"
+            type="text"
+            id="montoAmpliaActual"
+            size="30"
+            formControlName="montoAmpliaActual"
+          />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="montoGarantizadoActual"
+            >Monto garantizado de ampliacion:
+            <span
+              tooltip="Monto garantizado de ampliacion"
+              data-bs-toggle="tooltip"
+              ><i class="bi bi-question-circle-fill"></i></span
+          ></label>
+          <input
+            class="form-control"
+            type="text"
+            id="montoGarantizadoActual"
+            size="30"
+            formControlName="montoGarantizadoActual"
+          />
+        </div>
+      </div>
+    </div>
+  </form>
+  }
+</div>

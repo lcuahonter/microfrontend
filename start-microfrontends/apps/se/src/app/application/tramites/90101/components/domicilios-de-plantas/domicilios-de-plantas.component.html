@@ -1,0 +1,115 @@
+<div class="container">
+    <form [formGroup]="forma">
+        <div class="row mt-5">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label" for="modalidad">Selecciona la modalidad</label>
+                    <input type="text" 
+                    value=""
+                    class="form-control" 
+                    id="modalidad"  
+                    placeholder="Selecciona la modalidad"
+                    formControlName="modalidad"
+                    >
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <ng-titulo titulo="Consulta de domicilios"></ng-titulo>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <ng-alert [CONTENIDO]="TEXTO"></ng-alert>
+            </div>
+        </div>
+        <div class="row mb-5">
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="estadoSeleccionar" [label]="'Estado'" [required]="true" formControlName="Estado" name="Estado"
+                [isDisabled]="esFormularioSoloLectura"
+                (selectionChange)="
+                    setValoresStore(
+                    forma,
+                    'Estado',
+                    'setEstado'
+                    );onCambioEstado();" >
+                </app-catalogo-select>
+                <div
+                *ngIf="forma.get('Estado')?.invalid && forma.get('Estado')?.touched">
+                <small class="mensaje-error">Este campo es obligatorio.</small>
+                </div>
+            </div>
+            <div class="col-md-4"></div>
+            <div class="col-md-4 text-end">
+                <button type="button" class="btn btn-primary mt-5" (click)="mostrarDomicilios()" [disabled]="esFormularioSoloLectura">Mostrar domicilios</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h6>Datos de las plantas donde se realizarán las operaciones PROSEC disponibles:</h6>
+                <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX" [configuracionTabla]="plantaColumnsConfiguracion" [datos]="plantasDatos" (listaDeFilaSeleccionada)="seleccionTabla($event)" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"></app-tabla-dinamica>
+            </div>
+        </div>
+        <div class="row mb-5">
+            <div class="col-md-12 text-end mt-5">
+                <button class="btn btn-default me-2" [disabled]="esFormularioSoloLectura" (click)="eliminarPlantas()">Eliminar plantas</button>
+                <button class="btn btn-primary" (click)="agregarPlantas()" [disabled]="esFormularioSoloLectura">Agregar plantas</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h6>Datos de las plantas donde se realizarán las operaciones PROSEC seleccionadas<span>*</span>:</h6>
+                <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX" [configuracionTabla]="plantaColumnsConfiguracion" [datos]="prosecDatos" (listaDeFilaSeleccionada)="seleccionTabla($event)" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"></app-tabla-dinamica>
+            </div>
+        </div>
+        <div class="row mb-5 mt-5">
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="RepresentacionFederal" [label]="'Representación federal'" [required]="true" formControlName="RepresentacionFederal" name="RepresentacionFederal" 
+                [isDisabled]="esFormularioSoloLectura"
+                (change)="
+                setValoresStore(
+                forma,
+                'RepresentacionFederal',
+                'setRepresentacionFederal'
+                )" ></app-catalogo-select>
+                <div
+                *ngIf="forma.get('RepresentacionFederal')?.invalid && forma.get('RepresentacionFederal')?.touched">
+                <small class="mensaje-error">Este campo es obligatorio.</small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="ActividadProductiva" [label]="'Actividad productiva'" [required]="true" formControlName="ActividadProductiva" name="ActividadProductiva" 
+                [isDisabled]="esFormularioSoloLectura"
+                (change)="
+                setValoresStore(
+                forma,
+                'ActividadProductiva',
+                'setActividadProductiva'
+                )"  ></app-catalogo-select>
+                <div
+                *ngIf="forma.get('ActividadProductiva')?.invalid && forma.get('ActividadProductiva')?.touched">
+                <small class="mensaje-error">Este campo es obligatorio.</small>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div>
+        @if(eliminarPlantasAlerta) {
+            <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+            (confirmacionModal)="eliminarPedimento($event)"></lib-notificaciones>
+        }
+        @if(eliminarPlantasConfirmacion) {
+            <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+            (confirmacionModal)="eliminarPedimentoDatos($event)"></lib-notificaciones>
+        }
+        @if(espectaculoAlerta) {
+            <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+            (confirmacionModal)="cerrarEspectaculoAlertaModal()"></lib-notificaciones>
+        }
+        @if(espectaculoAlertaAgregar){
+            <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+            (confirmacionModal)="agregarPlantasconfirmar()"></lib-notificaciones>
+        }
+    </div>
+</div>

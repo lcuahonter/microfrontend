@@ -1,0 +1,123 @@
+<div class="container py-4">
+  <ng-titulo [titulo]="'Correlación (agregar) Fracción Arancelaria'"></ng-titulo>
+
+  <app-error-messages [errors]="errors"></app-error-messages>
+
+  <div class="card mt-4 shadow-sm border-0">
+    <div class="card-body bg-light rounded p-4">
+      <form [formGroup]="form">
+        <p class="text-danger small mb-3">* Datos requeridos</p>
+        <div class="row g-3 mb-4">
+          <div class="col-md-6">
+            <div class="d-flex align-items-center gap-2">
+              <label class="form-label text-nowrap mb-0"><span class="text-danger">*</span> Fracción Arancelaria:</label>
+              <input type="text" class="form-control border-primary" formControlName="fraccionArancelaria" 
+                     (blur)="onFraccionChange()" placeholder="Números y letras">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="d-flex align-items-center gap-2">
+              <label class="form-label text-nowrap mb-0"><span class="text-danger">*</span> Tipo de Operación:</label>
+              <select class="form-control form-select border-primary" formControlName="tipoOperacion" (change)="onFraccionChange()">
+                <option [ngValue]="null">Seleccione un valor</option>
+                <option value="importacion">Importación</option>
+                <option value="exportacion">Exportación</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="border rounded p-4 bg-white shadow-sm position-relative">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-bold"><span class="text-danger">*</span> Tipo de Unidad de Medida de Tarifa:</label>
+              <input type="text" class="form-control bg-light" formControlName="unidadMedida" readonly>
+            </div>
+            <div class="col-md-6 d-flex align-items-end">
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" formControlName="prohibida" id="checkProhibida">
+                <label class="form-check-label fw-bold" for="checkProhibida">
+                  <span class="text-danger">*</span> Prohibida:
+                </label>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" formControlName="exenta" id="checkExenta">
+                <label class="form-check-label fw-bold" for="checkExenta">
+                  <span class="text-danger">*</span> Exenta:
+                </label>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold"><span class="text-danger">*</span> Impuesto Ad. Valorem:</label>
+              <div class="input-group">
+                <input type="text" class="form-control bg-light" formControlName="impuestoAdValorem" readonly>
+                <span class="input-group-text">%</span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-6">
+                  <label class="form-label fw-bold"><span class="text-danger">*</span> Impuesto Especifico:</label>
+                  <input type="text" class="form-control bg-light" formControlName="impuestoEspecifico" readonly>
+                </div>
+                <div class="col-6">
+                  <label class="form-label fw-bold">Tipo Impuesto Especifico:</label>
+                  <input type="text" class="form-control bg-light" formControlName="tipoImpuestoEspecifico" readonly>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label fw-bold"><span class="text-danger">*</span> Descripción de la Fracción:</label>
+              <textarea class="form-control bg-light" formControlName="descripcion" rows="2" readonly></textarea>
+            </div>
+            <div class="col-md-6">
+              <input-fecha [datos]="configuracionFechaInicio"></input-fecha>
+            </div>
+            <div class="col-md-6">
+              <input-fecha [datos]="configuracionFechaFin"></input-fecha>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-5">
+          <div class="col-12 d-flex justify-content-center gap-3">
+            <button type="button" class="btn btn-primary rounded-pill px-4" (click)="onAgregarCargaMasiva()">
+              Agregar Carga Masiva
+            </button>
+            <button type="button" class="btn btn-default rounded-pill px-4" (click)="onCancelar()">
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="modalCargaMasiva" tabindex="-1" #modalCarga>
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content overflow-hidden rounded-4 shadow border-0">
+      <div class="modal-header border-0 bg-dark">
+        <h5 class="modal-title fw-bold text-white">Carga Masiva Agregar Fracción Arancelaria TIGIE</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body p-4 text-center">
+        <div class="border rounded p-4 bg-white">
+          <h6 class="text-muted border-bottom pb-2 mb-4 text-start">Agregar Fracción Arancelaria</h6>
+          <app-cargar-archivo-menus titulo="Seleccione Archivo a Procesar:" (cancel)="closeModal()"></app-cargar-archivo-menus>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="modalValidando" tabindex="-1" #modalValidando>
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content text-center p-4 rounded-4 shadow border-0">
+      <div class="mb-3">
+        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+      </div>
+      <h6 class="fw-bold mb-0 text-primary">Validando Fracción Arancelaria...</h6>
+    </div>
+  </div>
+</div>

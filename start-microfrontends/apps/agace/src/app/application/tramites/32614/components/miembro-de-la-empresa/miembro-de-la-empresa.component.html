@@ -1,0 +1,120 @@
+<div class="container">
+  <form [formGroup]="miembroEmpresaForm">
+    <div class="row mt-4">
+      <div class="col-md-8">
+        <ng-titulo titulo="Miembro de la empresa" />
+      </div>
+      <div class="col-md-4"></div>
+      <div class="col-md-4 mt-4">
+        <app-catalogo-select formControlName="miembroCaracterDe" [catalogo]="enSuCaracterDeLista.catalogos"
+          [label]="enSuCaracterDeLista.labelNombre" [placeholder]="enSuCaracterDeLista.primerOpcion"
+          [required]="tipoDePersonaLista.required" [isDisabled]="esFormularioSoloLectura" name="enSuCaracterDe"
+          id="enSuCaracterDe" (selectionChange)="actualizarMiembroCaracterDe($event)"></app-catalogo-select>
+      </div>
+      <div class="col-md-8 mt-4"></div>
+      <div class="col-md-4 mt-4">
+        <label class="form-label text-start">Obligado a tributar en México</label>
+        <app-input-radio formControlName="miembroTributarMexico" [radioOptions]="sinoOpcion.radioOptions"
+          [isRequired]="true" [layout]="'horizontal'" [gap]="'50px'"
+          (valueChange)="actualizarMiembroTributarMexico($event)"></app-input-radio>
+      </div>
+      <div class="col-md-8 mt-4"></div>
+      <div class="col-md-4 mt-4">
+        <app-catalogo-select formControlName="miembroNacionalidad" [catalogo]="nacionalidadLista.catalogos"
+          [label]="nacionalidadLista.labelNombre" [placeholder]="nacionalidadLista.primerOpcion"
+          [required]="tipoDePersonaLista.required" [isDisabled]="esFormularioSoloLectura" name="nacionalidad"
+          id="nacionalidad" (selectionChange)="actualizarMiembroNacionalidad($event)"></app-catalogo-select>
+      </div>
+      <div class="col-md-8 mt-4"></div>
+      @if(seleccionarObligadoTributar === 1){
+      <div class="col-md-4 mt-4">
+        <label class="form-label text-start" for="RFC">RFC*:</label>
+        <input class="form-control" formControlName="miembroRfc" type="text" size="80" id="miembroRfc" name="miembroRfc"
+          (change)="actualizarMiembroRFC($event)" />
+        <div *ngIf="noEsValido('miembroRfc')" class="text-danger">
+          Este campo es obligatorio
+        </div>
+      </div>
+      <div class="col-md-8 mt-4"></div>
+      <div class="col-md-12 mt-4">
+        <div class="form-group pull-left">
+          <button type="button" name="Buscar" id="btnBusqRfc" [disabled]="esFormularioSoloLectura"
+            (click)="buscarRFCDatos()" class="btn btn-primary me-5">
+            Buscar
+          </button>
+        </div>
+      </div>
+      <div class="col-md-4 mt-4">
+        <label class="form-label text-start" for="miembroRegistroFederal">Registro Federal de Contribuyentes *:</label>
+        <input class="form-control" formControlName="miembroRegistroFederal" type="text" id="registroFederal"
+          name="registroFederal" />
+        <div *ngIf="noEsValido('miembroRegistroFederal')" class="text-danger">
+          Este campo es obligatorio
+        </div>
+      </div>
+      <div class="col-md-8 mt-4">
+        <label class="form-label text-start" for="miembroNombreCompleto">Nombre completo *:</label>
+        <input class="form-control" formControlName="miembroNombreCompleto" type="text" id="miembroNombreCompleto"
+          name="miembroNombreCompleto" />
+        <div *ngIf="noEsValido('miembroNombreCompleto')" class="text-danger">
+          Este campo es obligatorio
+        </div>
+      </div>
+      } @if(seleccionarObligadoTributar === 2){
+      <div class="col-md-4 mt-4">
+        <app-catalogo-select formControlName="miembroTipoPersonaMuestra" [catalogo]="tipoDePersonaLista.catalogos"
+          [label]="tipoDePersonaLista.labelNombre" [placeholder]="tipoDePersonaLista.primerOpcion"
+          [required]="tipoDePersonaLista.required" [isDisabled]="esFormularioSoloLectura" name="tipoDePersona"
+          id="tipoDePersona" (selectionChange)="actualizarMiembroTipoPersonaMuestra($event)"></app-catalogo-select>
+      </div>
+      <div class="col-md-8 mt-4"></div>
+      @if(seleccionarTipoDePersona === 1){
+      <div class="col-md-4 mt-4">
+        <label class="form-label text-start" for="miembroNombre">Nombre (s) *:</label>
+        <input class="form-control" type="text" formControlName="miembroNombre" id="miembroNombre" name="miembroNombre"
+          (change)="actualizarMiembroNombre($event)" />
+        <div *ngIf="noEsValido('miembroNombre')" class="text-danger">
+          Este campo es obligatorio
+        </div>
+      </div>
+      <div class="col-md-4 mt-4">
+        <label class="form-label text-start" for="apellidoPaterno">Apellido paterno *:</label>
+        <input class="form-control" type="text" formControlName="miembroApellidoPaterno" id="apellidoPaterno"
+          name="apellidoPaterno" (change)="actualizarMiembroApellidoPaterno($event)" />
+        <div *ngIf="noEsValido('miembroApellidoPaterno')" class="text-danger">
+          Este campo es obligatorio
+        </div>
+      </div>
+      <div class="col-md-4 mt-4">
+        <label class="form-label text-start" for="apellidoMaterno">Apellido materno *:</label>
+        <input class="form-control" type="text" formControlName="miembroApellidoMaterno" id="apellidoMaterno"
+          name="apellidoMaterno" (change)="actualizarMiembroApellidoMaterno($event)" />
+        <div *ngIf="noEsValido('miembroApellidoMaterno')" class="text-danger">
+          Este campo es obligatorio
+        </div>
+      </div>
+      } @if(seleccionarTipoDePersona === 2){
+      <div class="col-md-12 mt-4">
+        <label class="form-label text-start" for="nombreEmpresa">Nombre de la empresa *:</label>
+        <input class="form-control" formControlName="miembroNombreEmpresa" type="text" id="nombreEmpresa"
+          name="nombreEmpresa" (change)="actualizarMiembroNombreEmpresa($event)" />
+        <div *ngIf="noEsValido('miembroNombreEmpresa')" class="text-danger">
+          Este campo es obligatorio
+        </div>
+      </div>
+      } }
+      <div class="col-md-12 mt-4">
+        <div class="d-flex justify-content-end" style="margin-right: 15%">
+          <button type="button" id="Aceptar" [disabled]="esFormularioSoloLectura" (click)="aceptarModal()"
+            data-bs-dismiss="modal" #closeModal class="btn btn-primary me-3">
+            Aceptar
+          </button>
+          <button type="button" id="Cancelar" [disabled]="esFormularioSoloLectura" (click)="cerrarModal()"
+            data-bs-dismiss="modal" #closeModal class="btn btn-danger">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

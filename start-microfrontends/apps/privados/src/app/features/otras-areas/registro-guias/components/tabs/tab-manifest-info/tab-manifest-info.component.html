@@ -1,0 +1,395 @@
+<form [formGroup]="manifestForm" (ngSubmit)="onSubmit()" autocomplete="off">
+  <h3>Información del Manifiesto</h3>
+  <hr class="red" />
+  <div class="row">
+    <!-- Manifest number -->
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Manifest number*:</label>
+        <app-tooltip
+          text="La estructura del Manifiesto es: Código del transportista (IATA o ICAO)+Número de vuelo+Fecha y hora de despegue+Código del último aeropuerto en el extranjero con destino a México."
+        ></app-tooltip>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="manifestNumber"
+          uppercase
+          [appMaxLength]="25"
+          [ngClass]="{
+            'form-control-error': formUtils.isValidField(manifestForm, 'manifestNumber')
+          }"
+        />
+        <ng-container *ngIf="formUtils.isValidField(manifestForm, 'manifestNumber')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(manifestForm, 'manifestNumber') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Flight number -->
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Flight number*:</label>
+        <app-tooltip text="Número de Vuelo"></app-tooltip>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="flightNumber"
+          [appMaxLength]="17"
+          [ngClass]="{
+            'form-control-error': formUtils.isValidField(manifestForm, 'flightNumber')
+          }"
+        />
+        <ng-container *ngIf="formUtils.isValidField(manifestForm, 'flightNumber')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(manifestForm, 'flightNumber') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Total Gross Weight Measure -->
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Total Gross Weight Measure:</label>
+        <app-tooltip text="Peso Bruto Total"></app-tooltip>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="totalGrossWeight"
+          numericDecimal
+          [appMaxLength]="7"
+        />
+      </div>
+    </div>
+
+    <!-- Weight Unit Code -->
+    <div class="col-md-8 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Total Gross Weight Measure-unit Code:</label>
+        <app-tooltip text="Unidad de Medida del Peso Total (Bruto)"></app-tooltip>
+        <select class="form-control" formControlName="weightUnitCode">
+          <option [ngValue]="null">Selecciona una opción</option>
+          <option *ngFor="let unit of weightUnits" [value]="unit.clave">
+            {{ unit.valor }}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Total Package Quantity -->
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Total Package Quantity:</label>
+        <app-tooltip text="Cantidad total del paquete"></app-tooltip>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="packageQuantity"
+          numericDecimal
+          [appMaxLength]="7"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección fechas -->
+  <h3>Fechas programadas de arribo / carga</h3>
+  <hr class="red" />
+
+  <!-- Departure Location -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group">
+        <label class="control-label">Departure Location*:</label>
+        <div>
+          <label class="radio-inline">
+            <input type="radio" [value]="locationEnum.IATA" formControlName="departureLocationType" /> IATA
+          </label>
+          <label class="radio-inline">
+            <input type="radio" [value]="locationEnum.CONTROLLED_PREMISES" formControlName="departureLocationType" />
+            Recinto Fiscalizado
+          </label>
+        </div>
+        <ng-container *ngIf="formUtils.isValidField(manifestForm, 'departureLocationType')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(manifestForm, 'departureLocationType') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+
+    <ng-container *ngIf="radioHasValue('departureLocationType')">
+      <div class="col-md-4 col-sm-6 mt-1">
+        <div class="form-group">
+          <label class="control-label">I D*:</label>
+          <app-tooltip text="Lugar de Carga (Código)"></app-tooltip>
+          <select
+            class="form-control"
+            formControlName="departureId"
+            [ngClass]="{
+              'form-control-error': formUtils.isValidField(manifestForm, 'departureId')
+            }"
+          >
+            <option [ngValue]="null">Selecciona un valor</option>
+            <option *ngFor="let id of departureIds" [value]="id.valor">{{ id.clave }}</option>
+          </select>
+          <ng-container *ngIf="formUtils.isValidField(manifestForm, 'departureId')">
+            <small class="form-text form-text-error">
+              {{ formUtils.getFieldError(manifestForm, 'departureId') }}
+            </small>
+          </ng-container>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="col-md-4 col-sm-6 mt-1">
+      <div class="form-group">
+        <label class="control-label">Name:</label>
+        <app-tooltip text="Nombre del Lugar de Carga"></app-tooltip>
+        <input type="text" class="form-control" formControlName="departureName" readonly/>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Arrival Date -->
+    <div class="col-md-4 col-sm-6 mt-1">
+      <div class="form-group">
+        <date-picker
+          label="Arrival Date*:"
+          formControlName="arrivalDate"
+          [initialValue]="arrivalDate"
+          [hasError]="formUtils.isValidField(manifestForm, 'arrivalDate')">
+        ></date-picker>
+        <ng-container *ngIf="formUtils.isValidField(manifestForm, 'arrivalDate')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(manifestForm, 'arrivalDate') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Arrival Time -->
+    <div class="col-md-4 col-sm-6 mt-1">
+      <div class="form-group">
+        <label class="control-label">Arrival Time*:</label>
+        <app-tooltip text="Hora de arribo"></app-tooltip>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="HH:mm (24 hrs)"
+          appTimeFormat
+          formControlName="arrivalTime"
+          [ngClass]="{
+            'form-control-error': formUtils.isValidField(manifestForm, 'arrivalTime')
+          }"
+        />
+        <ng-container *ngIf="formUtils.isValidField(manifestForm, 'arrivalTime')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(manifestForm, 'arrivalTime') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Date/ Time Type -->
+    <div class="col-md-4 col-sm-6 mt-1">
+      <div class="form-group">
+        <label class="control-label">Date/ Time Type*:</label>
+        <app-tooltip text="Tipo de Fecha/Hora de Arribo"></app-tooltip>
+        <select
+          class="form-control"
+          formControlName="arrivalTimeType"
+          [ngClass]="{
+            'form-control-error': formUtils.isValidField(manifestForm, 'arrivalTimeType')
+          }"
+        >
+          <option [ngValue]="null">Selecciona una opción</option>
+          <option *ngFor="let type of timeTypes" [value]="type.clave">{{ type.valor }}</option>
+        </select>
+        <ng-container *ngIf="formUtils.isValidField(manifestForm, 'arrivalTimeType')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(manifestForm, 'arrivalTimeType') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading section -->
+  <div class="row">
+    <!-- Loading Date -->
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <date-picker
+          label="Loading Date*:"
+          formControlName="loadingDate"
+          [initialValue]="loadingDate"
+          [hasError]="formUtils.isValidField(manifestForm, 'loadingDate')">
+        ></date-picker>
+        <ng-container *ngIf="formUtils.isValidField(manifestForm, 'loadingDate')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(manifestForm, 'loadingDate') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Loading Time -->
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Loading Time*:</label>
+        <app-tooltip text="Hora de Despegue"></app-tooltip>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="HH:mm (24 hrs)"
+          appTimeFormat
+          formControlName="loadingTime"
+          [ngClass]="{
+            'form-control-error': formUtils.isValidField(manifestForm, 'loadingTime')
+          }"
+        />
+        <ng-container *ngIf="formUtils.isValidField(manifestForm, 'loadingTime')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(manifestForm, 'loadingTime') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Loading Time Type -->
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Date/ Time Type*:</label>
+        <app-tooltip text="Tipo de Fecha/Hora de Despegue"></app-tooltip>
+        <select
+          class="form-control"
+          formControlName="loadingTimeType"
+          [ngClass]="{
+            'form-control-error': formUtils.isValidField(manifestForm, 'loadingTime')
+          }"
+        >
+          <option [ngValue]="null">Selecciona una opción</option>
+          <option *ngFor="let type of timeTypes" [value]="type.clave">{{ type.valor }}</option>
+        </select>
+        <ng-container *ngIf="formUtils.isValidField(manifestForm, 'loadingTimeType')">
+          <small class="form-text form-text-error">
+            {{ formUtils.getFieldError(manifestForm, 'loadingTimeType') }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <!-- Arrival Location -->
+  <div class="row">
+    <div class="col-md-12">
+    <div class="form-group">
+      <label class="control-label">Arrival Location*:</label>
+      <div>
+        <label class="radio-inline">
+          <input type="radio" [value]="locationEnum.IATA" formControlName="arrivalLocationType" /> IATA
+        </label>
+        <label class="radio-inline">
+          <input
+            type="radio"
+            [value]="locationEnum.CONTROLLED_PREMISES"
+            formControlName="arrivalLocationType"
+          />Recinto Fiscalizado
+        </label>
+      </div>
+      <ng-container *ngIf="formUtils.isValidField(manifestForm, 'arrivalLocationType')">
+        <small class="form-text form-text-error">
+          {{ formUtils.getFieldError(manifestForm, 'arrivalLocationType') }}
+        </small>
+      </ng-container>
+    </div>
+  </div>
+  </div>
+
+  <div class="row mt-2">
+    <ng-container *ngIf="radioHasValue('arrivalLocationType')">
+      <div class="col-md-4 col-sm-6">
+        <div class="form-group">
+          <label class="control-label">I D*:</label>
+          <app-tooltip text="Lugar programado de arribo (Código)"></app-tooltip>
+          <select
+            class="form-control"
+            formControlName="arrivalLocationId"
+            [ngClass]="{
+              'form-control-error': formUtils.isValidField(manifestForm, 'arrivalLocationId')
+            }"
+          >
+            <option [ngValue]="null">Selecciona un valor</option>
+            <option *ngFor="let id of arrivalIds" [value]="id.valor">{{ id.clave }}</option>
+          </select>
+          <ng-container *ngIf="formUtils.isValidField(manifestForm, 'arrivalLocationId')">
+            <small class="form-text form-text-error">
+              {{ formUtils.getFieldError(manifestForm, 'arrivalLocationId') }}
+            </small>
+          </ng-container>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="col-md-4 col-sm-6">
+      <div class="form-group">
+        <label class="control-label">Name:</label>
+        <app-tooltip text="Lugar programado de arribo (Código)"></app-tooltip>
+        <input type="text" class="form-control" formControlName="arrivalLocationName" readonly/>
+      </div>
+    </div>
+  </div>
+
+  <h3>Tipo de carga</h3>
+  <hr class="red" />
+  <div class="row">
+    <div class="col-md-12">
+      <div [ngClass]="{ 'table-error': valueMissingLoadTypeTable }">
+        <app-table
+          [tableData]="tableLoadTypeData"
+          [borderedStyle]="true"
+          [isLoading]="isLoadingLoadTypeData"
+          [hiddenData]="hiddenLoadTypeData"
+          [error]="errorLoadTypeData"
+          [hasRedirect]="true"
+          [hasPagination]="false"
+          [ableSelectAllTable]="true"
+          [ableSelectRows]="true"
+          [displayHeader]="false"
+          (onRowsSelected)="loadTypeSelected($event)"/>
+      </div>
+      <ng-container *ngIf="valueMissingLoadTypeTable">
+        <small class="text-error">
+          {{ 'Este campo es obligatorio' }}
+        </small>
+      </ng-container>
+      <div class="text-right">
+        <gob-button
+          type="button"
+          className="btn-primary mr-2"
+          label="Agregar"
+          (clicked)="addLoadType()"
+        />
+        <ng-container *ngIf="displayDeleteBtnLoadType()">
+            <gob-button
+              type="button"
+              className="btn-danger"
+              label="Eliminar"
+              (clicked)="removeLoadType()"
+            />
+          </ng-container>
+      </div>
+    </div>
+  </div>
+</form>
+
+<app-dialog [id]="'registerDeletedLoadType'" [content]="'El registro seleccionado fue eliminado correctamente'"/>
+

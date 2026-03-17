@@ -1,0 +1,106 @@
+<form [formGroup]="empresaForm">
+    <!--Tipo de empresa-->
+    <ng-titulo titulo="Tipo de empresa"></ng-titulo>
+
+    <div>
+        <div class="row">
+            <div class="col-md-12">
+                <app-input-radio [radioOptions]="opcionDeBotonDeRadio" [isRequired]="true" [layout]="'vertical'"
+                    formControlName="tipoDeEmpresa"
+                    (valueChange)="enCambioDeValor($event.toString())"></app-input-radio>
+            </div>
+        </div>
+    </div>
+
+    @if(vista === '1'){
+    <div id="tabBuscaNcional" class="row">
+        <div class="col col-md-8">
+            <div class="form-group">
+                <label class="form-label" for="rfc">RFC: <span class="bi bi-question-circle-fill"
+                        title="{{ TEXTOS.RFC_TITULO_TOOLTIP }}" data-bs-toggle="tooltip"></span></label>
+                <input type="text" class="form-control" id="buscarPorRFCNa" maxlength="20"
+                    formControlName="buscarPorRFCNa">
+            </div>
+            <div class="form-group mt-4">
+                <label class="form-label" for="buscarPorDenominacionNa">Nombre, denominación o razón
+                    social:</label>
+                <input type="text" class="form-control" name="buscarPorDenominacionNa"
+                    formControlName="buscarPorDenominacionNa" maxlength="50" id="buscarPorDenominacionNa">
+            </div>
+            <div class="form-group mt-4">
+                <label class="form-label" for="folioCaatBusquedaNa">CAAT: <span class="bi bi-question-circle-fill"
+                        title="{{ TEXTOS.CAAT_TITULO_TOOLTIP }}" data-bs-toggle="tooltip"></span></label>
+                <input type="text" class="form-control" name="folioCaatBusquedaNa" formControlName="folioCaatBusquedaNa"
+                    maxlength="50" id="folioCaatBusquedaNa">
+            </div>
+        </div>
+        <div class="col-md-offset-7 col-md-1 mt-5">
+            <button type="button" id="buscaCandidato1" name="buscaCandidato1" class="btn btn-primary pull-right"
+                (click)="obtenerBuscarEmpresaCaat()">Buscar</button>
+        </div>
+    </div>
+    }
+
+    @if(vista === '2'){
+    <div id="tabBuscaExtranjero" class="row">
+        <div id="tablaDatosGenerales">
+            <div class="col col-md-8">
+                <div class="form-group">
+                    <label class="form-label" for="buscarPorDenominacionEx">Nombre, denominación o razón
+                        social:</label>
+                    <input type="text" class="form-control" name="buscarPorDenominacionEx"
+                        formControlName="buscarPorDenominacionEx" maxlength="50" id="buscarPorDenominacionEx">
+                </div>
+                <div class="form-group mt-4">
+                    <label class="form-label" for="folioCaatBusquedaEx">CAAT: <span class="bi bi-question-circle-fill"
+                            title="{{ TEXTOS.CAAT_TITULO_TOOLTIP }}" data-bs-toggle="tooltip"></span></label>
+                    <input type="text" class="form-control" name="folioCaatBusquedaEx"
+                        formControlName="folioCaatBusquedaEx" maxlength="50" id="folioCaatBusquedaEx">
+                </div>
+            </div>
+            <div class="col-md-offset-7 col-md-1 mt-5">
+                <button type="button" id="buscaCandidato2" name="buscaCandidato2" class="btn btn-primary pull-right"
+                    (click)="obtenerBuscarEmpresaCaat()">Buscar</button>
+            </div>
+        </div>
+    </div>
+    }
+
+    <!--Empresa con CAAT registrado-->
+    <ng-titulo titulo="Empresa con CAAT registrado"></ng-titulo>
+
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <app-tabla-dinamica [tipoSeleccionTabla]="tablaSeleccionCheckbox" [styleCenter]="true"
+                (listaDeFilaSeleccionada)="empresaSeleccionada($event)"
+                [configuracionTabla]="caatRegistradoEmpresaEncabezadoDeTabla" [datos]="caatEmpresaPaginada"
+                [disableSeleccionTablaCheckBox]="esFormularioSoloLectura">
+            </app-tabla-dinamica>
+        </div>
+        <div class="d-flex justify-content-center">
+            <app-table-pagination (pageChange)="cambioDePagina($event)"
+                (itemsPerPageChange)="elementosPorCambioDePagina($event)" [totalItems]="totalItems"
+                [itemsPerPage]="itemsPerPage" [currentPage]="currentPage">
+            </app-table-pagination>
+        </div>
+
+    </div>
+    <div class="row top-buffer">
+        <div class="col-md-12">
+            <button type="button" (click)="asignarEmpresas()" id="guardarBuscado2" name="guardarBuscado2"
+                class="btn btn-primary pull-right" [disabled]="esFormularioSoloLectura">Guardar
+            </button>
+        </div>
+    </div>
+</form>
+
+
+@if (mostrarAlerta) {
+<lib-notificaciones [notificacionInput]="nuevaNotificacion" (confirmacionModal)="aceptar()"></lib-notificaciones>
+}
+
+
+@if (mostrarInfo) {
+<lib-notificaciones [notificacionInput]="nuevaNotificacionInfo"
+    (confirmacionModal)="aceptarInfo($event)"></lib-notificaciones>
+}

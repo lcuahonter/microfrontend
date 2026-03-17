@@ -1,0 +1,298 @@
+<div class="modal-dialog modal-lg">
+  <div class="modal-content">
+    <div class="modal-header d-flex justify-content-between">
+      <h5 class="modal-title" id="exampleModalLabel">Datos de la mercancía</h5>
+      <button
+        type="button"
+        class="close"
+        data-dismiss="modal"
+        aria-label="Close"
+        (click)="cerrarModal()"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <form [formGroup]="mercanciaForm">
+        <!-- Fracción arancelaria -->
+        <div class="form-group">
+          <label for="fraccionArancelaria">Fracción arancelaria:</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="fraccionArancelaria"
+          />
+        </div>
+
+        <!-- Número de registro de productos -->
+        <div class="form-group">
+          <label for="numeroDeRegistrodeProductos">Número de registro de productos:</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="numeroDeRegistrodeProductos"
+          />
+        </div>
+
+        <!-- Fechas -->
+        <div class="row">
+          <div class="col-md-6">
+            <label for="fechaExpedicion">Fecha de expedición:</label>
+            <input
+              type="date"
+              class="form-control"
+              formControlName="fechaExpedicion"
+            />
+          </div>
+          <div class="col-md-6">
+            <label for="fechaVencimiento">Fecha de vencimiento:</label>
+            <input
+              type="date"
+              class="form-control"
+              formControlName="fechaVencimiento"
+            />
+          </div>
+        </div>
+
+        <!-- NALADI / NALADISA -->
+        <div class="form-group mt-3">
+          <label>Clasificación NALADI:</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="fraccionNaladi"
+          />
+        </div>
+        <div class="form-group">
+          <label>Clasificación NALADISA 1993:</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="fraccionNaladiSa93"
+          />
+        </div>
+        <div class="form-group">
+          <label>Clasificación NALADISA 1996:</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="fraccionNaladiSa96"
+          />
+        </div>
+        <div class="form-group">
+          <label>Clasificación NALADISA 2002:</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="fraccionNaladiSa02"
+          />
+        </div>
+
+        <!-- Nombre comercial y técnico -->
+        <div class="form-group">
+          <label>Nombre comercial de la mercancía (igual que en la factura):</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="nombreComercial"
+          />
+        </div>
+        <div class="form-group">
+          <label>Nombre técnico:</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="nombreTecnico"
+          />
+        </div>
+
+        <!-- Norma origen -->
+        <div class="form-group">
+          <label>Norma origen:</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="normaOrigen"
+          />
+        </div>
+
+        <!-- Cantidad + UMC -->
+        <div class="row mt-3 mb-3">
+          <div class="col-md-4">
+            <label>Cantidad*:</label>
+            <input
+              type="number"
+              class="form-control"
+              formControlName="cantidad"
+            />
+            <div
+              *ngIf="mercanciaForm.get('cantidad')?.touched && mercanciaForm.get('cantidad')?.invalid"
+            >
+              <small
+                *ngIf="mercanciaForm.get('cantidad')?.errors?.['required']"
+                class="text-danger espaciador-campo-pequeño"
+                >Este campo es obligatorio</small
+              >
+            </div>
+          </div>
+          <div class="col-md-4">
+            <app-catalogo-select
+              [catalogo]="(umcs$ | async) || []"
+              [label]="'UMC'"
+              [required]="true"
+              name="umc"
+              formControlName="umc"
+              [tooltipQuestionCircle]="true"
+              [tooltipQuestionCircleText]="'Unidad de medida de comercialización'"
+              (selectionChange)="tipoUmcSeleccion($event)"
+            ></app-catalogo-select>
+            <div
+              *ngIf="mercanciaForm.get('umc')?.touched && mercanciaForm.get('umc')?.invalid"
+            >
+              <small
+                *ngIf="mercanciaForm.get('umc')?.errors?.['required']"
+                class="text-danger espaciador-campo-pequeño"
+                >Este campo es obligatorio</small
+              >
+            </div>
+          </div>
+          <div class="col-md-4">
+            <label>Unidad de medida de masa bruta:</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="unidadMedidaMasaBruta"
+            />
+          </div>
+        </div>
+
+        <!-- Valor + Complemento -->
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label>Valor de la mercancía (dólares)*:</label>
+            <input
+              type="number"
+              class="form-control"
+              formControlName="valorMercancia"
+            />
+            <div
+              *ngIf="mercanciaForm.get('valorMercancia')?.touched && mercanciaForm.get('valorMercancia')?.invalid"
+            >
+              <small
+                *ngIf="mercanciaForm.get('valorMercancia')?.errors?.['required']"
+                class="text-danger espaciador-campo-pequeño"
+                >Este campo es obligatorio</small
+              >
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label>Complemento de la clasificación*:</label>
+            <textarea
+              class="mb-4 h-20 w-100 form-control"
+              formControlName="complementoClasificacion"
+              rows="2"
+            ></textarea>
+            <div
+              *ngIf="mercanciaForm.get('complementoClasificacion')?.touched && mercanciaForm.get('complementoClasificacion')?.invalid"
+            >
+              <small
+                *ngIf="mercanciaForm.get('complementoClasificacion')?.errors?.['required']"
+                class="text-danger espaciador-campo-pequeño"
+                >Este campo es obligatorio</small
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Complemento descripción + nalad -->
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label>Complemento descripción:</label>
+            <textarea
+              class="form-control"
+              formControlName="complementoDescripcion"
+              rows="2"
+            ></textarea>
+          </div>
+          <div class="col-md-6">
+            <label>NALAD:</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="nalad"
+            />
+          </div>
+        </div>
+
+        <!-- Fecha final + Factura -->
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <input-fecha
+              [datos]="fechaFinalInput"
+              [setFecha]="mercanciaForm.get('fechaFinalInput')?.value"
+              (valorCambiado)="cambioFechaFinal($event)"
+            ></input-fecha>
+          </div>
+          <div class="col-md-4 mt-3">
+            <label>N° factura*:</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="numeroFactura"
+            />
+            <div
+              *ngIf="mercanciaForm.get('numeroFactura')?.touched && mercanciaForm.get('numeroFactura')?.invalid"
+            >
+              <small
+                *ngIf="mercanciaForm.get('numeroFactura')?.errors?.['required']"
+                class="text-danger espaciador-campo-pequeño"
+                >Este campo es obligatorio</small
+              >
+            </div>
+          </div>
+          <div class="col-md-4 mr-2">
+            <app-catalogo-select
+              [catalogo]="(facturas$ | async) || []"
+              [label]="'Tipo de factura'"
+              [required]="true"
+              name="tipoFactura"
+              formControlName="tipoFactura"
+              (selectionChange)="tipoFacturasSeleccion($event)"
+            ></app-catalogo-select>
+            <div
+              *ngIf="mercanciaForm.get('tipoFactura')?.touched && mercanciaForm.get('tipoFactura')?.invalid"
+            >
+              <small
+                *ngIf="mercanciaForm.get('tipoFactura')?.errors?.['required']"
+                class="text-danger espaciador-campo-pequeño"
+                >Este campo es obligatorio</small
+              >
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="modal-footer">
+      <button
+        type="button"
+        class="btn btn-default"
+        data-dismiss="modal"
+        (click)="cerrarModal()"
+      >
+        Cancelar
+      </button>
+      <button type="button" class="btn btn-primary" (click)="activarModal()">
+        Agregar
+      </button>
+    </div>
+  </div>
+</div>
+
+<div>
+  <lib-notificaciones
+    [notificacionInput]="nuevaNotificacion"
+    (confirmacionModal)="aceptar()"
+  ></lib-notificaciones>
+</div>

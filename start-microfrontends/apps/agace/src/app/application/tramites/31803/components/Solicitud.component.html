@@ -1,0 +1,176 @@
+<form [formGroup]="registroForm" (ngSubmit)="validarDestinatarioFormulario()">
+  <ng-container>
+    <ng-titulo
+      titulo="Aviso Único de Renovación en el Registro en el Esquema de Certificación de Empresas"
+    />
+    <label class="label-spacing">{{
+      solicitudEnum.MODALIDAD_SOCIO_COMERCIAL
+    }}</label>
+
+    <label class="label-spacing">{{ solicitudEnum.RUBRO_MENSAJERIA }}</label>
+
+    <label class="label-spacing">{{ solicitudEnum.DATOS_REGISTRO }}</label>
+    <div class="row mt-5">
+      <div class="col-md-8">
+        <label>Número de oficio*:</label>
+        <input
+          type="text"
+          class="form-control gris-color"
+          formControlName="numeroOficio"
+          readonly
+          required
+        />
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-4">
+        <input-fecha
+          [setFecha]="registroForm.get('fechaInicial')?.value"
+          [datos]="fechaInicialInput"
+          class="disabled-input-fecha"
+        ></input-fecha>
+      </div>
+      <div class="col-md-4">
+        <input-fecha
+          [setFecha]="registroForm.get('fechaFinal')?.value"
+          [datos]="fechaFinalInput"
+          class="disabled-input-fecha"
+        ></input-fecha>
+      </div>
+    </div>
+    <ng-titulo titulo="Pago de derechos" />
+    <div class="row mt-5">
+      <div class="col-md-6">
+        <label>Clave de referencia:</label>
+        <input
+          type="text"
+          class="form-control gris-color"
+          formControlName="claveReferencia"
+          readonly
+          required
+        />
+      </div>
+      <div class="col-md-6">
+        <label>Número de operación:</label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="numeroOperacion"
+          maxlength="30"
+          [ngClass]="{ 'border-danger': mostrarError && registroForm.get('numeroOperacion')?.invalid }"
+          (change)="
+            setValoresStore(
+              registroForm,
+              'numeroOperacion',
+              'setNumeroOperacion'
+            )
+          "
+        />
+        @if (mostrarError && registroForm.get('numeroOperacion')?.invalid) {
+        <span class="mensaje-error"
+          >Todos los campos de pago son requeridos</span
+        >
+        }
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-6">
+        <label>Cadena de la dependencia:</label>
+        <input
+          type="text"
+          class="form-control gris-color"
+          formControlName="cadenaDependencia"
+          readonly
+          required
+        />
+      </div>
+      <div class="col-md-6">
+        <app-catalogo-select
+          [catalogo]="bancoCatalogo.catalogos"
+          [label]="'Banco'"
+          formControlName="banco"
+          [markTouched]="registroForm.get('banco')?.touched ?? false"
+          (change)="setValoresStore(registroForm, 'banco', 'setBanco')"
+        ></app-catalogo-select>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-4">
+        <label>Llave de pago:</label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="llave"
+          maxlength="20"
+          [ngClass]="{ 'border-danger': mostrarError && registroForm.get('llave')?.invalid}"
+          (change)="setValoresStore(registroForm, 'llave', 'setLlave')"
+        />
+        @if (mostrarError && registroForm.get('llave')?.invalid) {
+        <span class="mensaje-error"
+          >Todos los campos de pago son requeridos</span
+        >
+        }
+      </div>
+      <div class="col-md-4">
+        <input-fecha
+          [setFecha]="registroForm.get('fechaPago')?.value"
+          [datos]="fechaPagoInput"
+          (valorCambiado)="cambioFechaPago($event)"
+        ></input-fecha>
+      </div>
+      <div class="col-md-4">
+        <label>Importe de pago:</label>
+        <input
+          type="text"
+          class="form-control gris-color"
+          formControlName="importePago"
+          maxlength="16"
+          readonly
+        />
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-12 mt-5 d-flex justify-content-end">
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="borrarDatosPago()"
+        >
+          Borrar datos del pago
+        </button>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="alert alert-info">
+        <label style="font-weight: normal">
+          <input
+            type="checkbox"
+            formControlName="manifiesto1"
+            (change)="
+              setValoresStore(registroForm, 'manifiesto1', 'setManifiesto1')
+            "
+          />{{ solicitudEnum.MANIFIESTO_1 }}
+        </label>
+      </div>
+      @if (mostrarError && registroForm.get('manifiesto1')?.invalid) {
+      <div class="mensaje-error">Este campo es obligatorio</div>
+      }
+    </div>
+    <div class="row mt-5">
+      <div class="alert alert-info">
+        <label style="font-weight: normal">
+          <input
+            type="checkbox"
+            formControlName="manifiesto2"
+            (change)="
+              setValoresStore(registroForm, 'manifiesto2', 'setManifiesto2')
+            "
+          />{{ solicitudEnum.MANIFIESTO_2 }}
+        </label>
+      </div>
+      @if (mostrarError && registroForm.get('manifiesto2')?.invalid) {
+      <div class="mensaje-error">Este campo es obligatorio</div>
+      }
+    </div>
+  </ng-container>
+</form>

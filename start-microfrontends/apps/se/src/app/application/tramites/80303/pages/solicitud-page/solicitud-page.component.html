@@ -1,0 +1,72 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+       @if (indice === 1){
+      <div class="col-md-12">
+        <h1>{{ tituloMensaje || null }}</h1>
+      </div>
+      }
+       @if (indice === 2){
+        <div class="col-md-12">
+          <h2>Cargar archivos</h2>
+        </div>
+      }
+      @if (indice === 3){
+        <div class="col-md-12">
+          <h2>Firmar</h2>
+        </div>
+      }
+    
+    <app-wizard [listaPasos]="pasosSolicitar"></app-wizard>
+ 
+
+  <div class="row">
+      @switch (indice) { @case (1) {
+      <app-paso-uno ></app-paso-uno>
+      } @case (3) {
+       <paso-firma [idSolicitud]="idSolicitud" [procedure]="80303" [procedureUrl]="'registro-solicitude/solicitud'"></paso-firma>
+      } @case (2) {
+      <app-paso-carga-documento 
+        [idSolicitud]="idSolicitud"
+        [idTipoTRamite]="'80303'"
+        [cargaArchivosEvento]="cargarArchivosEvento"
+        (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+        (reenviarCargaRealizada)="cargaRealizada($event)"
+        (cargaEnProgreso)="onCargaEnProgreso($event)"
+        ></app-paso-carga-documento>
+      }}
+       <div class="col-md-12">
+        @if (indice !== 2) {
+         <btn-continuar
+          [datos]="datosPasos"
+          [dePadre]="!consultaState.readonly ? true : false"
+          (continuarEvento)="getValorIndice($event)"
+            (anteriorEvento)="getValorIndice($event)"
+          ></btn-continuar>
+        } @else {
+        <div class="mt-5 mb-3 d-flex justify-content-end">
+          <button
+            type="button"
+            class="btn btn-default"
+            (click)="anterior()"
+            *ngIf="seccionCargarDocumentos"
+          >
+            Anterior
+          </button>
+
+          <button
+            class="btn btn-primary ms-3"
+            (click)="
+              seccionCargarDocumentos ? onClickCargaArchivos() : siguiente()
+            "
+            [disabled]="(seccionCargarDocumentos && !activarBotonCargaArchivos) || (!seccionCargarDocumentos && cargaEnProgreso)"
+          >
+            {{ seccionCargarDocumentos ? 'Cargar archivos' : 'Continuar' }}
+          </button>
+        </div>
+        }
+      </div>
+    
+   </div>  
+  </div>
+</div>

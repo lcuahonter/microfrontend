@@ -1,0 +1,141 @@
+<ng-titulo titulo="Domicilio para oír y recibir notificaciones"></ng-titulo>
+<form [formGroup]="direccionNotificacionesForm">
+  <div class="row mt-5">
+    <div class="col-md-6">
+      <label class="form-label" for="calle"
+        ><span class="require">* </span>Calle</label
+      >
+      <input
+        class="form-control"
+        id="calle"
+        placeholder=""
+        type="text"
+        formControlName="calle"
+       
+      />
+    </div>
+
+    <div class="col-md-2">
+      <label class="form-label" for="numeroExterior"
+        ><span class="require">* </span>Número exterior</label
+      >
+      <input
+        class="form-control"
+        id="numeroExterior"
+        placeholder=""
+        type="text"
+        formControlName="numeroExterior"
+      />
+    </div>
+    <div class="col-md-2">
+      <label class="form-label" for="numeroInterior">Número Interior</label>
+      <input
+        class="form-control"
+        id="numeroInterior"
+        placeholder=""
+        type="text"
+        formControlName="numeroInterior"
+        (input)="updateNumeroInterior()"
+      />
+    </div>
+    <div class="col-md-2">
+      <label class="form-label" for="codigoPostal"
+        ><span class="require">* </span>Código postal</label
+      >
+      <input
+        class="form-control"
+        id="codigoPostal"
+        placeholder=""
+        type="text"
+        formControlName="codigoPostal"
+        (input)="updateCodigoPostal()"
+      />
+
+      <div *ngIf="direccionNotificacionesForm.get('codigoPostal')?.invalid && direccionNotificacionesForm.get('codigoPostal')?.touched">
+        <small class="text-danger" *ngIf="direccionNotificacionesForm.get('codigoPostal')?.errors?.['required']">
+          El código postal es obligatorio.
+        </small>
+        <small class="text-danger" *ngIf="direccionNotificacionesForm.get('codigoPostal')?.errors?.['pattern']">
+          El código postal debe contener solo números.
+        </small>
+     
+        <small class="text-danger" *ngIf="direccionNotificacionesForm.get('codigoPostal')?.errors?.['maxlength']">
+          El código postal no puede tener más de 10 dígitos.
+        </small>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <div class="col-md-6">
+      <label class="form-label" for="pais">País</label>
+      <input
+        class="form-control"
+        id="pais"
+        placeholder=""
+        type="text"
+        formControlName="pais"
+        (input)="updatePais()"
+      />
+    </div>
+    <div class="col-md-6">
+      <app-catalogo-select
+        [catalogo]="entidadFederativa"
+        [label]="'Entidad Federativa*'"
+        [placeholder]="'Seleccione un valor'"
+        formControlName="entidadFederativa"
+        (change)="getEntidad()"
+        [isDisabled]="esFormularioSoloLectura"
+      ></app-catalogo-select>
+      <div *ngIf="direccionNotificacionesForm.get('entidadFederativa')?.invalid && direccionNotificacionesForm.get('entidadFederativa')?.touched">
+        <small class="text-danger" *ngIf="direccionNotificacionesForm.get('entidadFederativa')?.errors?.['required']">
+          La entidad federativa es obligatoria.
+        </small>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <div class="col-md-6">
+     
+      <app-catalogo-select
+      [catalogo]="municipioAlcaldia"
+      [label]="'Municipio o alcaldía'"
+      [placeholder]="'Seleccione un valor'"
+      formControlName="municipioAlcaldia"
+      (change)="getMunicipiosOalcaldia()"
+      [isDisabled]="esFormularioSoloLectura"
+    ></app-catalogo-select>
+    </div>
+    <div class="col-md-6">
+         <app-catalogo-select
+        [catalogo]="colonia"
+        [label]="'Colonia'"
+        [placeholder]="'Seleccione un valor'"
+        formControlName="colonia"
+        (change)="getColonia()"
+        [isDisabled]="esFormularioSoloLectura"
+      ></app-catalogo-select>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <div class="col-md-6">  
+       <app-catalogo-select
+        [catalogo]="localidad"
+        [label]="'Localidad'"
+        [placeholder]="'Seleccione un valor'"
+        formControlName="localidad"
+        (change)="getLocalidad()"
+        [isDisabled]="esFormularioSoloLectura"
+      ></app-catalogo-select></div>
+    <div class="col-md-6">
+        <label class="form-label" for="telefono">Teléfono</label>
+      <input
+        class="form-control"
+        id="telefono"
+        placeholder=""
+        type="text"
+        formControlName="telefono"
+        (input)="updateTelefono()"
+      />
+    </div>
+  </div>
+</form>

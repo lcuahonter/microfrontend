@@ -1,0 +1,215 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 mb-4">
+      <ng-titulo [titulo]="
+          'Aviso de modificaciones de socios, accionistas, miembros o integrantes, administrador único o consejo de administración y representantes legales'
+        "></ng-titulo>
+    </div>
+  </div>
+  <div class="row" [ngStyle]="{ 'pointer-events': esFormularioSoloLectura ? 'none' : 'auto' }">
+    <div class="col-md-12">
+      <label class="form-label text-left">Socios, accionistas, miembros o integrantes, administrador unico o
+        consejo de administracion y representantes legales que han sido
+        revocados
+      </label>
+    </div>
+
+    <ng-table [commonTableHeader]="tableColumns" [commonTableBody]="mercanciasData"
+      [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"></ng-table>
+    <div class="d-flex justify-content-center">
+      <app-table-pagination [showCurrentPage]="true">
+      </app-table-pagination>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <label class="form-label text-left">Declare la información requerida en cada uno de los movimientos que
+        realice y ratifique aquellos nombramientos que continuen sin
+        modificación
+      </label>
+    </div>
+    <div class="col-12" [ngStyle]="{ 'pointer-events': esFormularioSoloLectura ? 'none' : 'auto' }">
+
+      <app-tabla-dinamica [datos]="modificacionSociosHeader" [tipoSeleccionTabla]="seleccionTabla"
+        [configuracionTabla]="configuracionModificacionSocios"
+        (listaDeFilaSeleccionada)="seleccionDeFilas($event)"></app-tabla-dinamica>
+      @if (modificacionSociosHeader.length) {
+      <div class="d-flex justify-content-center">
+        <app-table-pagination [showCurrentPage]="true">
+        </app-table-pagination>
+      </div>
+      }
+    </div>
+
+    <div class="d-flex justify-content-end mt-5">
+      <button type="button" class="btn btn-default me-md-3" [disabled]="esFormularioSoloLectura"
+        (click)="openRevocarModel()">
+        Revocar
+      </button>
+      <button type="button" class="btn btn-default me-md-3" [disabled]="esFormularioSoloLectura"
+        (click)="openRaticarModel()">
+        Ratificar
+      </button>
+      <button type="button" class="btn btn-primary me-md-3" [disabled]="esFormularioSoloLectura"
+        (click)="openAgregarModal()">
+        Agregar
+      </button>
+      <button type="button" class="btn btn-primary me-md-3" [disabled]="esFormularioSoloLectura"
+        (click)="eliminar()">Eliminar</button>
+    </div>
+
+    <div class="col-12 mt-5">
+      <ng-alert [CONTENIDO]="messageNac"></ng-alert>
+    </div>
+  </div>
+
+  <div class="modal fade" tabindex="-1" #Agregar>
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Agregar miembro de la empresa</h5>
+        </div>
+        <div class="modal-body p-4">
+          <form [formGroup]="agregarMiembroDeLaEmpresaFrom" class="form-group">
+            <div class="row">
+              <div class="col-4">
+                <div class="form-group">
+                  <app-catalogo-select [label]="'En su carácter de'" [required]="true"
+                    [catalogo]="enSuCaracterDeOptions" formControlName="ensucarácterde"
+                    [isDisabled]="esFormularioSoloLectura" (change)="
+                      setValoresStore(
+                        agregarMiembroDeLaEmpresaFrom,
+                        'ensucarácterde',
+                        'setSnsucarácterde'
+                      )
+                    "></app-catalogo-select>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="rfc" class="form-label">RFC*:</label>
+                  <input type="text" id="rfc" formControlName="rfc" class="form-control" (change)="
+                      setValoresStore(
+                        agregarMiembroDeLaEmpresaFrom,
+                        'rfc',
+                        'setRfc'
+                      )
+                    " />
+                </div>
+              </div>
+              <div class="col-4 d-flex align-items-end">
+                <div class="form-group">
+                  <button type="button" (click)="searchRFC()" class="btn btn-primary" [disabled]="esFormularioSoloLectura">Buscar</button>
+                </div>
+              </div>
+            </div>
+            <div class="row" [ngStyle]="{ 'pointer-events': esFormularioSoloLectura ? 'none' : 'auto' }">
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="obligadoaTributarenMéxico" class="form-label">Obligado a tributar en México*:</label>
+                  <app-input-radio [radioOptions]="radioOptions" [isRequired]="true" [layout]="'horizontal'"
+                    [gap]="'50px'" formControlName="obligadoaTributarenMéxico" (change)="
+                      setValoresStore(
+                        agregarMiembroDeLaEmpresaFrom,
+                        'obligadoaTributarenMéxico',
+                        'setObligadoaTributarenMéxico'
+                      )
+                    "></app-input-radio>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="registroFederaldeContribuyentes" class="form-label">Registro Federal de Contribuyentes
+                    *:</label>
+                  <input type="text" id="registroFederaldeContribuyentes" class="form-control"
+                    [value]="agregarMiembroDeLaEmpresaFrom.get('rfc')?.value"
+                    formControlName="registroFederaldeContribuyentes" (change)="
+                      setValoresStore(
+                        agregarMiembroDeLaEmpresaFrom,
+                        'registroFederaldeContribuyentes',
+                        'setRegistroFederaldeContribuyentes'
+                      )
+                    " />
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-4">
+                <div class="form-group">
+                  <app-catalogo-select [label]="'Nacionalidad'" [placeholder]="'Seleccione un valor'" [required]="true"
+                    [catalogo]="nacionalidadOptions" formControlName="nacionalidad"
+                    [isDisabled]="esFormularioSoloLectura" (change)="
+                      setValoresStore(
+                        agregarMiembroDeLaEmpresaFrom,
+                        'nacionalidad',
+                        'setNacionalidad'
+                      )
+                    "></app-catalogo-select>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="nombreCompleto" class="form-label">Nombre completo*:</label>
+                  <input type="text" id="nombreCompleto" class="form-control" formControlName="nombreCompleto" (change)="
+                      setValoresStore(
+                        agregarMiembroDeLaEmpresaFrom,
+                        'nombreCompleto',
+                        'setNombreCompleto'
+                      )
+                    " />
+                </div>
+              </div>
+            </div>
+            <div class="button-group d-flex justify-content-end">
+              <button type="submit" class="btn btn-primary me-md-3"
+                (click)="aggregarModificacionSocios(agregarMiembroDeLaEmpresaFrom)"
+                [disabled]="esFormularioSoloLectura">
+                Agregar
+              </button>
+              <button type="button" class="btn btn-default me-md-3" [disabled]="esFormularioSoloLectura"
+                (click)="closeAgregarModal()">
+                Cancelar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+ <div class="text-right">
+         <div class="pull-left text-muted text-vertical-align-button" id="lblCamposObligatorios">
+              {{ mensajeCamposObligatorios }}
+            </div>
+        <button type="button" class="btn btn-danger me-3">
+            Cancelar
+        </button>
+         <button type="submit"  (click)="continuar()" class="btn btn-primary">
+          Continuar
+        </button>
+    </div>
+
+
+  @if (raticarNotificacion) {
+  <section>
+    <lib-notificaciones [notificacionInput]="raticarNotificacion" (confirmacionModal)="changeTipoMovimiento('Ratificado')">
+    </lib-notificaciones>
+  </section>
+  }
+
+  @if (revocarNotificacion) {
+  <section>
+    <lib-notificaciones [notificacionInput]="revocarNotificacion" (confirmacionModal)="changeTipoMovimiento('Revocado')">
+    </lib-notificaciones>
+  </section>
+  }
+
+  @if (correctamenteNotificacion) {
+  <section>
+    <lib-notificaciones [notificacionInput]="correctamenteNotificacion">
+    </lib-notificaciones>
+  </section>
+  }
+</div>

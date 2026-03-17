@@ -1,0 +1,210 @@
+<div class="container" [formGroup]="certificadoForm">
+    <ng-titulo titulo="Datos del Certificado" />
+    <div>
+    
+           <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                  <label class="form-label" for="observaciones"> Observaciones:</label>
+                  <textarea class="form-control custom-textarea" id="observaciones" formControlName="observaciones" style="height: 90px;"  (change)="setValoresStore(certificadoForm,'observaciones', 'setObservaciones')"></textarea>
+                </div>
+              </div>
+           </div>
+           <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                  <label class="form-label" for="precisa"> Precisa<span [class.label-invalid]="certificadoForm.controls['precisa'].invalid && certificadoForm.controls['precisa'].touched">*</span>:</label>
+                  <textarea class="form-control custom-textarea" 
+                  [class.is-invalid]="certificadoForm.controls['precisa'].invalid && certificadoForm.controls['precisa'].touched"
+                  id="precisa" formControlName="precisa" style="height: 90px;"  (change)="setValoresStore(certificadoForm,'precisa', 'setPrecisa')"></textarea>
+                </div>
+              </div>
+           </div>
+           <div class="row" style="padding-bottom:10px;">
+            <div class="col-md-12">
+                <div class="form-group">
+                  <label class="form-label" for="presenta"> Presenta:</label>
+                  <textarea class="form-control custom-textarea" id="presenta" formControlName="presenta" style="height: 90px;"  (change)="setValoresStore(certificadoForm,'presenta', 'setPresenta')"></textarea>
+                </div>
+              </div>
+           </div>
+           <div class="row">
+            <h6>Mercancías seleccionadas</h6>
+            <app-tabla-dinamica
+              [disableSeleccionTablaRadio]="esFormularioSoloLectura"
+              [configuracionTabla]="configuracionTabla"
+              [datos]="mercancias"
+              [tipoSeleccionTabla]="radio"
+            >
+            </app-tabla-dinamica>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">     
+                  <li class="page-item"><a class="page-link">1</a></li>    
+                </ul>
+              </nav>
+          </div>
+          <div class="row" style="text-align: right">
+            <div>
+              <button
+                type="button"
+                class="btn btn-primary ms-2"
+                data-bs-toggle="modal"
+                data-bs-target="#modalAgregar"
+                (click)="abrirModal()"
+                [disabled]="esFormularioSoloLectura"
+              >
+              Modificar
+              </button>
+              
+            </div>
+          </div>
+    </div>
+</div>
+<div class="container mt-4">
+  <div
+    class="modal fade"
+    id="modalAgregar"
+    tabindex="-1"
+    aria-labelledby="modalAgregarLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Modificar</h4>
+        </div>
+        <div class="modal-body">
+         
+            <form [formGroup]="mercanciasForm">
+              
+              <div class="row">
+                  <div class="col-md-12">
+                      <div class="form-group">
+                          <label class="form-label" for="comercial" >Nombre comercial:</label>
+                          <input class="form-control" id="comercial" formControlName="comercial" type="text" >
+                      </div>
+                  </div>
+              </div>
+              
+              <div class="row">
+                  <div class="col-md-12">
+                      <div class="form-group">
+                          <label class="form-label" for="ingles">Nombre en inglés:</label>
+                          <input class="form-control" id="ingles" formControlName="ingles" type="text" >
+                      </div>
+                  </div>
+              </div>
+          
+              <div class="row">
+                  <div class="col-md-12">
+                      <div class="form-group">
+                          <label class="form-label" for="complemento">Complemento de la descripción:</label>
+                          <input class="form-control" id="complemento" formControlName="complemento" type="text" (change)="setValoresStore(mercanciasForm,'complemento', 'setComplemento')" maxlength="220">
+                      </div>
+                  </div>
+              </div>
+          
+              <div class="row">
+                  <div class="col-md-4">
+                      <div class="form-group">
+                          <label class="form-label" for="marca">Marca:</label>
+                          <input class="form-control" id="marca" formControlName="marca" type="text" (change)="setValoresStore(mercanciasForm,'marca', 'setMarca')">
+                      </div>
+                  </div>
+                  <div class="col-md-4">
+                      <div class="form-group">
+                          <label class="form-label" for="valor">Valor mercancía:</label>
+                          <input class="form-control" id="valor" formControlName="valor" type="text" (blur)="formatDecimal('valor','setValor')" (change)="setValoresStore(mercanciasForm,'valor', 'setValor')" maxlength="22">
+                          <div *ngIf="mercanciasForm.get('valor')?.invalid && mercanciasForm.get('valor')?.touched" 
+                          class="text-danger small">
+                          <div *ngIf="mercanciasForm.get('valor')?.errors?.['pattern']">
+                            El valor debe ser un número con hasta 15 dígitos enteros y hasta 4 dígitos decimales
+                          </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col-md-4">
+                      <div class="form-group">
+                          <label class="form-label" for="cantidad">Cantidad:</label>
+                          <input class="form-control" id="cantidad" formControlName="cantidad" type="text" (blur)="formatDecimal('cantidad','setBruta')">
+                      </div>
+                  </div>
+              </div>
+          
+              <div class="row">
+                  <div class="col-md-4">
+                      <div class="form-group">
+                       
+                          <app-catalogo-select [catalogo]="comercializacion" [label]="'Unidad de medida de comercialización'"  name="comercializacion"
+                          formControlName="comercializacion" (change)="setValoresStore(mercanciasForm,'comercializacion', 'setComercializacion')">
+                      </app-catalogo-select>
+                        </div>
+                  </div>
+                  <div class="col-md-4">
+                      <div class="form-group">
+                          <label class="form-label" for="bruta">Masa bruta:</label>
+                          <input class="form-control" id="bruta" formControlName="bruta" type="text"  (blur)="formatDecimal('bruta','setBruta')" (change)="setValoresStore(mercanciasForm,'bruta', 'setBruta')" maxlength="22">
+                          <div *ngIf="mercanciasForm.get('bruta')?.invalid && mercanciasForm.get('bruta')?.touched" 
+                          class="text-danger small">
+                          <div *ngIf="mercanciasForm.get('bruta')?.errors?.['pattern']">
+                            El valor debe ser un número con hasta 15 dígitos enteros y hasta 4 dígitos decimales
+                          </div>
+                          </div>
+                        </div>
+                  </div>
+                  <div class="col-md-4">
+                      <div class="form-group">
+                            <app-catalogo-select [catalogo]="medida" [label]="'Unidad de medida de la masa bruta'"  name="medida"
+                          formControlName="medida" (change)="setValoresStore(mercanciasForm,'medida', 'setMedida')">
+                      </app-catalogo-select>
+                      </div>
+                  </div>
+              </div>
+          
+              <div class="row">
+                  <div class="col-md-4">
+                      <div class="form-group">
+                          <label class="form-label" for="factura">Número de factura:</label>
+                          <input class="form-control" id="factura" formControlName="factura" type="text" (change)="setValoresStore(mercanciasForm,'factura', 'setFactura')" maxlength="50">
+                      </div>
+                  </div>
+                  <div class="col-md-4">
+                      <div class="form-group">
+                        
+                          <app-catalogo-select [catalogo]="tipoDatos" [label]="'Tipo de factura'"  name="tipo"
+              formControlName="tipo" (change)="setValoresStore(mercanciasForm,'tipo', 'setTipo')">
+          </app-catalogo-select>
+       
+                      </div>
+                  </div>
+                  <div class="col-md-4">
+                      <div class="form-group">
+                        <input-fecha [setFecha]="mercanciasForm.get('fecha')?.value" [datos]="fechaDeLaFacturaInput"></input-fecha>
+                      </div>
+                  </div>
+              </div>
+          </form>
+          
+        </div>
+        <div class="modal-footer custom-footer justify-content-center">          
+          <button
+            type="button"
+            class="btn btn-default"
+            data-bs-dismiss="modal"
+            #closeModal
+          >
+            Cancelar
+          </button>
+          <button type="button" class="btn btn-primary" (click)="onModificar()">Modificar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (validationNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="validationNotificacion">
+  </lib-notificaciones>
+</section>
+}

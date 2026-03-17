@@ -1,0 +1,148 @@
+<div class="container">
+  <form [formGroup]="forma">
+    <div class="row mt-5">
+      <div class="row" formGroupName="datosDelaSolicitud">
+        <ng-titulo titulo="Número de folio del trámite"></ng-titulo>
+        <div class="col-md-12 p-0">
+          <div class="col-md-8 p-0">
+            <div class="form-group">
+              <label for="fileDelTramite">Filo del trámite:</label>
+              <input formControlName="folioControlUnico" class="form-control" id="folioControlUnico" placeholder=""
+               type="text" appUppercase />
+            </div>
+          </div>
+        </div>
+        <ng-titulo titulo="Datos del trámite a realizar"></ng-titulo>
+        <div class="row">
+          <div class="col-md-4">
+            <app-catalogo-select 
+            [catalogo]="aduanaIngreso.catalogos" 
+            formControlName="aduanaIngreso"
+              [label]="'Aduana de ingreso'" 
+              name="aduanaIngreso"
+              [isDisabled]="esFormularioSoloLectura"></app-catalogo-select>
+          </div>
+          <div class="col-md-8">
+            <app-catalogo-select 
+              [catalogo]="oficinaInspeccion.catalogos" 
+              formControlName="oficinaInspeccion"
+              [label]="'Oficina de inspección de sanidad Agropecuaria'"
+              name="oficinaInspeccion" 
+              [isDisabled]="esFormularioSoloLectura">
+            </app-catalogo-select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <app-catalogo-select [catalogo]="puntoInspeccion.catalogos" formControlName="puntoInspeccion"
+              [label]="'Punto de inspección'" name="puntoInspeccion"
+              [isDisabled]="esFormularioSoloLectura"></app-catalogo-select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="claveControlUnico">Clave UCON:
+                <i class="bi bi-question-circle-fill" style="margin-bottom: '5px'"></i></label>
+              <input formControlName="claveControlUnico" value="" class="form-control" id="claveControlUnico"
+                placeholder="" type="text" appUppercase />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <app-catalogo-select [catalogo]="establecimientoTIF.catalogos" formControlName="establecimientoTIFs"
+              [label]="'Establecimiento TIF'" name="establecimientoTIFs"
+              [isDisabled]="esFormularioSoloLectura||true"></app-catalogo-select>
+          </div>
+          <div class="col-md-4">
+            <app-catalogo-select [catalogo]="veterinario.catalogos" formControlName="nombreVeterinario"
+              [label]="'Nombre del médico veterinario'" name="nombreVeterinario"
+              [isDisabled]="esFormularioSoloLectura||true"></app-catalogo-select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="numeroGuia">Número de guia:</label>
+              <input class="form-control" id="numeroGuia" placeholder="" type="text" formControlName="numeroGuia"
+                appUppercase [disabled]="esFormularioSoloLectura"/>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <app-catalogo-select 
+              [catalogo]="regimenDestinaran.catalogos" 
+              formControlName="regimen" 
+              [label]="'Régimen'"
+              name="regimen" 
+              [isDisabled]="esFormularioSoloLectura">
+            </app-catalogo-select>
+          </div>
+        </div>
+        <div class="row">
+          <ng-titulo titulo="Tipo de Mercancía" />
+          <div class="col-md-12">
+            <label for="capturaMercancia">Captura de datos de mercancía*:</label>
+          </div>
+          <div class="col-md-12">
+            <input class="form-check-input me-3" type="radio" name="tipoMercancia" formControlName="tipoMercancia"
+               value="animales" id="certficacion_a" [disabled]="esFormularioSoloLectura" />
+            <label class="form-label" for="certficacion_a">Animales Vivos</label>
+          </div>
+          <div class="col-md-12">
+              <input class="form-check-input me-3" type="radio" name="tipoMercancia" formControlName="tipoMercancia"
+                value="subproductos" id="certficacion_aa" [disabled]="esFormularioSoloLectura" />
+            <label class="form-label" for="certficacion_aa">Productos Subproductos</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="row mt-5">
+            <div class="col-md-12">
+              <label for="mercancia">Mercancía</label>
+            </div>
+            <div class="col-md-12 mt-5">
+              <div class="table-container">
+                <app-tabla-dinamica *ngIf="mercanciaTablaDatos.length > 0" [configuracionTabla]="mercanciaTabla"
+                  [datos]="mercanciaTablaDatos"></app-tabla-dinamica>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <form [formGroup]="movilizacionForm">
+    <ng-titulo titulo="Destino" />
+    <div class="row">
+      <div class="col-md-7 form-group">
+        <label class="form-label" for="coordenadas">Coordenadas geográficas:</label>
+        <input class="form-control" id="coordenadas" formControlName="coordenadas" placeholder="" type="text"
+         />
+      </div>
+    </div>
+    <ng-titulo titulo="Medio de transporte" />
+    <div class="row">
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="movilizacionNacional.catalogos" [label]="movilizacionNacional.labelNombre"
+          [placeholder]="movilizacionNacional.primerOpcion" 
+          formControlName="movilizacionNacional" [isDisabled]="esFormularioSoloLectura"></app-catalogo-select>
+      </div>
+      <div class="col-md-8 form-group">
+        <label class="form-label" for="identificacionTransporte">Identificación del transporte:</label>
+        <input class="form-control" id="identificacionTransporte" placeholder="" type="text"
+          formControlName="identTransporte" />
+      </div>
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="puntoVerificacion.catalogos" [label]="puntoVerificacion.labelNombre"
+          [placeholder]="puntoVerificacion.primerOpcion" 
+          formControlName="puntoVerificacion" [isDisabled]="esFormularioSoloLectura"></app-catalogo-select>
+      </div>
+      <div class="col-md-8">
+        <app-catalogo-select [catalogo]="empresaTransportista.catalogos" [label]="empresaTransportista.labelNombre"
+          [placeholder]="empresaTransportista.primerOpcion" 
+          formControlName="empresaTransportista" [isDisabled]="esFormularioSoloLectura || true"></app-catalogo-select>
+      </div>
+    </div>
+  </form>
+  <div class="row my-5">
+    <div class="col-md-12 d-flex justify-content-end"></div>
+  </div>
+</div>

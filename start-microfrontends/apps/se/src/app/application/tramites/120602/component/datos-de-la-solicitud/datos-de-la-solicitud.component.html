@@ -1,0 +1,83 @@
+<div class="container">
+    <ng-titulo titulo="Datos de la solicitud" />
+    <form [formGroup]="solicitudForm">
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="tipoDeEmpresa" [label]="'Tipo de empresa'"
+                    [isDisabled]="esFormularioSoloLectura"
+                    name="tipoDeEmpresa" formControlName="tipoDeEmpresa" (change)="docSeleccionado($event)" [required]="true">
+                </app-catalogo-select>
+                <div
+                *ngIf="esInvalido('tipoDeEmpresa')"
+                    class="text-danger"
+                >
+                    <small
+                    *ngIf="solicitudForm.get('tipoDeEmpresa')?.errors?.['required']"
+                    >
+                    Este campo es obligatorio.
+                    </small>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="form-group">
+                  <label for="ti_espesifique" class="form-label"
+                    >Especifique</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control disabledColor1"
+                    id="ti_espesifique"
+                    formControlName="denominacionExposicion"
+                    maxlength="120"
+                    readonly
+                    [disabled]="true"
+                  />
+                </div>
+              </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="actividadEconomicaClave" class="form-label"
+                      >Clasificación del Catálogo de Actividades Económicas del SAT conforme a la Actividad Económica Preponderante*:</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="actividadEconomicaClave"
+                      formControlName="actividadEconomicaClave"
+                      placeholder="1122"
+                      (change)="setActividadEconomicaClave()"
+                      [class.is-invalid]="solicitudForm.get('actividadEconomicaClave')?.touched && solicitudForm.get('actividadEconomicaClave')?.invalid"
+                      required
+                    />
+                    <div *ngIf="esInvalido('actividadEconomicaClave')" class="text-danger">
+                      <small *ngIf="solicitudForm.controls['actividadEconomicaClave'].errors?.['required']">
+                        Este campo es obligatorio.
+                      </small>
+                    </div>
+                  </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="actividadEconomicaDescripcion" class="form-label"
+                      >Descripción de la Actividad Económica del SAT:</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="actividadEconomicaDescripcion"
+                      formControlName="actividadEconomicaDescripcion"
+                      readonly
+                      size="25"
+                      placeholder="Administración pública en general"
+                      [disabled]="true"
+                    />
+                  </div>
+            </div>
+        </div>
+
+    </form>
+</div>

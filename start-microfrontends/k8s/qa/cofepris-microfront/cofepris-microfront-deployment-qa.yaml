@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modulefederation-cofepris-microfront-deployment-qa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: modulefederation-cofepris-microfront-qa
+  template:
+    metadata:
+      labels:
+        app: modulefederation-cofepris-microfront-qa
+    spec:
+      containers:
+      - name: front-vucem30-container-qa
+        image: ghcr.io/vucem30/dockerized-modulefederation-cofepris-microfront:1.2.69
+        ports:
+        - containerPort: 80
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: qa
+      imagePullSecrets:
+      - name: vucem30registrykey

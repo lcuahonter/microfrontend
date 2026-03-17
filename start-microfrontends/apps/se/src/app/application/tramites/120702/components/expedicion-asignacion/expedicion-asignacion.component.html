@@ -1,0 +1,292 @@
+<div class="container">
+    <form [formGroup]="asignacionForm" class="form-container">
+        <!-- 1.Numero-de-oficio -->
+        <div class="numero-oficio mt-5" *ngIf="!esFormularioSoloLectura">
+            <div class="row">
+                <div class="col-12">
+                    <ng-titulo titulo="Número de oficio de asignación" />
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <app-catalogo-select [catalogo]="anoOficioDatos" [label]="'Año del oficio de asignación'"
+                            [required]="true" placeholder="Selecciona un año" formControlName="anoDelOficio"
+                            for="anoDelOficio" id="anoDelOficio" aria-label="Año del oficio de asignación"
+                            (change)="setValoresStore(asignacionForm,'anoDelOficio', 'setAnoDelOficio')"
+                            [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+                        @if(asignacionForm.controls['anoDelOficio'].invalid &&
+                        asignacionForm.controls['anoDelOficio'].touched){
+                        <div class="d-grid">
+                            @if(asignacionForm.controls['anoDelOficio'].errors?.['required']) {
+                            <span class="mensaje-error">Este campo es obligatorio</span>
+                            }
+                        </div>
+                        }
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label" for="numeroOficio">Número de oficio de asignación*:</label>
+                        <input type="text" class="form-control" id="numeroOficio" formControlName="numeroOficio"
+                            name="numeroOficio" [required]="true" aria-label="Número de oficio de asignación"
+                            (change)="setValoresStore(asignacionForm,'numeroOficio', 'setNumeroOficio')">
+                        @if(asignacionForm.controls['numeroOficio'].invalid &&
+                        asignacionForm.controls['numeroOficio'].touched){
+                        <div class="d-grid">
+                            @if(asignacionForm.controls['numeroOficio'].errors?.['required']) {
+                            <span class="mensaje-error">Este campo es obligatorio</span>
+                            }
+                            @if(asignacionForm.controls['numeroOficio'].errors?.['pattern']) {
+                            <span class="mensaje-error">Por favor, escribe un número entero válido</span>
+                            }
+                            @if(asignacionForm.controls['numeroOficio'].errors?.['maxlength']) {
+                            <span class="mensaje-error">El número de oficio no debe exceder los 15 dígitos</span>
+                            }
+                        </div>
+                        }
+                    </div>
+                </div>
+                <div class="col-md-8 mt-5 d-flex justify-content-end">
+                    <button type="button" class="btn btn-primary" (click)="obtenerBuscarDatos()">
+                        Buscar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        @if (mostrarSecciones) {
+        <!-- 2.Representación-federal -->
+        <div class="representacion-federal mt-5">
+            <div class="row">
+                <div class="col-12">
+                    <ng-titulo titulo="Representación federal" />
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label" for="estado">Estado:</label>
+                        <input type="text" class="form-control" id="estado" formControlName="estado" name="estado"
+                            aria-label="Estado">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label" for="representacionFederal">Representación federal:</label>
+                        <input type="text" class="form-control" id="representacionFederal"
+                            formControlName="representacionFederal" name="representacionFederal"
+                            aria-label="Representación federal">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3.Control-de-montos -->
+        <div class="control-motos mt-5">
+            <div class="row">
+                <div class="col-12">
+                    <ng-titulo titulo="Control de montos de la asignación" />
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label" for="montoAsignado">Monto asignado:</label>
+                        <input type="number" class="form-control" id="montoAsignado" formControlName="montoAsignado"
+                            name="montoAsignado" aria-label="Monto asignado">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label" for="montoExpedido">Monto expedido:</label>
+                        <input type="number" class="form-control" id="montoExpedido" formControlName="montoExpedido"
+                            name="montoExpedido" aria-label="Monto expedido">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label" for="montoDisponible">Monto disponible:</label>
+                        <input type="number" class="form-control" id="montoDisponible" formControlName="montoDisponible"
+                            name="montoDisponible" aria-label="Monto disponible">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4.Datos-de-la-asignacion -->
+        <div class="datos-asignacion mt-5">
+            <div class="row">
+                <div class="col-12">
+                    <ng-titulo titulo="Datos de la asignación" />
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label class="form-label" for="datosNumeroOficio">Número de oficio:</label>
+                        <input type="number" class="form-control" id="datosNumeroOficio"
+                            formControlName="datosNumeroOficio" name="datosNumeroOficio" aria-label="Número de oficio">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5.Vigencia-de-la-asignacion -->
+        <div class="datos-asignacion mt-5">
+            <div class="row">
+                <div class="col-12">
+                    <ng-titulo titulo="Vigencia de la asignación" />
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-4">
+                    <input-fecha [datos]="fechaIncicioAsignacion"
+                        [setFecha]="asignacionForm.get('fechaInicioVigencia')?.value" id="fechaInicioVigencia"
+                        aria-label="Fecha inicio vigencia" [tooltipQuestionCircle]="true"
+                        [tooltipQuestionCircleText]="'Fecha de inicio vigencia de la asignación'"
+                        (valorCambiado)="cambioFechaInicio($event)" />
+                </div>
+                <div class="col-md-4">
+                    <input-fecha [datos]="fechaFinAsignacion" [setFecha]="asignacionForm.get('fechaFinVigencia')?.value"
+                        [tooltipQuestionCircle]="true"
+                        [tooltipQuestionCircleText]="'Fecha de fin vigencia de la asignación'" id="fechaFinVigencia"
+                        aria-label="Fecha fin vigencia" (valorCambiado)="cambioFechaFin($event)" />
+                </div>
+            </div>
+        </div>
+
+        <!-- 6.Descripción-del-cupo -->
+        <div class="mt-5">
+            <app-descripcion-cupo [consultaState]="consultaState"
+                [formDatos]="asignacionFormDatos"></app-descripcion-cupo>
+        </div>
+
+        <!-- 7.Distribución-de-saldo -->
+        <div class="distribucion-saldo mt-5" *ngIf="!esFormularioSoloLectura">
+            <div class="row">
+                <div class="col-12">
+                    <ng-titulo titulo="Distribución de saldo" />
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label" for="montoADisponible">Monto disponible:</label>
+                        <input type="number" class="form-control" id="montoADisponible"
+                            formControlName="montoADisponible" name="montoADisponible" aria-label="Monto disponible">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label" for="montoAExpedir">Monto a expedir*:</label>
+                        <input type="text" class="form-control" id="montoAExpedir" formControlName="montoAExpedir"
+                            name="montoAExpedir" [required]="true" aria-label="Monto a expedir"
+                            (change)="setValoresStore(asignacionForm,'montoAExpedir', 'setMontoAExpedir')"
+                            [disabled]="esFormularioSoloLectura" [ngClass]="{'border-danger': asignacionForm.controls['montoAExpedir'].invalid && asignacionForm.controls['montoAExpedir'].touched}">
+                        @if(asignacionForm.controls['montoAExpedir'].invalid &&
+                        asignacionForm.controls['montoAExpedir'].touched) {
+                        <div class="d-grid">
+                            @if(asignacionForm.controls['montoAExpedir'].errors?.['pattern']) {
+                            <span class="mensaje-error">Por favor, escribe un número entero válido</span>
+                            }
+                            @if(asignacionForm.controls['montoAExpedir'].errors?.['maxlength']) {
+                            <span class="mensaje-error">El monto no debe exceder los 15 dígitos</span>
+                            }
+                            @if(asignacionForm.controls['montoAExpedir'].errors?.['min']) {
+                            <span class="mensaje-error">El monto a expedir debe ser mayor a cero.</span>
+                            }
+                            @if(asignacionForm.controls['montoAExpedir'].errors?.['mayorQueDisponible']) {
+                            <span class="mensaje-error">La cantidad solicitada a expedir no debe ser mayor al saldo
+                                disponible.</span>
+                            }
+                        </div>
+                        }
+                    </div>
+                </div>
+                <div class="col-md-12 mt-5 d-flex justify-content-end">
+                    <button type="button" class="btn btn-primary" (click)="enviarMontoFormulario()"
+                        [disabled]="esFormularioSoloLectura || !asignacionForm.get('montoAExpedir')?.value">
+                        Agregar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12 datos-table mt-4" *ngIf="!esFormularioSoloLectura">
+            <app-tabla-dinamica [configuracionTabla]="configuracionTablas" [datos]="saldo"
+                [isInvalida]="isContinuarTriggered && tablaValida"
+                [disableSeleccionTablaCheckBox]="esFormularioSoloLectura? true : false" [tipoSeleccionTabla]="checkbox"
+                (listaDeFilaSeleccionada)="obtenerSeleccionadoMercancia($event)"></app-tabla-dinamica>
+        </div>
+
+        <div class="detalle" *ngIf="esFormularioSoloLectura">
+            <div class="row">
+                <div class="col-12">
+                    <ng-titulo titulo="Detalle Certificados" />
+                </div>
+            </div>
+            <div class="col-md-12 datos-table mt-4" >
+                <app-tabla-dinamica [configuracionTabla]="configuracionDitalleTabla" [datos]="detalleSaldo"
+                    [isInvalida]="isContinuarTriggered && tablaValida"
+                    [disableSeleccionTablaCheckBox]="esFormularioSoloLectura? true : false"></app-tabla-dinamica>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <ng-titulo titulo="Detalle Certificados Certificados" />
+                </div>
+            </div>
+            <div class="col-md-12 datos-table mt-4">
+                <app-tabla-dinamica [configuracionTabla]="configurationDetalleCertificadoCertificado"
+                    [datos]="detalleCertificadoSaldo" [isInvalida]="isContinuarTriggered && tablaValida"
+                    [disableSeleccionTablaCheckBox]="esFormularioSoloLectura? true : false"></app-tabla-dinamica>
+            </div>
+
+        </div>
+
+
+        <div class="row mt-3" *ngIf="!esFormularioSoloLectura">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label" for="totalAExpedir">Total a expedir:</label>
+                    <input type="number" class="form-control" id="totalAExpedir" formControlName="totalAExpedir"
+                        name="totalAExpedir" aria-label="Total a expedir">
+                </div>
+            </div>
+            <div class="col-md-12 d-flex justify-content-end">
+                <button type="button" class="btn btn-danger" [disabled]="esFormularioSoloLectura"
+                    (click)="eliminarSeleccionados()">Eliminar seleccionado</button>
+            </div>
+        </div>
+
+
+        <div id="confirmarModalEliminar" aria-labelledby="confirmarModalEliminarLabel" class="modal fade"
+            [class.show]="mostrarModalConfirmacion" [style.display]="mostrarModalConfirmacion ? 'block' : 'none'"
+            tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-sm confirmar-modal-large" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    </div>
+                    <div class="modal-body">
+                        <label>{{ mensajeError }}</label>
+                    </div>
+                    <div class="modal-footer modal-footer-centered">
+                        @if (seleccionadaguardarClicado.length > 0) {
+                        <button type="button" class="btn btn-primary" (click)="cancelarEliminacion()">Cancelar</button>
+                        <button type="button" class="btn btn-primary" (click)="confirmarEliminacion()">Aceptar</button>
+                        } @else {
+                        <button type="button" class="btn btn-primary" (click)="cancelarEliminacion()">Aceptar</button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        @if (mostrarModalConfirmacion) {
+        <div class="modal-backdrop fade show"></div>
+        }
+
+        }
+    </form>
+</div>

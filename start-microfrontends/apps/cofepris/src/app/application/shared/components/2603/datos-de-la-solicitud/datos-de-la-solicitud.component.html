@@ -1,0 +1,1190 @@
+<div class="container">
+    <ng-titulo titulo="Datos del establecimiento"></ng-titulo>
+    <div class="d-flex justify-content-end">
+        <button class="btn btn-primary" type="button" (click)="seleccionar(template)"
+            tooltip="Selecciona para habilitar los campos del establecimiento" placement="left"
+            [disabled]="consultaState.readonly">Seleccionar establecimiento</button>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-8">
+            <form [formGroup]="denominacionForm">
+                <div class="form-group">
+                    <label for="denominacionRazon" class="form-label">Denominación o razón social<span [ngClass]="{'text-danger': denominacionForm.get('denominacionRazon')?.invalid && (denominacionForm.get('denominacionRazon')?.touched || denominacionForm.get('denominacionRazon')?.dirty)}">*</span>:</label>
+                    <input type="text" id="denominacionRazon" formControlName="denominacionRazon" class="form-control"
+                        (change)="setValoresStore(denominacionForm,'denominacionRazon', 'setDenominacionRazon')">
+
+                        @if(denominacionForm.controls['denominacionRazon'].invalid &&
+                        denominacionForm.controls['denominacionRazon'].touched) {
+                        <div class="d-block">
+                            @if(denominacionForm.controls['denominacionRazon'].errors?.['required']) {
+                            <span class="mensaje-error">Este campo es obligatorio.</span>
+                            }
+                        </div>
+                        }
+                </div>
+            </form>
+        </div>
+    </div>
+    <ng-titulo titulo="Domicilio del establecimiento" *ngIf="consultaState.parameter!== 'READ_PROCEDURE'"></ng-titulo>
+    <form [formGroup]="domicilioDeElstablecimientoForm">
+        <div *ngIf="consultaState.parameter=== 'READ_PROCEDURE'">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="calle" class="form-label">Calle y número exterior y/o interior: 
+                            <span class="bi bi-question-circle-fill mx-2" tooltip="Domicilio, calle, número interior, número exterior, lote" placement="top" *ngIf="consultaState.parameter!== 'READ_PROCEDURE'"></span></label>
+                        <input type="text" id="calle" 
+                            formControlName="calleYNumero" 
+                            class="form-control"
+                            (change)="setValoresStore(domicilioDeElstablecimientoForm,'calleYNumero', 'setCalleYNumero')">
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="codigoPostal" class="form-label">Código postal<span [ngClass]="{'text-danger': domicilioDeElstablecimientoForm.get('codigoPostal')?.invalid && (domicilioDeElstablecimientoForm.get('codigoPostal')?.touched || domicilioDeElstablecimientoForm.get('codigoPostal')?.dirty)}">*</span>:</label>
+                        <input type="text" id="codigoPostal" 
+                            formControlName="codigoPostal" 
+                            class="form-control"
+                            maxlength="12"
+                            (change)="setValoresStore(domicilioDeElstablecimientoForm,'codigoPostal', 'setCodigoPostal')">
+                                                @if(domicilioDeElstablecimientoForm.controls['codigoPostal'].invalid &&
+                    domicilioDeElstablecimientoForm.controls['codigoPostal'].touched) {
+                    <div class="d-block">
+
+                        @if(domicilioDeElstablecimientoForm.controls['codigoPostal'].errors?.['required'] ||
+                        domicilioDeElstablecimientoForm.controls['codigoPostal'].errors?.['whitespace']) {
+                        <span class="mensaje-error">Este campo es obligatorio.</span>
+                        }
+
+                        @else if(domicilioDeElstablecimientoForm.controls['codigoPostal'].errors?.['pattern'] ||
+                        domicilioDeElstablecimientoForm.controls['codigoPostal'].errors?.['maxlength']) {
+                        <span class="mensaje-error">Por favor, escribe un número entero válido.</span>
+                        }
+
+                    </div>
+                    }
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="estado" class="form-label">Estado:</label>
+                        <input type="text" id="estado" 
+                            formControlName="estado" 
+                            class="form-control"
+                            (change)="setValoresStore(domicilioDeElstablecimientoForm,'estado', 'setEstado')">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="municipioAlcaldia" class="form-label">Municipio o alcaldía:</label>
+                        <input type="text" id="municipioAlcaldia" 
+                            formControlName="municipio"
+                            maxlength="120"
+                            (change)="setValoresStore(domicilioDeElstablecimientoForm,'municipio', 'setMunicipio')" 
+                            class="form-control">
+                    </div>
+                </div>
+            </div>
+
+             <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="colonia" class="form-label">Colonia:</label>
+                        <input type="text" id="colonia" 
+                            formControlName="colonia" 
+                            class="form-control"
+                            maxlength="100"
+                            (change)="setValoresStore(domicilioDeElstablecimientoForm,'colonia', 'setColonia')">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="localidad" class="form-label">Localidad:</label>
+                        <input type="text" id="localidad" 
+                            formControlName="localidad" 
+                            class="form-control"
+                            maxlength="120"
+                            (change)="setValoresStore(domicilioDeElstablecimientoForm,'localidad', 'setLocalidad')">
+                    </div>
+                </div>
+
+             </div>
+
+             <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="correoElectronico" class="form-label">Correo electrónico: <span class="bi bi-question-circle-fill mx-2" tooltip="ejemplo@dominio.com" placement="top" *ngIf="consultaState.parameter!== 'READ_PROCEDURE'"></span></label>
+                        <input type="text" id="correoElectronico" 
+                            formControlName="correoElecronico" 
+                            class="form-control"
+                            (change)="setValoresStore(domicilioDeElstablecimientoForm,'correoElecronico', 'setCorreoElecronico')">                         
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="rfc" class="form-label">Solicitud Persona RFC Responsable Sanitario:</label>
+                        <input type="text" id="rfc" 
+                            formControlName="rfc" 
+                            class="form-control"
+                            (change)="setValoresStore(domicilioDeElstablecimientoForm,'rfc', 'setRfc')">
+                        </div>
+                </div>
+
+             </div>
+
+             <div class="row mb-3">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="telefono" class="form-label">Teléfono:</label>
+                        <input type="text" id="telefono" 
+                            formControlName="telefono" 
+                            class="form-control"
+                            (change)="setValoresStore(domicilioDeElstablecimientoForm,'lada', 'setTelefono')">
+                    </div>
+                </div>
+             </div>
+        </div>
+        
+        <div class="row mb-3" *ngIf="consultaState.parameter!== 'READ_PROCEDURE'">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="codigoPostal" class="form-label">Código postal<span [ngClass]="{'text-danger': domicilioDeElstablecimientoForm.get('codigoPostal')?.invalid && (domicilioDeElstablecimientoForm.get('codigoPostal')?.touched || domicilioDeElstablecimientoForm.get('codigoPostal')?.dirty)}">*</span>:</label>
+                    <input type="text" id="codigoPostal" formControlName="codigoPostal" class="form-control"
+                        maxlength="12"
+                        (change)="setValoresStore(domicilioDeElstablecimientoForm,'codigoPostal', 'setCodigoPostal')" />
+
+                    @if(domicilioDeElstablecimientoForm.controls['codigoPostal'].invalid &&
+                    domicilioDeElstablecimientoForm.controls['codigoPostal'].touched) {
+                    <div class="d-block">
+
+                        @if(domicilioDeElstablecimientoForm.controls['codigoPostal'].errors?.['required'] ||
+                        domicilioDeElstablecimientoForm.controls['codigoPostal'].errors?.['whitespace']) {
+                        <span class="mensaje-error">Este campo es obligatorio.</span>
+                        }
+
+                        @else if(domicilioDeElstablecimientoForm.controls['codigoPostal'].errors?.['pattern'] ||
+                        domicilioDeElstablecimientoForm.controls['codigoPostal'].errors?.['maxlength']) {
+                        <span class="mensaje-error">Por favor, escribe un número entero válido.</span>
+                        }
+
+                    </div>
+                    }
+                </div>
+            </div>
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="estadoCatalogo" [label]="'Estado'" [required]="true"
+                [disabledPrimerOption]="false"
+                [hiddenPrimerOption]="false"
+                    formControlName="estado" [isDisabled]="consultaState.readonly" name="estado"
+                    (change)="setValoresStore(domicilioDeElstablecimientoForm,'estado', 'setEstado')"
+                    [markTouched]="domicilioDeElstablecimientoForm.get('estado')?.touched??false">
+                </app-catalogo-select>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="municipioAlcaldia" class="form-label">Municipio o alcaldía<span [ngClass]="{'text-danger': domicilioDeElstablecimientoForm.get('municipio')?.invalid && (domicilioDeElstablecimientoForm.get('municipio')?.touched || domicilioDeElstablecimientoForm.get('municipio')?.dirty)}">*</span>:</label>
+                    <input type="text" id="municipioAlcaldia" formControlName="municipio" maxlength="120"
+                        (change)="setValoresStore(domicilioDeElstablecimientoForm,'municipio', 'setMunicipio')"
+                        class="form-control">
+                </div>
+                @if(domicilioDeElstablecimientoForm.controls['municipio'].invalid &&
+                domicilioDeElstablecimientoForm.controls['municipio'].touched) {
+                <div class="d-block">
+                    @if(domicilioDeElstablecimientoForm.controls['municipio'].errors?.['required']) {
+                    <span class="mensaje-error">Este campo es obligatorio</span>
+                    }
+                </div>
+                }
+            </div>
+        </div>
+        <div class="row mb-3" *ngIf="consultaState.parameter!== 'READ_PROCEDURE'">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="localidad" class="form-label">Localidad<span [ngClass]="{'text-danger': domicilioDeElstablecimientoForm.get('localidad')?.invalid && (domicilioDeElstablecimientoForm.get('localidad')?.touched || domicilioDeElstablecimientoForm.get('localidad')?.dirty)}">*</span>:</label>
+                    <input type="text" id="localidad" formControlName="localidad" class="form-control" maxlength="120"
+                        (change)="setValoresStore(domicilioDeElstablecimientoForm,'localidad', 'setLocalidad')">
+                </div>
+
+                @if(domicilioDeElstablecimientoForm.controls['localidad'].invalid &&
+                domicilioDeElstablecimientoForm.controls['localidad'].touched) {
+                <div class="d-block">
+                    @if(domicilioDeElstablecimientoForm.controls['localidad'].errors?.['required']) {
+                    <span class="mensaje-error">Este campo es obligatorio.</span>
+                    }
+                    @else if(domicilioDeElstablecimientoForm.controls['localidad'].errors?.['maxlength']) {
+                    <span class="mensaje-error">El valor capturado no es válido.</span>
+                    }
+                </div>
+                }
+
+
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="colonia" class="form-label">Colonia<span [ngClass]="{'text-danger': domicilioDeElstablecimientoForm.get('colonia')?.invalid && (domicilioDeElstablecimientoForm.get('colonia')?.touched || domicilioDeElstablecimientoForm.get('colonia')?.dirty)}">*</span>:</label>
+                    <input type="text" id="colonia" formControlName="colonia" class="form-control" maxlength="120"
+                        (change)="setValoresStore(domicilioDeElstablecimientoForm,'colonia', 'setColonia')">
+                </div>
+                @if(domicilioDeElstablecimientoForm.controls['colonia'].invalid &&
+                domicilioDeElstablecimientoForm.controls['colonia'].touched) {
+                <div class="d-block">
+                    @if(domicilioDeElstablecimientoForm.controls['colonia'].errors?.['required']) {
+                    <span class="mensaje-error">Este campo es obligatorio</span>
+                    }
+                </div>
+                }
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+            <label for="calle" class="form-label">Calle y número<span [ngClass]="{'text-danger': domicilioDeElstablecimientoForm.get('calleYNumero')?.invalid && (domicilioDeElstablecimientoForm.get('calleYNumero')?.touched || domicilioDeElstablecimientoForm.get('calleYNumero')?.dirty)}">*</span>: <span class="bi bi-question-circle-fill mx-2" tooltip="Domicilio, calle, número interior, número exterior, lote" placement="top"></span></label>
+                    <input type="text" id="calle" formControlName="calleYNumero" class="form-control" maxlength="100"
+                        (change)="setValoresStore(domicilioDeElstablecimientoForm,'calleYNumero', 'setCalleYNumero')">
+                </div>
+                @if(domicilioDeElstablecimientoForm.controls['calleYNumero'].invalid &&
+                domicilioDeElstablecimientoForm.controls['calleYNumero'].touched) {
+                <div class="d-block">
+                    @if(domicilioDeElstablecimientoForm.controls['calleYNumero'].errors?.['required']) {
+                    <span class="mensaje-error">Este campo es obligatorio</span>
+                    }
+                </div>
+                }
+            </div>
+        </div>
+        <div class="row mb-3" *ngIf="consultaState.parameter!== 'READ_PROCEDURE'">
+            <div class="col-md-4">
+                <div class="form-group">
+            <label for="correoElectronico" class="form-label">Correo electrónico<span [ngClass]="{'text-danger': domicilioDeElstablecimientoForm.get('correoElecronico')?.invalid && (domicilioDeElstablecimientoForm.get('correoElecronico')?.touched || domicilioDeElstablecimientoForm.get('correoElecronico')?.dirty)}">*</span>: <span class="bi bi-question-circle-fill mx-2" tooltip="ejemplo@dominio.com" placement="top"></span></label>
+                    <input type="text" id="correoElectronico" formControlName="correoElecronico" class="form-control"
+                        maxlength="320"
+                        (change)="setValoresStore(domicilioDeElstablecimientoForm,'correoElecronico', 'setCorreoElecronico')">
+                </div>
+                @if(domicilioDeElstablecimientoForm.controls['correoElecronico'].invalid &&
+                domicilioDeElstablecimientoForm.controls['correoElecronico'].touched) {
+                <div class="d-block">
+                    @if(domicilioDeElstablecimientoForm.controls['correoElecronico'].errors?.['required']) {
+                    <span class="mensaje-error">Este campo es obligatorio.</span>
+                    }@else if(domicilioDeElstablecimientoForm.controls['correoElecronico'].errors?.['email']) {
+                    <span class="mensaje-error">El valor Ingresado no es una dirección válida de correo electrónico.</span>
+                    }
+                </div>
+                }
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="rfc" class="form-label">RFC del responsable sanitario:</label>
+                    <input type="text" id="rfc" formControlName="rfc" class="form-control"
+                        (change)="setValoresStore(domicilioDeElstablecimientoForm,'rfc', 'setRfc')">
+                    @if(domicilioDeElstablecimientoForm.controls['rfc'].invalid &&
+                    domicilioDeElstablecimientoForm.controls['rfc'].touched) {
+                    <div class="d-block">
+                        @if(domicilioDeElstablecimientoForm.controls['rfc'].errors?.['pattern']) {
+                        <span class="mensaje-error">El RFC no tiene un formato válido.</span>
+                        }
+                    </div>
+                    }
+                </div>
+            </div>
+
+            <div class="col-md-1">
+                <div class="form-group">
+                    <label for="lada" class="form-label">Lada:</label>
+                    <input type="text" id="lada" class="form-control" formControlName="lada" maxlength="5"
+                        (change)="setValoresStore(domicilioDeElstablecimientoForm,'lada', 'setLada')">
+                    @if(domicilioDeElstablecimientoForm.controls['lada'].invalid &&
+                    domicilioDeElstablecimientoForm.controls['lada'].touched) {
+                    <div class="d-block">
+                        @if(domicilioDeElstablecimientoForm.controls['lada'].errors?.['pattern']) {
+                        <span class="mensaje-error">Por favor, escribe un número entero válido.</span>
+                        }
+                        @else if(domicilioDeElstablecimientoForm.controls['lada'].errors?.['maxlength']) {
+                        <span class="mensaje-error">Máximo 5 dígitos permitidos.</span>
+                        }
+                    </div>
+                    }
+                </div>
+            </div>
+
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="telefono" class="form-label">Teléfono<span [ngClass]="{'text-danger': domicilioDeElstablecimientoForm.get('telefono')?.invalid && (domicilioDeElstablecimientoForm.get('telefono')?.touched || domicilioDeElstablecimientoForm.get('telefono')?.dirty)}">*</span>:</label>
+                    <input type="text" id="telefono" formControlName="telefono" class="form-control" maxlength="30"
+                        (change)="setValoresStore(domicilioDeElstablecimientoForm,'telefono', 'setTelefono')">
+                </div>
+
+                @if(domicilioDeElstablecimientoForm.controls['telefono'].invalid &&
+                domicilioDeElstablecimientoForm.controls['telefono'].touched) {
+                <div class="d-block">
+                    @if(domicilioDeElstablecimientoForm.controls['telefono'].errors?.['required']) {
+                    <span class="mensaje-error">Este campo es obligatorio.</span>
+                    }
+                    @else if(domicilioDeElstablecimientoForm.controls['telefono'].errors?.['pattern']) {
+                    <span class="mensaje-error">Por favor, escribe un número entero válido.</span>
+                    }
+                    @else if(domicilioDeElstablecimientoForm.controls['telefono'].errors?.['maxlength']) {
+                    <span class="mensaje-error">Máximo 30 dígitos permitidos.</span>
+                    }
+                </div>
+                }
+            </div>
+
+        </div>
+
+        <div class="row mb-5 mt-5">
+            <h5 class="mb-5">S.C.I.A.N.<span
+                [ngClass]="{
+                    'text-danger': domicilioDeElstablecimientoForm.invalid && domicilioDeElstablecimientoForm.touched && scianTablaDatos.length === 0
+                    }"
+                    >*</span>:</h5>
+            <div class="col-md-12">
+                <!-- Sección de la tabla SCIAN -->
+                <app-tabla-dinamica 
+                [tipoSeleccionTabla]="checkbox" 
+                [configuracionTabla]="configuracionTablaScian"
+                [datos]="scianTablaDatos" 
+                [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+                (listaDeFilaSeleccionada)="onSeleccionChangeScian($event); onScianRecordAdded($event)" 
+                [isInvalida]="domicilioDeElstablecimientoForm.invalid && domicilioDeElstablecimientoForm.touched && scianTablaDatos.length === 0">
+                </app-tabla-dinamica>
+
+                @if(establecimientoSeleccionado){
+                <div class="container text-end mt-5">
+                    <button class="btn btn-default me-2" (click)="eliminarSeleccionadosScian()"
+                        [disabled]="selectedRowsScian.length === 0 || esFormularioSoloLectura">
+                        Eliminar
+                    </button>
+                    <button class="btn btn-primary me-2" (click)="seleccionarAgregar(scian)"
+                        [disabled]="esFormularioSoloLectura">
+                        Agregar
+                    </button>
+                </div>
+                }
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" formControlName="avisoCheckbox"
+                        id="aviso" (change)="onFuncionamientoCheckboxCambiar($event)">
+                    <label class="form-check-label fw-normal" for="aviso">
+                        Aviso de funcionamiento
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="licenciaSanitaria" class="form-label">No. de licencia sanitaria:<span class="bi bi-question-circle-fill mx-2" tooltip="Número de la autorización indicado en el documento emitido por la autoridad sanitaria competente." placement="top"></span></label>
+                    <input type="text" id="licenciaSanitaria" formControlName="licenciaSanitaria" class="form-control"
+                        maxlength="20"
+                        (change)="setValoresStore(domicilioDeElstablecimientoForm,'licenciaSanitaria', 'setLicenciaSanitaria')"
+                        (input)="onLicenciaSanitariaInput($event)">
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-8 ">
+                <app-catalogo-select [catalogo]="regimenDatos" [label]="'Régimen al que se destinará la mercancía'" [placeholder]="'Selecciona una opción'"
+                    [required]="true" formControlName="regimenDestinara" name="regimenCatalogo" 
+                    [isDisabled]="true"
+                    [disabledPrimerOption]="false"
+                    [hiddenPrimerOption]="false"
+                    [markTouched]="domicilioDeElstablecimientoForm.get('regimenDestinara')?.touched??false">
+                </app-catalogo-select>
+            </div>
+        </div>
+
+        <div class="row mb-3 mt-5">
+            <h5 class="mt-3 mb-3">Mercancías<span
+                [ngClass]="{
+                    'text-danger': domicilioDeElstablecimientoForm.invalid && domicilioDeElstablecimientoForm.touched && mercanciasTablaDatos.length === 0
+                    }"
+                    >*</span>:</h5>
+           
+            <div class="col-md-12">
+                <app-tabla-dinamica 
+                [configuracionTabla]="configuracionMercancias" 
+                [datos]="mercanciasTablaDatos"
+                [tipoSeleccionTabla]="checkbox" 
+                [disableSeleccionTablaCheckBox]="consultaState.readonly"
+                (listaDeFilaSeleccionada)="onSeleccionChange($event)"
+                [isInvalida]="domicilioDeElstablecimientoForm.invalid && domicilioDeElstablecimientoForm.touched && mercanciasTablaDatos.length === 0"
+                >
+                </app-tabla-dinamica>
+                <div class="d-flex justify-content-end mt-3">
+                    @if(mercanciasTablaDatos.length > 0) {
+                    <button type="button" class="btn btn-default me-2" (click)="modificarMercancia(mercancias)">Modificar</button>
+                    <button type="button" class="btn btn-danger me-2" (click)="eliminarMercancia()">Eliminar</button>
+                    }
+                    @if(mercanciasTablaDatos.length === 0) {
+                    <button class="btn btn-primary" (click)="seleccionarAgregar(mercancias)"
+                        [disabled]="consultaState.readonly">Agregar</button>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="adunasDeEntradasDatos" [label]="'Aduana'" [required]="true"
+                    formControlName="aduana" name="regimenCatalogo"
+                    [disabledPrimerOption]="false"
+                    [hiddenPrimerOption]="false"
+                    (change)="setValoresStore(domicilioDeElstablecimientoForm,'aduana', 'setAduanasEntradas')"
+                    [isDisabled]="consultaState.readonly"
+                    [markTouched]="domicilioDeElstablecimientoForm.get('aduana')?.touched??false">
+                </app-catalogo-select>
+            </div>
+        </div>
+    </form>
+
+    <ng-titulo titulo="Manifiestos y declaraciones"></ng-titulo>
+    <form [formGroup]="representanteLegalForm">
+        <div class="mt-5">
+            <div class="alert alert-info">
+                <div class="row align-items-center justify-content-start py-2">
+                    <div class="col-auto d-flex align-items-start pt-1">
+                        <input class="form-check-input me-3" type="checkbox" id="manifiestos"
+                            formControlName="manifiestos" />
+                        <label class="form-check-label ms-2 mt-2" for="manifiestos">
+                            <span
+                                [ngClass]="representanteLegalForm.get('manifiestos')?.invalid && (representanteLegalForm.get('manifiestos')?.touched || representanteLegalForm.get('manifiestos')?.dirty) ? 'mensaje-error font-weight-bold' : ''">*</span>
+                        </label>
+                    </div>
+                    <div class="col align-items-center ml-38">
+                        <label for="manifesto" class="fw-300">{{ textoManifestoContenido }}</label>
+                    </div>
+                </div>
+            </div>
+            @if(representanteLegalForm.controls['manifiestos'].invalid &&
+            representanteLegalForm.controls['manifiestos'].touched) {
+            <div class="d-block">
+                @if(representanteLegalForm.controls['manifiestos'].errors?.['required']) {
+                <span class="mensaje-error">Este campo es obligatorio</span>
+                }
+            </div>
+            }
+        </div>
+
+        <div class="row mb-3">
+            <div class="form-group">
+                <label class="form-label " for="losDatosNo">Los datos o anexos pueden contener información confidencial
+                    ¿Está de acuerdo en hacerlos públicos?*:</label>
+                <app-input-radio [radioOptions]="sinoOpciones" id="losDatosNo" formControlName="losDatosNo"
+                    [layout]="'horizontal'" [isRequired]="true"
+                    (valueChange)="setValoresStore(representanteLegalForm,'losDatosNo', 'setLosDatosNo')"></app-input-radio>
+            </div>
+            @if(representanteLegalForm.controls['losDatosNo'].invalid &&
+                representanteLegalForm.controls['losDatosNo'].touched) {
+                <div class="d-block">
+                    @if(representanteLegalForm.controls['losDatosNo'].errors?.['required']) {
+                    <span class="mensaje-error">Este campo es obligatorio</span>
+                    }
+                </div>
+            }
+        </div>
+
+        <ng-titulo titulo="Representante legal"></ng-titulo>
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="rfc" class="form-label">RFC<span [ngClass]="{'text-danger': representanteLegalForm.get('rfc')?.invalid && (representanteLegalForm.get('rfc')?.touched || representanteLegalForm.get('rfc')?.dirty)}">*</span>:</label>
+                    <input type="text" id="rfc" formControlName="rfc" class="form-control" maxlength="13"
+                        (change)="setValoresStore(representanteLegalForm,'rfc', 'setRfc')"
+                        [ngClass]="esValido(representanteLegalForm, 'rfc') ? 'required' : ''">
+                </div>
+                @if(representanteLegalForm.controls['rfc'].invalid && representanteLegalForm.controls['rfc'].touched) {
+                <div class="d-block">
+                    @if(representanteLegalForm.controls['rfc'].errors?.['required']) {
+                    <span class="mensaje-error">Este campo es obligatorio</span>
+                    }
+                </div>
+                }
+                @else if (representanteLegalForm.get('rfc')?.hasError('rfcInvalido') &&
+                representanteLegalForm.get('rfc')?.touched) {
+                <div class="mensaje-error">
+                    La nomenclatura del RFC es incorrecta
+                </div>
+                }
+            </div>
+            <div class="col-md-4">
+                <button type="button" class="btn btn-primary mt-5" (click)="buscarRepresentanteLegal()"
+                    [disabled]="consultaState.readonly">Buscar</button>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="nombreORazon" class="form-label">Nombre o Razón Social<span [ngClass]="{'text-danger': representanteLegalForm.get('nombreORazon')?.invalid && (representanteLegalForm.get('nombreORazon')?.touched || representanteLegalForm.get('nombreORazon')?.dirty)}">*</span>:</label>
+                    <input type="text" id="nombreORazon" formControlName="nombreORazon" class="form-control"
+                        (change)="setValoresStore(representanteLegalForm,'nombreORazon', 'setNombreORazon')">
+                </div>
+                @if(representanteLegalForm.controls['nombreORazon'].invalid &&
+                representanteLegalForm.controls['nombreORazon'].touched) {
+                <div class="d-block">
+                    @if(representanteLegalForm.controls['nombreORazon'].errors?.['required']) {
+                    <span class="mensaje-error">Este campo es obligatorio</span>
+                    }
+                </div>
+                }
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="apellidoPaterno" class="form-label">Apellido paterno<span [ngClass]="{'text-danger': representanteLegalForm.get('apellidoPaterno')?.invalid && (representanteLegalForm.get('apellidoPaterno')?.touched || representanteLegalForm.get('apellidoPaterno')?.dirty)}">*</span>:</label>
+                    <input type="text" id="apellidoPaterno" formControlName="apellidoPaterno" class="form-control"
+                        (change)="setValoresStore(representanteLegalForm,'apellidoPaterno', 'setApellidoPaterno')">
+                </div>
+                @if(representanteLegalForm.controls['apellidoPaterno'].invalid &&
+                representanteLegalForm.controls['apellidoPaterno'].touched) {
+                <div class="d-block">
+                    @if(representanteLegalForm.controls['apellidoPaterno'].errors?.['required']) {
+                    <span class="mensaje-error">Este campo es obligatorio</span>
+                    }
+                </div>
+                }
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="apellidoMaterno" class="form-label">Apellido materno:</label>
+                    <input type="text" id="apellidoMaterno" formControlName="apellidoMaterno" class="form-control"
+                        (change)="setValoresStore(representanteLegalForm,'apellidoMaterno', 'setApellidoMaterno')">
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<ng-template #template>
+    <div class="modal-header">&nbsp;</div>
+    <div class="modal-body">
+        Por el momento no hay comunicación con el Sistema de COFEPRIS, favor de capturar su establecimiento.
+    </div>
+    <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-primary" (click)="cerrar()">Aceptar</button>
+    </div>
+</ng-template>
+
+<!-- S.C.I.A.N Tabla Modal -->
+<ng-template #scian>
+    <div class="modal-body">
+        <form [formGroup]="scianForm">
+            <ng-titulo titulo="Clave S.C.I.A.N."></ng-titulo>
+            <div class="row">
+                <div class="col-md-8">
+                    <app-catalogo-select [catalogo]="claveScianCatalogo" [label]="'Clave S.C.I.A.N.'" [required]="true"
+                        formControlName="clave" 
+                        [disabledPrimerOption]="false"
+                        [hiddenPrimerOption]="false"
+                        (selectionChange)="setValoresStore(scianForm,'clave', 'setClave'); claveSelecionada($event)"
+                        name="clave" [markTouched]="scianForm.get('clave')?.touched??false">
+                    </app-catalogo-select>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-8">                    
+                    <div class="form-group">
+                        <label for="descripcionScian" class="form-label">Descripción del S.C.I.A.N.:</label>
+                        <input 
+                            type="text" 
+                            id="descripcionScian"
+                            class="form-control"
+                            formControlName="descripcion"
+                            readonly
+                            placeholder="Selecciona una clave S.C.I.A.N. primero"
+                            (change)="setValoresStore(scianForm,'descripcion', 'setDescripcion')"
+                        />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>    <div class="modal-footer custom-footer d-flex justify-content-between align-items-center w-100 mb-3">
+        <p class="mb-0">* Campos obligatorios</p>
+        <div>
+            <button type="button" class="btn btn-danger me-2" (click)="cerrarModalScian()">Cancelar</button>
+            <button type="button" class="btn btn-default me-2" (click)="limpiarScianForm()">Limpiar</button>
+            <button type="button" class="btn btn-primary" (click)="scianAgregar()">Agregar</button>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #mercancias>
+    <div class="modal-body">
+    <ng-titulo titulo="Datos mercancía"></ng-titulo>
+    <form [formGroup]="mercanciasForm" (ngSubmit)="agregarMercancia()">
+            <div class="row mb-2">
+                <div class="col-md-12">
+                    <app-catalogo-select [catalogo]="claveCatalogo" [label]="'Clasificación del producto'"
+                        [required]="true" formControlName="clave"
+                        [disabledPrimerOption]="false"
+                        [hiddenPrimerOption]="false"
+                        [placeholder]="'Selecciona una opción'"
+                        (change)="setValoresStore(mercanciasForm,'clave', 'setClaveMercancias')" name="clave"
+                        [markTouched]="mercanciasForm.get('clave')?.touched??false">
+                    </app-catalogo-select>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="especificar" class="form-label">Especificar clasificación del producto<span [ngClass]="{'text-danger': mercanciasForm.get('especificarClasificacion')?.invalid && (mercanciasForm.get('especificarClasificacion')?.touched || mercanciasForm.get('especificarClasificacion')?.dirty)}">*</span>:</label>
+                        <input type="text" id="especificar" formControlName="especificarClasificacion" maxlength="200"
+                            (change)="setValoresStore(mercanciasForm,'especificarClasificacion', 'setEspecificarClasificacionProducto')"
+                            class="form-control"  [ngClass]="{'is-invalid': mercanciasForm.get('especificarClasificacion')?.invalid && mercanciasForm.get('especificarClasificacion')?.touched}">
+                            @if (mercanciasForm.get('especificarClasificacion')?.invalid && mercanciasForm.get('especificarClasificacion')?.touched) {
+                            <div class="text-danger">
+                                @if (mercanciasForm.get('especificarClasificacion')?.errors?.['required']) {
+                                    <small>Este campo es obligatorio.</small>
+                                } @else if (mercanciasForm.get('especificarClasificacion')?.errors?.['pattern']) {
+                                    <small>Ingresa datos validos.</small>
+                                } @else if (mercanciasForm.get('especificarClasificacion')?.errors?.['maxlength']) {
+                                    <small>Por favor, no escribas más de 200 caracteres.</small>
+                                }
+                            </div>
+                            }
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="dci" class="form-label">Denominación común internacional (DCI)<span [ngClass]="{'text-danger': mercanciasForm.get('dci')?.invalid && (mercanciasForm.get('dci')?.touched || mercanciasForm.get('dci')?.dirty)}">*</span>:  <span class="bi bi-question-circle-fill mx-2" tooltip="o denominación genérica o nombre científico" placement="top"></span></label>
+                        <textarea rows="2" id="dci" formControlName="dci"
+                            (change)="setValoresStore(mercanciasForm,'dci', 'setDci')" class="form-control areatexto no-scroll" maxlength="250" [ngClass]="{'is-invalid': mercanciasForm.get('dci')?.invalid && mercanciasForm.get('dci')?.touched}" ></textarea>
+                            @if (mercanciasForm.get('dci')?.invalid && mercanciasForm.get('dci')?.touched) {
+                            <div class="text-danger">
+                                @if (mercanciasForm.get('dci')?.errors?.['required']) {
+                                    <small>Este campo es obligatorio.</small>
+                                } @else if (mercanciasForm.get('dci')?.errors?.['pattern']) {
+                                    <small>Ingresa datos válidos.</small>
+                                } @else if (mercanciasForm.get('dci')?.errors?.['maxlength']) {
+                                    <small>Por favor, no escribas más de 250 caracteres.</small>
+                                }
+                            </div>
+                            }
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="marcaComercialODenominacionDistintiva" class="form-label">Marca comercial o denominación distintiva<span [ngClass]="{'text-danger': mercanciasForm.get('marcaComercialODenominacionDistintiva')?.invalid && (mercanciasForm.get('marcaComercialODenominacionDistintiva')?.touched || mercanciasForm.get('marcaComercialODenominacionDistintiva')?.dirty)}">*</span>:</label>
+                        <input type="text" id="marcaComercialODenominacionDistintiva"
+                            formControlName="marcaComercialODenominacionDistintiva" maxlength="250"
+                            (change)="setValoresStore(mercanciasForm,'marcaComercialODenominacionDistintiva', 'setMarcaComercialODenominacionDistintiva')"
+                            class="form-control" [ngClass]="{'is-invalid': mercanciasForm.get('marcaComercialODenominacionDistintiva')?.invalid && mercanciasForm.get('marcaComercialODenominacionDistintiva')?.touched}">
+                            @if (mercanciasForm.get('marcaComercialODenominacionDistintiva')?.invalid && mercanciasForm.get('marcaComercialODenominacionDistintiva')?.touched) {
+                            <div class="text-danger">
+                                @if (mercanciasForm.get('marcaComercialODenominacionDistintiva')?.errors?.['required']) {
+                                    <small>Este campo es obligatorio.</small>
+                                } @else if (mercanciasForm.get('marcaComercialODenominacionDistintiva')?.errors?.['maxlength']) {
+                                    <small>Por favor, no escribas más de 256 caracteres.</small>
+                                }
+                            </div>
+                            }
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-12">
+                    <app-catalogo-select [catalogo]="tipoDeProductoCatalogo" [label]="'Tipo de producto'"
+                        [required]="true" formControlName="tipoDeProducto"
+                        [disabledPrimerOption]="false"
+                        [hiddenPrimerOption]="false"
+                        (change)="setValoresStore(mercanciasForm,'tipoDeProducto', 'setTipoDeProducto'); onTipoDeProductoChange($event)" name="clave"
+                        [markTouched]="mercanciasForm.get('tipoDeProducto')?.touched??false">
+                    </app-catalogo-select>
+                </div>
+            </div>
+            @if (mostrarEspecifique ) {
+            <div class="row mb-2">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="especifique" class="form-label">Especifique:</label>
+                        <input type="text" id="especifique"
+                            formControlName="especifique" maxlength="100"
+                            (change)="setValoresStore(mercanciasForm,'especifique', 'setEspecifique')"
+                            class="form-control">
+                    </div>
+                </div>
+            </div>
+            }
+            @if(idProcedimiento===260301){
+                <div class="row">
+                  <div class="col-md-10 ml-2">
+                    <app-catalogo-select [catalogo]="estadoFisicoDatos" formControlName="estadoFisico" [label]="'Estado físico'"
+                      [required]="true"
+                      
+                      [disabledPrimerOption]="false"
+                      [hiddenPrimerOption]="false"
+                      [markUntouched]="mercanciasForm.get('estadoFisico')?.errors?.['required'] && mercanciasForm.get('estadoFisico')?.touched ? true : false"
+                      name="estadoFisico" [placeholder]="'Selecciona una opción'"
+                      [markTouched]="mercanciasForm.get('estadoFisico')?.touched??false"></app-catalogo-select>
+                  </div>
+                </div>
+                } 
+                @if(idProcedimiento===260301 &&
+                mercanciasForm.get('estadoFisico')?.value === 'ESFIMG.OTRE' ){
+                <div class="row">
+                  <div class="col-md-10">
+                    <div class="form-group">
+                      <label class="form-label"
+                        for="especifiqueEstado">Especifique
+                        <span [ngClass]="
+                              {
+                                'text-danger': mercanciasForm.get('especifiqueEstado')?.errors?.['required'] && mercanciasForm.get('especifiqueEstado')?.touched
+                              }">*</span>
+                        :</label>
+                      <input maxlength="200" class="form-control" id="especifiqueEstado" type="text"
+                        formControlName="especifiqueEstado" [ngClass]="
+                            isValid(mercanciasForm, 'especifiqueEstado') ? 'required' : ''
+                          " />
+                      <div class="mensaje-error"
+                        *ngIf="mercanciasForm.get('especifiqueEstado')?.errors?.['required'] && mercanciasForm.get('especifiqueEstado')?.touched">
+                        Este campo es obligatorio.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                }
+            <div class="row mb-2">
+                <div class="col-md-12">
+                    <div class="form-group mt-5">
+                        <div class="panel-group ficha-collapse" id="accordion">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" (click)="mostrarColapsable('forma')">
+                                    <p class="panel-title fw-bold">Forma farmacéutica</p>
+                                    <button type="button" class="collpase-button"
+                                        [ngClass]="colapsableObj.formaFarmaceuticaColapsable ? '' : 'collapsed'"></button>
+                                </div>
+                                @if(colapsableObj.formaFarmaceuticaColapsable){
+                                <div class="panel-collapse collapse in" id="panel-01">
+                                    <div class="panel-body">
+                                        <crosslist [fechas]="formaFarmaceuticaDatos" [label]="formaFarmaceuticaLabel"
+                                            [botones]="formaFarmaceuticaBotons" [fechasSeleccionadas]="seleccionadasFormaFarmaceuticaDatos"
+                                            (fechasSeleccionadasChange)="formaFarmaceuticaSeleccionadasChange($event)"></crosslist>
+                                    </div>
+                                </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="fraccionArancelaria" class="form-label">Fracción arancelaria<span [ngClass]="{'text-danger': mercanciasForm.get('fraccionArancelaria')?.invalid && (mercanciasForm.get('fraccionArancelaria')?.touched || mercanciasForm.get('fraccionArancelaria')?.dirty)}">*</span>:  <span class="bi bi-question-circle-fill mx-2" tooltip="Descripción numérica o desglose de un código de clasificación que otorga el Sistema Armonizado" placement="top"></span></label>
+                        <input type="text" id="fraccionArancelaria" formControlName="fraccionArancelaria" maxlength="8" 
+                            (change)="setValoresStore(mercanciasForm,'fraccionArancelaria', 'setFraccionArancelaria'); manejarCambioFraccionArancelaria()"
+                            class="form-control"[ngClass]="{'is-invalid': mercanciasForm.get('fraccionArancelaria')?.invalid && mercanciasForm.get('fraccionArancelaria')?.touched}">
+                            @if (mercanciasForm.get('fraccionArancelaria')?.invalid && mercanciasForm.get('fraccionArancelaria')?.touched) {
+                            <div class="text-danger">
+                                @if (mercanciasForm.get('fraccionArancelaria')?.errors?.['required']) {
+                                    <small>Este campo es obligatorio.</small>
+                                } @else if (mercanciasForm.get('fraccionArancelaria')?.errors?.['pattern']) {
+                                    <small>Por favor, sólo escribe dígitos.</small>
+                                } @else if (mercanciasForm.get('fraccionArancelaria')?.errors?.['maxlength']) {
+                                    <small>Por favor, no escribas menos de 8 caracteres.</small>
+                                }
+                            </div>
+                            }
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="descripcionDeLa" class="form-label">Descripción de la fracción arancelaria<span [ngClass]="{'text-danger': mercanciasForm.get('descripcionDeLaFraccion')?.invalid && (mercanciasForm.get('descripcionDeLaFraccion')?.touched || mercanciasForm.get('descripcionDeLaFraccion')?.dirty)}">*</span>:</label>
+                        <input type="text" id="descripcionDeLa" formControlName="descripcionDeLaFraccion"
+                            (change)="setValoresStore(mercanciasForm,'descripcionDeLaFraccion', 'setDescripcionDeLaFraccion')"
+                            class="form-control" [ngClass]="{'is-invalid': mercanciasForm.get('descripcionDeLaFraccion')?.invalid && mercanciasForm.get('descripcionDeLaFraccion')?.touched}">
+                            @if (mercanciasForm.get('descripcionDeLaFraccion')?.invalid && mercanciasForm.get('descripcionDeLaFraccion')?.touched) {
+                            <div class="text-danger">
+                                @if (mercanciasForm.get('descripcionDeLaFraccion')?.errors?.['required']) {
+                                    <small>Este campo es obligatorio.</small>
+                                } 
+                            </div>
+                            }
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="cantidadUmt" class="form-label">Cantidad UMT<span [ngClass]="{'text-danger': mercanciasForm.get('cantidadUmt')?.invalid && (mercanciasForm.get('cantidadUmt')?.touched || mercanciasForm.get('cantidadUmt')?.dirty)}">*</span>:</label>
+                        <input type="text" id="cantidadUmt" formControlName="cantidadUmt" maxlength="20"
+                            (change)="setValoresStore(mercanciasForm,'cantidadUmt', 'setCantidadUMT')"
+                            class="form-control" [ngClass]="{'is-invalid': mercanciasForm.get('cantidadUmt')?.invalid && mercanciasForm.get('cantidadUmt')?.touched}">
+                            @if (mercanciasForm.get('cantidadUmt')?.invalid && mercanciasForm.get('cantidadUmt')?.touched) {
+                            <div class="text-danger">
+                                @if (mercanciasForm.get('cantidadUmt')?.errors?.['required']) {
+                                    <small>Este campo es obligatorio.</small>
+                                } @else if (mercanciasForm.get('cantidadUmt')?.errors?.['pattern']) {
+                                    <small>Por favor, escribe un número entero válido.</small>
+                                }
+                                 @else if (mercanciasForm.get('cantidadUmt')?.errors?.['maxlength']) {
+                                    <small>Por favor, no escribas más de 20 caracteres.</small>
+                                }
+                            </div>
+                            }
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="umt" class="form-label">UMT<span [ngClass]="{'text-danger': mercanciasForm.get('umt')?.invalid && (mercanciasForm.get('umt')?.touched || mercanciasForm.get('umt')?.dirty)}">*</span>:  <span class="bi bi-question-circle-fill mx-2" tooltip="Unidad de medida de la tarifa" placement="top"></span></label>
+                        <input type="text" id="umt" formControlName="umt"
+                            (change)="setValoresStore(mercanciasForm,'umt', 'setUMT')" class="form-control" [ngClass]="{'is-invalid': mercanciasForm.get('umt')?.invalid && mercanciasForm.get('umt')?.touched}">
+                            @if (mercanciasForm.get('umt')?.invalid && mercanciasForm.get('umt')?.touched) {
+                            <div class="text-danger">
+                                @if (mercanciasForm.get('umt')?.errors?.['required']) {
+                                    <small>Este campo es obligatorio.</small>
+                                } @else if (mercanciasForm.get('umt')?.errors?.['pattern']) {
+                                    <small>Ingresa datos validos.</small>
+                                } @else if (mercanciasForm.get('umt')?.errors?.['maxlength']) {
+                                    <small>Por favor, no escribas más de 9 caracteres.</small>
+                                }
+                            </div>
+                            }
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-12">
+                    <app-catalogo-select [catalogo]="cantidadUmcDatos" [label]="'UMC'" [required]="true"
+                    [disabledPrimerOption]="false"
+                    [hiddenPrimerOption]="false"
+                    [tooltipQuestionCircle]="true" [tooltipQuestionCircleText]="'Unidad de medida de comercialización'"
+                        formControlName="umc" (change)="setValoresStore(mercanciasForm,'umc', 'setUMC')" name="umc"
+                        [markTouched]="mercanciasForm.get('umc')?.touched??false">
+                    </app-catalogo-select>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="numeroCas" class="form-label">Número CAS:</label>
+                        <input type="text" id="numeroCas" formControlName="numeroCas" maxlength="20"
+                            (change)="setValoresStore(mercanciasForm,'numeroCas', 'setNumeroCas')" class="form-control" [ngClass]="{'is-invalid': mercanciasForm.get('numeroCas')?.invalid && mercanciasForm.get('numeroCas')?.touched}">
+                            @if (mercanciasForm.get('numeroCas')?.invalid && mercanciasForm.get('numeroCas')?.touched) {
+                            <div class="text-danger">
+                                @if (mercanciasForm.get('numeroCas')?.errors?.['required']) {
+                                    <small>Este campo es obligatorio.</small>
+                                } @else if (mercanciasForm.get('numeroCas')?.errors?.['pattern']) {
+                                    <small>Ingresa datos validos.</small>
+                                } @else if (mercanciasForm.get('numeroCas')?.errors?.['maxlength']) {
+                                    <small>Por favor, no escribas más de 20 caracteres.</small>
+                                }
+                            </div>
+                            }
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="cantidadDeLotes" class="form-label">Cantidad de lotes<span [ngClass]="{'text-danger': mercanciasForm.get('cantidadDeLotes')?.invalid && (mercanciasForm.get('cantidadDeLotes')?.touched || mercanciasForm.get('cantidadDeLotes')?.dirty)}">*</span>:</label>
+                        <textarea id="cantidadDeLotes" formControlName="cantidadDeLotes" rows="2" maxlength="150"
+                            (change)="setValoresStore(mercanciasForm,'cantidadDeLotes', 'setCantidadDeLotes')"
+                            class="form-control no-scroll" [ngClass]="{'is-invalid': mercanciasForm.get('cantidadDeLotes')?.invalid && mercanciasForm.get('cantidadDeLotes')?.touched}"></textarea>
+                            @if (mercanciasForm.get('cantidadDeLotes')?.invalid && mercanciasForm.get('cantidadDeLotes')?.touched) {
+                            <div class="text-danger">
+                                @if (mercanciasForm.get('cantidadDeLotes')?.errors?.['required']) {
+                                    <small>Este campo es obligatorio.</small>
+                                } @else if (mercanciasForm.get('cantidadDeLotes')?.errors?.['pattern']) {
+                                    <small>Ingresa datos validos.</small>
+                                } @else if (mercanciasForm.get('cantidadDeLotes')?.errors?.['maxlength']) {
+                                    <small>Por favor, no escribas más de 150 caracteres.</small>
+                                }
+                            </div>
+                            }
+                    </div>
+                </div>
+            </div>
+            @if(idProcedimiento!==260304){
+                <div class="row mb-2">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="kgor" class="form-label">Kg og por lote<span [ngClass]="{'text-danger': mercanciasForm.get('kgOrPorLote')?.invalid && (mercanciasForm.get('kgOrPorLote')?.touched || mercanciasForm.get('kgOrPorLote')?.dirty)}">*</span>:</label>
+                            <textarea id="kgor" formControlName="kgOrPorLote" maxlength="150" rows="2"
+
+                                (change)="setValoresStore(mercanciasForm,'kgOrPorLote', 'setKgOrPorLote')"
+                                class="form-control no-scroll" [ngClass]="{'is-invalid': mercanciasForm.get('kgOrPorLote')?.invalid && mercanciasForm.get('kgOrPorLote')?.touched}"></textarea>
+                                @if (mercanciasForm.get('kgOrPorLote')?.invalid && mercanciasForm.get('kgOrPorLote')?.touched) {
+                                <div class="text-danger">
+                                    @if (mercanciasForm.get('kgOrPorLote')?.errors?.['required']) {
+                                        <small>Este campo es obligatorio.</small>
+                                    } @else if (mercanciasForm.get('kgOrPorLote')?.errors?.['pattern']) {
+                                        <small>Ingresa datos validos.</small>
+                                    } @else if (mercanciasForm.get('kgOrPorLote')?.errors?.['maxlength']) {
+                                        <small>Por favor, no escribas más de 150 caracteres.</small>
+                                    }
+                                </div>
+                                }
+                        </div>
+                    </div>
+                </div>
+            }          
+            <div class="row mb-2">
+                <div class="col-md-12">
+                    <div class="solo-lectura-select-contenedor">
+                        <app-catalogo-select [catalogo]="paisDestinoDatos" [label]="'País de destino'"
+                            [required]="true" formControlName="pais"
+                            [disabledPrimerOption]="false"
+          [hiddenPrimerOption]="false"
+                            (change)="setValoresStore(mercanciasForm,'pais', 'setPais')" 
+                            (selectionChange)="onSeleccionarPaisDeDestino($event)"
+                            name="pais"
+                            [markTouched]="mercanciasForm.get('pais')?.touched??false">
+                        </app-catalogo-select>
+                    </div>
+                </div>
+            </div>
+             @if(idProcedimiento!==260304){
+                <div class="row mb-2">
+                    <div class="col-md-12">
+                        <div class="form-group mt-5">
+                            <div class="panel-group ficha-collapse" id="accordion">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" (click)="mostrarColapsable('PaisDeOrigen')">
+                                        <p class="panel-title fw-bold">Pais de origen</p>
+                                        <button type="button" class="collpase-button"
+                                            [ngClass]="colapsableObj.paisDeOrigenColapsable ? '' : 'collapsed'"></button>
+                                    </div>
+                                    @if(colapsableObj.paisDeOrigenColapsable){
+                                    <div class="panel-collapse collapse in" id="panel-01">
+                                        <div class="panel-body">
+                                            <crosslist [fechas]="seleccionarPais" [label]="paisDeOrigenLabel"
+                                                [botones]="paisDeOrigenBotons" [fechasSeleccionadas]="seleccionadasPaisDeOrigenDatos"
+                                                (fechasSeleccionadasChange)="paisDeOrigenSeleccionadasChange($event)"></crosslist>
+                                        </div>
+                                    </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-12">
+                        <app-catalogo-select [catalogo]="paisDeProcedenciaCatalogo" [label]="'Pais de procedencia'"
+                            [required]="true" formControlName="paisDeProcedencia"
+                            [disabledPrimerOption]="false"
+                            [hiddenPrimerOption]="false"
+                            (change)="setValoresStore(mercanciasForm,'paisDeProcedencia', 'setPaisDeProcedencia')"
+                            name="paisDeProcedencia"
+                            [markTouched]="mercanciasForm.get('paisDeProcedencia')?.touched??false">
+                        </app-catalogo-select>
+                    </div>
+                </div>
+            }
+            <div class="row mb-2">
+                <div class="col-md-12">
+                    <div class="form-group mt-5">
+                        <div class="panel-group ficha-collapse" id="accordion">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" (click)="mostrarColapsable('usoEspecifico')">
+                                    <p class="panel-title fw-bold">Uso específico</p>
+                                    <button type="button" class="collpase-button"
+                                        [ngClass]="colapsableObj.usoEspecificoColapsable ? '' : 'collapsed'"></button>
+                                </div>
+                                @if(colapsableObj.usoEspecificoColapsable){
+                                <div class="panel-collapse collapse in" id="panel-01">
+                                    <div class="panel-body">
+                                        <crosslist [fechas]="usoEspesificoDatos" [label]="usoEspecificoLabel"
+                                            [botones]="usoEspecificoBotons" [fechasSeleccionadas]="seleccionadasUsoEspesificoDatos"
+                                            (fechasSeleccionadasChange)="usoEspesificoSeleccionadasChange($event)"></crosslist>
+                                    </div>
+                                </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="específico" class="form-label">Detallar uso específico:</label>
+                        <textarea id="específico" formControlName="detallarUso"
+                            (change)="setValoresStore(mercanciasForm,'detallarUso', 'setDetallarUso')"
+                            class="form-control no-scroll" maxlength="500"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="cantidad" class="form-label">Cantidad UMC<span [ngClass]="{'text-danger': mercanciasForm.get('cantidadUmc')?.invalid && (mercanciasForm.get('cantidadUmc')?.touched || mercanciasForm.get('cantidadUmc')?.dirty)}">*</span>:</label>
+                        <input type="text" id="cantidad" formControlName="cantidadUmc" maxlength="22"
+                            (change)="setValoresStore(mercanciasForm,'cantidadUmc', 'setCantidadUMC')"
+                            class="form-control" [ngClass]="{'is-invalid': mercanciasForm.get('cantidadUmc')?.invalid && mercanciasForm.get('cantidadUmc')?.touched}">
+                        @if (mercanciasForm.get('cantidadUmc')?.invalid && mercanciasForm.get('cantidadUmc')?.touched) {
+                        <div class="text-danger">
+                            @if (mercanciasForm.get('cantidadUmc')?.errors?.['required']) {
+                                <small>Este campo es obligatorio.</small>
+                            } @else if (mercanciasForm.get('cantidadUmc')?.errors?.['pattern']) {
+                                <small>Este campo permite doce números enteros y hasta diez decimales.</small>
+                            }
+                        </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            @if(idProcedimiento!==260304){
+                <div class="row mb-2">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="numeroDePiezas" class="form-label">Número de piezas a fabricar<span [ngClass]="{'text-danger': mercanciasForm.get('numeroDePiezas')?.invalid && (mercanciasForm.get('numeroDePiezas')?.touched || mercanciasForm.get('numeroDePiezas')?.dirty)}">*</span>:</label>
+                            <input type="text" id="numeroDePiezas" formControlName="numeroDePiezas" maxlength="15"
+                                (change)="setValoresStore(mercanciasForm,'numeroDePiezas', 'setNumeroDePiezas')"
+                                class="form-control" [ngClass]="{'is-invalid': mercanciasForm.get('numeroDePiezas')?.invalid && mercanciasForm.get('numeroDePiezas')?.touched}">
+                                @if (mercanciasForm.get('numeroDePiezas')?.invalid && mercanciasForm.get('numeroDePiezas')?.touched) {
+                                <div class="text-danger">
+                                    @if (mercanciasForm.get('numeroDePiezas')?.errors?.['required']) {
+                                        <small>Este campo es obligatorio.</small>
+                                    } @else if (mercanciasForm.get('numeroDePiezas')?.errors?.['formatoInvalido']) {
+                                        <small>Existen datos incorrectos que no cumplen con el formato esperado.</small>
+                                    } @else if (mercanciasForm.get('numeroDePiezas')?.errors?.['soloNumeros']) {
+                                        <small>Por favor, sólo escribe dígitos.</small>
+                                    } @else if (mercanciasForm.get('numeroDePiezas')?.errors?.['maxlength']) {
+                                        <small>Por favor, no escribas más de 15 caracteres.</small>
+                                    }
+                                </div>
+                                }
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="descripcionDelNumeroDePiezas" class="form-label">Descripción del número de piezas a fabricar<span [ngClass]="{'text-danger': mercanciasForm.get('descripcionDelNumeroDePiezas')?.invalid && (mercanciasForm.get('descripcionDelNumeroDePiezas')?.touched || mercanciasForm.get('descripcionDelNumeroDePiezas')?.dirty)}">*</span>:</label>
+                            <textarea id="descripcionDelNumeroDePiezas"
+                                formControlName="descripcionDelNumeroDePiezas"
+                                (change)="setValoresStore(mercanciasForm,'descripcionDelNumeroDePiezas', 'setDescripcionDelNumeroDePiezas')"
+                                class="form-control areatexto no-scroll" rows="3" cols="10" maxlength="250" [ngClass]="{'is-invalid': mercanciasForm.get('descripcionDelNumeroDePiezas')?.invalid && mercanciasForm.get('descripcionDelNumeroDePiezas')?.touched}"></textarea>
+                                @if (mercanciasForm.get('descripcionDelNumeroDePiezas')?.invalid && mercanciasForm.get('descripcionDelNumeroDePiezas')?.touched) {
+                                <div class="text-danger">
+                                    @if (mercanciasForm.get('descripcionDelNumeroDePiezas')?.errors?.['required']) {
+                                        <small>Este campo es obligatorio.</small>
+                                    } @else if (mercanciasForm.get('descripcionDelNumeroDePiezas')?.errors?.['maxlength']) {
+                                        <small>Por favor, no escribas más de 250 caracteres.</small>
+                                    }
+                                </div>
+                                }
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="row mb-2">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="numeroDeRegistro" class="form-label">Número de registro sanitario<span [ngClass]="{'text-danger': mercanciasForm.get('numeroDeRegistro')?.invalid && (mercanciasForm.get('numeroDeRegistro')?.touched || mercanciasForm.get('numeroDeRegistro')?.dirty)}">*</span>:</label>
+                        <input type="text" id="numeroDeRegistro" formControlName="numeroDeRegistro" maxlength="50"
+                            (change)="setValoresStore(mercanciasForm,'numeroDeRegistro', 'setNumeroDeRegistro')"
+                            class="form-control" [ngClass]="{'is-invalid': mercanciasForm.get('numeroDeRegistro')?.invalid && mercanciasForm.get('numeroDeRegistro')?.touched}">
+                            @if (mercanciasForm.get('numeroDeRegistro')?.invalid && mercanciasForm.get('numeroDeRegistro')?.touched) {
+                            <div class="text-danger">
+                                @if (mercanciasForm.get('numeroDeRegistro')?.errors?.['required']) {
+                                    <small>Este campo es obligatorio.</small>
+                                } @else if (mercanciasForm.get('numeroDeRegistro')?.errors?.['pattern']) {
+                                    <small>Ingresa datos validos.</small>
+                                } @else if (mercanciasForm.get('numeroDeRegistro')?.errors?.['maxlength']) {
+                                    <small>Por favor, no escribas más de 50 caracteres.</small>
+                                }
+                            </div>
+                            }
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="presentacion" class="form-label">Presentación<span [ngClass]="{'text-danger': mercanciasForm.get('presentacion')?.invalid && (mercanciasForm.get('presentacion')?.touched || mercanciasForm.get('presentacion')?.dirty)}">*</span>:</label>
+                        <textarea id="presentacion" formControlName="presentacion" maxlength="250"
+                            (change)="setValoresStore(mercanciasForm,'presentacion', 'setPresentacion')"
+                            class="form-control areatexto no-scroll" rows="5" [ngClass]="{'is-invalid': mercanciasForm.get('presentacion')?.invalid && mercanciasForm.get('presentacion')?.touched}"></textarea>
+                            @if (mercanciasForm.get('presentacion')?.invalid && mercanciasForm.get('presentacion')?.touched) {
+                            <div class="text-danger">
+                                @if (mercanciasForm.get('presentacion')?.errors?.['required']) {
+                                    <small>Este campo es obligatorio.</small>
+                                } @else if (mercanciasForm.get('presentacion')?.errors?.['pattern']) {
+                                    <small>Ingresa datos validos.</small>
+                                } @else if (mercanciasForm.get('presentacion')?.errors?.['maxlength']) {
+                                    <small>Por favor, no escribas más de 256 caracteres.</small>
+                                }
+                            </div>
+                            }
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end mt-3 mb-5">
+                <button type="button" class="btn btn-danger me-2" (click)="doEliminarDetalle()">Eliminar detalle</button>
+                <button type="button" class="btn btn-primary" (click)="agregarDetalleMercancia()">Agregar detalle</button>
+            </div>
+            
+            <div class="row">
+                <div class="mb-3">
+                    <label for="detalleMercancia" class="form-label">
+                        Detalle mercancía producto terminado<span
+                        [ngClass]="{
+                            'text-danger': mostrarErrorProductoTerminado && productoTerminadoTablaDatos.length === 0
+                            }"
+                            >*</span
+                        >:
+                    </label>
+                </div>
+            </div>          
+            <div class="row">
+              
+                <app-tabla-dinamica 
+                    [tipoSeleccionTabla]="checkbox" 
+                    [configuracionTabla]="configuracionTablaProductoTerminado"
+                    [datos]="productoTerminadoTablaDatos" 
+                    [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+                    (listaDeFilaSeleccionada)="onSeleccionChangeProductoTerminado($event); 
+                    onProductoTerminadoRecordAdded($event)" 
+                    [isInvalida]="
+                    productoTerminadoForm.invalid && productoTerminadoForm.touched && productoTerminadoTablaDatos.length === 0
+                    ">
+                </app-tabla-dinamica>                
+                <div class="modal-footer justify-content-end mt-3 mb-5" role="group">
+                    <button type="button" class="btn btn-default me-2" (click)="limpiarFormularioProductoTerminado()">Limpiar</button>
+                    <button type="button" class="btn btn-default me-2" (click)="cerrarModalProductoTerminado()">Cancelar</button>
+                    <button type="button" class="btn btn-primary" (click)="agregarMercanciaCompleta()">Agregar</button>
+                </div>
+            </div>        
+        </form>
+    
+    
+<lib-notificaciones *ngIf="noRowSelectedTabla" [notificacionInput]="nuevaNotificacion" (confirmacionModal)="cerrarNoRowTabla()"></lib-notificaciones>
+<lib-notificaciones [invertirBotones]="true" *ngIf="esEliminarDetalle" [notificacionInput]="nuevaNotificacion" (confirmacionModal)="confirmarEliminarDetalle($event)"></lib-notificaciones>
+    </div>
+</ng-template>
+
+@if(mostrarNotificacion && alertaNotificacion) {
+<section>
+    <lib-notificaciones 
+        [notificacionInput]="alertaNotificacion"
+        (confirmacionModal)="alertaNotificacion.modo === 'action' && alertaNotificacion.categoria === 'danger' ? onConfirmarEliminarSeleccionadosScian($event) : onConfirmarNotificacionScian($event)">
+    </lib-notificaciones>
+</section>
+}
+
+<!-- Notificación dedicada para errores de fracción arancelaria -->
+@if(mostrarNotificacionFraccion && alertaNotificacionFraccion) {
+<section>
+    <lib-notificaciones 
+        class="fraccion-arancelaria-modal"
+        [notificacionInput]="alertaNotificacionFraccion"
+        (confirmacionModal)="onConfirmarNotificacionFraccion($event)">
+    </lib-notificaciones>
+</section>
+}
+
+<lib-notificaciones *ngIf="noRowSelectedTabla" [notificacionInput]="nuevaNotificacion" (confirmacionModal)="cerrarNoRowTabla()"></lib-notificaciones>
+<lib-notificaciones *ngIf="esEliminarDetalle" [notificacionInput]="nuevaNotificacion" (confirmacionModal)="confirmarEliminarDetalle($event)"></lib-notificaciones>

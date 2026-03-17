@@ -1,0 +1,54 @@
+<div class="container">
+    <h2>Trámites disponibles</h2>
+    <ng-titulo titulo="Datos de la búsqueda"></ng-titulo>
+    <form [formGroup]="datosBusquedaFormulario">
+        <div class="row mb-3">
+            <div class="col-md-8">
+                <app-input-radio [radioOptions]="radioOptions" [selectedValue]="valorSeleccionado" [isRequired]="true"
+                    [layout]="'horizontal'" (valueChange)="enCambioValorRadio($event)"></app-input-radio>
+            </div>
+        </div>
+        <div class="row mb-3" *ngIf="busquedaDeCertificado()">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label" for="númeroDeCertificado">Número de certificado*:</label>
+                    <input class="form-control" id="númeroDeCertificado" type="text"  maxlength="20"
+                        formControlName="numeroDeCertificado">
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3" *ngIf="busquedaDeTratadoPais()">
+            <div class="col-md-8">
+                <app-catalogo-select [catalogo]="tratadoAcuerdo" [label]="'Tratado / Acuerdo'"
+                    [required]="true" name="Tratado / Acuerdo" formControlName="tratadoAcuerdo"></app-catalogo-select>
+            </div>
+            <div class="col-md-8">
+                <app-catalogo-select [catalogo]="paisBloque" [label]="'País / Bloque'"
+                    [required]="true" name="País / Bloque" formControlName="paisBloque"></app-catalogo-select>
+            </div>
+        </div>
+        <div class="col-12 d-flex justify-content-end mt-3 mb-4">
+            <button class="btn btn-primary"  (click)="buscar()">Buscar</button>
+        </div>
+    </form>
+
+    <div class="row mb-3" *ngIf="verTabla">
+        <div class="col-md-12">
+            <ng-table [commonTableHeader]="establecimientoHeaderData"
+                [commonTableBody]="establecimientoBodyData" (seleccionCambio)="onRowSelectionChange($event)"></ng-table>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination d-flex justify-content-center">
+                    <li class="page-item"><a class="page-link" >1</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="col-12 d-flex justify-content-end mt-3 mb-4">
+            <button class="btn btn-primary" (click)="navigateToSeleccionTramite()">Consultar</button>
+        </div>
+    </div>
+</div>
+ @if (alertaNotificacion) {
+        <div>
+            <lib-notificaciones [notificacionInput]="alertaNotificacion"></lib-notificaciones>
+        </div>
+    }

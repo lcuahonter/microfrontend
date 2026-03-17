@@ -1,0 +1,60 @@
+<div class="form-group" [ngClass]="{'has-error': isInvalid() || marcarError}">
+  <label for="input_fecha" class="form-label">
+    {{datos.labelNombre === '' ? etiquetaSobreControlFecha : datos.labelNombre}}<span *ngIf="datos.required"
+      class="require" [ngClass]="asteriskClass" style="font-size: 16px;">*</span><span
+      *ngIf="datos.required">:</span><span *ngIf="soloDosPuntosRequeridos">:</span>
+    @if(tooltipQuestionCircle){ <span class="bi bi-question-circle-fill"
+      tooltip="{{tooltipQuestionCircleText ? tooltipQuestionCircleText : datos.labelNombre}}"></span>}
+  </label>
+  <div class="d-flex justify-content-start" [formGroup]="Formulario">
+    <div class="input-group-text" id="input_fecha" [ngClass]="{'disabled-div': isDisabled, 'has-error': isInvalid() || marcarError}"
+      (click)="mostrarCalendario()">
+      <div class="fecha">
+        <span>{{fechaString}}</span>
+      </div>
+      <div class="icono" [ngClass]="{'disabled-div': isDisabled}">
+        <span class="d-flex justify-content-end " id="basic-addon2" style="cursor: pointer;"
+          (click)="mostrarCalendario()">
+          @if(icono){
+          <i class="bi bi-calendar-event"></i>
+          }
+        </span>
+      </div>
+    </div>
+    <div class="border" *ngIf="mostrar" id="calendario">
+      <div class="contenido-botones">
+        <div class="izquierda" (click)="changeMount(-1)">
+          <i class="bi bi-chevron-left"></i>
+        </div>
+        <div class="anios">
+          <select class="form-select texto_tamano" aria-label="Default select example" formControlName="anio"
+            (change)="cambioAnio($event)">
+            <option *ngFor="let anio of anios" [value]="anio">{{ anio }}</option>
+          </select>
+        </div>
+        <div class="meses">
+          <select class="form-select texto_tamano" aria-label="Default select example" formControlName="mes"
+            (change)="cambioMes($event)">
+            <option *ngFor="let mes of meses" [value]="mes.id">{{ mes.mes }}</option>
+          </select>
+        </div>
+        <div class="derecha" (click)="changeMount(1)">
+          <i class="bi bi-chevron-right"></i>
+        </div>
+      </div>
+      <ol>
+        <li *ngFor="let dia of semana" class="day-name"> {{dia | slice:0:3}}</li>
+        <li (click)="!isDisabledDay(day) && clickDay(day)" *ngFor="let day of mountSelect; let first = first"
+          [style.gridColumnStart]="first ? day?.indexWeek : 'auto'" class="day"
+          [class.activo]="day?.value === this.Formulario.get('dia')?.value" [class.disabled]="isDisabledDay(day)">
+          <span>{{ day?.value }}</span>
+        </li>
+
+
+      </ol>
+    </div>
+  </div>
+  <div *ngIf="mostrarErrores && isInvalid()" class="mensaje-error">
+    Este campo es obligatorio
+  </div>
+</div>

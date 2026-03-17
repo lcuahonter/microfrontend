@@ -1,0 +1,82 @@
+<div class="container mb-5">
+  <form [formGroup]="datosDelTramiteForm">
+    
+    <ng-titulo titulo="CAAT Aéreo" />
+
+    <div class="row mb-3">
+      
+      <!-- 1. TIPO DE CAAT (TAGA) -->
+      <div class="col-md-4">
+<app-catalogo-select
+  class="selector-grande"
+  [catalogo]="optionsTipoCaat"
+  [label]="'Tipo de CAAT Aéreo'"
+  [required]="true"
+  id="tipoCaat"
+  formControlName="tipoCaat"
+  [isDisabled]="readonly"
+  [markTouched]="esControlValido('tipoCaat')"
+  (change)="setValoresStore(datosDelTramiteForm, 'tipoCaat', 'setTipoCaat')">
+</app-catalogo-select>
+      </div>
+
+      <!-- 2. CÓDIGO IATA / ICAO -->
+      <div class="col-md-4">
+        <app-catalogo-select 
+          [catalogo]="optionsCodigoIataIcao" 
+          [label]="'Código IATA / ICAO'" 
+          [required]="true" 
+          id="codigoIataIcao"
+          formControlName="codigoIataIcao" 
+          [isDisabled]="readonly"
+          [markTouched]="esControlValido('codigoIataIcao')"
+          (change)="setValoresStore(datosDelTramiteForm, 'codigoIataIcao', 'setCodigoIataIcao')">
+        </app-catalogo-select>
+      </div>
+
+      <!-- 3. CÓDIGO REAL (Input Texto) -->
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="codigo" class="form-label">
+            Código<span [ngClass]="esControlValido('codigo') ? 'has-error' : ''">*</span>:
+          </label>
+          
+          <input 
+            type="text" 
+            class="form-control" 
+            id="codigo"
+            formControlName="codigo"
+            maxlength="3"
+            style="text-transform: uppercase;"
+            [ngClass]="esControlValido('codigo') ? 'required' : ''"
+            (change)="setValoresStore(datosDelTramiteForm, 'codigo', 'setCodigo')" 
+          />
+          <div *ngIf="esControlValido('codigo')" class="text-danger">
+            <small *ngIf="datosDelTramiteForm.get('codigo')?.hasError('required')">
+              Este campo es obligatorio.
+            </small>
+            <small *ngIf="datosDelTramiteForm.get('codigo')?.hasError('maxlength') || 
+                          datosDelTramiteForm.get('codigo')?.hasError('minlength')">
+              El código debe tener exactamente 3 caracteres.
+            </small>
+            <small *ngIf="datosDelTramiteForm.get('codigo')?.hasError('pattern')">
+              Formato inválido (Solo letras y números).
+            </small>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="row mt-4">
+      <div class="col-md-12 text-end">
+        <button 
+          (click)="limpiar()" 
+          [disabled]="readonly" 
+          type="button" 
+          class="btn btn-default btn-space">
+          Limpiar
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,42 @@
+<div class="page">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        @if (indice === 1) {
+          <h3>Validar a posteriori el certificado de CAM</h3>
+        }
+        @if (indice === 2) {
+          <h3>Firmar</h3>
+        }
+      </div>
+      <div class="col-12">
+        @if (esFormaValido) {
+        <div
+          class="alert alert-info alert-danger"
+          [innerHTML]="formErrorAlert"
+        ></div>
+        }
+      </div>
+      <div class="row mt-5" *ngIf="indice === 2">
+        <div class="col-md-12">
+        <lib-notificaciones
+          [notificacionInput]="alertaNotificacion"
+        ></lib-notificaciones>
+      </div>
+      </div>
+      <app-wizard [listaPasos]="pasos"></app-wizard>
+    </div>
+    <div class="row">
+      @switch (indice) { @case (1) {
+      <app-paso-uno #pasoUnoRef (cambioDePestana)="alCambiarPestana()"></app-paso-uno>
+      } @case (2) {
+      <paso-firma [idSolicitud]="solicitudState.idSolicitud" [procedure]="110212" [procedureUrl]="'validacion-posteriori/solicitante'"></paso-firma>
+      } }
+      <btn-continuar
+        [datos]="datosPasos"
+        (anteriorEvento)="getValorIndice($event)" 
+        (continuarEvento)="getValorIndice($event)"
+      ></btn-continuar>
+    </div>
+  </div>
+</div>

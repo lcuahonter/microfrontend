@@ -1,0 +1,74 @@
+<div class="page">
+  <div class="container">
+    <div class="mb-3">
+      <span style="color: #004a80; text-decoration: underline; cursor: pointer;">Antecesor</span> | Activo
+    </div>
+
+    <header>
+      <h3 class="titulo titulo-gold mb-4">Consulta de Normas SGP</h3>
+    </header>
+
+    <app-error-messages [errors]="errors" [successMessage]="successMessage"></app-error-messages>
+
+    <section class="bg-light p-4">
+      <form [formGroup]="form">
+        <div class="row align-items-end">
+          <div class="col-md-9">
+            <label for="bloquePais" class="form-label font-weight-bold">
+              <span class="text-danger">*</span> Bloque/País
+            </label>
+            <input
+              type="text"
+              id="bloquePais"
+              formControlName="bloquePais"
+              class="form-control bg-white"
+              readonly
+            />
+          </div>
+          <div class="col-md-3">
+            <button type="button" class="btn btn-primary w-100" (click)="onAsignar()">
+              Asignar Bloque/Pais
+            </button>
+          </div>
+        </div>
+        <div class="row mt-4 justify-content-end">
+          <div class="col-auto d-flex gap-2">
+            <button type="button" class="btn btn-primary" (click)="onRegistrar()" [disabled]="!form.get('bloquePais')?.value">
+              Registrar Norma
+            </button>
+            <button type="button" class="btn btn-primary" (click)="onConsultar()" [disabled]="!form.get('bloquePais')?.value">
+              Consultar
+            </button>
+            <button type="button" class="btn btn-primary" (click)="onLimpiar()">
+              Limpiar
+            </button>
+          </div>
+        </div>
+      </form>
+    </section>
+  </div>
+  <div class="modal fade" [class.show]="mostrarAsignar" [style.display]="mostrarAsignar ? 'block' : 'none'" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content border-0">
+        <app-asignar-bloque-pais
+          (cerrar)="onCerrarAsignar()"
+          (aceptar)="onAceptarAsignar($event)"
+        ></app-asignar-bloque-pais>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" [class.show]="mostrarRegistro" [style.display]="mostrarRegistro ? 'block' : 'none'" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+      <div class="modal-content border-0">
+        <app-registro-modificacion-normas-sgp
+          *ngIf="mostrarRegistro"
+          [datos]="datosNorma"
+          [bloquePaisPreviamenteSeleccionado]="form.get('bloquePais')?.value"
+          (cerrar)="onCerrarRegistro()"
+          (guardar)="onGuardarNorma($event)"
+        ></app-registro-modificacion-normas-sgp>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="mostrarAsignar || mostrarRegistro" class="modal-backdrop fade show"></div>
+</div>

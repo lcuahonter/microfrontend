@@ -1,0 +1,142 @@
+<div class="container">
+  <div class="row padding-top">
+     @if (showTitle) {
+        <div class="col-12">
+          <h2 class="fw-bold my-5 titulo-tasks">Requerimiento</h2>
+          <hr class="red">
+        </div>
+        <h6 style="color:red">Datos requeridos*</h6>
+      }
+    <form [formGroup]="formRequerimiento">
+
+      <!-- Tipo de requerimiento -->
+      <div class="row">
+        <div class="col-md-6">
+          <app-catalogo-select-clave [label]="isEvaluar ? '' : 'Tipo de Requerimiento'" [catalogo]="tipoRequerimientoOpcions" formControlName="tipoRequerimiento"
+            [required]="true" name="tipoRequerimiento"
+            [markTouched]="formRequerimiento.get('tipoRequerimiento')?.touched ?? false"
+            (change)="setValoresStore(formRequerimiento,'tipoRequerimiento','settipoRequerimientoValue')">
+          </app-catalogo-select-clave>
+        </div>
+      </div>
+      <!-- Justificación -->
+      <div class="row">
+        <div class="col-md-8">
+          <label for="justificacion" class="form-label">
+            Justificación del requerimiento*:
+          </label>
+
+          <textarea id="justificacion" class="form-control text-height" formControlName="justificacion"
+            (input)="onInput()" [ngClass]="esValido('justificacion') ? 'required' : ''"
+            (change)="setValoresStore(formRequerimiento,'justificacion','setjustificacionRequerimientoValue')">
+        </textarea>
+
+          <div class="text-muted small mt-1">
+            {{ (formRequerimiento.get('justificacion')?.value || '').length }} / {{ MAX_CHARS }} caracteres
+          </div>
+
+          <div *ngIf="formRequerimiento.get('justificacion')?.invalid &&
+                    (formRequerimiento.get('justificacion')?.touched ||
+                     formRequerimiento.get('justificacion')?.dirty)">
+            <div class="mensaje-error" *ngIf="formRequerimiento.get('justificacion')?.errors?.['required']">
+              Este campo es obligatorio.
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Observaciones al requerimiento -->
+       @if (observaciones && observaciones.length > 0 && isEvaluar) {
+        <div class="row">
+        <div class="col-md-12">
+          <label for="observacionesAlRequerimiento" class="form-label">
+            Observaciones al requerimiento
+          </label>
+          <app-tabla-dinamica
+            [configuracionTabla]="configuracionTabla"
+            [datos]="observaciones"
+          >
+          </app-tabla-dinamica>
+        </div>
+      </div>
+       }
+      
+      <!-- Motivo -->
+       @if (isMotivo) {
+      <div class="row">
+        <div class="col-md-10">
+          <app-catalogo-select-clave [catalogo]="motivoTipoTramiteOpcions" formControlName="motivo"
+            [label]="'Motivo del requerimiento'" [required]="true" name="motivo"
+            [markTouched]="formRequerimiento.get('motivo')?.touched ?? false"
+            (change)="setValoresStore(formRequerimiento,'motivo','setMotivoValue')">
+          </app-catalogo-select-clave>
+        </div>
+      </div>
+    }
+      <!-- Fundamento -->
+       @if (isFundamento) {
+        <div class="row">
+        <div class="col-md-10">
+          <app-catalogo-select-clave [catalogo]="fundamentoRequerimientoOpcions" formControlName="fundamento"
+            [label]="'Fundamento de requerimiento'" [required]="true" name="fundamento"
+            [markTouched]="formRequerimiento.get('fundamento')?.touched ?? false"
+            (change)="setValoresStore(formRequerimiento,'fundamento','setFundamentoValue')">
+          </app-catalogo-select-clave>
+        </div>
+      </div>
+       }
+      <!-- Siglas -->
+        @if (isSiglasParticipanteExterno) {
+      <div class="row">
+        <div class="col-md-6">
+          <label for="siglas_participante_externo" class="form-label">
+            Siglas del dictaminador*:
+          </label>
+
+          <input type="text" id="siglas_participante_externo" class="form-control text-uppercase" formControlName="siglas_participante_externo" [ngClass]="esValido('siglas_participante_externo') ? 'required' : ''"
+            (change)="setValoresStore(formRequerimiento,'siglas_participante_externo','setSiglasDictaminadorValue')"  maxlength="20">
+
+          <div class="mensaje-error" *ngIf="formRequerimiento.get('siglas_participante_externo')?.invalid &&
+                    (formRequerimiento.get('siglas_participante_externo')?.touched ||
+                     formRequerimiento.get('siglas_participante_externo')?.dirty)">
+            Este campo es obligatorio.
+          </div>
+        </div>
+      </div>
+      }
+      <!-- Autorizador -->
+       @if (isAsignarAutorizador) {
+        <div class="row">
+          <div class="col-md-4">
+            <app-catalogo-select-clave [catalogo]="autorizadorOpcions" formControlName="alcance_requerimiento"
+              [label]="'Asignar autorizador'" [required]="true" name="alcance_requerimiento"
+              [markTouched]="formRequerimiento.get('alcance_requerimiento')?.touched ?? false"
+              (change)="setValoresStore(formRequerimiento,'alcance_requerimiento','setAlcanceRequerimientoValue')">
+            </app-catalogo-select-clave>
+          </div>
+        </div>
+       }
+      
+
+      <!-- Required note -->
+      <div class="col-12">
+        <p class="small">*Campos obligatorios</p>
+      </div>
+
+    </form>
+    <!-- Observaciones al requerimiento -->
+       @if (observaciones && observaciones.length > 0 && !isEvaluar) {
+        <div class="row">
+        <div class="col-md-12">
+          <label for="observacionesAlRequerimiento" class="form-label">
+            Observaciones al requerimiento
+          </label>
+          <app-tabla-dinamica
+            [configuracionTabla]="configuracionTabla"
+            [datos]="observaciones"
+          >
+          </app-tabla-dinamica>
+        </div>
+      </div>
+       }
+  </div>
+</div>

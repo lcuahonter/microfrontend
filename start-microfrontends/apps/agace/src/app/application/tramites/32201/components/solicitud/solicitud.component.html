@@ -1,0 +1,378 @@
+<div class="mt-4">
+  <form [formGroup]="solicitudForm">
+    <ng-titulo titulo="Régimen aduanero"></ng-titulo>
+    <div class="col-md-12">
+      <div class="form-check">
+        <lib-input-check [id]="'regimen_0'" [label]="
+            'Importación temporal para la elaboración, transformación o preparación
+              en programas de maquila o de exportación (IMMEX)'
+          " [required]="true" formControlName="regimen_0"
+          (change)="setValoresStore(solicitudForm, 'regimen_0', 'setRegimen_0')"
+          [isDisabled]="esFormularioSoloLectura"></lib-input-check>
+      </div>
+
+      <div class="form-check">
+        <lib-input-check [id]="'regimen_1'" [label]="
+            'Depósito fiscal para someterse al proceso de ensamble y fabricación de
+              vehículo a empresas de la industria automotriz terminal'
+          " [required]="true" formControlName="regimen_1"
+          (change)="setValoresStore(solicitudForm, 'regimen_1', 'setRegimen_1')"
+          [isDisabled]="esFormularioSoloLectura"></lib-input-check>
+      </div>
+
+      <div class="form-check">
+        <lib-input-check [id]="'regimen_2'" [label]="
+            'Elaboración, transformación o reparación en recinto fiscalizado'
+          " [required]="true" formControlName="regimen_2"
+          (change)="setValoresStore(solicitudForm, 'regimen_2', 'setRegimen_2')"
+          [isDisabled]="esFormularioSoloLectura"></lib-input-check>
+      </div>
+
+      <div class="form-check">
+        <lib-input-check [id]="'regimen_3'" [label]="'Recinto Fiscalizado Estratégico'" [required]="true"
+          formControlName="regimen_3" (change)="setValoresStore(solicitudForm, 'regimen_3', 'setRegimen_3')"
+          [isDisabled]="esFormularioSoloLectura"></lib-input-check>
+      </div>
+
+      <div *ngIf="mostrarErrorDeseleccionRegimenes" class="mensaje-error">
+          Debe seleccionar al menos un régimen.
+      </div>
+    </div>
+
+    <ng-titulo titulo="Requisitos"></ng-titulo>
+    <div class="col-md-12">
+      <div class="form-group mb-4">
+        <label>Indique si cuenta dieciocho meses después de haber obtenido el
+          Registro en el Esquema de certificación de Empresas.
+        </label>
+        <app-input-radio [radioOptions]="radioOpcions" [isBold]="true" formControlName="radio_1" [layout]="'horizontal'"
+          (change)="setValoresStore(solicitudForm, 'radio_1', 'setRadio_1')"
+          [disabled]="esFormularioSoloLectura"></app-input-radio>
+      </div>
+
+      <div class="form-group mb-4">
+        <label>Manifieste si ha realizado operaciones del Programa autorizado al
+          amparo del Decreto IMMEX en al menos doce meses previos a la
+          presentación de la solicitud la presente autorización.
+        </label>
+        <app-input-radio [radioOptions]="radioOpcions" [isBold]="true" formControlName="radio_2" [layout]="'horizontal'"
+          (change)="setValoresStore(solicitudForm, 'radio_2', 'setRadio_2')"
+          [disabled]="esFormularioSoloLectura"></app-input-radio>
+      </div>
+
+      <div class="form-group mb-4">
+        <label>Indique si durante los últimos doce meses ha importado temporalmente
+          mercancías y que, al menos el 80% de las importaciones temporales de
+          insumos realizadas durante el mismo período fueron transformadas y
+          retornadas, retornadas en su mismo estado, transferidas, destruidas, o
+          se les prestó un servicio.
+        </label>
+        <app-input-radio [radioOptions]="radioOpcions" [isBold]="true" formControlName="radio_3" [layout]="'horizontal'"
+          (change)="setValoresStore(solicitudForm, 'radio_3', 'setRadio_3')"
+          [disabled]="esFormularioSoloLectura"></app-input-radio>
+      </div>
+
+      <div class="mt-2 mb-2">
+        <ng-alert [CONTENIDO]="TEXTOS.TEXTO_REQUISITOS2" [CUSTOMECLASS]="infoAlert"></ng-alert>
+      </div>
+
+      <div class="mt-2 mb-2">
+        <ng-alert [CONTENIDO]="TEXTOS.TEXTO_REQUISITOS" [CUSTOMECLASS]="infoAlert"></ng-alert>
+      </div>
+
+      <div class="form-group col-md-12 mb-5">
+        <label>
+          Capture el valor en aduana total en moneda nacional de sus
+          importaciones temporales de insumos del periodo requerido conforme al
+          párrafo anterior:
+        </label>
+        <div class="col-md-2">
+          <input type="number" class="form-control" formControlName="valorAduana" (change)="
+              setValoresStore(solicitudForm, 'valorAduana', 'setValorAduana')
+            " [disabled]="esFormularioSoloLectura" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-3 mt-4 text-center">
+          <label>(A)</label>
+          <label class="form-label text-start" for=""
+            >Concepto (declare solo los que apliquen)</label
+          >
+        </div>
+        <div class="col-md-3 mt-4 text-center">
+          <label>(B)</label>
+          <label class="form-label text-start" for=""
+            >Valor comercial del concepto indicado en la Columna A (moneda
+            nacional)</label
+          >
+        </div>
+        <div class="col-md-3 mt-4 text-center">
+          <label>(C)</label>
+          <label class="form-label text-start" for=""
+            >Valor en Aduana de los insumos importados temporalmente incluidos
+            en concepto de la columna A</label
+          >
+        </div>
+        <div class="col-md-3 mt-4 text-center">
+          <label>(D)</label>
+          <label class="form-label text-start" for=""
+            >Porcentaje que representa respecto del total de importaciones
+            temporales de materiales directos e insumos</label
+          >
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-3 mt-4">
+          <label class="form-label text-start" for="">Retornos</label>
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            formControlName="textoGenerico10"
+            class="form-control"
+            name="textoGenerico10"
+            id="textoGenerico10"
+            (change)="actualizarTextoGenerico10($event)"
+          />
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            formControlName="textoGenerico11"
+            class="form-control"
+            name="textoGenerico11"
+            id="textoGenerico11"
+            (change)="actualizarTextoGenerico11($event)"
+          />
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            formControlName="textoGenerico12"
+            class="form-control"
+            name="textoGenerico12"
+            id="textoGenerico12"
+            (change)="actualizarTextoGenerico12($event)"
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-3 mt-4">
+          <label class="form-label text-start" for=""
+            >Transferencias virtuales de mercancías</label
+          >
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="textoGenerico13"
+            name="textoGenerico13"
+            id="textoGenerico13"
+            (change)="actualizarTextoGenerico13($event)"
+          />
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="textoGenerico14"
+            name="textoGenerico14"
+            id="textoGenerico14"
+            (change)="actualizarTextoGenerico14($event)"
+          />
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="textoGenerico15"
+            name="textoGenerico15"
+            id="textoGenerico15"
+            (change)="actualizarTextoGenerico15($event)"
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-3 mt-4">
+          <label class="form-label text-start" for="">Desperdicios</label>
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="textoGenerico16"
+            name="textoGenerico16"
+            id="textoGenerico16"
+            (change)="actualizarTextoGenerico16($event)"
+          />
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="textoGenerico17"
+            name="textoGenerico17"
+            id="textoGenerico17"
+            (change)="actualizarTextoGenerico17($event)"
+          />
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="textoGenerico18"
+            name="textoGenerico18"
+            id="textoGenerico18"
+            (change)="actualizarTextoGenerico18($event)"
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-3 mt-4">
+          <label class="form-label text-start" for=""
+            >Constancias de Transferencia de Mercancías (CTM)</label
+          >
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="textoGenerico19"
+            name="textoGenerico19"
+            id="textoGenerico19"
+            (change)="actualizarTextoGenerico19($event)"
+          />
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="textoGenerico20"
+            name="textoGenerico20"
+            id="textoGenerico20"
+            (change)="actualizarTextoGenerico20($event)"
+          />
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="textoGenerico21"
+            name="textoGenerico21"
+            id="textoGenerico21"
+            (change)="actualizarTextoGenerico21($event)"
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-3 mt-4">
+          <label class="form-label text-start" for="">Totales</label>
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="textoGenerico22"
+            name="textoGenerico22"
+            id="textoGenerico22"
+          />
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="textoGenerico23"
+            name="textoGenerico23"
+            id="textoGenerico23"
+          />
+        </div>
+        <div class="col-md-3 mt-4">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="textoGenerico24"
+            name="textoGenerico24"
+            id="textoGenerico24"
+          />
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <label>
+          En caso de haber declarado que realiza Constancias de Transferencia
+          de Mercancías (CTM), anexe un archivo con los nombres y domicilios
+          de las empresas a las que les transfirió mercancías mediante
+          Constancias de Transferencia de Mercancías (CTM), así como los
+          montos en moneda nacional y, en su caso, dos Constancias de
+          Transferencia de Mercancías (CTM).
+        </label>
+      </div>
+
+    </div>
+    <ng-titulo titulo="Operaciones virtuales"></ng-titulo>
+    <div class="col-md-12">
+      <ng-alert [CONTENIDO]="TEXTOS.TEXTO_OPERACIONES_VIRTUALES" [CUSTOMECLASS]="infoAlert"></ng-alert>
+    </div>
+    <div class="col-md-12">
+      <label class="form-label text-justify">
+        Para descargar plantilla del archivo de excel de click
+        <a [href]="" target="_blank" class="text-primary fw-bold"
+          (click)="esFormularioSoloLectura ? $event.preventDefault() : null"
+          [class.disabled]="esFormularioSoloLectura">aquí</a>.
+      </label>
+      <div class="row mt-4 mb-4">
+        <div class="col-md-8">
+          <button type="button" for="archivoMedicamentos" class="file-upload" (click)="activarSeleccionArchivo()"
+            [disabled]="esFormularioSoloLectura">
+            Elgir archivo
+          </button>
+          <span class="ml-2">{{ elgirDeArchivo }}</span>
+          <input type="file" id="archivoMedicamentos" (change)="onCambioDeArchivo($event)" class="file-upload"
+            style="display: none" />
+        </div>
+        <div class="col-md-4 d-flex justify-content-end">
+          <button type="button" class="btn btn-default" (click)="cargarProveedores()"
+            [disabled]="esFormularioSoloLectura">
+            Cargar Proveedores
+          </button>
+        </div>
+      </div>
+      <label class="form-label text-justify">
+        Proveedores existentes actualmente.
+      </label>
+      <div class="row">
+        <div class="alert alert-info">
+          <label style="font-weight: normal">
+            <input type="checkbox" formControlName="manifiesto" (change)="
+                setValoresStore(solicitudForm, 'manifiesto', 'setManifiesto')
+              " />
+            {{ TEXTOS.TEXTO_PROVEEDORES_EXISTENTES_ACTUALMENTE }}
+          </label>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- Confirmar Modal -->
+@if (confirmarNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="confirmarNotificacion" (confirmacionModal)="manejarConfirmacionRegimen($event)">
+  </lib-notificaciones>
+</section>
+}
+
+<!-- Error Modal -->
+@if (errorNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="errorNotificacion">
+  </lib-notificaciones>
+</section>
+}

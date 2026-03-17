@@ -1,0 +1,126 @@
+<form [formGroup]="tercerosForm">
+  <ng-titulo titulo="Terceros relacionados" />
+  <ng-alert [CONTENIDO]="AVISO_PRIVACIDAD.TEXTOS_TERCEROS"></ng-alert>
+  <!-- Destinatario (destino final)* -->
+  <div class="col-md-12">
+    <label class="form-label" for="">Destinatario (destino final)*:</label>
+    <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX" [disableSeleccionTablaCheckBox]="soloLectura" [configuracionTabla]="destinatarioConfiguracionTabla" [datos]="destinatarioDatos" ></app-tabla-dinamica>
+  </div>
+  <!-- conditional buttons -->
+  <div class="col-md-12 mt-5 d-flex justify-content-end align-items-end">
+    <button type="button" [disabled]="soloLectura" class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#modalAgregarMercancias"> Agregar </button>
+  </div>
+  <!-- Fabricante -->
+  <div class="col-md-12">
+    <label class="form-label" for="">Fabricante*:</label>
+    <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX" [disableSeleccionTablaCheckBox]="soloLectura" [configuracionTabla]="fabricanteConfiguracionTabla" [datos]="destinatarioDatos" (listaDeFilaSeleccionada)="obtenerDatosDestinatario($event)"  (change)="setValoresStore(tercerosForm,'fabricante', 'setFabricante')"></app-tabla-dinamica>
+  </div>
+  <div class="col-md-12 mt-5 d-flex justify-content-end align-items-end">
+    <div class="btn-group"> @if (selectedDestinatario.length > 0) { 
+      <button class="btn btn-danger 3" type="button" [disabled]="soloLectura" (click)="eliminarMercancias()"> Eliminar </button>
+      <button type="button" data-bs-toggle="modal" data-bs-target="#modalAgregarMercancias" class="btn btn-default btn-space ms-3" (click)="abrirModificarProductos()"> Modificar </button> 
+    } 
+    <button type="button" class="btn btn-primary ms-3" data-bs-toggle="modal" [disabled]="soloLectura" data-bs-target="#modalAgregarMercancias"> Agregar </button>
+    </div>
+  </div>
+  <!-- Modal for adding or modifying manufacturer -->
+  <div class="modal fade modal-xl" id="modalAgregarMercancias" tabindex="-1" aria-labelledby="modalAgregarMercanciasLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="col-md-11">
+          <ng-titulo titulo="Modificar fabricante" />
+        </div>
+        <div class="col-md-11">
+          <label class="form-label" for="" style="margin-left: 40px">Datos generales</label>
+        </div>
+        <div class="col-md-11">
+          <div class="row">
+            <label class="form-label">Tipo persona*:</label>
+          </div>
+          <div class="row" style="margin-left: 882px">
+            <app-input-radio [radioOptions]="tipoPersonaRadioOptions" [selectedValue]="tipoDePublicos" [isRequired]="true" (valueChange)="setTipoPersona($event)" formControlName="tipoPersona" (change)="setValoresStore(tercerosForm,'tipoPersona', 'setTipoPersona')"></app-input-radio>
+          </div>
+        </div>
+        <!-- datos personales fiscica -->
+        <div *ngIf="tipoPersonaSeleccionada === 'fisica'" class="row mt-5" style="margin-left: 40px">
+          <div class="col-md-11 mt-5">
+            <label class="form-label" for="">Datos personales</label>
+          </div>
+          <div class="row mt-5">
+            <div class="col-md-3">
+              <label>Nombre(s)*:</label>
+              <input type="text" class="form-control" formControlName="nombre" (change)="setValoresStore(tercerosForm,'nombre', 'setNombre')" />
+            </div>
+            <div class="col-md-3">
+              <label>Primer apellido*:</label>
+              <input type="text" class="form-control" formControlName="primerApellido" (change)="setValoresStore(tercerosForm,'primerApellido', 'setPrimerApellido')" />
+            </div>
+            <div class="col-md-3">
+              <label>Segundo apellido</label>
+              <input type="text" class="form-control" formControlName="segundoApellido" (change)="setValoresStore(tercerosForm,'segundoApellido', 'setSegundoApellido')" />
+            </div>
+          </div>
+        </div>
+        <!-- razon social moral -->
+        <div *ngIf="tipoPersonaSeleccionada === 'moral'" class="col-md-6 mt-5" style="margin-left: 40px">
+          <label class="form-label">Denominación/razón social*:</label>
+          <input type="text" class="form-control" formControlName="denominacion" (change)="setValoresStore(tercerosForm,'denominacion', 'setDenominacion')" />
+        </div>
+        <!-- common for both -->
+        <div class="col-md-11 mt-5">
+          <label class="form-label" for="" style="margin-left: 40px">Domicilio</label>
+        </div>
+        <div class="row" style="margin-left: 40px">
+          <div class="col-md-3">
+            <app-catalogo-select [catalogo]="estadoCatalogo.catalogos" [label]="'Pais'" [required]="true" formcontrolname="pais" (change)="setValoresStore(tercerosForm,'pais', 'setPais')"></app-catalogo-select>
+          </div>
+        </div>
+        <div class="row mt-5" style="margin-left: 40px">
+          <div class="col-md-3">
+            <label>Estado*:</label>
+            <input type="text" class="form-control" formControlName="estados" (change)="setValoresStore(tercerosForm,'estados', 'setEstados')" />
+          </div>
+          <div class="col-md-3">
+            <label>Código postal o equivalente:</label>
+            <input type="text" class="form-control" formControlName="codigoDeZip" (change)="setValoresStore(tercerosForm,'codigoDeZip', 'setCodigoDeZip')" />
+          </div>
+        </div>
+        <div class="row mt-5" style="margin-left: 40px">
+          <div class="col-md-6">
+            <label>Calle*:</label>
+            <input type="text" class="form-control" formControlName="camino" (change)="setValoresStore(tercerosForm,'camino', 'setCamino')" />
+          </div>
+          <div class="col-md-3">
+            <label>Número exterior*:</label>
+            <input type="text" class="form-control" formControlName="numeroExterior" (change)="setValoresStore(tercerosForm,'numeroExterior', 'setNumeroExterior')" />
+          </div>
+        </div>
+        <div class="row mt-5" style="margin-left: 40px">
+          <div class="col-md-3">
+            <label>Número interior:</label>
+            <input type="text" class="form-control" formControlName="numeroInterior" (change)="setValoresStore(tercerosForm,'numeroInterior', 'setNumeroInterior')" />
+          </div>
+          <div class="col-md-1">
+            <label>Lada:</label>
+            <input type="text" class="form-control" formControlName="ladaDeTerceros" (change)="setValoresStore(tercerosForm,'ladaDeTerceros', 'setLadaDeTerceros')" />
+          </div>
+          <div class="col-md-2">
+            <label>Teléfono:</label>
+            <input type="text" class="form-control" formControlName="fon" (change)="setValoresStore(tercerosForm,'fon', 'setFon')" />
+          </div>
+          <div class="col-md-3">
+            <label>Correo electrónico:</label>
+            <input type="text" class="form-control" formControlName="email" (change)="setValoresStore(tercerosForm,'email', 'setEmail')" />
+          </div>
+        </div>
+        <div class="row mt-5">
+          <div class="col-md-11 mb-5 d-flex justify-content-end align-items-end">
+            <button class="btn btn-danger 3" type="button">Eliminar</button>
+            <button type="button" data-bs-toggle="modal" data-bs-target="#modalAgregarMercancias" class="btn btn-default btn-space ms-3"> Modificar </button>
+            <button type="button" class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#modalAgregarMercancias"> Agregar </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

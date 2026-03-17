@@ -1,0 +1,73 @@
+    <ng-titulo titulo="Clave S.C.I.A.N."></ng-titulo>
+    <form [formGroup]="scianForm">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <app-catalogo-select [catalogo]="scianLista" formControlName="clave" [label]="'Clave S.C.I.A.N.'"
+                        [required]="true" name="clave" (click)="restablecerMensaje()"
+                        (selectionChange)="claveSelecionada($event)"></app-catalogo-select>
+                    <div *ngIf="scianForm.get('clave')?.touched && scianForm.get('clave')?.invalid" class="text-danger" class="text-danger">
+                        <small>{{ mensajeFormularioInvalido }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+         <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label" for="scianDescripcion">
+                        Descripción del S.C.I.A.N.
+                        <span *ngIf="scianNinoRequerido" class="text-danger">*</span>
+                    </label>
+                    <input 
+                        id="scianDescripcion"
+                        type="text" 
+                        class="form-control"
+                        formControlName="scianNino"
+                        [disabled]="true"
+                        placeholder="Seleccione una clave S.C.I.A.N. para ver la descripción"
+                        readonly>
+                </div>
+            </div>
+        </div>
+       </form>
+       
+       <div class="row mt-5 mb-5">
+        <div class="col-md-4">
+            <p>* Campos obligatorios</p>
+        </div>
+        <div class="col-md-8">
+            <div class="pull-right ml-2">
+                <button type="button" name="eliminarScian" class="btn btn-default ms-2" (click)="limpiarScian()">
+                    Limpiar  
+                </button>
+                <button type="button" name="eliminarScian" class="btn btn-default ms-2" (click)="cancelar()">
+                    Cancelar
+                </button>
+                <button type="button" name="agregarScian" class="btn btn-primary ms-2" (click)="agregarScian()">
+                    Agregar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de datos duplicados -->
+<ng-template #templateDatosDuplicados>
+  <div class="modal-header">
+    <h4 class="modal-title">Alerta</h4>
+  </div>
+  <div class="modal-body">
+    <p class="mb-0">
+      Datos duplicados.
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="cerrarModalDatosDuplicados()"
+    >
+      Aceptar
+    </button>
+  </div>
+</ng-template>

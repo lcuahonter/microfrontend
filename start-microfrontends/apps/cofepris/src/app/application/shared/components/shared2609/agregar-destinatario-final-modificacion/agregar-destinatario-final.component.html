@@ -1,0 +1,357 @@
+<div class="mt-4">
+  <ng-titulo
+    *ngIf="datoSeleccionado?.[0]?.id; else agregarDestinatario"
+    titulo="Modificar destinatario (destino final)"
+  ></ng-titulo>
+
+  <ng-template #agregarDestinatario>
+    <ng-titulo titulo="Agregar destinatario (destino final)"></ng-titulo>
+  </ng-template>
+   @if(mensajeDeError){
+    <ng-alert
+      [CONTENIDO]="mensajeDeError"
+      [CUSTOMECLASS]="'alert-danger text-center'"
+    ></ng-alert>
+  }
+  <form [formGroup]="agregarDestinatarioFinal">
+    <!-- Datos Generales -->
+    <h4>Datos generales</h4>
+    <div class="row">
+      <div class="col-md-6"></div>
+      <div class="col-md-6 offset-md-6">
+        <label class="form-label">Tipo persona*:</label>
+        <div class="form-check">
+          <input type="radio" class="form-check-input" formControlName="tipoPersona" [value]="tipoPersona.FISICA"
+            (change)="changeNacionalidad()" />
+          Física
+          <span tooltip="Una persona física es entendida como toda persona con una actividad específica"><i
+              class="bi bi-question-circle-fill"></i></span>
+        </div>
+        <div class="form-check">
+          <input type="radio" class="form-check-input" formControlName="tipoPersona" [value]="tipoPersona.MORAL"
+            (change)="changeNacionalidad()" />
+          Moral
+          <span tooltip="Una persona moral es entendida como una empresa con una actividad específica"><i
+              class="bi bi-question-circle-fill"></i></span>
+        </div>
+        @if(mostrarCamposNoContribuyente){
+        <div class="form-check">
+          <input type="radio" class="form-check-input" formControlName="tipoPersona" value="NoContribyunte"
+          (change)="changeNacionalidad()" />
+          No contribuyente
+        </div>
+        }
+         <div *ngIf="chequeoValidacionAlGuardar && esInvalido('tipoPersona')" class="text-danger">
+          <small>Este campo es obligatorio</small>
+        </div>
+      </div>
+    </div>
+ @if(agregarDestinatarioFinal.get('tipoPersona')?.value === 'NoContribyunte'){
+    <div class="row mt-5 justify-content-center">
+  <div class="col-md-4">
+    <label class="form-label">
+      C.U.R.P<span>*</span>:
+    </label>
+    <input type="text" class="form-control" [maxlength]="18" formControlName="curp"
+      [ngClass]="esInvalido('curp') ? 'required' : ''" />
+    <div *ngIf="esInvalido('curp')" class="text-danger">
+      <small *ngIf="agregarDestinatarioFinal.controls['curp'].errors?.['required']">
+        Este campo es obligatorio
+      </small>
+      <small *ngIf="agregarDestinatarioFinal.controls['curp'].errors?.['pattern']">
+        Existen datos incorrectos que no cumplen con el formato esperado
+      </small>
+    </div>
+  </div>
+</div>
+      }
+      @else {
+    <div class="row mt-5">
+      <div class="col-md-4">
+        <label class="form-label">
+          R.F.C<span [ngClass]="agregarDestinatarioFinal.controls['rfc'].errors?.['required'] && agregarDestinatarioFinal.controls['rfc'].touched ? 'text-danger' : ''">*</span>:<span tooltip="Registro Federal de Contribuyente"><i
+              class="bi bi-question-circle-fill"></i></span>
+        </label>
+
+        <input type="text" class="form-control" [maxlength]="15" formControlName="rfc"
+          (input)="onChangeRfc($event)"
+          [ngClass]="esInvalido('rfc') ? 'required' : ''" />
+        <div *ngIf="esInvalido('rfc')" class="text-danger">
+          <small *ngIf="agregarDestinatarioFinal.controls['rfc'].errors?.['required'] &&
+         agregarDestinatarioFinal.controls['rfc']?.touched">
+            Este campo es obligatorio
+          </small>
+
+          <small *ngIf="(agregarDestinatarioFinal.controls['rfc'].errors?.['INVALID_RFC_FISICA'] || agregarDestinatarioFinal.controls['rfc'].errors?.['INVALID_RFC_MORAL']) 
+            && agregarDestinatarioFinal.controls['rfc']?.touched">
+            Existen datos incorrectos que no cumplen con el formato esperado
+          </small>
+        </div>
+      </div>
+      @if(agregarDestinatarioFinal.get('rfc')?.disabled){
+      <div class="col-md-4">
+    <label class="form-label">
+      C.U.R.P<span>*</span>:
+    </label>
+    <input type="text" class="form-control" [maxlength]="18" formControlName="curp"
+      [ngClass]="esInvalido('curp') ? 'required' : ''" />
+    <div *ngIf="esInvalido('curp')" class="text-danger">
+      <small *ngIf="agregarDestinatarioFinal.controls['curp'].errors?.['required']">
+        Este campo es obligatorio
+      </small>
+      <small *ngIf="agregarDestinatarioFinal.controls['curp'].errors?.['pattern']">
+        Existen datos incorrectos que no cumplen con el formato esperado
+      </small>
+    </div>
+  </div>
+}
+  
+    </div>
+  }
+
+    <!-- Datos Personales -->
+    @if(agregarDestinatarioFinal.get('tipoPersona')?.value ===
+    tipoPersona.FISICA || agregarDestinatarioFinal.get('tipoPersona')?.value === 'NoContribyunte' || agregarDestinatarioFinal.get('tipoPersona')?.value === undefined) {
+    <div class="row mt-3">
+      <h4 class="mt-5">Datos personales</h4>
+      <div class="col-md-4">
+        <label class="form-label">Nombre(s)<span [ngClass]="agregarDestinatarioFinal.controls['nombres'].errors?.['required'] && agregarDestinatarioFinal.controls['nombres'].touched ? 'text-danger' : ''">*</span>:</label>
+        <input type="text" class="form-control" [maxlength]="200" formControlName="nombres"
+          [ngClass]="esInvalido('nombres') ? 'required' : ''" />
+        <div *ngIf="esInvalido('nombres')" class="text-danger">
+          <small *ngIf="agregarDestinatarioFinal.controls['nombres'].errors?.['required']">
+            Este campo es obligatorio
+          </small>
+          <small *ngIf="agregarDestinatarioFinal.controls['nombres'].errors?.['pattern']">
+            Existen datos incorrectos que no cumplen con el formato esperado
+          </small>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Primer apellido<span [ngClass]="agregarDestinatarioFinal.controls['primerApellido'].errors?.['required'] && agregarDestinatarioFinal.controls['primerApellido'].touched ? 'text-danger' : ''">*</span>:</label>
+        <input type="text" class="form-control" formControlName="primerApellido" [maxlength]="200"
+          [ngClass]="esInvalido('primerApellido') ? 'required' : ''" />
+        <div *ngIf="esInvalido('primerApellido')" class="text-danger">
+          <small *ngIf="agregarDestinatarioFinal.controls['primerApellido'].errors?.['required']">
+            Este campo es obligatorio
+          </small>
+          <small *ngIf="agregarDestinatarioFinal.controls['primerApellido'].errors?.['pattern']">
+            Existen datos incorrectos que no cumplen con el formato esperado
+          </small>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Segundo apellido:</label>
+        <input type="text" class="form-control" formControlName="segundoApellido" [maxlength]="200" />
+        <div *ngIf="esInvalido('segundoApellido')" class="text-danger">
+          <small *ngIf="agregarDestinatarioFinal.controls['segundoApellido'].errors?.['pattern']">
+            Existen datos incorrectos que no cumplen con el formato esperado
+          </small>
+        </div>
+      </div>
+    </div>
+    }
+     @if(agregarDestinatarioFinal.get('tipoPersona')?.value ===
+    tipoPersona.MORAL || agregarDestinatarioFinal.get('tipoPersona')?.value === undefined) {
+    <div class="row">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label mt-3 mover-izquierda fs-2" for="denominacionRazon">Denominación/razón social@if(agregarDestinatarioFinal.controls['denominacionRazon'].errors?.['required']){
+            <span *ngIf="esInvalido('denominacionRazon')" class="text-danger">*</span>
+          <span *ngIf="!esInvalido('denominacionRazon')">*</span>
+            }:</label>
+          <input class="form-control" id="denominacionRazon" type="text" formControlName="denominacionRazon"
+            [maxlength]="254" [ngClass]="esInvalido('denominacionRazon') ? 'required' : ''" />
+          <div *ngIf="esInvalido('denominacionRazon')" class="text-danger">
+            <small *ngIf="agregarDestinatarioFinal.controls['denominacionRazon'].errors?.['required']">
+              Este campo es obligatorio
+            </small>
+            <small *ngIf="agregarDestinatarioFinal.controls['denominacionRazon'].errors?.['pattern']">
+              Existen datos incorrectos que no cumplen con el formato esperado.
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+    
+    @if (idProcedimiento === 260102) {
+    <h4 class="mt-5">Domicilio</h4>
+    <div class="row mt-5">
+      <div class="col-md-4 px-5">
+        <app-catalogo-select [catalogo]="paisesDatos" formControlName="pais" [label]="'País'"
+          [required]="true"  [placeholder]="'Selecciona una opción'"></app-catalogo-select>
+      </div>
+      <div class="col-md-4 px-5">
+        <label class="form-label">Estado:</label>
+        <input type="text" class="form-control" formControlName="estado" />
+      </div>
+
+      <div class="col-md-4 px-5">
+        <label class="form-label">Código postal o equivalente:</label>
+        <input type="text" class="form-control" formControlName="codigoPostal" />
+      </div>
+    </div>
+    }
+
+    <!-- Domicilio -->
+    @else{
+    <h4 class="mt-5">Domicilio</h4>
+    <div class="row mt-5">
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="paisesDatos" formControlName="pais" [label]="'País'" [required]="true"
+          [placeholder]="'Seleccione una opción'" [isDisabled]="
+            estaDeshabilitadoDesplegable ||
+            elementosDeshabilitados.includes('pais') || agregarDestinatarioFinal.get('pais')?.disabled ?? false"
+          [markTouched]="agregarDestinatarioFinal.get('pais')?.touched ?? false"
+          ></app-catalogo-select>
+      </div>
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="estadosDatos" formControlName="estado" [label]="'Estado/localidad'"
+          [required]="true" [placeholder]="'Seleccione una opción'" (selectionChange)="cargarEstados($event)"
+          [isDisabled]="estaDeshabilitadoDesplegable"
+          [markTouched]="agregarDestinatarioFinal.get('estado')?.touched ?? false"
+          [disabledPrimerOption]="false"
+          [hiddenPrimerOption]="false"
+          ></app-catalogo-select>
+      </div>
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="municipiosDatos" formControlName="municipio" [label]="'Municipio/alcaldía'"
+          [required]="true" [placeholder]="'Seleccione una opción'" (selectionChange)="cargarMunicipios($event)"
+          [isDisabled]="estaDeshabilitadoDesplegable"
+          [markTouched]="agregarDestinatarioFinal.get('municipio')?.touched ?? false"
+          [disabledPrimerOption]="false"
+          [hiddenPrimerOption]="false"
+          ></app-catalogo-select>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="localidadesDatos" formControlName="localidad" [label]="'Localidad'"
+          [required]="!requiedField" [placeholder]="'Seleccione una opción'" (selectionChange)="cargarLocalidades($event)"
+          [isDisabled]="estaDeshabilitadoDesplegable"
+          [markTouched]="agregarDestinatarioFinal.get('localidad')?.touched ?? false"
+          [disabledPrimerOption]="false"
+          [hiddenPrimerOption]="false"
+          ></app-catalogo-select>
+      </div>
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="codigosPostalesDatos" formControlName="codigoPostal"
+          [label]="'Código postal o equivalente'" [required]="true" [placeholder]="'Seleccione una opción'"
+          [isDisabled]="estaDeshabilitadoDesplegable" 
+          [markTouched]="agregarDestinatarioFinal.get('codigoPostal')?.touched ?? false"
+          [disabledPrimerOption]="false"
+          [hiddenPrimerOption]="false"
+          ></app-catalogo-select>
+      </div>
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="coloniasDatos" formControlName="colonia" [label]="'Colonia'"
+          [placeholder]="'Seleccione una opción'" [isDisabled]="estaDeshabilitadoDesplegable"
+          [required]="idProcedimiento === 260911 || !elementosNoRequeridos.includes('colonia')"
+          [markTouched]="agregarDestinatarioFinal.get('colonia')?.touched ?? false"
+          [disabledPrimerOption]="false"
+          [hiddenPrimerOption]="false">
+        </app-catalogo-select>
+      </div>
+    </div>
+    }
+
+    <div class="row mt-3">
+      <div class="col-md-8">
+        <label class="form-label">Calle</label>
+        <span class="form-label" *ngIf="!elementosRequeridos.includes('calle')">
+          <!-- <span [ngClass]="agregarDestinatarioFinal.controls['calle'].errors?.['required'] ? 'text-danger':''">*</span> -->
+          <span *ngIf="esInvalido('calle')" class="text-danger">*</span>
+          <span *ngIf="!esInvalido('calle')">*</span>
+        </span>
+        <span class="form-label">:</span>
+        <span tooltip="Domicilio, calle, número interior, número exterior, lote"><i
+            class="bi bi-question-circle-fill"></i></span>
+        <input type="text" class="form-control" [maxlength]="100" formControlName="calle"
+          [ngClass]="esInvalido('calle') ? 'required' : ''" />
+        <div *ngIf="esInvalido('calle')" class="text-danger">
+          <small *ngIf="agregarDestinatarioFinal.controls['calle'].errors?.['required']">
+            Este campo es obligatorio
+          </small>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Número exterior</label>
+        <span class="form-label" *ngIf="!elementosRequeridos.includes('numeroExterior')">
+          <!-- <span
+            [ngClass]="agregarDestinatarioFinal.controls['numeroExterior'].errors?.['required'] ?  'text-danger':''">*</span> -->
+          <span *ngIf="esInvalido('numeroExterior')" class="text-danger">*</span>
+          <span *ngIf="!esInvalido('numeroExterior')">*</span>
+        </span>
+        <span class="form-label">:</span>
+        <input type="text" class="form-control" formControlName="numeroExterior" [maxlength]="55"
+          [ngClass]="esInvalido('numeroExterior') ? 'required' : ''" />
+        <div *ngIf="esInvalido('numeroExterior')" class="text-danger">
+          <small *ngIf="agregarDestinatarioFinal.controls['numeroExterior'].errors?.['required']">
+            Este campo es obligatorio
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-4">
+        <label class="form-label">Número interior:</label>
+        <input type="text" class="form-control" formControlName="numeroInterior" [maxlength]="55" />
+      </div>
+      <div class="col-md-1">
+        <label class="form-label">Lada:</label>
+        <input type="text" class="form-control" [maxlength]="5" formControlName="lada" />
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Teléfono:</label>
+        <input type="text" class="form-control" [maxlength]="24" formControlName="telefono" />
+        <div *ngIf="esInvalido('telefono')" class="text-danger">
+          <small *ngIf="agregarDestinatarioFinal.controls['telefono'].errors?.['pattern']">
+            Existen datos incorrectos que no cumplen con el formato esperado
+          </small>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Correo electrónico:</label>
+        <span tooltip="ejemplo@dominio.com"><i class="bi bi-question-circle-fill"></i></span>
+        <input type="email" class="form-control" formControlName="correoElectronico" [maxlength]="320" />
+        <div *ngIf="esInvalido('correoElectronico')" class="text-danger">
+          <small *ngIf="agregarDestinatarioFinal.controls['correoElectronico'].errors?.['pattern']">
+            Por favor, escribe una dirección de correo válida
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div class="row my-5">
+      <div class="col-md-6">
+        <p>* Campos obligatorios</p>
+      </div>
+      <div class="col-md-6">
+        <div class="pull-right mb-5">
+          <button type="button" name="modificarMercancias" class="btn btn-danger" (click)="cancelar()">
+            Cancelar
+          </button>
+          <button type="button" name="eliminarMercancias" class="btn btn-default ms-2" (click)="limpiarFormulario()">
+            Limpiar
+          </button>
+          <button type="button" name="agregarMercancias" class="btn btn-primary ms-2" (click)="guardarDestinatario()">
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones
+    [notificacionInput]="nuevaNotificacion"
+    (confirmacionModal)="eliminarPedimento($event)"
+  >
+  </lib-notificaciones>
+</section>
+}

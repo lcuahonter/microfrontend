@@ -1,0 +1,397 @@
+<div [formGroup]="expedicionCertificadosAsignacionForm">
+  <!--Número de oficio de asignación-->
+  <div formGroupName="asignacionOficioNumeroForm">
+    <ng-titulo [titulo]="'Número de oficio de asignación'"></ng-titulo>
+
+    <div class="row">
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="aniosAutorizacion" formControlName="cveAniosAutorizacion"
+          [label]="'Año del oficio de asignación'" [required]="true" name="cveAniosAutorizacion"
+          [isDisabled]="formularioDeshabilitado" [disabledPrimerOption]="false" [hiddenPrimerOption]="false"
+          [placeholder]="'Selecciona un año'"
+          [markTouched]="asignacionOficioNumeroForm.get('cveAniosAutorizacion')?.touched ?? false"
+          (change)="aniosAutorizacionSeleccion()" (selectionChange)="anoSeleccion($event)"></app-catalogo-select>
+      </div>
+      <div class="col-md-4">
+        <label for="numFolioAsignacionAux" class="form-label">
+          Número de oficio de asignación </label><span [ngClass]="
+            isValid(asignacionOficioNumeroForm, 'numFolioAsignacionAux')
+              ? 'require'
+              : ''
+          ">*</span>:
+        <input type="text" name="numFolioAsignacionAux" class="form-control" formControlName="numFolioAsignacionAux"
+          [ngClass]="
+            isValid(asignacionOficioNumeroForm, 'numFolioAsignacionAux')
+              ? 'required'
+              : ''
+          " (change)="
+            setValoresStore(
+              'asignacionOficioNumeroForm',
+              'numFolioAsignacionAux',
+              'setNumFolioAsignacionAux'
+            )
+          " />
+        @if
+        (asignacionOficioNumeroForm.get('numFolioAsignacionAux')?.errors?.['required']
+        && (asignacionOficioNumeroForm.get('numFolioAsignacionAux')?.touched ||
+        asignacionOficioNumeroForm.get('numFolioAsignacionAux')?.dirty)) {
+        <small class="mensaje-error">Este campo es obligatorio</small>
+        }
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-md-8 text-end">
+        <button type="button" class="btn btn-primary" name="buscar" [disabled]="formularioDeshabilitado" (click)="
+            buscar(
+              asignacionOficioNumeroForm
+                .get('cveAniosAutorizacion')
+                ?.getRawValue(),
+              asignacionOficioNumeroForm
+                .get('numFolioAsignacionAux')
+                ?.getRawValue()
+            )
+          ">
+          Buscar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  @if(mostrarDetalle || mostrarDetalleConsulta){
+  <!--Representación federal-->
+  <div formGroupName="representacionFederalForm">
+    <ng-titulo [titulo]="'Representación federal'"></ng-titulo>
+
+    <div class="row">
+      <div class="col-md-4">
+        <label for="estado" class="form-label">Estado:</label>
+        <input type="text" name="estado" id="estado" class="form-control" formControlName="estado" (change)="
+            setValoresStore('representacionFederalForm', 'estado', 'setEstado')
+          " readonly />
+      </div>
+      <div class="col-md-4">
+        <label for="representacionFederal" class="form-label">Representación federal:</label>
+        <input type="text" name="representacionFederal" id="representacionFederal" class="form-control"
+          formControlName="representacionFederal" (change)="
+            setValoresStore(
+              'representacionFederalForm',
+              'representacionFederal',
+              'setRepresentacionFederal'
+            )
+          " readonly />
+      </div>
+    </div>
+  </div>
+
+  <!--Control de montos de la asignación-->
+  <div formGroupName="controlMontosAsignacionForm" class="mt-4">
+    <ng-titulo [titulo]="'Control de montos de la asignación'"></ng-titulo>
+
+    <div class="row">
+      <div class="col-md-4">
+        <label for="montoAsignado" class="form-label">Monto asignado:</label>
+        <input type="text" name="sumaAprobada" id="idSumaAprobada" class="form-control" formControlName="sumaAprobada"
+          (change)="
+            setValoresStore(
+              'controlMontosAsignacionForm',
+              'sumaAprobada',
+              'setSumaAprobada'
+            )
+          " readonly />
+      </div>
+      <div class="col-md-4">
+        <label for="montoExpedido" class="form-label">Monto expedido:</label>
+        <input type="text" name="sumaExpedida" id="sumaExpedida" class="form-control" formControlName="sumaExpedida"
+          (change)="
+            setValoresStore(
+              'controlMontosAsignacionForm',
+              'sumaExpedida',
+              'setSumaExpedida'
+            )
+          " readonly />
+      </div>
+      <div class="col-md-4">
+        <label for="montoDisponible" class="form-label">Monto disponible:</label>
+        <input type="text" name="montoDisponible" id="montoDisponible" class="form-control"
+          formControlName="montoDisponible" (change)="
+            setValoresStore(
+              'controlMontosAsignacionForm',
+              'montoDisponible',
+              'setMontoDisponible'
+            )
+          " readonly />
+      </div>
+    </div>
+  </div>
+
+  <div formGroupName="asignacionDatosForm" class="mt-4">
+    <!--Datos de la asignación-->
+    <ng-titulo [titulo]="'Datos de la asignación'"></ng-titulo>
+
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label for="numOficio" class="form-label">Número de oficio:</label>
+        <input type="text" name="numOficio" id="numOficio" class="form-control" formControlName="numOficio" (change)="
+            setValoresStore('asignacionDatosForm', 'numOficio', 'setNumOficio')
+          " />
+      </div>
+    </div>
+
+    <!--Vigencia de la asignación-->
+    <ng-titulo [titulo]="'Vigencia de la asignación'"></ng-titulo>
+
+    <div class="row">
+      <div class="col-md-4">
+        <input-fecha [setFecha]="asignacionDatosForm.get('fechaInicio')?.value" [datos]="fechaInicioInput"
+          [tooltipQuestionCircle]="true" [tooltipQuestionCircleText]="'Fecha de inicio vigencia de la asignación'"
+          [isDisabled]="formularioDeshabilitado" (valorCambiado)="cambioFechaInicio($event)"></input-fecha>
+      </div>
+      <div class="col-md-4">
+        <input-fecha [setFecha]="
+            asignacionDatosForm.get('fechaFinVigenciaAprobada')?.value
+          " [datos]="fechaFinVigenciaAprobadaInput" [tooltipQuestionCircle]="true"
+          [tooltipQuestionCircleText]="'Fecha de fin vigencia de la asignación'" [isDisabled]="formularioDeshabilitado"
+          (valorCambiado)="cambioFechaFinVigenciaAprobada($event)"></input-fecha>
+      </div>
+    </div>
+  </div>
+
+  <div formGroupName="cupoDescripcionForm" class="mt-4">
+    <!--Descripción del cupo-->
+    <ng-titulo [titulo]="'Descripción del cupo'"></ng-titulo>
+
+    <div class="row">
+      <div class="col-md-4">
+        <label for="regimenAduanero" class="form-label">Régimen aduanero:</label>
+        <input type="text" name="regimenAduanero" id="regimenAduanero" class="form-control"
+          formControlName="regimenAduanero" (change)="
+            setValoresStore(
+              'cupoDescripcionForm',
+              'regimenAduanero',
+              'setRegimenAduanero'
+            )
+          " readonly />
+      </div>
+      <div class="col-md-4">
+        <label for="descripcionProducto" class="form-label">Descripción del producto:</label>
+        <input type="text" name="descripcionProducto" id="descripcionProducto" class="form-control"
+          formControlName="descripcionProducto" (change)="
+            setValoresStore(
+              'cupoDescripcionForm',
+              'descripcionProducto',
+              'setDescripcionProducto'
+            )
+          " readonly />
+      </div>
+      <div class="col-md-4">
+        <label for="clasificaionSubproducto" class="form-label">Clasificación del subproducto:</label>
+        <input type="text" name="clasificaionSubproducto" id="clasificaionSubproducto" class="form-control"
+          formControlName="clasificaionSubproducto" (change)="
+            setValoresStore(
+              'cupoDescripcionForm',
+              'clasificaionSubproducto',
+              'setClasificaionSubproducto'
+            )
+          " readonly />
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-md-4">
+        <label for="unidadMedida" class="form-label">Unidad de medida:</label>
+        <input type="text" name="unidadMedidaOficialCupo" id="unidadMedidaOficialCupo" class="form-control"
+          formControlName="unidadMedidaOficialCupo" (change)="
+            setValoresStore(
+              'cupoDescripcionForm',
+              'unidadMedidaOficialCupo',
+              'setUnidadMedidaOficialCupo'
+            )
+          " readonly />
+      </div>
+      <div class="col-md-4">
+        <input-fecha [setFecha]="cupoDescripcionForm.get('fechaInicioVigencia')?.value"
+          [datos]="fechaInicioVigenciaInput" [isDisabled]="formularioDeshabilitado"
+          (valorCambiado)="cambioFechaInicioVigencia($event)"></input-fecha>
+      </div>
+      <div class="col-md-4">
+        <input-fecha [setFecha]="cupoDescripcionForm.get('fechaFinVigencia')?.value" [datos]="fechaFinVigenciaInput"
+          [isDisabled]="formularioDeshabilitado" (valorCambiado)="cambioFechaFinVigencia($event)"></input-fecha>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-md-8">
+        <label for="mecanismoAsignacion" class="form-label">Mecanismo de asignación:</label>
+        <input type="text" name="mecanismoAsignacion" id="mecanismoAsignacion" class="form-control"
+          formControlName="mecanismoAsignacion" (change)="
+            setValoresStore(
+              'cupoDescripcionForm',
+              'mecanismoAsignacion',
+              'setMecanismoAsignacion'
+            )
+          " readonly />
+      </div>
+      <div class="col-md-4">
+        <label for="tratado" class="form-label">Tratado / Acuerdo:</label>
+        <input type="text" name="tratado" id="tratadoAcuerdo" class="form-control" formControlName="tratado" (change)="
+            setValoresStore('cupoDescripcionForm', 'tratado', 'setTratado')
+          " readonly />
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label for="fraccionesArancelarias">Fracciones arancelarias:</label>
+          <textarea class="form-control" id="fraccionesArancelarias" name="fraccionesArancelarias"
+            formControlName="fraccionesArancelarias" cols="95" rows="5" (change)="
+              setValoresStore(
+                'cupoDescripcionForm',
+                'fraccionesArancelarias',
+                'setFraccionesArancelarias'
+              )
+            "></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label for="paises">Países:</label>
+          <textarea class="form-control" id="paisesCupo" name="paisesCupo" formControlName="paisesCupo" cols="95"
+            rows="5" (change)="
+              setValoresStore(
+                'cupoDescripcionForm',
+                'paisesCupo',
+                'setPaisesCupo'
+              )
+            "></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label for="observaciones">Observaciones:</label>
+          <textarea class="form-control" id="observaciones" name="observaciones" formControlName="observaciones"
+            cols="95" rows="5" (change)="
+              setValoresStore(
+                'cupoDescripcionForm',
+                'observaciones',
+                'setObservaciones'
+              )
+            "></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label for="fundamento">Fundamento:</label>
+          <textarea class="form-control" id="descripcionFundamento" name="descripcionFundamento"
+            formControlName="descripcionFundamento" cols="95" rows="5" (change)="
+              setValoresStore(
+                'cupoDescripcionForm',
+                'descripcionFundamento',
+                'setDescripcionFundamento'
+              )
+            "></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div formGroupName="distribucionSaldoForm" class="mt-4">
+    <!--Distribución de saldo-->
+    <ng-titulo [titulo]="'Distribución de saldo'"></ng-titulo>
+
+    <div class="row">
+      <div class="col-md-4">
+        <label for="montoDisponible" class="form-label">Monto disponible:</label>
+        <input type="text" name="montoDisponible" id="montoDisponible" class="form-control"
+          formControlName="montoDisponibleAsignacion" size="30" (change)="
+            setValoresStore(
+              'distribucionSaldoForm',
+              'montoDisponibleAsignacion',
+              'setMontoDisponibleAsignacion'
+            )
+          " />
+      </div>
+      <div class="col-md-4">
+        <label for="montoAExpedir" class="form-label">Monto a expedir<span>*</span>:</label>
+        <input type="text" name="montoExpedir" id="montoExpedir" class="form-control" formControlName="montoExpedir"
+          size="30" (change)="
+            setValoresStore(
+              'distribucionSaldoForm',
+              'montoExpedir',
+              'setMontoExpedir'
+            )
+          " [ngClass]="
+              isValid(distribucionSaldoForm, 'montoExpedir') ? 'required' : ''
+            " />
+        <small class="form-text mensaje-error" *ngIf="mostrarTotalExpedirMonto">La cantidad solicitada a expedir no debe
+          ser mayor al saldo disponible.
+        </small>
+        @if ((distribucionSaldoForm.get('montoExpedir')?.touched ||
+        distribucionSaldoForm.get('montoExpedir')?.dirty) &&
+        distribucionSaldoForm.get('montoExpedir')?.errors?.['required']) {
+        <small class="mensaje-error">Este campo es obligatorio</small>
+        } @if ((distribucionSaldoForm.get('montoExpedir')?.touched ||
+        distribucionSaldoForm.get('montoExpedir')?.dirty) &&
+        distribucionSaldoForm.get('montoExpedir')?.errors?.['pattern']) {
+        <p class="mensaje-error m-0">Este campo es obligatorio</p>
+        <p class="mensaje-error">Por favor, escribe un número entero válido</p>
+        }
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 text-end mt-3">
+        <button type="button" class="btn btn-primary" name="agregarCertificado" [disabled]="formularioDeshabilitado"
+          (click)="agregar(distribucionSaldoForm.get('montoExpedir')?.value)">
+          Agregar
+        </button>
+      </div>
+    </div>
+
+    <!--Monto a expedir Tabla-->
+    <div class="row mt-5">
+      <div class="col-md-12">
+        <app-tabla-dinamica [configuracionTabla]="configuracionParaEncabezadoDeTabla" [datos]="cuerpoTabla"
+          [tipoSeleccionTabla]="tipoSeleccionTabla" [disableSeleccionTablaCheckBox]="formularioDeshabilitado"
+          (listaDeFilaSeleccionada)="valorDeAlternancia($event)"></app-tabla-dinamica>
+      </div>
+      @if(tablaInvalidoError) {
+      <div class="col-md-12">
+        <span class="mensaje-error">Este campo es obligatorio</span>
+      </div>
+      }
+    </div>
+    <div class="row mt-2">
+      <div class="col-md-12 text-end">
+        <button type="button" class="btn btn-danger" name="guardarCertificado" [disabled]="formularioDeshabilitado"
+          (click)="eliminar()">
+          Eliminar seleccionado
+        </button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <label for="totalExpedir" class="form-label">Total a expedir:</label>
+        <input type="text" name="totalExpedir" id="totalExpedir" class="form-control" formControlName="totalExpedir"
+          size="30" readonly (change)="
+            setValoresStore(
+              'distribucionSaldoForm',
+              'totalExpedir',
+              'setTotalExpedir'
+            )
+          " />
+      </div>
+    </div>
+  </div>
+  }
+</div>
+
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion" (confirmacionModal)="confirmacionModal($event)">
+  </lib-notificaciones>
+</section>
+}

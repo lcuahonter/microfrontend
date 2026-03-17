@@ -1,0 +1,108 @@
+<div class="row">
+   <div>
+      <h6>Modificar Partidas</h6>
+      <div>
+         <app-tabla-con-entrada [configuracionTabla]="tableHeaderData" [datos]="tableBodyData"
+            [disableSeleccionTablaCheckBox]="esFormularioSoloLectura" [tipoSeleccionTabla]="CHECKBOX"
+            (listaDeFilaSeleccionada)="handleListaDeFilaSeleccionada($event)"
+            (seleccionarFilaDeEntrada)="handleFilaRadioBtnSeleccionada($event)">
+         </app-tabla-con-entrada>
+      </div>
+
+      @if(!soloLectura){
+      <div class="row">
+         <div class="col-md-6 col-smcantidadTotal-6"></div>
+         <div class="col-md-6 col-sm-6 text-end">
+            <div class="btn-group">
+               <button class="btn btn-primary" type="button" (click)="navegarParaModificarPartida()"
+                  [disabled]="esFormularioSoloLectura">
+                  Modificar Partida Mercancía
+               </button>
+            </div>
+         </div>
+      </div>
+      }
+      <form [formGroup]="formForTotalCount">
+         <h4>Cantidades solicitadas</h4>
+         <div class="row">
+            <div class="col-md-4">
+               <div class="form-group">
+                  <label class="form-label" for="cantidadTotalSolicitada">Cantidad Total Solicitada:</label>
+                  <input class="form-control" type="text" id="cantidadTotalSolicitada"
+                     formControlName="cantidadTotalSolicitada" aria-labelledby="cantidadTotalSolicitada" />
+               </div>
+            </div>
+            <div class="col-md-4">
+               <div class="form-group">
+                  <label class="form-label" for="valorSolicitado">Valor Solicitado:</label>
+                  <input class="form-control" type="text" id="valorSolicitado" formControlName="valorSolicitado"
+                     aria-labelledby="valorSolicitado" />
+               </div>
+            </div>
+         </div>
+         <h4>Cantidades autorizadas</h4>
+         <div class="row">
+            <div class="col-md-4">
+               <div class="form-group">
+                  <label class="form-label" for="cantidadTotalAutorizada">Cantidad Total Autorizada:</label>
+                  <input class="form-control" type="text" id="cantidadTotalAutorizada"
+                     formControlName="cantidadTotalAutorizada" aria-labelledby="cantidadTotalAutorizada" />
+               </div>
+            </div>
+            <div class="col-md-4">
+               <div class="form-group">
+                  <label class="form-label" for="valorAutorizado">Valor Autorizado:</label>
+                  <input class="form-control" type="text" id="valorAutorizado" formControlName="valorAutorizado"
+                     aria-labelledby="valorAutorizado" />
+               </div>
+            </div>
+         </div>
+      </form>
+      <div class="modal fade custom-backdrop" id="modificarPartida" tabindex="-1"
+         aria-labelledby="modificarPartidaLabel" aria-hidden="true" data-bs-focus="false" data-bs-backdrop="false"
+         #modificarPartidaModal>
+         <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h4 class="modal-title mt-0">Modificar valor partida</h4>
+               </div>
+               <div class="modal-body">
+                  <form [formGroup]="modificarPartidasDelaMercanciaForm">
+                     <div>
+                        <div class="row">
+                           <div class="col-md-4">
+                              <div class="form-group">
+                                 <label class="form-label" for="cantidad">Cantidad Total Autorizada:</label>
+                                 <input class="form-control" type="text" id="cantidad"
+                                    formControlName="cantidadModificar" maxlength="15" appUppercase
+                                    aria-labelledby="cantidad" />
+                              </div>
+                           </div>
+                           <div class="col-md-7">
+                              <div class="form-group">
+                                 <label class="form-label" for="descripcion">Descripcion Autorizada:</label>
+                                 <textarea class="form-control height" rows="3" id="descripcion"
+                                    formControlName="descripcionModificar" [maxlength]="254"
+                                    aria-labelledby="descripcion" cols="80"></textarea>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </form>
+                  <footer class="footer d-flex py-5 justify-content-end">
+                     <button type="button" id="cancelarCHN" name="cancelar" class="btn btn-default cancel me-2"
+                        (click)="modalCancelar()" [disabled]="esFormularioSoloLectura">
+                        Cancelar
+                     </button>
+                     <button type="button" class="btn btn-primary ms-2" [disabled]="esFormularioSoloLectura"
+                        (click)="validarModificarPartida()">Modificar</button>
+                  </footer>
+               </div>
+            </div>
+         </div>
+      </div>
+      <lib-notificaciones *ngIf="mostrarNotificacion" [notificacionInput]="nuevaNotificacion"
+         (confirmacionModal)="onConfirmacionModal($event)">
+      </lib-notificaciones>
+   </div>
+</div>

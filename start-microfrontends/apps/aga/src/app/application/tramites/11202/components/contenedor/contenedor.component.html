@@ -1,0 +1,264 @@
+<form [formGroup]="solicitudForm" id="formSolicitud">
+  <input type="hidden" formControlName="idSolicitud" id="idSolicitud" />
+
+  <div class="row">
+    <div class="col-md-12">
+      <ng-titulo titulo="Ingresar por:" />
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="col-md-6">
+        <app-input-radio [radioOptions]="radioOptions" [isRequired]="true" [layout]="'horizontal'"
+          formControlName="tipoBusqueda" (change)="setValoresStore(solicitudForm, 'tipoBusqueda', 'setTipoBusqueda')"></app-input-radio>
+      </div>
+    </div>
+  </div>
+  <br />
+
+  <div id="seccionAduanaaFecha" *ngIf="seccionAduanaaFechaVisible">
+    <ng-titulo titulo="Datos generales"/>
+    <ng-container formGroupName="datosGenerales">
+      <div class="row">
+        <div class="col-md-4">
+          <app-catalogo-select [catalogo]="options" formControlName="aduana" [label]="'Aduana/sección aduanera'"
+            [placeholder]="'Seleccione una opción'" [required]="true" [markTouched]="solicitudForm.get('datosGenerales.aduana')?.touched??false"
+            (change)="setValoresStore(datosGenerales, 'aduana', 'setAduana')"
+            [isDisabled]="soloLectura"></app-catalogo-select>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <div id="seccionAduanaaFecha" *ngIf="seccionContenedor">
+    <ng-titulo titulo="Datos del equipo" />
+    <ng-container formGroupName="datosContenedor">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="inicialesContenedor">Iniciales del equipo<span [ngClass]="solicitudForm.get('datosContenedor.inicialesContenedor')?.invalid && 
+              solicitudForm.get('datosContenedor.inicialesContenedor')?.touched ? 'text-danger' : ''">*</span>:
+            </label>
+            <input type="text" class="form-control" id="inicialesContenedor" maxlength="10"
+              formControlName="inicialesContenedor" (change)="
+                setValoresStore(
+                  datosContenedor,
+                  'inicialesContenedor',
+                  'setInicialesContenedor'
+                )" [ngClass]="{'is-invalid': isInvalid('datosContenedor.inicialesContenedor')}"/>
+              <div *ngIf="isInvalid('datosContenedor.inicialesContenedor') && solicitudForm.get('datosContenedor.inicialesContenedor')?.errors?.['required']" class="mensaje-error">
+                Este campo es obligatorio.
+              </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="numeroContenedor">Número de equipo<span [ngClass]="solicitudForm.get('datosContenedor.numeroContenedor')?.invalid && 
+              solicitudForm.get('datosContenedor.numeroContenedor')?.touched ? 'text-danger' : ''">*</span>:
+            </label>
+            <input type="text" class="form-control" id="numeroContenedor" maxlength="15"
+              formControlName="numeroContenedor" (change)="
+                setValoresStore(
+                  datosContenedor,
+                  'numeroContenedor',
+                  'setNumeroContenedor'
+                )" [ngClass]="{'is-invalid': isInvalid('datosContenedor.numeroContenedor')}"/>
+              <div *ngIf="isInvalid('datosContenedor.numeroContenedor') && solicitudForm.get('datosContenedor.numeroContenedor')?.errors?.['required']" class="mensaje-error">
+                  Este campo es obligatorio.
+              </div>
+              <div *ngIf="solicitudForm.get('datosContenedor.numeroContenedor')?.touched && solicitudForm.get('datosContenedor.numeroContenedor')?.errors?.['minlength']" class="mensaje-error">
+                  Por favor, no escribas menos de 6 caracteres
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="botonesBuscar" class="mt-3" *ngIf="mostrarBotonesBuscar">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group pull-right">
+              <button type="button" name="limpiar" id="limpiar" class="btn btn-default" (click)="limpiarCampos()"
+                [disabled]="soloLectura">
+                Limpiar
+              </button>
+              <button type="button" name="buscar" id="buscar" class="btn btn-primary ms-2" (click)="agregarGrid()"
+                [disabled]="!solicitudForm.get('datosGenerales.aduana')?.value || !solicitudForm.get('datosContenedor.inicialesContenedor')?.value ||
+                !solicitudForm.get('datosContenedor.numeroContenedor')?.value || soloLectura">
+                Buscar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="mostrarAgregarTipoContenedor" *ngIf="mostrarAgregarTipoContenedor">
+        <div class="row mt-3">
+          <div class="col-md-4">
+            <app-catalogo-select [catalogo]="contenedore.catalogos" formControlName="tipoContenedor" [label]="contenedore.labelNombre"
+              [required]="true"
+              [markTouched]="solicitudForm.get('datosContenedor.tipoContenedor')?.touched??false" (change)="
+                setValoresStore(
+                  datosContenedor,
+                  'tipoContenedor',
+                  'setTipoContenedor'
+                )
+              " [isDisabled]="soloLectura"></app-catalogo-select>
+              
+          </div>
+          <div class="col-md-4 mt-3">
+              <div class="form-group">
+                  <label for="digitoDeControl">Dígito verificador:</label>
+                  <input type="text" formControlName="digitoDeControl" id="digitoDeControl" maxlength="1"
+                      class="form-control" [disabled]="soloLectura">
+              </div>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-8">
+            <div class="form-group pull-right">
+              <button type="button" name="agregar" id="agregar" class="btn btn-primary" (click)="agregarGrid()"
+                [disabled]="!solicitudForm.get('datosContenedor.tipoContenedor')?.value || soloLectura">
+                Agregar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+    <div class="col-md-12 mt-5" id="idGridContenedoresRC" *ngIf="!solicitudForm.get('tipoBusqueda')?.value || solicitudForm.get('tipoBusqueda')?.value === 'Contenedor'">
+      <div class="table-responsive">
+        <div class="innercontainer">
+          <app-tabla-dinamica [configuracionTabla]="gridContenedores" [datos]="contenedores"></app-tabla-dinamica>
+        </div>
+      </div>
+      <nav aria-label="Page navigation example">
+        <ul class="pagination d-flex justify-content-center mb-3">
+          <li class="page-item"><a class="page-link">1</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <ng-container *ngIf="mostrarSeccionArchivoCsv">
+      <div class="row align-items-cente">
+        <div class="col-md-8">
+            <ng-titulo titulo="Adjuntar archivo" />
+            <div class="d-flex align-items-center">
+                <div class="col-md-4">
+                    <label for="archivoSeleccionado" class="form-label">Archivo seleccionado*:</label>
+                </div>
+                <div class="col-md-8">
+                    <input class="form-control" type="text" name="archivoSeleccionado" id="archivoSeleccionado"
+                        disabled>
+                </div>
+            </div>
+        </div>
+      </div>
+      <div class="row mb-3">
+          <div class="col-md-12 d-flex justify-content-end cargarbtn">
+              <button type="button" class="btn btn-default" data-bs-toggle="modal" 
+                  data-bs-target="#modalArchivoCsv" [disabled]="soloLectura">Cargar archivo</button>
+          </div>
+      </div>
+    <div class="row mt-5">
+        <div class="table-container">
+            <app-tabla-dinamica [configuracionTabla]="csvTabla"
+                [datos]="datosDelCsvArchivo"></app-tabla-dinamica>
+        </div>
+    </div>
+  </ng-container>
+
+  @if (consultaDatos.create) {
+            <div class="row" style="margin-top: 30px;margin-bottom: 30px;">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <div class="pull-left text-muted text-vertical-align-button" id="lblCamposObligatorios">
+                            * Campos obligatorios
+                        </div>
+                        <div class="pull-right row">
+                            <div class="col-md-5">
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalCancelar">
+                                    Cancelar
+                                </button>
+                            </div>
+                            <div class="col-md-5" id="botonGuardar">
+                                <button type="submit" class="btn btn-primary" (click)="continuar()">
+                                    Continuar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+</form>
+
+<div class="modal fade" id="modalCancelar" tabindex="-1" role="dialog"
+        aria-labelledby="modalCancelar" aria-hidden="true" #modalCancelar>
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Cancelar</h4>
+                </div>
+                <div class="modal-body">
+                    <p>¿Está seguro que desea cancelar?. Se borrarán los datos capturados.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" (click)="cancelar()"
+                        data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalAgregarConstanciaTransferencia" tabindex="-1" role="dialog"
+        aria-labelledby="modalAgregarConstanciaTransferenciaLabel" aria-hidden="true" #modalAgregarConstanciaTransferencia>
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Constancia no encontrada</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Constancia no encontrada, ¿Deseas agregar una nueva constancia?.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" (click)="datosCaptura()"
+                        data-bs-dismiss="modal">Si</button>
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalArchivoCsv" tabindex="-1" role="dialog"
+        aria-labelledby="modalArchivoCsv" aria-hidden="true" #modalArchivoCsv>
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div *ngIf="archivoDescripcion">
+                  <ng-alert [CONTENIDO]="archivo_descripcion"></ng-alert>
+                </div>
+                <div class="modal-header">
+                    <h4 class="modal-title">Cargar archivo</h4>
+                </div>
+                <div class="modal-body justify-content-start mb-5">
+                    <label for="archivoSeleccionado" class="form-label">Archivo:</label>   
+                    <div class="mt-2">
+                        <button type="button" for="archivoMedicamentos" class="file-upload" (click)="activarSeleccionArchivo()"
+                          [disabled]="soloLectura">
+                          Elgir archivo
+                        </button>
+                        <span class="ml-2">{{ elgirDeArchivo }}</span>
+                        <input type="file" id="archivoMedicamentos" (change)="onCambioDeArchivo($event)" class="file-upload"
+                          style="display: none" />
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-end">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Regresar</button>
+                    <button type="button" class="btn btn-primary" (click)="adjuntarArchivo()" data-bs-dismiss="modal">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>

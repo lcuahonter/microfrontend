@@ -1,0 +1,214 @@
+<app-modal [active]="mostrarModal" (closeModal)="cerrar()">
+  <div class="agregar-fabricante-container">
+
+    <!-- Título dinámico -->
+    <ng-titulo [titulo]="obtenerTitulo()"></ng-titulo>
+
+    <!-- Notificaciones -->
+    <!-- <app-notificaciones *ngIf="notificaciones.length > 0" [notificaciones]="notificaciones"></app-notificaciones> -->
+
+    <!-- Formulario -->
+    <form [formGroup]="tercerosRelacionadosModalFormGroup" (ngSubmit)="guardar()">
+      <h5>Datos generales</h5>
+      <div class="row">
+        <div class="col-md-8 pl-8">
+          <div class="form-group">
+            <label class="form-label" for="denominacionRazonSocial">Denominación/razón social*:</label>
+            <input type="text" class="form-control" id="denominacionRazonSocial" maxLength="254"
+              formControlName="denominacionRazonSocial" name="denominacionRazonSocial"
+              [ngClass]="esValido('denominacionRazonSocial', tercerosRelacionadosModalFormGroup) ? 'required' : ''" />
+            @if (tercerosRelacionadosModalFormGroup.controls['denominacionRazonSocial'].invalid &&
+            tercerosRelacionadosModalFormGroup.controls['denominacionRazonSocial'].touched) {
+            <div class="d-grid">
+              @if (tercerosRelacionadosModalFormGroup.controls['denominacionRazonSocial'].errors?.['required']) {
+              <span class="mensaje-error">Este campo es obligatorio</span>
+              }
+              @if (tercerosRelacionadosModalFormGroup.controls['denominacionRazonSocial'].errors?.['pattern']) {
+              <span class="mensaje-error">Existen datos incorrectos que no cumplen con el formato esperado.</span>
+              }
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="pais" class="form-label">Pais*:
+              </label>
+              <input type="text" id="pais" formControlName="pais" name="pais" class="form-control"
+                [ngClass]="esValido('pais', tercerosRelacionadosModalFormGroup) ? 'required' : ''" />
+              @if (tercerosRelacionadosModalFormGroup.controls['pais'].invalid &&
+              tercerosRelacionadosModalFormGroup.controls['pais'].touched) {
+              <div class="d-grid">
+                @if (tercerosRelacionadosModalFormGroup.controls['pais'].errors?.['required']) {
+                <span class="mensaje-error">Este campo es obligatorio</span>
+                }
+              </div>
+              }
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="estadoLocalidad" class="form-label">Estado:
+              </label>
+              <input type="text" id="estadoLocalidad" formControlName="estadoLocalidad" name="estadoLocalidad"
+                class="form-control"
+                [ngClass]="esValido('estadoLocalidad', tercerosRelacionadosModalFormGroup) ? 'required' : ''" />
+              @if (tercerosRelacionadosModalFormGroup.controls['estadoLocalidad'].invalid &&
+              tercerosRelacionadosModalFormGroup.controls['estadoLocalidad'].touched) {
+              <div class="d-grid">
+                @if (tercerosRelacionadosModalFormGroup.controls['estadoLocalidad'].errors?.['required']) {
+                <span class="mensaje-error">Este campo es obligatorio</span>
+                }
+              </div>
+            }
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="codigoPostaloEquivalente" class="form-label">Código postal o equivalente:
+              </label>
+              <input type="text" id="codigoPostaloEquivalente" formControlName="codigoPostaloEquivalente"
+                name="codigoPostaloEquivalente" maxlength="12" class="form-control"
+                [ngClass]="esValido('codigoPostaloEquivalente', tercerosRelacionadosModalFormGroup) ? 'required' : ''" />
+              @if (tercerosRelacionadosModalFormGroup.controls['codigoPostaloEquivalente'].invalid &&
+              tercerosRelacionadosModalFormGroup.controls['codigoPostaloEquivalente'].touched) {
+              <div class="d-grid">
+                <span class="mensaje-error"
+                  *ngIf="tercerosRelacionadosModalFormGroup.controls['codigoPostaloEquivalente'].errors?.['maxlength']">
+                  No puede exceder los 12 caracteres
+                </span>
+                <span class="mensaje-error"
+                  *ngIf="tercerosRelacionadosModalFormGroup.controls['codigoPostaloEquivalente'].errors?.['pattern']">
+                  Existen datos incorrectos que no cumplen con el formato esperado
+                </span>
+              </div>
+              }
+            </div>
+          </div>
+      </div>
+
+        <div class="row">
+          <div class="col-md-8 pl-8">
+            <div class="form-group">
+              <label class="form-label" for="calle">Calle*:<span class="bi bi-question-circle-fill"
+                  tooltip="Domicilio,calle,numero interior,numero exterior,lote" placement="top"></span></label>
+              <input type="text" class="form-control" id="calle" formControlName="calle" name="calle"
+                [ngClass]="esValido('calle', tercerosRelacionadosModalFormGroup) ? 'required' : ''" />
+              @if (tercerosRelacionadosModalFormGroup.controls['calle'].invalid &&
+              tercerosRelacionadosModalFormGroup.controls['calle'].touched) {
+              <div class="d-grid">
+                @if (tercerosRelacionadosModalFormGroup.controls['calle'].errors?.['required']) {
+                <span class="mensaje-error">Este campo es obligatorio</span>
+                }
+                @if (tercerosRelacionadosModalFormGroup.controls['calle'].errors?.['pattern']) {
+                <span class="mensaje-error">Existen datos incorrectos que no cumplen con el formato esperado.</span>
+                }
+              </div>
+              }
+            </div>
+          </div>
+                  <div class="col-md-4">
+            <div class="form-group">
+              <label for="numeroExterior" class="form-label">Número exterior:
+              </label>
+              <input type="text" id="numeroExterior" formControlName="numeroExterior" class="form-control"
+                maxlength="55" name="numeroExterior"
+                [ngClass]="esValido('numeroExterior', tercerosRelacionadosModalFormGroup) ? 'required' : ''" />
+              @if (tercerosRelacionadosModalFormGroup.controls['numeroExterior'].invalid &&
+              tercerosRelacionadosModalFormGroup.controls['numeroExterior'].touched) {
+              <div class="d-grid">
+                @if (tercerosRelacionadosModalFormGroup.controls['numeroExterior'].errors?.['pattern']) {
+                <span class="mensaje-error">Existen datos incorrectos que no cumplen con el formato esperado.</span>
+                }
+              </div>
+              }
+            </div>
+        </div>
+        </div>
+        <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="numeroInterior">Número interior:</label>
+            <input class="form-control" type="text" id="numeroInterior" formControlName="numeroInterior" maxlength="55"
+              name="numeroInterior" />
+            @if (tercerosRelacionadosModalFormGroup.controls['numeroInterior'].invalid &&
+            tercerosRelacionadosModalFormGroup.controls['numeroInterior'].touched) {
+            <div class="d-grid">
+              <small class="mensaje-error"
+                *ngIf="tercerosRelacionadosModalFormGroup.controls['numeroInterior'].errors?.['pattern'] && (tercerosRelacionadosModalFormGroup.controls['numeroInterior'].touched || tercerosRelacionadosModalFormGroup.controls['numeroInterior'].dirty)">
+                Existen datos incorrectos que no cumplen con el formato esperado.
+              </small>
+            </div>
+            }
+          </div>
+        </div>
+
+        <div class="col-md-1">
+          <div class="form-group">
+            <label class="form-label" for="lada">Lada:</label>
+            <input class="form-control" type="text" id="lada" formControlName="lada" name="lada" />
+            @if (tercerosRelacionadosModalFormGroup.controls['lada'].invalid &&
+            tercerosRelacionadosModalFormGroup.controls['lada'].touched) {
+            <div class="d-grid">
+              <small class="mensaje-error"
+                *ngIf="tercerosRelacionadosModalFormGroup.controls['lada'].errors?.['pattern'] && (tercerosRelacionadosModalFormGroup.controls['lada'].touched || tercerosRelacionadosModalFormGroup.controls['lada'].dirty)">
+                Existen datos incorrectos que no cumplen con el formato esperado.
+              </small>
+            </div>
+            }
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="form-group">
+            <label class="form-label" for="telefono">Teléfono:</label>
+            <input class="form-control" type="text" id="telefono" formControlName="telefono" name="telefono" />
+            <div *ngIf="esInvalido('telefono')" class="text-danger">
+              <small *ngIf="tercerosRelacionadosModalFormGroup.controls['telefono'].errors?.['pattern']">
+                Existen datos incorrectos que no cumplen con el formato esperado
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="correoElectronico">Correo electrónico:<span
+                class="bi bi-question-circle-fill" tooltip="ejemplo@dominio.com" placement="top"></span></label>
+            <input class="form-control" type="text" id="correoElectronico" formControlName="correoElectronico"
+              name="correoElectronico" />
+            <div *ngIf="esInvalido('correoElectronico')" class="text-danger">
+              <small *ngIf="tercerosRelacionadosModalFormGroup.controls['correoElectronico'].errors?.['pattern']">
+                Por favor, escribe una dirección de correo válida
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+        <!-- campos -->
+        <div class="col-md-3 text-muted text-vertical-align-button">
+          <span>*Campos obligatorios</span>
+        </div>
+
+        <!-- Últimos tres botones -->
+        <div class="row mt-5">
+          <div class="col-md-12 d-flex justify-content-end gap-1">
+            <button type="button" class="btn btn-default" (click)="limpiar(tercerosRelacionadosModalFormGroup)">Limpiar</button>
+            <button type="button" class="btn btn-default" (click)="toggleDivFabricante('')">
+              Cancelar
+            </button>
+            <button type="button" class="btn btn-primary" (click)="submitFabricanteForm(tercerosRelacionadosModalFormGroup)">
+              Guardar
+            </button>
+          </div>
+        </div>
+    </form>
+  </div>
+</app-modal>

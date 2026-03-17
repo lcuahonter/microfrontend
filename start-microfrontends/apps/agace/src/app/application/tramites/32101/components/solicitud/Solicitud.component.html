@@ -1,0 +1,155 @@
+<div class="container">
+  <ng-titulo titulo="Acreditación de infraestructura (etapa pre-operativa)"></ng-titulo>
+  <form [formGroup]="registroForm">
+  <ng-container>
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="tramiteList.catalogos" [label]="tramiteList.labelNombre" [markTouched]="registroForm.get('tipoDeInversion')?.touched??false"
+                [placeholder]="tramiteList.primerOpcion" [required]="true" formControlName="tipoDeInversion" name="tipoDeInversion" id="tipoDeInversion" (change)="setValoresStore(registroForm, 'tipoDeInversion', 'setTipoDeInversion')" [isDisabled]="soloLectura"></app-catalogo-select>
+            </div>
+            <div class="col-md-4">
+                <label for="valorEnPesos" class="form-label">Valor en pesos<span [ngClass]="registroForm.get('valorEnPesos')?.invalid && 
+              registroForm.get('valorEnPesos')?.touched ? 'text-danger' : ''">*</span>:</label>
+                <input class="form-control" [ngClass]="{'is-invalid': isInvalid('valorEnPesos')}" type="text" formControlName="valorEnPesos" name="valorEnPesos"
+                 id="valorEnPesos" maxlength="15" inputmode="numeric" (input)="onNumericInput($event)" 
+                 (change)="setValoresStore(registroForm, 'valorEnPesos', 'setValorEnPesos')" />
+                 <div *ngIf="isInvalid('valorEnPesos')" class="mensaje-error">
+                    Este campo es obligatorio.
+                  </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-8">
+              <label for="tipoDeInversion" class="form-label">Descripción general<span [ngClass]="registroForm.get('descripcionGeneral')?.invalid && 
+              registroForm.get('descripcionGeneral')?.touched ? 'text-danger' : ''">*</span>:</label>
+              <input class="form-control" [ngClass]="{'is-invalid': isInvalid('descripcionGeneral')}" type="text" rows="2" 
+              formControlName="descripcionGeneral" name="descripcionGeneral" id="descripcionGeneral" (change)="setValoresStore(registroForm, 'descripcionGeneral', 'setDescripcionGeneral')" />
+              <div *ngIf="isInvalid('descripcionGeneral')" class="mensaje-error">
+                        Este campo es obligatorio.
+                      </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-4">
+              <app-catalogo-select [catalogo]="aduana.catalogos" [label]="aduana.labelNombre"
+                [placeholder]="aduana.primerOpcion" [required]="true"  formControlName="listaDeDocumentos" name="listaDeDocumentos" 
+                [markTouched]="registroForm.get('listaDeDocumentos')?.touched??false"
+                id="listaDeDocumentos" (change)="onlistaDeDocumentosChange($event)" [isDisabled]="soloLectura"></app-catalogo-select>
+            </div>
+            <div *ngIf="comprobanteVisible" class="col-md-4">
+              <app-catalogo-select [catalogo]="comprobante.catalogos" [label]="comprobante.labelNombre"
+                [placeholder]="comprobante.primerOpcion" [required]="true" formControlName="comprobante"
+                name="comprobante" id="comprobante"></app-catalogo-select>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="mt-5 d-flex justify-content-end">
+              <button type="button" class="btn btn-primary ms-3" (click)="poblarTabla()" [disabled]="soloLectura">Agregar</button>
+            </div>
+          @if (nuevaNotificacion) {
+            <section>
+              <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+                (confirmacionModal)="eliminarPedimento($event)"></lib-notificaciones>
+            </section> 
+          }
+        </div>
+  </ng-container>
+  <ng-container>
+    <h6>Datos de la inversión</h6>
+    <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX" [configuracionTabla]="encabezadoDeTabla" [datos]="configuracionTablaDatos" (filaSeleccionada)="onCheckboxClicked($event)" [disableSeleccionTablaCheckBox]="soloLectura"></app-tabla-dinamica>
+    <div class="col-md-12 mt-5 mb-5 d-flex justify-content-end" *ngIf="configuracionTablaDatos.length > 0">
+      <button type="button" name="modificarMercancias" class="btn btn-default" (click)="modificarFilaSeleccionada()">Modificar</button>
+      <button type="button" name="eliminarMercancias" class="btn btn-danger ms-2" (click)="eliminarFilasSeleccionadas()">Eliminar</button>
+    </div>
+    <div class="row mt-5">
+      <div class="alert alert-info">
+        <label style="font-weight: normal; align-items: flex-start;" class="d-flex">
+          <input style="margin-top: 5px;margin-right: 10px;" type="checkbox" formControlName="manifiesto1"> <p>{{ solicitudEnum.MANIFIESTO_1 }}</p>
+        </label>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="alert alert-info">
+        <label style="font-weight: normal; align-items: flex-start;" class="d-flex">
+          <input style="margin-top: 5px;margin-right: 10px;" type="checkbox" formControlName="manifiesto2"> {{ solicitudEnum.MANIFIESTO_2 }}
+        </label>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="alert alert-info">
+        <label style="font-weight: normal; align-items: flex-start;" class="d-flex">
+          <input style="margin-top: 5px;margin-right: 10px;" type="checkbox" formControlName="manifiesto3"> {{ solicitudEnum.MANIFIESTO_3 }}
+        </label>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container>
+      <ng-titulo titulo="Pago de derecho"></ng-titulo>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="claveDeReferencia" class="form-label">Clave de referencia:</label>        
+        <input class="form-control" [ngClass]="{'is-invalid': isInvalid('claveDeReferencia')}" type="text" formControlName="claveDeReferencia" 
+            name="claveDeReferencia" id="claveDeReferencia"
+          (change)="setValoresStore(registroForm, 'claveDeReferencia', 'setClaveDeReferencia')" />
+      </div>
+      <div class="col-md-6">
+        <label for="numeroDeOperacion" class="form-label">Número de operación:</label>
+        <input class="form-control" [ngClass]="{'is-invalid': isInvalid('numeroDeOperacion')}"
+          type="text" formControlName="numeroDeOperacion" name="numeroDeOperacion" id="numeroDeOperacion" maxlength="30"
+          (input)="onAlphanumericInput($event)" (keypress)="onlyAlphanumeric($event)" 
+          (change)="setValoresStore(registroForm, 'numeroDeOperacion', 'setNumeroDeOperacion')" />
+          <div *ngIf="isInvalid('numeroDeOperacion')" class="mensaje-error">
+            Todos los campos de pago son requeridos
+          </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="cadenaDeLaDependencia" class="form-label">Cadena de la dependencia:</label>
+        <input class="form-control" [ngClass]="{'is-invalid': isInvalid('cadenaDeLaDependencia')}"
+          type="text" formControlName="cadenaDeLaDependencia" name="cadenaDeLaDependencia"
+          id="cadenaDeLaDependencia" (change)="setValoresStore(registroForm, 'cadenaDeLaDependencia', 'setCadenaDeLaDependencia')" />
+      </div>
+      <div class="col-md-6">
+        <app-catalogo-select [catalogo]="banco.catalogos" [label]="banco.labelNombre" [placeholder]="banco.primerOpcion" 
+        formControlName="banco" name="banco" id="banco" [markTouched]="registroForm.get('banco')?.touched??false"
+        [required]="true" (change)="setValoresStore(registroForm, 'banco', 'setBanco')" [isDisabled]="soloLectura"></app-catalogo-select>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label for="llaveDePago" class="form-label">Llave de pago:</label>        
+        <input class="form-control" [ngClass]="{'is-invalid': isInvalid('llaveDePago')}" 
+        type="text" formControlName="llaveDePago" name="llaveDePago" id="llaveDePago" maxlength="20"
+        (input)="onAlphanumericInput($event)" (keypress)="onlyAlphanumeric($event)" 
+        (change)="setValoresStore(registroForm, 'llaveDePago', 'setLlaveDePago')" />
+        <div *ngIf="isInvalid('llaveDePago')" class="mensaje-error">
+          Todos los campos de pago son requeridos
+        </div>
+      </div>
+      <div class="col-md-4 input-fecha-wrapper" [ngClass]="{'is-invalid': isInvalid('fechaInicialInput')}">
+        <input-fecha [datos]="fechaDePago" (valorCambiado)="cambioFechaIngreso($event)" [setFecha]="registroForm.get('fechaInicialInput')?.value" 
+        required="fechaDePago.required" [isDisabled]="soloLectura"></input-fecha>
+        <div *ngIf="registroForm.get('fechaInicialInput')?.hasError('fechaFutura') && (registroForm.get('fechaInicialInput')?.touched || registroForm.get('fechaInicialInput')?.dirty)" class="mensaje-error">
+          La fecha de pago debe ser menor o igual a la fecha actual.
+        </div>
+        <div *ngIf="isInvalid('fechaInicialInput') && !registroForm.get('fechaInicialInput')?.hasError('fechaFutura')" class="mensaje-error">
+          Todos los campos de pago son requeridos
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label for="importeDePago" class="form-label">Importe de pago:</label>
+        <input class="form-control" [ngClass]="{'is-invalid': isInvalid('importeDePago')}" type="text" formControlName="importeDePago" name="importeDePago" id="importeDePago" (change)="setValoresStore(registroForm, 'importeDePago', 'setImporteDePago')" />
+      </div>
+    </div>
+    <div class="col-md-12 text-end mt-3">
+      <button class="btn btn-danger" (click)="borrar()" [disabled]="soloLectura">Borrar datos del pago</button>
+    </div>  
+      
+    </ng-container>
+  
+  </form>
+
+  <!-- Modal para modificar fila -->
+  <app-componente-de-actualizacion></app-componente-de-actualizacion>
+</div>

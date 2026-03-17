@@ -1,0 +1,58 @@
+<div class="container">
+  <form [formGroup]="formDelTramite">
+    <ng-titulo titulo="Datos del trámite a realizar"> </ng-titulo>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="solicitud">Solicitud*:</label>
+          <app-input-radio
+            [radioOptions]="solicitude"
+            [selectedValue]="defaultSelect"
+            [isRequired]="true"
+            (valueChange)="onValueChange($event)"
+            [layout]="'vertical'"
+            formControlName="solicitud"
+            (change)="setValoresStore(formDelTramite,'solicitud', 'setSolicitude')"
+          ></app-input-radio>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div >
+          <label for="regimen" class="form-label">Régimen al que se destinará la mercancía*:</label>
+          <select class="form-control form-select" formControlName="regimen" (change)="setValoresStore(formDelTramite,'regimen', 'setRegimen');obtenerClaficacionRegimen(formDelTramite)">
+            <option [ngValue]="null">Seleccione una opción</option>
+            <option *ngFor="let reg of catalogosArray[0]" [value]="reg.clave">
+              {{ reg.descripcion }}
+            </option>
+          </select>
+         
+          @if (formDelTramite.controls['regimen'].invalid && formDelTramite.controls['regimen'].touched) {
+            <div class="text-danger">
+              @if (formDelTramite.controls['regimen'].errors?.['required']) {
+                <small>Debe seleccionar una opción.</small>
+              }
+            
+            </div>
+          }         
+        </div>
+        <div >
+          <label for="clasificacionRegimen" class="form-label">Clasificación del régimen*:</label>
+          <select class="form-control form-select" formControlName="clasificacionRegimen" (change)="setValoresStore(formDelTramite,'clasificacionRegimen', 'setClasificacionRegimen')">
+            <option [ngValue]="null">Seleccione una opción</option>
+            <option *ngFor="let clasif of catalogosArray[1]" [value]="clasif.clave">
+              {{ clasif.descripcion }}
+            </option>
+          </select>
+          @if (formDelTramite.controls['clasificacionRegimen'].invalid && formDelTramite.controls['clasificacionRegimen'].touched) {
+            <div class="text-danger">
+              @if (formDelTramite.controls['clasificacionRegimen'].errors?.['required']) {
+                <small>Debe seleccionar una opción.</small>
+              }
+            
+            </div>
+          }         
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,98 @@
+<!---FORM 1--->
+<div class="mt-5">
+  <formas-dinamicas
+    [forma]="form"
+    [formularioDatos]="datosDelTramite"
+    [estado]="certiRegistroState"
+    [soloLectura]="soloLectura"
+    (emitirCambioDeValor)="establecerCambioDeValor($event)"
+  ></formas-dinamicas>
+</div>
+<!---FORM 2--->
+<formas-dinamicas
+  [formularioTitulo]="'Mercancías'"
+  [forma]="formDatosMercancias"
+  [formularioDatos]="mercancias"
+  [estado]="certiRegistroState"
+  [soloLectura]="soloLectura"
+  (emitirCambioDeValor)="establecerCambioDeValor($event)"
+></formas-dinamicas>
+
+<div class="row mt-5">
+  <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX" [configuracionTabla]="configuracionTabla" [datos]="detallesDelProducto" [disableSeleccionTablaCheckBox]="soloLectura" (listaDeFilaSeleccionada)="valorDeAlternancia($event)"></app-tabla-dinamica>
+</div>
+
+<div class="row">
+    <div class="col-md-6"></div>
+    <div class="col-md-6"> 
+        <div class="btn-group d-flex align-items-rigth">
+        <button type="button" class="btn btn-default ms-2" [disabled]="soloLectura" data-bs-toggle="modal" data-bs-target="#modalAgregarProductos" (click)="modificarModal()">Modificar</button>
+        <button type="button" class="btn btn-default ms-2" [disabled]="soloLectura" (click)="eliminarProducto()">Eliminar</button>
+        <button type="button" class="btn btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#modalAgregarProductos" (click)="abrirModal()" [disabled]="soloLectura">
+            Agregar
+        </button>
+        
+        </div>
+    </div>
+</div>
+
+<!---FORM 2--->
+<formas-dinamicas
+  formularioTitulo="Datos del donante"
+  [forma]="formDatosDelDonante"
+  [formularioDatos]="datosDelDonante"
+  [estado]="certiRegistroState"
+  [soloLectura]="soloLectura"
+  (emitirCambioDeValor)="establecerCambioDeValor($event)"
+></formas-dinamicas>
+<!---FORM 3--->
+<formas-dinamicas
+  formularioTitulo="Domicilio fiscal"
+  [forma]="formDomicilioFiscal"
+  [formularioDatos]="domicilioFiscal"
+  [estado]="certiRegistroState"
+  [soloLectura]="soloLectura"
+  (emitirCambioDeValor)="establecerCambioDeValor($event)"
+></formas-dinamicas>
+
+<div class="modal fade" id="modalAgregarProductos" tabindex="-1" aria-labelledby="modalAgregarProductosLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-body">
+        <ng-alert [CONTENIDO]="DATOS_ALERT"></ng-alert>
+        <!---FORM 4--->
+        <formas-dinamicas
+          formularioTitulo="Datos de la mercancía"
+          [forma]="formAgregarProductos"
+          [formularioDatos]="productos"
+          [estado]="certiRegistroState"
+          [soloLectura]="soloLectura"
+          (emitirCambioDeValor)="establecerCambioDeValor($event)"
+        ></formas-dinamicas>
+      </div>
+      <div class="text-end mt-5 mb-5">
+        <button type="button" class="btn btn-danger me-3" (click)="limpiarProductos()" [disabled]="soloLectura">Limpiar</button>
+        <button type="button" class="btn btn-default me-3" data-bs-dismiss="modal" #closeModal [disabled]="soloLectura">Cancelar</button>
+        <button type="button" class="btn btn-primary me-3" (click)="agregarProductos()" [disabled]="soloLectura">Agregar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalConfirmacion" tabindex="-1" aria-labelledby="modalConfirmacionLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+      </div>
+      <div class="modal-body">
+        <p>La mercancía fue agregada correctamente</p>
+        <div class="modal-footer custom-footer">
+          <button type="button" class="btn btn-default" data-bs-dismiss="modal" #closeModal [disabled]="soloLectura">Acceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  
+  

@@ -1,0 +1,137 @@
+<div class="container">
+  <ng-titulo titulo="Pago de derechos" />
+
+  <form [formGroup]="pagoDerechosForm">
+    <div class="form">
+      <div class="row">
+        <div class="col-md-4">
+          <label class="form-label" for="exentoDePago">Exento de pago*:</label>
+          <app-input-radio
+            [radioOptions]="exentoDeBotonDeRadio"
+            [isRequired]="true"
+            [layout]="'horizontal'"
+            formControlName="exentoDePago"
+            (valueChange)="
+              actualizarExento($event)
+            "
+          ></app-input-radio>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <app-catalogo-select
+            [catalogo]="sanidadService.justificacionCatalogo"
+            formControlName="justificacion"
+            [label]="'Justificacion'"
+            [required]="true"
+            [isDisabled]="disableJustificacion"
+            name="justificacion"
+            (change)="setValoresStore('justificacion', 'setJustificacion')"
+          ></app-catalogo-select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="clave">Clave de referencia*:</label>
+            <input
+              class="form-control"
+              id="clave"
+              type="number"
+              formControlName="clave"
+              (change)="setValoresStore('clave', 'setClave')"
+            />
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="dependencia"
+              >Cadena de la dependencia*:</label
+            >
+            <input
+              class="form-control"
+              id="dependencia"
+              type="text"
+              formControlName="dependencia"
+              (change)="
+                setValoresStore(
+                  'dependencia',
+                  'setDependencia'
+                )
+              "
+            />
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <app-catalogo-select
+              [catalogo]="sanidadService.banco"
+              formControlName="banco"
+              [label]="'Banco'"
+              [required]="true"
+              [isDisabled]="disableBanco"
+              name="banco"
+              (change)="setValoresStore('banco', 'setBanco')"
+            ></app-catalogo-select>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="llave">Llave de pago*:</label>
+            <input
+              class="form-control"
+              id="llave"
+              type="text"
+              formControlName="llave"
+              (change)="setValoresStore('llave', 'setLlave')"
+            />
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+             <input-fecha
+                [datos]="INPUT_FECHA_CONFIG" name="fecha"
+                [setFecha]="pagoDerechosForm.get('fecha')?.value"
+                (valorCambiado)="setValoresStore('fecha', 'setFecha')"
+                [isDisabled]="esFormularioSoloLectura || disableFecha"
+              ></input-fecha>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="importe">Importe de pago*:</label>
+            <input
+              class="form-control"
+              id="importe"
+              type="number"
+              formControlName="importe"
+              (change)="
+                setValoresStore('importe', 'setImporte')
+              "
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-5">
+      <div class="col-md-12">
+        <div class="pull-right">
+          <button type="button" class="btn btn-primary ms-2" 
+            [disabled]="esFormularioSoloLectura ? true : false"
+            (click)="borrarDatosPago()">
+            Borrar datos del pago
+          </button>
+        </div>
+      </div>
+    </div>
+
+    </div>
+  </form>
+</div>

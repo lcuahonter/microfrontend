@@ -1,0 +1,90 @@
+<div class="container py-4">
+  <div class="d-flex align-items-center gap-2 mb-3">
+    <a href="javascript:void(0)" (click)="onCancelar()" class="text-decoration-none text-primary fw-bold">Antecesor</a>
+    <span class="text-muted">|</span>
+    <span class="text-secondary">Activo</span>
+  </div>
+  <ng-titulo [titulo]="'Correlación (disgregar) Fracción Arancelaria'"></ng-titulo>
+  <div class="card mt-4 shadow-sm border-0 bg-light">
+    <div class="card-body p-4">
+      <form [formGroup]="form">
+        <div class="row align-items-center mb-4">
+          <div class="col-md-auto">
+            <label class="form-label mb-0">Tipo de Operación:</label>
+          </div>
+          <div class="col-md-3">
+            <select class="form-control form-select" formControlName="tipoOperacion">
+              <option value="importacion">Importación</option>
+              <option value="exportacion">Exportación</option>
+            </select>
+          </div>
+          <div class="col-md-auto ms-4">
+            <label class="form-label mb-0">Capítulo, Partida, Subpartida:</label>
+          </div>
+          <div class="col-md-3">
+            <input type="text" class="form-control" formControlName="busqueda">
+          </div>
+          <div class="col-md-auto">
+            <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm" (click)="onBuscar()">
+              Buscar
+            </button>
+          </div>
+        </div>
+        <fieldset class="border rounded p-3 bg-white shadow-sm">
+          <legend class="float-none w-auto px-3 fs-4 fw-bold">Seleccionar Fracción Arancelaria</legend>
+          <div class="tree-container overflow-auto p-2" style="max-height: 400px;">
+            @if (isLoading) {
+              <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Cargando...</span>
+                </div>
+              </div>
+            } @else if (nodes.length > 0) {
+              <div class="ms-2">
+                @for (node of nodes; track node.clave) {
+                  <app-tree-node-item 
+                    [node]="node" 
+                    [selectedNodes]="selectedNodes"
+                    (nodeToggled)="toggleExpand($event)"
+                    (nodeSelected)="onSelectNode($event)">
+                  </app-tree-node-item>
+                }
+              </div>
+            } @else {
+              <div class="text-center py-4 text-muted fst-italic">
+                No hay resultados para mostrar.
+              </div>
+            }
+          </div>
+        </fieldset>
+        <div class="d-flex justify-content-center gap-3 mt-5">
+          <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm" (click)="onDisgregarFraccion()">
+            Disgregar Fracción
+          </button>
+          <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm" (click)="onDisgregarCargaMasiva()">
+            Disgregar Carga Masiva
+          </button>
+          <button type="button" class="btn btn-default rounded-pill px-4 shadow-sm border" (click)="onCancelar()">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="modalCargaMasiva" tabindex="-1" #modalCarga>
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content overflow-hidden rounded-4 shadow border-0">
+      <div class="modal-header border-0 bg-dark">
+        <h5 class="modal-title fw-bold text-white">Carga Masiva Disgregar Fracción Arancelaria TIGIE</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body p-4 text-center">
+        <div class="border rounded p-4 bg-white">
+          <h6 class="text-muted border-bottom pb-2 mb-4 text-start">Disgregar Fracción Arancelaria</h6>
+          <app-cargar-archivo-menus titulo="Seleccione Archivo a Procesar:" (cancel)="closeModal()"></app-cargar-archivo-menus>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,82 @@
+<ng-titulo titulo="Datos del establecimiento" />
+<form [formGroup]="datosDelForm" *ngIf="datosDelForm">
+  <div class="text-end">
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregar"
+      (click)="abrirModal()" [disabled]="esFormularioSoloLectura ? true : false">Seleccionar establecimiento</button>
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="form-label" for="rfcdel">RFC del responsable sanitario:</label>
+        <input class="form-control" id="rfcDel" formControlName="rfcDel" placeholder="" type="text" [maxlength]="13"
+      (change)="setValoresStore(datosDelForm,'rfcDel', 'setRfcDel')">
+      </div>
+      <div class="d-grid">
+        <div *ngIf="datosDelForm.controls['rfcDel'].invalid && datosDelForm.controls['rfcDel'].touched">
+          <span *ngIf="datosDelForm.controls['rfcDel'].errors?.['maxlength']" class="mensaje-error">
+            El texto excede el límite de caracteres permitido.
+          </span>
+          <span *ngIf="datosDelForm.controls['rfcDel'].errors?.['pattern']" class="mensaje-error">
+          El RFC no tiene un formato valido
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="denominacionRazonSocial">Denominación o razón social<span [ngClass]="{'tiene-error': datosDelForm.controls['denominacionRazonSocial'].invalid && datosDelForm.controls['denominacionRazonSocial'].touched || (mostrarErrores.denominacionRazonSocial &&  datosDelForm.controls['denominacionRazonSocial'].value === '')}">*</span>:</label>
+          <input class="form-control" id="denominacionRazonSocial" placeholder="" type="text" [maxlength]="100" size="75"
+            [ngClass]="{'tiene-invalido': datosDelForm.controls['denominacionRazonSocial'].invalid && datosDelForm.controls['denominacionRazonSocial'].touched}"
+        formControlName="denominacionRazonSocial"
+        (change)="setValoresStore(datosDelForm,'denominacionRazonSocial', 'setDenominacionRazonSocial')">
+        </div>
+       <div class="d-grid">
+    <div *ngIf="datosDelForm.controls['denominacionRazonSocial'].invalid && datosDelForm.controls['denominacionRazonSocial'].touched || (mostrarErrores.denominacionRazonSocial &&  datosDelForm.controls['denominacionRazonSocial'].value === '')">
+      <span *ngIf="datosDelForm.controls['denominacionRazonSocial'].errors?.['required'] || mostrarErrores.denominacionRazonSocial" class="mensaje-error">
+        Este campo es obligatorio.
+      </span>
+      <span *ngIf="datosDelForm.controls['denominacionRazonSocial'].errors?.['maxlength']" class="mensaje-error">
+        El texto excede el límite de caracteres permitido.
+      </span>
+      <span *ngIf="datosDelForm.controls['denominacionRazonSocial'].errors?.['pattern']" class="mensaje-error">
+       El valor capturado no es válido.
+      </span>
+    </div>
+  </div>
+      </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="form-label" for="correoElectronico">Correo electrónico<span [ngClass]="{'tiene-error': datosDelForm.controls['correoElectronico'].invalid && datosDelForm.controls['correoElectronico'].touched || mostrarErrores.correoElectronico}">*</span>:
+            <span class="bi bi-question-circle-fill" tooltip="ejemplo@dominio.com" placement="top"></span>
+        </label>
+        <input class="form-control" id="correoElectronico" [maxlength]="320" size="29"
+      formControlName="correoElectronico" placeholder="" type="text"
+      [ngClass]="{'tiene-invalido': datosDelForm.controls['correoElectronico'].invalid && datosDelForm.controls['correoElectronico'].touched}"
+      (change)="setValoresStore(datosDelForm,'correoElectronico', 'setCorreoElectronico')">
+      </div>
+      <div class="d-grid">
+        <div *ngIf="datosDelForm.controls['correoElectronico'].invalid && datosDelForm.controls['correoElectronico'].touched || ( mostrarErrores.correoElectronico &&  datosDelForm.controls['correoElectronico'].value === '')">
+          <span *ngIf="datosDelForm.controls['correoElectronico'].errors?.['required'] || mostrarErrores.correoElectronico" class="mensaje-error">
+            Este campo es obligatorio.
+          </span>
+          <span *ngIf="datosDelForm.controls['correoElectronico'].errors?.['maxlength']" class="mensaje-error">
+El valor Ingresado no es una dirección válida de correo electrónico
+          </span>
+            <span *ngIf="datosDelForm.controls['correoElectronico'].errors?.['pattern']" class="mensaje-error">
+          El valor Ingresado no es una dirección válida de correo electrónico
+            </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+
+@if (nuevaNotificacion) {
+  <section>
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion" (confirmacionModal)="eliminarPedimento($event)">
+    </lib-notificaciones>
+  </section>
+  }

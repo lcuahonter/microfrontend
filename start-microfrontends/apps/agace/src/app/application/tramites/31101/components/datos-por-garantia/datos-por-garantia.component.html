@@ -1,0 +1,207 @@
+<div class="container">
+  @if(solicitud31101State.tipoDeGarantia === 1){
+  <form [formGroup]="polizaFianzaForm">
+    <div class="row">
+      <div class="col-md-12">
+        <ng-titulo titulo="Datos de la póliza de fianza" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-8">
+        <app-catalogo-select
+          id="cveGenerica1Carta"
+          [catalogo]="institucionFianzaCatalogo.catalogos"
+          [label]="institucionFianzaCatalogo.labelNombre"
+          [placeholder]="institucionFianzaCatalogo.primerOpcion"
+          [required]="institucionFianzaCatalogo.required"
+          formControlName="polizaFianzaActual"
+          [isDisabled]="esFormularioSoloLectura"
+          (selectionChange)="seleccionaInstitucionFianza($event)"
+        >
+        </app-catalogo-select>
+      </div>
+      <div class="col-md-4"></div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="descripcionGenerica1Fianza"
+            >Número de folio:</label
+          >
+          <input
+            class="form-control"
+            type="text"
+            size="80"
+            id="descripcionGenerica1Fianza"
+            formControlName="folioFianza"
+            (change)="seleccionaNumeroFolio($event)"
+          />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label" for="cveGenerica1fianza"
+            >RFC de la institución de fianza:</label
+          >
+          <input
+            class="form-control"
+            type="text"
+            id="cveGenerica1fianza"
+            size="80"
+            formControlName="rfcAfianzadora"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <input-fecha
+          class="width"
+          [isDisabled]="esFormularioSoloLectura"
+          [setFecha]="polizaFianzaForm.get('fechaExpedicionFianza')?.value"
+          [datos]="fianzaFechaDeExpedicion"
+        ></input-fecha>
+      </div>
+      <div class="col-md-4">
+        <input-fecha
+          class="width"
+          [isDisabled]="esFormularioSoloLectura"
+          [setFecha]="polizaFianzaForm.get('fecInicioVigenciaFianza')?.value"
+          [datos]="fianzaFechaInicioVigencia"
+        ></input-fecha>
+      </div>
+      <div class="col-md-4">
+        <input-fecha
+          class="width"
+          [isDisabled]="esFormularioSoloLectura"
+          [setFecha]="polizaFianzaForm.get('fecFinVigenciaFianza')?.value"
+          [datos]="fianzaFechaFinVigencia"
+        ></input-fecha>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="importeGenerico1Fianza"
+            >Importe total en moneda nacional que ampara la póliza de fianza:
+            <span
+              tooltip="Importe total en moneda nacional que ampara la póliza de fianza"
+              ><i class="bi bi-question-circle-fill"></i></span
+          ></label>
+          <input
+            class="form-control"
+            type="text"
+            id="importeGenerico1Fianza"
+            size="30"
+            formControlName="fianzaImporteTotal"
+            (change)="seleccionaFianzaImporteTotal($event)"
+          />
+        </div>
+      </div>
+      <div class="col-md-4"></div>
+    </div>
+  </form>
+  } @if(solicitud31101State.tipoDeGarantia === 2){
+  <form [formGroup]="polizaCreditoForm">
+    <div class="row">
+      <div class="col-md-12">
+        <ng-titulo titulo="Datos de la carta de crédito" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8">
+        <app-catalogo-select
+          id="cveGenerica1Carta"
+          [catalogo]="nombreInstitucionCatalogo.catalogos"
+          [label]="nombreInstitucionCatalogo.labelNombre"
+          [placeholder]="nombreInstitucionCatalogo.primerOpcion"
+          [required]="nombreInstitucionCatalogo.required"
+          formControlName="polizaDeFianzaActual"
+          [isDisabled]="esFormularioSoloLectura"
+          (selectionChange)="seleccionaNombreInstitucion($event)"
+        >
+        </app-catalogo-select>
+      </div>
+      <div class="col-md-4"></div>
+    </div>
+    <div class="row">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="descripcionGenerica1Carta"
+            >Número de folio*:</label
+          >
+          <input
+            class="form-control"
+            type="text"
+            size="80"
+            id="descripcionGenerica1Carta"
+            formControlName="numeroFolio"
+          />
+        </div>
+      </div>
+      <div class="col-md-4"></div>
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="cveGenerica1Carta"
+            >RFC de la institucion de credito*:</label
+          >
+          <input
+            class="form-control"
+            type="text"
+            id="cveGenerica1Carta"
+            size="80"
+            formControlName="rfcInstitucion"
+          />
+        </div>
+      </div>
+      <div class="col-md-4"></div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <input-fecha
+          class="width"
+          [isDisabled]="esFormularioSoloLectura"
+          [setFecha]="polizaCreditoForm.get('fechaInicioVigencia')?.value"
+          [datos]="configuracionFechaDeExpedicion"
+        ></input-fecha>
+      </div>
+      <div class="col-md-4">
+        <input-fecha
+          class="width"
+          [isDisabled]="esFormularioSoloLectura"
+          [setFecha]="polizaCreditoForm.get('fechaFinVigencia')?.value"
+          [datos]="configuracionFechaInicioVigencia"
+        ></input-fecha>
+      </div>
+      <div class="col-md-4">
+        <input-fecha
+          class="width"
+          [isDisabled]="esFormularioSoloLectura"
+          [setFecha]="polizaCreditoForm.get('fechaFinVigencia')?.value"
+          [datos]="configuracionFechaFinVigencia"
+        ></input-fecha>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="form-label" for="importeGenerico1Carta"
+            >Importe total en moneda nacional*:</label
+          >
+          <input
+            class="form-control"
+            type="text"
+            id="importeGenerico1Carta"
+            size="30"
+            formControlName="importeTotal"
+          />
+        </div>
+      </div>
+      <div class="col-md-4"></div>
+    </div>
+  </form>
+  }
+</div>

@@ -1,0 +1,91 @@
+<div class="page page-funcionario">
+    <header class="text-center py-5">
+        <h1 class="fw-bold text-primary">Bienvenido</h1>
+        <p class="text-secondary text-primary">Lorem ipsum dolor sit amet consectetur. Fringilla egestas.</p>
+    </header>
+    <div class="container">
+        <div class="bg-primary"></div>
+        <div class="col-md-12">
+            <div class="row">
+                <h2 class="fw-bold my-5 titulo-tasks">Bandeja de solicitudes</h2>
+            </div>
+        </div>
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="d-flex bg-light rounded m-xxl-3 p-4">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-2"> <strong class="text-title">Solicitante: </strong></div>
+                            <div class="col-md-4"><label class="text-title font-weight-titulo">INTEGRADORA DE
+                                    URBANIZACIONES SIGNUM, S DE LR DE CV</label></div>
+                            <div class="col-md-2"> <strong class="text-title">RFC:</strong></div>
+                            <div class="col-md-4"><label class="text-title font-weight-titulo">AAL0409235E6</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="d-flex justify-content-between align-items-center" (click)="mostrar_colapsable()">
+                    <span></span>
+                    <div class="col-md-12 text-end m-4">
+                        <button class="btn btn-link text-decoration-none text-primary" data-bs-toggle="collapse"
+                            aria-expanded="false">
+                            Búsqueda @if(colapsable){<span class="bi bi-chevron-up"></span>}@if(!colapsable){<span
+                                class="bi bi-chevron-down"></span>}
+                        </button>
+                        <div class="col-md-12">
+                            <hr>
+                        </div>
+                    </div>
+                </div>
+                @if(colapsable){
+                <div class="panel-collapse collapse in mx-5" id="panel-01">
+                    <form [formGroup]="FormBusqueda">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label for="idSolicitud" class="form-label font-weight-titulo text-title">Id
+                                    Solicitud</label>
+                                <input type="text" name="idSolicitud" id="idSolicitud" formControlName="idSolicitud"
+                                    class="form-control font-weight-titulo text-title" placeholder="Id Solicitud">
+                            </div>
+                            <div class="col-md-4">
+                                <input-fecha class="font-weight-titulo text-title" [datos]="fechaInicioInput"
+                                    (valorCambiado)="cambioFechaInicioFucion($event)"></input-fecha>
+                            </div>
+                            <div class="col-md-4">
+                                <input-fecha class="font-weight-titulo text-title" [datos]="fechaFinalInput"
+                                    (valorCambiado)="cambioFechaFinalFuncion($event)"></input-fecha>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="d-flex justify-content-end m-lg-5">
+                        <button type="button" class="btn btn-default ms-2 btn-size-1" (click)="resetFiltros()">Borrar</button>
+                        <button class="btn  btn-primary ms-2 btn-size-1 color-back" type="button"
+                            (click)="buscarSolicitudes()">Ingresar</button>
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="row">
+                <h2 class="fw-bold my-5 titulo-tasks">Lista de solicitudes</h2>
+            </div>
+        </div>
+        <div class="card shadow-sm table-responsive">
+            <app-tabla-dinamica [configuracionTabla]="configurarTabla" [datos]="listaSolicitudesPaginadas"
+                [acciones]="accionesServcios">
+            </app-tabla-dinamica>
+        </div>
+        <div class="d-flex justify-content-center">
+            <app-table-pagination 
+            [totalItems]="totalItems" 
+            [itemsPerPage]="itemsPerPage" 
+            [currentPage]="currentPage"
+            (pageChange)="cambioDePagina($event)" 
+            (itemsPerPageChange)="elementosPorCambioDePagina($event)">
+            </app-table-pagination>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,348 @@
+<div class="container">
+    <form [formGroup]="solicitudForm" id="formSolicitud">
+        <ng-titulo titulo="Ingresar por:" />
+        <ng-container>
+            <div class="row tipo-busqueda-radio">
+                <div class="col-md-12">
+                    <div class="radio-row">
+                        <div class="horizontal">
+                            <input type="radio" formControlName="tipoBusqueda" id="idRadioContenedor"
+                                value="Contenedor" [attr.disabled]="radioContenedor ? true : null">
+                            <span class="etiqueta-de-radio fw-bold">Contenedor</span>
+                        </div>
+
+                        <div class="horizontal">
+                            <input type="radio" formControlName="tipoBusqueda" id="idRadioManifiesto"
+                                value="No. de Manifiesto" [attr.disabled]="radioManifesto ? true : null">
+                            <span class="etiqueta-de-radio fw-bold">No. de Manifiesto</span>
+                        </div>
+
+                        <div class="horizontal">
+                            <input type="radio" formControlName="tipoBusqueda" id="idRedioExcel" value="Archivo CSV"
+                                [attr.disabled]="radioArchivoCsv ? true : null">
+                            <span class="etiqueta-de-radio fw-bold">Archivo CSV</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="mostrarSeccionAduanaaFecha">
+            <div id="seccionAduanaaFecha">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <ng-titulo titulo="Datos generales" />
+                        <div class="form-group" [ngClass]="{'has-error': esInvalido('aduana')}">
+                            <app-catalogo-select [catalogo]="aduanaList.catalogos" [label]="aduana.labelNombre"
+                            [placeholder]="aduana.primerOpcion" [required]="true" formControlName="aduana"
+                            (change)="setValoresStore(solicitudForm,'aduana', 'setAduana')"
+                            [isDisabled]="soloLectura" [markTouched]="solicitudForm.controls['aduana'].touched"></app-catalogo-select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group datepicker-group" [ngClass]="{'has-error': esInvalido('fechaIngreso')}">
+                            <div class="input-fecha-wrapper" [ngClass]="{'is-invalid': esInvalido('fechaIngreso')}"
+                                (click)="onDateFieldInteraction('fechaIngreso')">
+                                <input-fecha [datos]="fechaInicioInput" (valorCambiado)="cambioFechaIngreso($event)"
+                                [isDisabled]="soloLectura" required="fechaInicioInput.required"
+                                [setFecha]="solicitudForm.get('fechaIngreso')?.value"
+                                    [ngClass]="{'is-invalid': esInvalido('fechaIngreso')}"></input-fecha>
+                            </div>
+                            <div *ngIf="esInvalido('fechaIngreso')" class="text-danger">
+                                <small *ngIf="solicitudForm.controls['fechaIngreso'].errors?.['required']">
+                                    Este campo es obligatorio.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br><br>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="mostrarSeccionContenedor">
+            <div id="seccionContenedor">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3>Datos del equipo</h3>
+                        <hr class="red">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="form-group" [ngClass]="{'has-error': esInvalido('inicialesContenedor')}">
+                            <label for="inicialesContenedor">Iniciales del equipo<span class="require">*</span>:</label>
+                            <input type="text" formControlName="inicialesContenedor" id="inicialesContenedor"
+                                maxlength="10" class="form-control"
+                                [ngClass]="{'is-invalid': esInvalido('inicialesContenedor')}"
+                                (blur)="onFieldBlur('inicialesContenedor')">
+                            <div *ngIf="esInvalido('inicialesContenedor')" class="text-danger">
+                                <small *ngIf="solicitudForm.controls['inicialesContenedor'].errors?.['required']">
+                                    Este campo es obligatorio.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group" [ngClass]="{'has-error': esInvalido('numeroContenedor')}">
+                            <label for="numeroContenedor">Número de equipo<span class="require">*</span>:</label>
+                            <input type="text" formControlName="numeroContenedor" id="numeroContenedor" maxlength="15"
+                                class="form-control" [ngClass]="{'is-invalid': esInvalido('numeroContenedor')}"
+                                (blur)="onFieldBlur('numeroContenedor')">
+                            <div *ngIf="esInvalido('numeroContenedor')" class="text-danger">
+                                <small *ngIf="solicitudForm.controls['numeroContenedor'].errors?.['required']">
+                                    Este campo es obligatorio.
+                                </small>
+                                <small *ngIf="solicitudForm.get('numeroContenedor')?.errors?.['minlength']"
+                                    class="d-block">
+                                    Por favor, no escribas menos de 6 caracteres
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="digitoDeControl">Dígito verificador:</label>
+                            <input type="text" formControlName="digitoDeControl" id="digitoDeControl" maxlength="1"
+                                class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 menu-desplegable">
+                        <div class="form-group" [ngClass]="{'has-error': esInvalido('contenedores')}">
+                            <app-catalogo-select [catalogo]="contenedores.catalogos" [label]="contenedores.labelNombre"
+                            [placeholder]="aduana.primerOpcion" [required]="true" formControlName="contenedores"
+                            (change)="setValoresStore(solicitudForm,'contenedores', 'setContenedores')"
+                            [isDisabled]="soloLectura" [markTouched]="solicitudForm.controls['contenedores'].touched"></app-catalogo-select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group pull-right">
+                            <button type="button" class="btn btn-default" (click)="limpiarCampos()"
+                                [disabled]="soloLectura">Limpiar</button>
+                            <button type="button" class="btn btn-primary ms-2" (click)="validarDigitoVerificador()"
+                                [disabled]="soloLectura">Agregar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="mostrarSeccionNoManifiesto">
+            <div id="seccionNoManifiesto">
+                <div class="row">
+                    <div class="col-md-12">
+                        <ng-titulo titulo="Ingresar por manifiesto" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group" [ngClass]="{'has-error': esInvalido('menuDesplegable')}">
+                            <app-catalogo-select [catalogo]="catalogoList" [label]="transporteList.labelNombre"
+                            [placeholder]="transporteList.primerOpcion" formControlName="menuDesplegable"
+                            (change)="setValoresStore(solicitudForm,'menuDesplegable', 'setMenuDesplegable')"
+                            [isDisabled]="soloLectura" [required]="true"></app-catalogo-select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="numeroManifiesta">No. Manifiesto<span class="require">*</span>:</label>
+                            <input type="text" formControlName="numeroManifiesta" id="numeroManifiesta" maxlength="50"
+                                class="form-control" [ngClass]="{'is-invalid': esInvalido('numeroManifiesta')}"
+                                (change)="setValoresStore(solicitudForm,'numeroManifiesta', 'setNumeroManifiesta')">
+                            <div *ngIf="esInvalido('numeroManifiesta')" class="text-danger">
+                                <small *ngIf="solicitudForm.controls['numeroManifiesta'].errors?.['required']">
+                                    Este campo es obligatorio.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group pull-right">
+                            <button type="button" class="btn btn-primary" (click)="enviarManifiesto()"
+                                [disabled]="soloLectura">Buscar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="mensaje" class="margin-top"
+                *ngIf="!solicitud11201State?.tipoBusqueda || solicitud11201State?.tipoBusqueda === 'No. de Manifiesto'">
+                <ng-alert class="text-align" [CONTENIDO]="TEXTOS.ADVERTENCIA"></ng-alert>
+                <div class="col-md-12" id="IdGridContenedoresITC">
+                    <div class="table-responsive">
+                        <div class="innercontainer">
+                            <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX"
+                                [disableSeleccionTablaCheckBox]="soloLectura"
+                                [configuracionTabla]="encabezadoDeTablaManifiesto"
+                                [datos]="datosTablaManifest"></app-tabla-dinamica>
+                        </div>
+                    </div>
+                    <div align="center" id="paginGridContenedoresITC">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination d-flex justify-content-center">
+                                <li class="page-item "><a class="page-link width" href="Javascript:;">1</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="mostrarAdjuntarArchivo">
+            <div id="tabs">
+                <div id="adjuntarArchivo">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <ng-titulo titulo="Datos generales" />
+                            <div class="form-group" [ngClass]="{'has-error': esInvalido('aduanaMenuDesplegable')}">
+                                <app-catalogo-select [catalogo]="aduanaList.catalogos" [label]="aduana.labelNombre"
+                                    [placeholder]="aduana.primerOpcion" [required]="true"
+                                    formControlName="aduanaMenuDesplegable"
+                                    (change)="setValoresStore(solicitudForm,'aduanaMenuDesplegable', 'setAduanaMenuDesplegable')"
+                                    [isDisabled]="soloLectura"
+                                    [markTouched]="solicitudForm.controls['aduanaMenuDesplegable'].touched"></app-catalogo-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group datepicker-group" [ngClass]="{'has-error': esInvalido('fechaDeIngreso')}">
+                                <div class="input-fecha-wrapper" [ngClass]="{'is-invalid': esInvalido('fechaDeIngreso')}"
+                                    (click)="onDateFieldInteraction('fechaDeIngreso')">
+                                    <input-fecha [datos]="fechaInicioInput" labelNombre="Fecha de ingreso" (valorCambiado)="cambioFechaDeIngreso($event)"
+                                    [isDisabled]="soloLectura" required="fechaInicioInput.required"
+                                    [setFecha]="solicitudForm.get('fechaDeIngreso')?.value"
+                                        [ngClass]="{'is-invalid': esInvalido('fechaDeIngreso')}"></input-fecha>
+                                </div>
+                                <div *ngIf="esInvalido('fechaDeIngreso')" class="text-danger">
+                                    <small *ngIf="solicitudForm.controls['fechaDeIngreso'].errors?.['required']">
+                                        Este campo es obligatorio.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-5">
+                        <div class="col-d">
+                            <ng-titulo titulo="Adjuntar archivo" />
+                        </div>
+                        <div class="col-md-4">
+                            <div class="display">
+                                <label class="margin-right" for="archivoSeleccionado" class="form-label m-0">Archivo Seleccionado*:</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <input class="form-control archivoSeleccionado" type="text" name="archivoSeleccionado"
+                                id="archivoSeleccionado" disabled>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 d-flex justify-content-end width-dos">
+                            <button
+                                type="button" class="btn btn-default" (click)="adjuntarArchivo()">Cargar
+                                archivo</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div *ngIf="!solicitud11201State?.tipoBusqueda || solicitud11201State?.tipoBusqueda === 'Archivo CSV'"
+                        class="table-container">
+                        <app-tabla-dinamica [configuracionTabla]="encabezadoDeTablaManifiesto"
+                            [datos]="datosTabla"></app-tabla-dinamica>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        <div class="col-md-12" id="IdGridContenedoresITC"
+            *ngIf="!solicitud11201State?.tipoBusqueda || solicitud11201State?.tipoBusqueda === 'Contenedor'">
+            <br>
+            <div class="table-responsive">
+                <div class="innercontainer">
+                    <app-tabla-dinamica [configuracionTabla]="encabezadoDeTabla"
+                        [datos]="datosDelContenedor"></app-tabla-dinamica>
+                </div>
+            </div>
+            <div align="center" id="paginGridContenedoresITC">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination d-flex justify-content-center">
+                        <li class="page-item"><a class="page-link width" href="Javascript:;">1</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </form>
+    <div class="text-right">
+         <div class="pull-left text-muted text-vertical-align-button" id="lblCamposObligatorios">
+              {{ mensajeCamposObligatorios }}
+            </div>
+        <button type="button" class="btn btn-danger me-3" (click)="cancelar()">
+            Cancelar
+        </button>
+         <button type="submit" class="btn btn-primary" (click)="solicitudGuardar()">
+            Continuar
+        </button>
+    </div>
+     
+    <ng-template #plantillademodelo>
+        <div class="modal-header">
+            <h4 class="modal-title"></h4>
+        </div>
+        <div class="modal-body p-5">
+            <ng-container [ngSwitch]="abiertoModeloDatos">
+                <ng-container *ngSwitchCase="'generarerror'"> No se puede generar la constancia, porque ya cuenta con
+                    una</ng-container>
+                <ng-container *ngSwitchCase="'verificadorerror'">
+                    Dígito verificador incorrecto</ng-container>
+                <ng-container *ngSwitchDefault></ng-container>
+            </ng-container>
+        </div>
+        <div class="modal-footer m-auto">
+            <button type="button" class="btn btn-primary" (click)="modalRef?.hide()">
+                Aceptar
+            </button>
+        </div>
+    </ng-template>
+    <div class="modal fade" id="modalArchivoCsv" tabindex="-1" role="dialog" aria-labelledby="modalArchivoCsv"
+        aria-hidden="true" #modalArchivoCsv>
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="row margin-top-dos" *ngIf="mostrarArchivoSeleccionadoTable">
+                    <div class="col-md-12">
+                        <ng-titulo titulo="Cargar archivo" />
+                    </div>
+                    <div class="col-md-12">
+                            <label for="cargarArchivo" class="form-label d-flex">Archivo:</label>
+                            <div class="d-flex choose-file">
+                                <button class="mb-2 file-upload" type="button" (click)="activarSeleccionArchivo()">
+                                    Seleccionar archivo
+                                </button>
+                                <span class="ml-2 custom-input-file">{{ etiquetaDeArchivo || 'Sin archivos seleccionados' }}</span>
+                            </div>
+                            <input type="file" id="cargarArchivo" class="file-upload display-dos display-none" size="60" accept=".csv"
+                                (change)="onCambioDeArchivo($event)">
+                            @if (nuevaNotificacion) { <section>
+                                <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+                                    (confirmacionModal)="eliminarPedimento($event)"></lib-notificaciones>
+                            </section> }
+                    </div>                    
+                    <div class="col-md-4 d-flex justify-content-end gap-3 width-dos">
+                        <button type="button" class="btn btn-default" data-bs-dismiss="modal" (click)="regresar()">Regresar</button>
+                        <button type="button" class="btn btn-primary" (click)="archivo()" data-bs-dismiss="modal">Enviar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

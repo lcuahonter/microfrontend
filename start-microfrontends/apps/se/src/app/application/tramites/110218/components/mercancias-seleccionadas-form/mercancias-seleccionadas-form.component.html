@@ -1,0 +1,99 @@
+    <form [formGroup]="modifydatosdelcertificado">
+        <div class="row">
+
+            <div class="col-md-12">
+                <label class="form-label" for="nombreComercial">Nombre comercial: </label>
+                <input type="text" class="form-control" id="nombreComercial" formControlName="nombreComercial" readonly>
+            </div>
+
+            <div class="col-md-12">
+                <label class="form-label" for="nombreIngles">Nombre en inglés: </label>
+                <input type="text" class="form-control" id="nombreIngles" formControlName="nombreIngles" readonly>
+            </div>
+
+            <div class="col-md-12">
+                <label class="form-label">Complemento de la descripción:</label>
+                <input type="text" class="form-control bg-white" id="complementoDelaDescripcion"
+                    formControlName="complementoDelaDescripcion" placeholder="complemento de prueba"
+                    [class.is-invalid]="modifydatosdelcertificado.get('complementoDelaDescripcion')?.touched && modifydatosdelcertificado.get('complementoDelaDescripcion')?.invalid"
+                    (change)="setValorStore(modifydatosdelcertificado,'complementoDelaDescripcion')">
+                <div class="invalid-feedback">Este campo es obligatorio.</div>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Marca:</label>
+                <input type="text" class="form-control bg-white" id="marca" formControlName="marca"
+                    placeholder="Ejemplo: Toyota"
+                    [class.is-invalid]="modifydatosdelcertificado.get('marca')?.touched && modifydatosdelcertificado.get('marca')?.invalid"
+                    (change)="setValorStore(modifydatosdelcertificado,'marca')">
+                <div class="invalid-feedback">Este campo es obligatorio.</div>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Valor mercancía:</label>
+                <input type="text" class="form-control bg-white" id="valorMercancia" formControlName="valorMercancia"
+                    placeholder="50000.0000"
+                    [class.is-invalid]="modifydatosdelcertificado.get('valorMercancia')?.touched && modifydatosdelcertificado.get('valorMercancia')?.invalid"
+                    (change)="setValorStore(modifydatosdelcertificado,'valorMercancia')">
+                <div class="invalid-feedback">
+                    <small *ngIf="modifydatosdelcertificado.get('valorMercancia')?.hasError('required')">Este campo es
+                        obligatorio.</small>
+                    <small *ngIf="modifydatosdelcertificado.get('valorMercancia')?.hasError('pattern')">El valor debe ser un número con hasta 15 dígitos enteros y hasta 4 dígitos decimales.</small>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label" for="cantidad">Cantidad: </label>
+                <input type="text" class="form-control" id="cantidad" formControlName="cantidad" readonly>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 select-form-label">
+                <app-catalogo-select [catalogo]="unidaddeMedidadeComercializacionOptions"
+                    formControlName="unidaddeMedidadeComercializacion" name="unidaddeMedidadeComercializacion"
+                    [label]="'Unidad de medida de comercialización'"
+                    (change)="setValorStore(modifydatosdelcertificado,'unidaddeMedidadeComercializacion')"></app-catalogo-select>
+                <div *ngIf="modifydatosdelcertificado.get('unidaddeMedidadeComercializacion')?.touched &&
+                             modifydatosdelcertificado.get('unidaddeMedidadeComercializacion')?.invalid">
+                    <small class="text-danger">Seleccione una opción.</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <label class="form-label">Número de factura:</label>
+                <input type="text" class="form-control bg-white" id="numerodeFactura" formControlName="numerodeFactura"
+                    placeholder="fact12345"
+                    [class.is-invalid]="modifydatosdelcertificado.get('numerodeFactura')?.touched && modifydatosdelcertificado.get('numerodeFactura')?.invalid"
+                    (change)="setValorStore(modifydatosdelcertificado,'numerodeFactura')">
+                <div class="invalid-feedback">
+                    <small *ngIf="modifydatosdelcertificado.get('numerodeFactura')?.hasError('required')">Este campo es
+                        obligatorio.</small>
+                    <small *ngIf="modifydatosdelcertificado.get('numerodeFactura')?.hasError('pattern')">Solo se
+                        permiten letras y números.</small>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="tipodeFacturaOptions" formControlName="tipodeFactura"
+                    [label]="'Tipo de factura'" name="tipodeFactura"
+                    (change)="setValorStore(modifydatosdelcertificado,'tipodeFactura')"></app-catalogo-select>
+                <div *ngIf="modifydatosdelcertificado.get('tipodeFactura')?.touched &&
+                             modifydatosdelcertificado.get('tipodeFactura')?.invalid">
+                    <small class="text-danger">Seleccione un tipo de factura.</small>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label" for="fechadelaFactura">Fecha de la factura: </label>
+                <input type="text" class="form-control" id="fechadelaFactura" formControlName="fechadelaFactura"
+                    readonly>
+            </div>
+        </div>
+         <footer class="footer d-flex py-5 gap-3 justify-content-end">
+          <button type="button" class="btn btn-primary" (click)="closeModal()">Cancelar</button>
+          <button type="button" class="btn btn-primary" (click)="modificarYCerrar()">Modificar</button>
+        </footer>
+    </form>

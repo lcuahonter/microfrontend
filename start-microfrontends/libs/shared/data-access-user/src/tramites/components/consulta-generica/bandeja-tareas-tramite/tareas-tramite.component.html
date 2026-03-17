@@ -1,0 +1,77 @@
+<div class="card mt-4 mb-4">
+  <div class="card-header">
+    <h5 class="card-title">Consulta de trámites</h5>
+  </div>
+  @if(!isAtenderRequerimiento){
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+              <table class="table table-container">
+                <thead>
+                  <tr class="table-header">
+                    @for (item of encabezadoTablaTareasTramite; track $index) {
+                      <th>{{ item.valor }}</th>
+                  }                      
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (row of datosTablaTareasTramite; track $index) {
+                    <tr class="table-row">
+                      @for (item of encabezadoTablaTareasTramite;  let i = $index; track $index) {
+                      <td *ngIf="item.key === 'fechaAtencion'">
+                        <span *ngIf="row[item.key] === null">
+                          {{ '--' }}
+                        </span>
+                        <span *ngIf="row[item.key] !== null">
+                          {{ row[item.key] | date: 'dd/MM/yyyy' }}
+                        </span>
+                        </td>
+                        <td *ngIf="item.key !== 'fechaAtencion'">
+                        {{ row[item.key] }}
+                        </td>
+                      }
+                    </tr>
+                    }
+                </tbody>
+              </table>
+            </div>
+          </div>
+    </div>
+  }@else {
+    <div class="card-body">
+      <div class="row">
+          <div class="col-md-12">
+            <table class="table table-container">
+              <thead>
+                <tr class="table-header">
+                  @for (item of encabezadoTablaTareasTramiteByAtenderReq; track $index) {
+                    <th>{{ item.valor }}</th>
+                }                      
+                </tr>
+              </thead>
+              <tbody>
+                @for (row of datosTablaTareasTramiteByAtenderReq; track $index) {
+                  <tr class="table-row">
+                    @for (item of encabezadoTablaTareasTramiteByAtenderReq;  let i = $index; track $index) {
+                    <td *ngIf="item.key === 'fechaAtencion'">
+                      <span *ngIf="row[item.key] === null">
+                        {{ '--' }}
+                      </span>
+                      <span *ngIf="row[item.key] !== null">
+                        {{ row[item.key] | date: 'dd/MM/yyyy' }}
+                      </span>
+                      </td>
+                      <td *ngIf="item.key !== 'fechaAtencion'">
+                      {{ row[item.key] }}
+                      </td>
+                    }
+                  </tr>
+                  }
+              </tbody>
+            </table>
+          </div>
+        </div>
+  </div>
+  }
+
+</div>  

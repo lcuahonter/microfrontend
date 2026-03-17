@@ -1,0 +1,30 @@
+<div class="page">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h1>Aviso de importación de sustancias químicas</h1>
+      </div>
+      <ng-container *ngIf="indice === 2"> </ng-container>
+      <app-wizard [listaPasos]="pasos"></app-wizard>
+    </div>
+    <div class="row">
+      @switch (indice) { @case (1) {
+      <paso-uno [indice]="subIndice"></paso-uno>
+      } @case (2) {
+      <paso-dos [idTipoTRamite]="'240107'" [datosUsuario]="datosUsuario" [cargaArchivosEvento]="cargarArchivosEvento"
+        (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)" (reenviarCargaRealizada)="cargaRealizada($event)"
+        (cargaEnProgresoChange)="onCargaEnProgresoPadre($event)"></paso-dos>
+      } @case (3) {
+      <paso-tres></paso-tres>
+      }
+      }
+      <btn-continuar [datos]="datosPasos" (continuarEvento)="getValorIndice($event)"
+        (anteriorEvento)="getValorIndice($event)"></btn-continuar>
+    </div>
+  </div>
+</div>
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion"></lib-notificaciones>
+</section>
+}

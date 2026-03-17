@@ -1,0 +1,248 @@
+<div class="col-12">
+  @if (!esFormaValido) {
+  <div
+    class="alert alert-info alert-danger text-center"
+    [innerHTML]="formErrorAlert"
+  ></div>
+  }
+
+  <ng-titulo
+    [titulo]="'Datos de los residuos y/o materia prima a importar'"
+  ></ng-titulo>
+  <h4>Agregar materia prima a importar</h4>
+  <form [formGroup]="materiaPrimaForm" id="materiaPrimaForm" class="form-group">
+    <div class="row mt-3">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label for="nombreDeLaMateriaPrima" class="form-label"
+            >Nombre de la materia prima<span
+              [ngClass]="isInvalid('nombreDeLaMateriaPrima') ? 'has-error' : ''"
+              >*</span
+            ><span>:</span></label
+          >
+          <input
+            type="text"
+            formControlName="nombreDeLaMateriaPrima"
+            class="form-control"
+            id="nombreDeLaMateriaPrima"
+            maxlength="120"
+            [ngClass]="isInvalid('nombreDeLaMateriaPrima') ? 'required' : ''"
+          />
+          <div
+            *ngIf="
+              materiaPrimaForm.get('nombreDeLaMateriaPrima')?.invalid &&
+              (materiaPrimaForm.get('nombreDeLaMateriaPrima')?.dirty ||
+                materiaPrimaForm.get('nombreDeLaMateriaPrima')?.touched)
+            "
+          >
+            <div
+              *ngIf="materiaPrimaForm.get('nombreDeLaMateriaPrima')?.errors?.['required']"
+            >
+              <small class="text-danger">Este campo es obligatorio</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="cantidad" class="form-label"
+            >Cantidad<span [ngClass]="isInvalid('cantidad') ? 'has-error' : ''"
+              >*</span
+            ><span>:</span></label
+          >
+          <input
+            type="text"
+            formControlName="cantidad"
+            class="form-control"
+            id="cantidad"
+            maxlength="19"
+            [ngClass]="isInvalid('cantidad') ? 'required' : ''"
+            (focus)="isCantidadFocused = true"
+            (blur)="
+              isCantidadFocused = false;
+              obtenerLetraCantidad(materiaPrimaForm.get('cantidad')?.value)
+            "
+          />
+          <div
+            *ngIf="
+              materiaPrimaForm.get('cantidad')?.invalid &&
+              (materiaPrimaForm.get('cantidad')?.dirty ||
+                materiaPrimaForm.get('cantidad')?.touched)
+            "
+          >
+            <div *ngIf="materiaPrimaForm.get('cantidad')?.errors?.['required']">
+              <small class="mensaje-error">Este campo es obligatorio</small>
+            </div>
+
+            <div
+              *ngIf="materiaPrimaForm.get('cantidad')?.errors?.['pattern'] && !REGEX_NUMERIC_ONLY.test(materiaPrimaForm.get('cantidad')?.value)"
+            >
+              <small class="text-danger">Debe ingresar un número</small>
+            </div>
+            <div
+              *ngIf="materiaPrimaForm.get('cantidad')?.errors?.['pattern'] && REGEX_NUMERIC_ONLY.test(materiaPrimaForm.get('cantidad')?.value)"
+            >
+              <small class="text-danger"
+                >No se pueden ingresar más de 6 cifras significativas a la
+                izquierda o a la derecha después del punto decimal
+                (999999.999999)</small
+              >
+            </div>
+          </div>
+          <div *ngIf="isCantidadFocused">
+            <small style="font-weight: 200; color: #f44336"
+              >No está permitido capturar "," (coma)</small
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label for="cantidadEnLetra" class="form-label"
+            >Cantidad (letra)*:</label
+          >
+          <input
+            type="text"
+            formControlName="cantidadEnLetra"
+            [ngClass]="isInvalid('cantidadEnLetra') ? 'required' : ''"
+            class="form-control"
+            id="cantidadEnLetra"
+          />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <app-catalogo-select
+          [markTouched]="
+            materiaPrimaForm.get('unidadMedidaComercial')?.touched ?? false
+          "
+          formControlName="unidadMedidaComercial"
+          [catalogo]="comboUnidadMedida"
+          [label]="'Unidad de medida'"
+          [required]="true"
+          [isDisabled]="esFormularioSoloLectura"
+        ></app-catalogo-select>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-12">
+        <div class="form-group">
+          <app-catalogo-select
+            [markTouched]="
+              materiaPrimaForm.get('capituloFraccion')?.touched ?? false
+            "
+            (change)="changeCapituloFraccion()"
+            formControlName="capituloFraccion"
+            [catalogo]="comboCapituloFraccion"
+            [label]="'Capítulo'"
+            [required]="true"
+            [isDisabled]="esFormularioSoloLectura"
+          >
+          </app-catalogo-select>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-12">
+        <div class="form-group">
+          <app-catalogo-select
+            [markTouched]="
+              materiaPrimaForm.get('partidaFraccion')?.touched ?? false
+            "
+            (change)="changePartidaFraccion()"
+            formControlName="partidaFraccion"
+            [catalogo]="comboPartidaFraccion"
+            [label]="'Partida'"
+            [required]="true"
+            [isDisabled]="esFormularioSoloLectura"
+          >
+          </app-catalogo-select>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-4">
+        <div class="form-group">
+          <div class="form-group">
+            <label for="cantidad" class="form-label"
+              >Sub partida<span
+                [ngClass]="isInvalid('subPartidaFraccion') ? 'has-error' : ''"
+                >*</span
+              ><span>:</span></label
+            >
+
+            <select
+              class="form-control form-select"
+              formControlName="subPartidaFraccion"
+              (change)="changeSubPartidaFraccion()"
+              [ngClass]="{ required: materiaPrimaForm.get('subPartidaFraccion')?.errors?.['required'] && 
+              materiaPrimaForm.get('subPartidaFraccion')?.touched}"
+            >
+              <option [ngValue]="null" disabled selected hidden>
+                Seleccione una opción
+              </option>
+              <option [ngValue]="''" disabled selected hidden>
+                Seleccione una opción
+              </option>
+              <option
+                *ngFor="let partidaFraccion of comboSubPartidaFraccion"
+                [title]="partidaFraccion.descripcion"
+                [value]="partidaFraccion.clave"
+              >
+                {{ partidaFraccion.descripcion }}
+              </option>
+            </select>
+            <div
+              *ngIf="materiaPrimaForm.get('subPartidaFraccion')?.errors?.['required'] && materiaPrimaForm.get('subPartidaFraccion')?.touched"
+              class="mensaje-error"
+            >
+              Este campo es obligatorio.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="form-group">
+          <app-catalogo-select
+            [markTouched]="materiaPrimaForm.get('fraccion')?.touched ?? false"
+            formControlName="fraccion"
+            [catalogo]="comboFraccionArancelariaParametros"
+            [label]="'Fracción arancelaria'"
+            [required]="true"
+            [isDisabled]="esFormularioSoloLectura"
+          >
+          </app-catalogo-select>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mb-5 mt-5">
+      <div class="col-md-6 col-sm-6"></div>
+      <div class="col-md-6 col-sm-6 text-end">
+        <div class="btn-group">
+          <button
+            (click)="closeModal()"
+            class="btn btn-danger me-2"
+            type="button"
+            [disabled]="esFormularioSoloLectura"
+          >
+            Cancelar
+          </button>
+          <button
+            (click)="guardarMateriaPrima()"
+            class="btn btn-primary"
+            type="button"
+            [disabled]="esFormularioSoloLectura"
+          >
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

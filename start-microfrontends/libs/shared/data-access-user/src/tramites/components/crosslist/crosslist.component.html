@@ -1,0 +1,116 @@
+<div class="row" *ngIf="!mostrarPaisesSeleccionados">
+  <div class="col-md-4">
+    <div *ngIf="showSearchInput1" class="mb-4">
+      <label>{{searchInput1Label}}</label>
+      <input type="text" class="form-control mb-2" placeholder="{{showSearchPlaceholder ? searchInput1Label : ''}}" >
+    </div>
+    <label class="form-label" *ngIf="label?.tituluDeLaIzquierda">{{ label?.tituluDeLaIzquierda }}<span
+      *ngIf="required"
+      [ngClass]="{
+        'text-danger': isInvalid()
+      }"
+      >*</span>
+      <span class="bi bi-question-circle-fill" *ngIf="label?.showUnoTitulo" title="{{label?.tituluDeLaIzquierda}}" data-bs-toggle="tooltip"></span>
+      :</label>
+    <select class="form-select" multiple aria-label="Multiple select example" [formControl]="fecha">
+      @for (fecha of fechasDatos; let i = $index; track i) {
+      <option value="{{i}}">{{fecha}}</option>
+      }
+    </select>
+  </div>
+  <div class="col-md-4">
+    <div class="btn-group d-grid gap-2" [ngClass]="{'mt-5': label}">
+      @if(showSearchInput1){
+        @for (btn of botonField; track $index) {
+          <button 
+          type="button"
+          class="btn w-70 mt-4"
+          [ngClass]="btn.class"
+          (click)="btn.funcion ? btn.funcion() : null"
+          [disabled]="isDisabled">
+            {{btn.btnNombre}}
+          </button>
+        }
+      }
+      @else {
+        @for (btn of botones; track $index) {
+          <button
+          type="button"
+          class="btn w-70 mt-4"
+          [ngClass]="btn.class"
+          (click)="btn.funcion ? btn.funcion() : null"
+          [disabled]="isDisabled">
+            {{btn.btnNombre}}
+          </button>
+        }
+      }
+    </div>
+
+  </div>
+  <div class="col-md-4">
+
+    <div *ngIf="showSearchInput2" class="mb-4"> 
+      <label>{{searchInput2Label}}</label>
+      <input type="text" class="form-control mb-2" placeholder="{{showSearchPlaceholder ? searchInput2Label : ''}}" >
+     </div>
+     <label class="form-label text-start" *ngIf="label?.derecha">{{ label?.derecha }}<span
+      *ngIf="required"
+      [ngClass]="{
+        'text-danger': isInvalid()
+      }"
+      >*</span>
+      <span class="bi bi-question-circle-fill" *ngIf="label?.showDosTitulo" title="{{label?.derecha}}" data-bs-toggle="tooltip"></span>:
+      </label>
+    <select class="form-select" multiple aria-label="Multiple select example" [formControl]="fechaSeleccionada"
+    [ngClass]="isInvalid() ? 'required' : ''" >
+      @for (f_sel of fechasSeleccionadas; let ifs = $index; track ifs) {
+      <option value="{{ifs}}">{{f_sel}}</option>
+      }
+    </select>
+    <div *ngIf="isInvalid()" class="mensaje-error">
+      Este campo es obligatorio
+    </div>
+
+  </div>
+</div>
+<div class="row" *ngIf="mostrarPaisesSeleccionados">
+<!-- <div class="col-md-4"> -->
+    <div *ngIf="showSearchInput2" class="mb-4"> 
+      <label>{{searchInput2Label}}</label>
+      <input type="text" class="form-control mb-2" placeholder="{{showSearchPlaceholder ? searchInput2Label : ''}}" >
+     </div>
+     
+      <div class="row justify-content-center">
+        <div class="col-md-4">
+          <label class="form-label text-center" *ngIf="label?.derecha">{{ label?.derecha }}<span
+            *ngIf="required"
+            [ngClass]="{
+              'text-danger': isInvalid()
+            }"
+            >*</span>
+            <span class="bi bi-question-circle-fill" *ngIf="label?.showDosTitulo" title="{{label?.derecha}}" data-bs-toggle="tooltip"></span>:
+          </label>
+          <select class="form-select" multiple aria-label="Multiple select example" [formControl]="fechaSeleccionada"
+            [ngClass]="isInvalid() ? 'required' : ''" >
+              @for (f_sel of fechasSeleccionadas; let ifs = $index; track ifs) {
+              <option value="{{ifs}}">{{f_sel}}</option>
+              }
+          </select>
+          <div *ngIf="isInvalid()" class="mensaje-error">
+            Este campo es obligatorio
+          </div>
+        </div>
+      </div>
+    
+
+  <!-- </div> -->
+</div>
+
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+  </lib-notificaciones>
+</section>
+}
+
+

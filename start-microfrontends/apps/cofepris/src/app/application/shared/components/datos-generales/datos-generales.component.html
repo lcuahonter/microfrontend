@@ -1,0 +1,180 @@
+<div class="modal fade show d-block background" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content p-5">
+            <div class="border-0">
+                <ng-titulo titulo="{{titulo}}" />
+            </div>
+            <div class="">
+                <form [formGroup]="datosGeneralesForm">
+                    <h5>Datos generales</h5>
+                    <div class="row">
+                        <div class="d-flex justify-content-end col-md-8">
+                            <div class="form-check">
+                                <label class="fw-bold">Tipo persona*:</label>
+                                <app-input-radio [radioOptions]="radioBtn" [isRequired]="true" [layout]="'vertical'" (change)="onChangeTipoPersona(datosGeneralesForm)"
+                                    [gap]="'50px'" formControlName="tipoPersona"></app-input-radio>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="datosGeneralesForm.get('tipoPersona')?.touched && datosGeneralesForm.get('tipoPersona')?.invalid"
+                        class="text-danger">
+                        Tipo de persona es obligatorio.
+                    </div>
+                    <div *ngIf="datosGeneralesForm.get('tipoPersona')?.value === 'Moral'">
+                        <div class="mb-3 row">
+                            <div class="col-md-8">
+                                <label for="razonSocial" class="form-label">Denominación/razón social*:</label>
+                                <input type="text" class="form-control" id="razonSocial" maxlength="245"
+                                    formControlName="razonSocial" />
+                                <div *ngIf="datosGeneralesForm.get('razonSocial')?.touched && datosGeneralesForm.get('razonSocial')?.invalid"
+                                    class="text-danger">
+                                    Este campo es obligatorio
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="datosGeneralesForm.get('tipoPersona')?.value === 'Física'">
+                        <div class="mb-3 row">
+                            <label>Datos personales</label>
+                            <div class="col-md-4">
+                                <label for="nombre" class="form-label">Nombre(s)*:</label>
+                                <input type="text" class="form-control" id="nombre" maxlength="245"
+                                    formControlName="nombre" />
+                                <div *ngIf="datosGeneralesForm.get('nombre')?.touched">
+                                    <div *ngIf="datosGeneralesForm.get('nombre')?.errors?.['required']" class="text-danger">
+                                        Este campo es obligatorio.
+                                    </div>
+                                    <div *ngIf="datosGeneralesForm.get('nombre')?.errors?.['pattern']" class="text-danger">
+                                       Existen datos incorrectos que no cumplen con el formato esperado.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="primerApellido" class="form-label">Primer apellido*:</label>
+                                <input type="text" class="form-control" id="primerApellido" maxlength="245"
+                                    formControlName="primerApellido" />
+                                <div *ngIf="datosGeneralesForm.get('primerApellido')?.touched">
+                                    <div *ngIf="datosGeneralesForm.get('primerApellido')?.errors?.['required']" class="text-danger">
+                                        Este campo es obligatorio.
+                                    </div>
+                                    <div *ngIf="datosGeneralesForm.get('primerApellido')?.errors?.['pattern']" class="text-danger">
+                                        Existen datos incorrectos que no cumplen con el formato esperado.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="segundoApellido" class="form-label">Segundo apellido:</label>
+                                <input type="text" class="form-control" id="segundoApellido" maxlength="245"
+                                    formControlName="segundoApellido" />
+                                <div *ngIf="datosGeneralesForm.get('segundoApellido')?.touched">
+                                    <div *ngIf="datosGeneralesForm.get('segundoApellido')?.errors?.['pattern']" class="text-danger">
+                                         Existen datos incorrectos que no cumplen con el formato esperado.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Domicilio</label>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <app-catalogo-select [catalogo]="pais" [label]="'País'" [required]="true" name="País"
+                                    formControlName="pais" [placeholder]="'Selecciona una opción'">
+                                </app-catalogo-select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="estado" class="form-label">Estado*:</label>
+                                <input type="text" class="form-control" id="estado" formControlName="estado"
+                                    maxlength="245">
+                                    <div *ngIf="datosGeneralesForm.get('estado')?.touched">
+                                        <div *ngIf="datosGeneralesForm.get('estado')?.errors?.['required']" class="text-danger">
+                                            Este campo es obligatorio.
+                                        </div>
+                                        <div *ngIf="datosGeneralesForm.get('estado')?.errors?.['pattern']" class="text-danger">
+                                            Existen datos incorrectos que no cumplen con el formato esperado.
+                                        </div>
+                                    </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Código postal o equivalente:</label>
+                                <input type="text" class="form-control" id="codigoPostal" maxlength="245"
+                                    formControlName="codigoPostal" />
+                                <div *ngIf="datosGeneralesForm.get('codigoPostal')?.touched">
+                                    <div *ngIf="datosGeneralesForm.get('codigoPostal')?.errors?.['pattern']" class="text-danger">
+                                         Existen datos incorrectos que no cumplen con el formato esperado.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <label class="form-label">Calle*:</label>
+                                <input type="text" class="form-control" id="calle" formControlName="calle"
+                                    maxlength="245" />
+                                <div *ngIf="datosGeneralesForm.get('calle')?.touched && datosGeneralesForm.get('calle')?.invalid"
+                                    class="text-danger">
+                                    Este campo es obligatorio.
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Número exterior*:</label>
+                                <input type="text" class="form-control" id="numeroExterior"
+                                    formControlName="numeroExterior" maxlength="245" />
+                                <div *ngIf="datosGeneralesForm.get('numeroExterior')?.touched && datosGeneralesForm.get('numeroExterior')?.invalid"
+                                    class="text-danger">
+                                   Este campo es obligatorio.
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Número interior:</label>
+                                <input type="text" class="form-control" id="numeroInterior"
+                                    formControlName="numeroInterior" maxlength="245" />
+                                <div *ngIf="datosGeneralesForm.get('numeroInterior')?.touched">
+                                    <div *ngIf="datosGeneralesForm.get('numeroInterior')?.errors?.['pattern']" class="text-danger">
+                                         Existen datos incorrectos que no cumplen con el formato esperado.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <label class="form-label">Lada:</label>
+                                <input type="text" class="form-control" id="lada" formControlName="lada" maxlength="5"/>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Teléfono:</label>
+                                <input type="text" class="form-control" id="telefono" formControlName="telefono"
+                                    maxlength="245" />
+                                <div *ngIf="datosGeneralesForm.get('telefono')?.touched">
+                                    <div *ngIf="datosGeneralesForm.get('telefono')?.errors?.['pattern']" class="text-danger">
+                                        Existen datos incorrectos que no cumplen con el formato esperado.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">{{isCorreoOptional ? 'Correo electrónico:' : 'Correo electrónico*:'}}</label>
+                                <input type="text" class="form-control" id="correo-electronico"
+                                    formControlName="correoElectronico" maxlength="245" />
+                                <div *ngIf="datosGeneralesForm.get('correoElectronico')?.touched">
+                                    <div *ngIf="datosGeneralesForm.get('correoElectronico')?.errors?.['required']" class="text-danger">
+                                        Este campo es obligatorio.
+                                    </div>
+                                    <div *ngIf="datosGeneralesForm.get('correoElectronico')?.errors?.['email']" class="text-danger">
+                                        Por favor, escribe una dirección de correo válida.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger " (click)="closeDatosGenerales()">
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-default" (click)="onLimpiarClick()">Limpiar</button>
+                    <button type="button" class="btn btn-primary" (click)="enviarFormulario()">
+                        Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

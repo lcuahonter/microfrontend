@@ -1,0 +1,163 @@
+<div class="table-responsive table-wrapper">
+  @if (showSearch) {
+  <div class="row d-flex justify-content-end mt-3 mb-3">
+    <div class="col-md-4">
+      <input type="text" class="form-control" placeholder="Buscar..." (input)="onSearchInput($event)" />
+    </div>
+  </div>
+  }
+
+  <table id="{{ tableId }}" class="table table-striped table-bordered mb-2" [ngClass]="{ 'table-invalid': isInvalida }">
+    <thead>
+      <tr>
+        @if(showRowNumber) {
+        <th [ngClass]="{'text-center': styleCenter}"></th>
+        }
+        @if(tipoSeleccionTabla === TablaSeleccion.RADIO) {
+        <th></th>
+        } @if(tipoSeleccionTabla === TablaSeleccion.BUTTON) {
+        <th></th>
+        } @else if(tipoSeleccionTabla === TablaSeleccion.CHECKBOX) {
+        <th class="text-center">
+          <input class="cursor-pointer" type="checkbox" name="filaSeleccionada"
+            (change)="seleccionarDeseleccionarTodos($event)" aria-label="Seleccionar/Deseleccionar todo" [checked]="
+              paginatedDatos.length ? filasSeleccionadas.length === paginatedDatos.length : false
+            " [disabled]="disableSeleccionTablaCheckBox" />
+        </th>
+        }
+        <!-- Crear el encabezado de manera dinámica -->
+        <th [ngClass]="{'text-center': styleCenter}" *ngFor="let col of obtenerConfiguracionOrdenada()"
+          (click)="onSort(col)">
+          <div class="align-middle text-center">
+            {{ col.encabezado }}
+            @if (showSort) {
+            <span class="d-inline-flex flex-column align-items-center ms-2">
+              <!-- Up icon -->
+              <i *ngIf="sortColumn !== col || sortDirection === 'asc'" class="bi bi-caret-up-fill sort-up" [ngClass]="{
+                    'text-primary': sortColumn === col && sortDirection === 'asc',
+                    'text-muted': !(sortColumn === col && sortDirection === 'asc'),
+                    'd-none': sortColumn === col && sortDirection === 'desc'
+                  }"></i>
+
+              <!-- Down icon -->
+              <i *ngIf="sortColumn !== col || sortDirection === 'desc'" class="bi bi-caret-down-fill sort-down"
+                [ngClass]="{
+                    'text-primary': sortColumn === col && sortDirection === 'desc',
+                    'text-muted': !(sortColumn === col && sortDirection === 'desc'),
+                    'd-none': sortColumn === col && sortDirection === 'asc'
+                  }"></i>
+            </span>
+            }
+          </div>
+        </th>
+        @if(acciones && acciones.length){
+        <th [ngClass]="{'text-center': styleCenter}">{{tituloLastColumn}}</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngIf="!paginatedDatos.length">
+        <td
+          [attr.colspan]="obtenerConfiguracionOrdenada().length + (acciones.length ? 1 : 0) + (tipoSeleccionTabla ? 1 : 0) + (showRowNumber ? 1 : 0)"
+          style="text-align: center;">
+          SIN DATOS
+        </td>
+      </tr>
+      <!-- Crear las filas de manera dinámica -->
+      <ng-container *ngFor="let fila of paginatedDatos; let i = index">
+        <tr [ngStyle]="styleCenter ? {'text-align': 'center'} : {}" 
+          (click)="!esDobleClick && onFilaClic(fila)"
+          (dblclick)="esDobleClick && onFilaClic(fila)">
+
+          <!-- Columna de número de fila -->
+          @if(showRowNumber) {
+          <td>{{ getRowNumber(i) }}</td>
+          }
+          
+          <!-- Botón de radio para seleccionar una fila -->
+          @if(tipoSeleccionTabla === TablaSeleccion.RADIO) {
+          <td>
+            <input class="cursor-pointer" type="radio" [name]="'filaSeleccionada_' + tableId"
+              [(ngModel)]="idFilaSeleccionada" [value]="i" (change)="seleccionarFila($event, i, fila)"
+              [checked]="idFilaSeleccionada === i" aria-label="Seleccionar" [disabled]="disableSeleccionTablaRadio" />
+          </td>
+
+          } @else if(tipoSeleccionTabla === TablaSeleccion.CHECKBOX) {
+          <td class="text-center">
+            <div class="d-flex align-items-center gap-2 justify-content-center">
+              <ng-container>
+                <input class="cursor-pointer" type="checkbox" name="filaSeleccionada" [value]="i"
+                  (change)="cambiarEstadoCheckbox($event, i)" [checked]="filasSeleccionadas.includes(i)"
+                  aria-label="Seleccionar" [disabled]="disableSeleccionTablaCheckBox" />
+              </ng-container>
+
+              <button class="btn btn-link p-0" (click)="toggleRow(i)" [attr.aria-expanded]="expandedIndex === i"
+                *ngIf="expandible">
+                <i class="bi" [ngClass]="{
+                              'bi-dash': expandedIndex === i,
+                              'bi-plus': expandedIndex !== i
+                          }"></i>
+              </button>
+            </div>
+          </td>
+
+          } @else if(tipoSeleccionTabla === TablaSeleccion.BUTTON) {
+          <td>
+            <button id="button" class="cursor-pointer btn btn-primary" type="button" name="filaSeleccionada" [value]="i"
+              (click)="cambiarValor({ row: fila, column: '' })" aria-label="Seleccionar" [disabled]="desactivarButton">
+              {{ obtenerTextoBoton(fila) }}
+            </button>
+          </td>
+
+          }
+
+          <!-- Renderizar cada columna de manera dinámica utilizando la función 'clave' -->
+          <td *ngFor="let col of obtenerConfiguracionOrdenada()"
+            (click)="col.hiperenlace ? cambiarValor({ row: fila, column: col.clave(fila)?.toString() ?? '' }) : null"
+            [ngClass]="{ 'cursor-pointer': col.hiperenlace }">
+            @if(col.showIcon){
+            <i class="bi bi-file-earmark-text"></i>
+            }@else{
+            {{ col.clave(fila) || ' ' }}
+            }
+          </td>
+          @if(acciones.length > 0){
+          <td class="align-icon">
+            @if(acciones.length > 0){ @for(accion of acciones; track $index){
+            @switch(accion){ @case(accionesEnum.VER){
+            <i class="bi bi-eye color-icon-eye" (click)="alternarValor.emit({ row: fila, column: 'VER' })"
+              style="cursor: pointer"></i>
+            } @case(accionesEnum.EDITAR){
+            <i class="bi bi-pencil color-icon-edit" (click)="alternarValor.emit({ row: fila, column: 'EDITAR' })"
+              style="cursor: pointer"></i>
+            } @case(accionesEnum.ELIMINAR){
+            <i class="bi bi-trash color-icon-trash" (click)="alternarValor.emit({ row: fila, column: 'ELIMINAR' })"
+              style="cursor: pointer"></i>
+            } @case(accionesEnum.DESCARGAR){
+            <i class="bi bi-download color-icon-download"
+              (click)="alternarValor.emit({ row: fila, column: 'DESCARGAR' })" style="cursor: pointer"></i>
+            } } } }
+          </td>
+          }
+
+        </tr>
+        <tr *ngIf="expandedIndex === i && expandible">
+          <td colspan="25">
+            <div class="nested-table p-3" [@expandCollapse]>
+              <ng-container *ngTemplateOutlet="nestedContent; context: { $implicit: fila }">
+              </ng-container>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+</div>
+@if (isInvalida) {
+<div class="mensaje-error mt-2">
+  Este campo es obligatorio
+</div>
+}
+<app-table-pagination *ngIf="showPagination" [totalItems]="totalItems" [itemsPerPage]="itemsPerPage"
+  [currentPage]="currentPage" (pageChange)="onPageChange($event)" (itemsPerPageChange)="onItemsPerPageChange($event)">
+</app-table-pagination>

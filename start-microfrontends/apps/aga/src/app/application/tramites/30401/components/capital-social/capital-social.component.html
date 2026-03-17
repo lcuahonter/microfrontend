@@ -1,0 +1,41 @@
+<ng-container [formGroup]="inicializarFormulario">
+    <div class="row mt-2">
+      <div class="col-md-12">
+        <ng-titulo [titulo]="titulo" />
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label text-left"
+            >El capital social de la persona moral por lo menos es de
+            $3,113,240.00*:</label
+          >
+          <input
+            class="form-control"
+            id="capitalSocial"
+            type="text"
+            name="capitalSocial"
+            formControlName="capitalSocial"
+            (change)="
+              setValoresStore(inicializarFormulario, 'capitalSocial')
+            "
+          />
+          <div *ngIf="esInvalido('capitalSocial')" class="text-danger">
+            <small
+              *ngIf="
+                inicializarFormulario.controls['capitalSocial'].hasError('required')
+              "
+              >Este campo es obligatorio.</small
+            >
+            <small *ngIf="inicializarFormulario.controls['capitalSocial'].hasError('pattern')">
+              No cumple con el formato esperado
+            </small>
+          <small
+            *ngIf="inicializarFormulario.controls['capitalSocial'].hasError('maxlength')"
+          >
+            El capital social no puede exceder los 20 caracteres.
+          </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>

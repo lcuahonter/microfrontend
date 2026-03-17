@@ -1,0 +1,72 @@
+<div class="container">
+    <ng-titulo titulo="Pago de derechos" />
+    <form [formGroup]="pagoDerechos">
+        <div class="form">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label" for="clave">Clave de referencia*:</label>
+                        <input class="form-control" id="clave" placeholder="Clave de referencia" type="text"
+                            formControlName="clave">
+                            <div class="mensaje-error" *ngIf="pagoDerechos.get('clave')?.errors?.['maxlength']">
+                                Longitud máxima 50 caracteres</div>
+                            <div class="mensaje-error" *ngIf="pagoDerechos.get('clave')?.errors?.['required'] && pagoDerechos.get('clave')?.touched">
+                                Este campo es obligatorio</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label" for="dependencia">Cadena de la dependencia*:</label>
+                        <input class="form-control" id="dependencia" placeholder="Cadena de la dependencia"
+                            type="text" formControlName="dependencia">
+                            <div class="mensaje-error" *ngIf="pagoDerechos.get('dependencia')?.errors">
+                                Longitud máxima 50 caracteres</div>
+                                <div class="mensaje-error" *ngIf="pagoDerechos.get('dependencia')?.errors?.['required'] && pagoDerechos.get('dependencia')?.touched">
+                                    Este campo es obligatorio</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <app-catalogo-select [catalogo]="pantallasService.listoBanco" formControlName="banco" [label]="'Banco'"
+                            [required]="true" [isDisabled]="esFormularioSoloLectura" name="banco" (change)="clasificacionSeleccione()"></app-catalogo-select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label" for="llavePago">Llave de pago*:</label>
+                        <input class="form-control" id="llavePago" placeholder="Llave de pago" type="text"
+                            formControlName="llavePago">
+                            <div class="mensaje-error" *ngIf="pagoDerechos.get('llavePago')?.errors?.['required'] && pagoDerechos.get('llavePago')?.touched">
+                                Este campo es obligatorio</div>
+                                <div class="mensaje-error" *ngIf="pagoDerechos.get('llavePago')?.errors?.['pattern'] && pagoDerechos.get('llavePago')?.touched">
+                                    Debe tener exactamente 10 caracteres alfanuméricos</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group ">
+                        <input-fecha (valorCambiado)="onFechaCambiada($event)" [setFecha]="pagoDerechos.get('fecha')?.value"
+                            [datos]="fechaDeLaFacturaInput"></input-fecha>
+                        
+            <div *ngIf="fechaFuturaSeleccionada" class="text-danger mt-1">
+            La fecha de pago debe ser menor o igual a la fecha actual.
+          </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label" for="importePago">Importe de pago*:</label>
+                        <input class="form-control" id="importePago" placeholder="Importe de pago" type="text" maxlength="16"
+                            formControlName="importePago">
+                            <div class="mensaje-error" *ngIf="pagoDerechos.get('importePago')?.errors?.['pattern']">
+                                Longitud máxima 16 dígitos</div>
+                            <div class="mensaje-error" *ngIf="pagoDerechos.get('importePago')?.errors?.['required'] && pagoDerechos.get('importePago')?.touched">
+                                Este campo es obligatorio</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,139 @@
+<div class="alert alert-info m-3 mt-4" [innerHTML]="mensaje"></div>
+<div [formGroup]="formHojaTrabajo">
+  @if (tramite === '220203') {
+
+    <span>Requisitos presentados</span>
+
+    <div formArrayName="detallesGroup">
+
+      @for (seccion of getDetallesGrupo.controls; let i = $index; track $index) {
+
+        <div [formGroupName]="i" class="mb-4 border rounded p-3">
+
+          <!-- Datos de la sección -->
+          <div class="row mb-2">
+            <div class="col-md-6">
+              <label>Tipo de requisito</label>
+              <input class="form-control" formControlName="descripcion_restriccion" disable>
+            </div>
+
+            <div class="col-md-6">
+              <label>Restricción</label>
+              <input class="form-control" formControlName="requisitos" disable>
+            </div>
+
+            <div class="col-md-12">
+              <span><strong>{{ seccion.get('cve_seccion')?.value }}</strong></span>
+            </div>
+          </div>
+
+          <div class="fw-bold mb-2">
+            {{ seccion.get('cve_seccion')?.value }}
+          </div>
+
+          <!-- TABLA -->
+          <div formArrayName="descripciones">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Nombre del requisito</th>
+                  <th>SI</th>
+                  <th>NO</th>
+                  <th>N/A</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                @for (desc of getDescripciones(i).controls; let j = $index; track $index) {
+                  <tr [formGroupName]="j">
+                    <td>{{ desc.get('numero_requisito')?.value }}</td>
+                    <td>{{ desc.get('descripcion_requisito')?.value }}</td>
+
+                    <td>
+                      <input type="radio"
+                             class="form-check-input"
+                             [name]="'s'+i+'d'+j"
+                             value="1"
+                             (change)="aplicaRespuesta(1,desc.get('numero_requisito')?.value)"
+                             [checked]="desc.get('aplica_entrega_documentos')?.value === 1">
+                    </td>
+
+                    <td>
+                      <input type="radio"
+                             class="form-check-input"
+                             [name]="'s'+i+'d'+j"
+                             value="0"
+                             (change)="desc.get('aplica_entrega_documentos')?.setValue(0)"
+                             [checked]="desc.get('aplica_entrega_documentos')?.value === 0">
+                    </td>
+
+                    <td>
+                      <input type="radio"
+                             class="form-check-input"
+                             [name]="'s'+i+'d'+j"
+                             value="2"
+                             (change)="desc.get('aplica_entrega_documentos')?.setValue(2)"
+                             [checked]="desc.get('aplica_entrega_documentos')?.value === 2">
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      }
+
+    </div>
+  }
+
+
+  <div>
+    <div class="col-md-12 col-lg-10">
+      <ng-titulo [titulo]="'Requiere'" />
+    </div>
+    <div class="col-md-8">
+      <div class="row">
+        <label class="control-label">
+          <input class="form-check-input me-3" type="checkbox" name="requiereTomaTratamiento"
+                 formControlName="requiereToma" value="true" id="requiereTomaTratamiento"
+          />
+          Toma de muestra</label>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="row">
+        <label class="control-label">
+          <input class="form-check-input me-3" type="checkbox" name="requiereTomaTratamiento"
+                 formControlName="requiereTratamiento" value="false" />
+          Tratamiento</label>
+      </div>
+    </div>
+
+    <div class="col-md-12 col-lg-10">
+      <ng-titulo [titulo]="'Aleatorio'" />
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="form-label" for="rfc">
+          <strong>No. Fleje</strong>
+          <span class="p-2" tooltip="No. Fleje" placement="top">
+                  <i class="bi bi-question-circle-fill"></i>
+                </span>
+        </label>
+        <input type="text" class="form-control" id="fleje" value="" formControlName="fleje"
+               [ngClass]="{ required: isInvalid('fleje')}">
+      </div>
+      <app-error-requerido [form]="formHojaTrabajo.get('fleje')!"></app-error-requerido>
+    </div>
+  </div>
+</div>
+<div class="col-md-12">
+  <div class="d-flex justify-content-end">
+    <button type="button" class="btn btn-default" (click)="visualizar()">
+      Visualizar
+    </button>
+  </div>
+</div>

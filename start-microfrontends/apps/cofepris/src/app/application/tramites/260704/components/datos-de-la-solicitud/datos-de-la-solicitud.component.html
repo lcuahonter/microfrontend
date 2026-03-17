@@ -1,0 +1,532 @@
+<form [formGroup]="datosDelEstablecimientoForm">
+  <ng-container formGroupName="validacionForm">
+    <div class="row mt-5">
+      <label>Seleccione el tipo de operación que desea realizar*:</label>
+    </div>
+    <div class="row mt-5 radios">
+      <app-input-radio [radioOptions]="radioOpcions" [selectedValue]="valorSeleccionado" [isRequired]="true"
+        [layout]="'horizontal'" formControlName="tipoOperacion" [disabled]="soloLectura"
+        (change)="setValoresStore(validacionForm,'tipoOperacion', 'setTipoOperacion')"></app-input-radio>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-6">
+        <label>Justificación*:</label>
+        <textarea cols="80" rows="5" formControlName="justificacion" [disabled]="soloLectura" maxlength="2000"
+          (change)="setValoresStore(validacionForm,'justificacion', 'setJustificacion')"></textarea>
+          @if (validacionForm.get('justificacion')?.hasError('required') &&
+            validacionForm.get('justificacion')?.touched) {
+            <div class="text-danger">
+              <small>Este campo es obligatorio</small>
+            </div>
+            } 
+      </div>
+    </div>
+    <ng-titulo titulo="Datos del establecimiento" />
+    <div>
+      <div class="text-end" *ngIf="esTipoOperacionSeleccionado">
+        <button type="button" class="btn btn-primary" title="Selecciona para habilitar los campos del establecimiento"
+          data-bs-toggle="modal" data-bs-target="#modalAlerta" (click)="seleccionarEstablecimiento()" [disabled]="soloLectura"
+          > Seleccionar establecimiento </button>
+      </div> @if (nuevaNotificacion) { <section>
+        <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+          (confirmacionModal)="eliminarPedimento($event)"></lib-notificaciones>
+      </section> } <div class="row mt-5">
+        <div class="col-md-8">
+          <label for="razonSocial" class="form-label">Denominación o razón social*:</label>
+          <input type="text" class="form-control" size="68" maxlength="100" formControlName="razonSocial" 
+            (change)="setValoresStore(validacionForm,'razonSocial', 'setRazonSocial')" />
+            @if (validacionForm.get('razonSocial')?.hasError('required') &&
+            validacionForm.get('razonSocial')?.touched) {
+            <div class="text-danger">
+              <small>Este campo es obligatorio</small>
+            </div>
+            }
+        </div>
+        <div class="col-md-4">
+          <label for="correoElectronico" class="form-label">Correo electrónico*: <span class="bi bi-question-circle-fill"
+              title="ejemplo@dominio.com" data-bs-toggle="tooltip"></span>
+          </label>
+          <input type="text" class="form-control" maxlength="320" formControlName="correoElectronico"
+            
+            (change)="setValoresStore(validacionForm,'correoElectronico', 'setCorreoElectronico')" />
+            @if (validacionForm.get('correoElectronico')?.hasError('required') &&
+            validacionForm.get('correoElectronico')?.touched) {
+            <div class="text-danger">
+              <small>Este campo es obligatorio</small>
+            </div>
+            } @else if (validacionForm.get('correoElectronico')?.hasError('pattern') &&
+            validacionForm.get('correoElectronico')?.touched) {
+            <div class="text-danger">
+              <small>Por favor, escribe una dirección de correo válida</small>
+            </div>
+            }
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container formGroupName="validacionMercanciaForm">
+    <ng-titulo titulo="Domicillo del establecimiento"></ng-titulo>
+    <div class="row">
+      <div class="col-md-4">
+        <label for="codigoPostal" class="form-label">Código postal*:</label>
+        <input type="text" name="codigoPostal" class="form-control" maxlength="12" 
+          formControlName="codigoPostal"
+          (change)="setValoresStore(validacionMercanciaForm,'codigoPostal', 'setCodigoPostal')" />
+          @if (validacionMercanciaForm.get('codigoPostal')?.hasError('required') &&
+            validacionMercanciaForm.get('codigoPostal')?.touched) {
+            <div class="text-danger">
+              <small>Este campo es obligatorio</small>
+            </div>
+            } @else if (validacionMercanciaForm.get('codigoPostal')?.hasError('pattern') &&
+            validacionMercanciaForm.get('codigoPostal')?.touched) {
+            <div class="text-danger">
+              <small>Por favor, escribe un número entero válido</small>
+            </div>
+            }
+      </div>
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="estadoCatalogo.catalogos" [label]="'Estado'" [required]="true" [isDisabled]="soloLectura"
+           formControlName="estado"
+          (change)="setValoresStore(validacionMercanciaForm,'estado', 'setEstado')"></app-catalogo-select>
+      </div>
+      <div class="col-md-4">
+        <label for="descripcionMunicipio" class="form-label">Municipio o alcaldía*:</label>
+        <input type="text" class="form-control" maxlength="120" formControlName="municipio" 
+          (change)="setValoresStore(validacionMercanciaForm,'municipio', 'setMunicipio')" 
+          />
+          @if (validacionMercanciaForm.get('municipio')?.hasError('required') &&
+            validacionMercanciaForm.get('municipio')?.touched) {
+            <div class="text-danger">
+              <small>Este campo es obligatorio</small>
+            </div>
+            }
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="alert alert-warning text-center">
+        <strong>¡Precaución!</strong> Debes capturar localidad y colonia
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <label for="informacionExtra" class="form-label">Localidad:</label>
+        <input type="text" class="form-control" formControlName="localidad" maxlength="120" 
+          (change)="setValoresStore(validacionMercanciaForm,'localidad', 'setLocalidad')" />
+      </div>
+      <div class="col-md-4">
+        <label for="descripcionColonia" class="form-label">Colonia:</label>
+        <input type="text" class="form-control" formControlName="colonia" maxlength="120" 
+          (change)="setValoresStore(validacionMercanciaForm,'colonia', 'setColonia')" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8">
+        <label for="calle" class="form-label">Calle*:
+          <span
+            class="bi bi-question-circle-fill"
+            tooltip="Domicilio, calle, número interior, numero exterior, lote"
+            placement="top">
+          </span>
+        </label>
+        <input type="text" class="form-control" formControlName="calle" maxlength="100" 
+          (change)="setValoresStore(validacionMercanciaForm,'calle', 'setCalle')" />
+          @if (validacionMercanciaForm.get('calle')?.hasError('required') &&
+            validacionMercanciaForm.get('calle')?.touched) {
+            <div class="text-danger">
+              <small>Este campo es obligatorio</small>
+            </div>
+            }
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-1">
+        <label for="lada" class="form-label">Lada:</label>
+        <input type="text" name="lada" class="form-control" formControlName="lada" maxlength="5"
+          (change)="setValoresStore(validacionMercanciaForm,'lada', 'setLada')" />
+      </div>
+      <div class="col-md-3">
+        <label for="telefono" class="form-label">Teléfono*:</label>
+        <input type="text" class="form-control" formControlName="telefono" required="required" maxlength="24"
+          (change)="setValoresStore(validacionMercanciaForm,'telefono', 'setTelefono')" />
+          @if (validacionMercanciaForm.get('telefono')?.hasError('required') &&
+            validacionMercanciaForm.get('telefono')?.touched) {
+            <div class="text-danger">
+              <small>Este campo es obligatorio</small>
+            </div>
+            } @else if (validacionMercanciaForm.get('telefono')?.hasError('pattern') &&
+            validacionMercanciaForm.get('telefono')?.touched) {
+            <div class="text-danger">
+              <small>Por favor, escribe un número entero válido</small>
+            </div>
+            }
+      </div>
+    </div>
+  </ng-container>
+  <ng-container formGroupName="validacionScionForm">
+    <div class="col-md-12 mt-5">
+      <label class="form-label mb-5" for="">S.C.I.A.N.*:</label>
+      <div>
+        <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX" [configuracionTabla]="encabezados" [disableSeleccionTablaCheckBox]="soloLectura"
+          
+          (listaDeFilaSeleccionada)="setTablaSeleccionFabricante($event)" [datos]="certificadoDisponsiblesTablaDatos"
+          (click)="verificarSeleccionCheckbox($event)"
+          (change)="setValoresStore(validacionScionForm,'scian', 'setScian')"></app-tabla-dinamica>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-md-12 text-end">
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalEliminarScian" [disabled]="soloLectura"
+          (click)="eliminarMercanciaGrid()" > Eliminar </button>
+        <button type="button" class="btn btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#modalClaveScian" [disabled]="soloLectura"
+          (click)="agregarMercanciaGrid()" > Agregar </button>
+      </div>
+    </div>
+
+    @if (nuevaNotificacion2 ) { <section>
+      <lib-notificaciones [notificacionInput]="nuevaNotificacion2"
+        (confirmacionModal)="eliminarPedimentoMercancia($event)"></lib-notificaciones>
+    </section> }
+
+
+    <div class="modal fade" id="modalClaveScian" tabindex="-1" aria-labelledby="modalClaveScianLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Clave S.C.I.A.N.</h4>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <app-catalogo-select [catalogo]="catalogoClave.catalogos" [label]="'Clave S.C.I.A.N.'" [required]="true"
+                 formControlName="claveScian" [isDisabled]="soloLectura"
+                (change)="setValoresStore(validacionScionForm,'claveScian', 'setClaveScian')"></app-catalogo-select>
+              <div class="row">
+                <app-catalogo-select [catalogo]="catalogoClave.catalogos" [label]="'Descripción del S.C.I.A.N.'"
+                  [required]="false"  formControlName="descripcionScian" [isDisabled]="soloLectura"
+                  (change)="setValoresStore(validacionScionForm,'descripcionScian', 'setDescripcionScian')"></app-catalogo-select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer custom-footer">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="pull-right">
+                  <button type="button" name="limpiarSCIAN" [disabled]="soloLectura" class="btn btn-danger" > Limpiar
+                  </button>
+                  <button type="button" name="cancelar" class="btn btn-default ms-2" [disabled]="soloLectura" data-bs-dismiss="modal" #closeModal
+                    > Cancelar </button>
+                  <button type="button" name="agregar" class="btn btn-primary ms-2" [disabled]="soloLectura"> Agregar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container formGroupName="validacionAduanaMercanciaForm">
+    <div class="row mt-5">
+      <div class="col-md-4 mt-4">
+        <div class="form-check mt-3">
+          <lib-input-check [id]="'avisoDeFuncionamiento'" [label]="'Aviso de funcionamiento'" [required]="true"
+             formControlName="avisoDeFuncionamiento" [isDisabled]="soloLectura"
+            (change)="establecerAvisoDeFuncionamiento($event)"></lib-input-check>
+        </div>
+      </div>
+      <div class="col-md-4 mt-4">
+        <label class="form-label" for="licenciaSanitaria">No. de licencia sanitaria <span
+            *ngIf="esAvisoFuncionamientoSeleccionado" class="black-asterisk">*</span>: <span
+            class="bi bi-question-circle-fill"
+            title="Ni¿1⁄2mero de la autorizaciï¿1⁄2n indicado en el documento emitido por la autoridad sanitaria competente"
+            data-bs-toggle="tooltip"></span>
+        </label>
+        <input class="form-control" type="text" formControlName="licenciaSanitaria" 
+          (change)="establecerLicenciaSanitaria($event)"
+          (change)="setValoresStore(validacionAduanaMercanciaForm,'licenciaSanitaria', 'setLicenciaSanitaria')" />
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-8">
+        <app-catalogo-select [catalogo]="catalogoClave.catalogos" [label]="'Régimen al que se destinarán la mercancías'"
+          [required]="true" [tooltipQuestionCircle]="true"  formControlName="regimen" [isDisabled]="soloLectura"
+          (change)="setValoresStore(validacionAduanaMercanciaForm,'regimen', 'setRegimen')"></app-catalogo-select>
+      </div>
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="catalogoClave.catalogos" [label]="'Aduana'" [required]="true"
+           formControlName="aduana" [isDisabled]="soloLectura"
+          (change)="setValoresStore(validacionAduanaMercanciaForm,'aduana', 'setAduana')"></app-catalogo-select>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <label>(Solo para uso específico de Maquila)</label>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-4">
+        <label>No. Programa IMMEX:</label>
+        <input type="text" class="form-control" formControlName="immex" 
+          (change)="setValoresStore(validacionAduanaMercanciaForm,'immex', 'setImmex')" />
+      </div>
+      <div class="col-md-2">
+        <label>Año:</label>
+        <input type="text" class="form-control" formControlName="ano" 
+          (change)="setValoresStore(validacionAduanaMercanciaForm,'ano', 'setAno')" />
+      </div>
+    </div>
+  </ng-container>
+  <ng-container formGroupName="validacionDatosMercanciaForm">
+    <div class="col-md-12 mt-4">
+      <label class="form-label mb-5" for="">mercancías*:</label>
+      <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX" [configuracionTabla]="mercanciasDatos"
+        [datos]="mercanciasConfiguracionTabla" [disableSeleccionTablaCheckBox]="soloLectura"
+        (change)="setValoresStore(validacionDatosMercanciaForm,'mercancia', 'setMercancia')"></app-tabla-dinamica>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-12 mt-5 d-flex justify-content-end">
+        <button type="button" class="btn btn-primary ms-2 mb-5" data-bs-toggle="modal" [disabled]="soloLectura"
+          data-bs-target="#modalAgregarMercancia"  (click)="agregarMercanciaGrid()"> Modificar
+        </button>
+      </div>
+    </div>
+    <div class="modal fade" id="modalAgregarMercancia" tabindex="-1" aria-labelledby="modalAgregarMercanciaLabel"
+      aria-hidden="true">
+      <div class="modal-xl modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Datos mercancía</h4>
+          </div>
+          <div class="modal-body">
+            <div class="row mt-5">
+              <div class="col-md-8">
+                <app-catalogo-select [catalogo]="estadoCatalogo.catalogos" [label]="'Clasificación del producto'"
+                  [required]="true"  formControlName="clasificacionProducto" [isDisabled]="soloLectura"
+                  (change)="setValoresStore(validacionDatosMercanciaForm,'clasificacionProducto', 'setClasificacionProducto')"></app-catalogo-select>
+              </div>
+            </div>
+            <div class="row mt-5">
+              <div class="col-md-8">
+                <app-catalogo-select [catalogo]="estadoCatalogo.catalogos"
+                  [label]="'Especificar clasificación del producto'" [required]="true" 
+                  formControlName="especificarClasificacionProducto" [isDisabled]="soloLectura"
+                  (change)="setValoresStore(validacionDatosMercanciaForm,'especificarClasificacionProducto', 'setEspecificarClasificacionProducto')"></app-catalogo-select>
+              </div>
+            </div>
+            <div class="row mt-5">
+              <div class="col-md-8">
+                <label class="form-label" for="denominacionProducto">Denominación especifica del producto*:</label>
+                <input class="form-control" placeholder="" type="text" formControlName="denominacionProducto"
+                  
+                  (change)="setValoresStore(validacionDatosMercanciaForm,'denominacionProducto', 'setDenominacionProducto')" />
+              </div>
+            </div>
+            <div class="row mt-5">
+              <div class="col-md-8">
+                <label class="form-label">Marca*:</label>
+                <input class="form-control" placeholder="" type="text" formControlName="marca" 
+                  (change)="setValoresStore(validacionDatosMercanciaForm,'marca', 'setMarca')" />
+              </div>
+            </div>
+            <div class="row mt-5">
+              <div class="col-md-8">
+                <app-catalogo-select [catalogo]="estadoCatalogo.catalogos" [label]="'Tipo de producto'"
+                  [required]="true"  formControlName="tipoProducto"
+                  (change)="setValoresStore(validacionDatosMercanciaForm,'tipoProducto', 'setTipoProducto')"></app-catalogo-select>
+              </div>
+            </div>
+            <div class="row mt-5">
+              <div class="col-md-8">
+                <label class="form-label">Especifique*:</label>
+                <input class="form-control" type="text" formControlName="especifique" 
+                  (change)="setValoresStore(validacionDatosMercanciaForm,'especifique', 'setEspecifique')" />
+              </div>
+            </div>
+            <div class="row mt-5">
+              <div class="col-md-8">
+                <label class="form-label">Fracción arancelaria*: <span class="bi bi-question-circle-fill"
+                    title="Fracción arancelaria" data-bs-toggle="tooltip"></span>
+                </label>
+                <input class="form-control" type="text" formControlName="fraccionArancelaria" 
+                  (change)="setValoresStore(validacionDatosMercanciaForm,'fraccionArancelaria', 'setFraccionArancelaria')" />
+              </div>
+            </div>
+            <div class="row mt-5">
+              <div class="col-md-8">
+                <label class="form-label">Descripción de la fracción arancelaria*:</label>
+                <input class="form-control gris-color" type="text" readonly
+                  formControlName="descripcionFraccionArancelaria" />
+              </div>
+            </div>
+            <div class="row mt-5">
+              <div class="col-md-4">
+                <label class="form-label">Cantidad UMT*:</label>
+                <input class="form-control" type="text" formControlName="cantidadUMT" 
+                  (change)="setValoresStore(validacionDatosMercanciaForm,'cantidadUMT', 'setCantidadUMT')" />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">UMT*: <span class="bi bi-question-circle-fill" title="UMT"
+                    data-bs-toggle="tooltip"></span>
+                </label>
+                <input class="form-control gris-color" type="text" readonly formControlName="umt" />
+              </div>
+            </div>
+            <div class="row mt-5">
+              <div class="col-md-4">
+                <label class="form-label">Cantidad UMC*:</label>
+                <input class="form-control" type="text" formControlName="cantidadUMC" 
+                  (change)="setValoresStore(validacionDatosMercanciaForm,'cantidadUMC', 'setCantidadUMC')" />
+              </div>
+              <div class="col-md-4">
+                <app-catalogo-select [catalogo]="estadoCatalogo.catalogos" [label]="'UMC'"
+                  [tooltipQuestionCircle]="true" [required]="true"  formControlName="umc"
+                  (change)="setValoresStore(validacionDatosMercanciaForm,'umc', 'setUMC')"></app-catalogo-select>
+              </div>
+            </div>
+            <div class="col-md-12 mt-4">
+              <div class="panel-group ficha-collapse" id="accordion">
+                <div class="panel panel-default">
+                  <div class="panel-heading" (click)="paisOrigenColapsable()" tabindex="0">
+                    <h4 class="panel-title">País de origen</h4>
+                    <button type="button" class="collpase-button collapsed" ></button>
+                  </div> @if(paisOrigen){ <div class="panel-collapse collapse in" id="panel-01">
+                    <div class="panel-body">
+                      <crosslist [label]="paisOrigenCrossList.label" [fechas]="paisOrigenCrossList.fechas"></crosslist>
+                    </div>
+                  </div> }
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 mt-4">
+              <div class="panel-group ficha-collapse" id="accordion">
+                <div class="panel panel-default">
+                  <div class="panel-heading" (click)="paisProcedencis_colapsable()" tabindex="0">
+                    <h4 class="panel-title">País de procedencia</h4>
+                    <button type="button" class="collpase-button collapsed" ></button>
+                  </div> @if(paisProcedencisColapsable){ <div class="panel-collapse collapse in" id="panel-01">
+                    <div class="panel-body">
+                      <crosslist [label]="paisProcedencisCrossList.label" [fechas]="paisProcedencisCrossList.fechas">
+                      </crosslist>
+                    </div>
+                  </div> }
+                </div>
+              </div>
+            </div>
+            <div class="row mt-5">
+              <div class="col-md-8 mt-3">
+                <label class="form-label">Clave de los lotes*:</label>
+                <input class="form-control" type="text" formControlName="claveLote" 
+                  (change)="setValoresStore(validacionDatosMercanciaForm,'claveLote', 'setClaveLote')" />
+              </div>
+            </div>
+            <div class="row mt-5">
+              <div class="col-md-8 mt-3">
+                <div class="col-md-4">
+                  <input-fecha [datos]="fechaInicialInput" class="disabled-input-fecha"></input-fecha>
+                </div>
+                <div class="col-md-4">
+                  <input-fecha [datos]="fechaFinalInput" class="disabled-input-fecha"></input-fecha>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 mt-3">
+              <label class="form-label" for="">Lista Claves de los lotes*:</label>
+            </div>
+            <div class="col-md-8 mt-3" style="margin-left: 155px">
+              <app-tabla-dinamica [tipoSeleccionTabla]="TablaSeleccion.CHECKBOX" [configuracionTabla]="listaClave"
+                [datos]="listaClaveTabla" 
+                (change)="setValoresStore(validacionDatosMercanciaForm,'listaClave', 'setListaClave')"></app-tabla-dinamica>
+            </div>
+            <div class="col-md-12 d-flex justify-content-end align-items-end">
+              <div class="btn-group">
+                <button type="button" class="btn btn-default btn-space" > Modificar </button>
+                <button class="btn btn-danger ms-3" type="button" > Eliminar </button>
+                <button type="button" class="btn btn-primary ms-3" > Agregar </button>
+              </div>
+            </div>
+            <div class="col-md-12 mt-4">
+              <div class="panel-group ficha-collapse" id="accordion">
+                <div class="panel panel-default">
+                  <div class="panel-heading" (click)="usoEspecificoColapsable()" tabindex="0">
+                    <h4 class="panel-title">Uso especifico</h4>
+                    <button type="button" class="collpase-button collapsed" ></button>
+                  </div> @if(usoEspecifico){ <div class="panel-collapse collapse in" id="panel-01">
+                    <div class="panel-body">
+                      <crosslist [fechas]="usoEspecificoCrossList.fechas" [label]="usoEspecificoCrossList.label">
+                      </crosslist>
+                    </div>
+                  </div> }
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 mb-5 d-flex justify-content-end align-items-end">
+              <div class="btn-group">
+                <button class="btn btn-default ms-3" type="button" > Cancelar </button>
+                <button type="button" class="btn btn-primary ms-3" data-bs-dismiss="modal" (click)="agregarMercanias()"
+                  > Modificar </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <div class="row">
+    <ng-titulo titulo="Manifiestos y declaraciones" />
+  </div>
+  <div class="alert alert-info">
+    <label style="font-weight: normal">
+      <div class="col-md-1 mt-5">
+        <input type="checkbox" class="mt-5" formControlName="manfestosYDeclaraciones" 
+          (change)="setValoresStore(datosDelEstablecimientoForm,'manfestosYDeclaraciones', 'setManfestosYDeclaraciones')" />
+        <b> *</b>
+      </div>
+      <div class="col-md-11 mt-4">{{ AVISO_PRIVACIDAD.TEXTO_DE_ALERTA }}</div>
+    </label>
+  </div>
+  <div class="col-md-12 mt-4">
+    <label class="form-label" for="">Los datos o anexos pueden contener información confidencial ¿Está de acuerdo en
+      hacerlos públicos?*:</label>
+    <app-input-radio [radioOptions]="opcionesRadioHacerlos" [selectedValue]="hercelosSeleccionados"
+      [layout]="'horizontal'" formControlName="hacerlosPublicos" [disabled]="soloLectura"
+      (change)="setValoresStore(datosDelEstablecimientoForm,'hacerlosPublicos', 'setHacerlosPublicos')"></app-input-radio>
+  </div>
+  <ng-titulo titulo="Representante legal" />
+  <div class="row mt-5">
+    <div class="col-md-4 mt-2">
+      <label class="form-label" for="rfc">RFC*:</label>
+      <input class="form-control" type="text" maxlength="13" formControlName="rfc" 
+        (change)="setValoresStore(datosDelEstablecimientoForm,'rfc', 'setRFC')" />
+        @if (datosDelEstablecimientoForm.get('rfc')?.hasError('required') &&
+        datosDelEstablecimientoForm.get('rfc')?.touched) {
+        <div class="text-danger">
+          <small>Este campo es obligatorio</small>
+        </div>
+        }
+    </div>
+    <div class="col-md-2 mt-5">
+      <button type="button" class="btn btn-primary" [disabled]="soloLectura" (click)="buscarRFC()">Buscar</button>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <div class="col-md-4 mt-4">
+      <label class="form-label" for="legalRazonSocial">Nombre o Razón Social*:</label>
+      <input class="form-control gris-color" type="text" formControlName="nombreRazon" readonly />
+    </div>
+    <div class="col-md-4 mt-4">
+      <label class="form-label" for="apellidoPaterno">Apellido paterno*:</label>
+      <input class="form-control gris-color" type="text" formControlName="apellidoPaterno" readonly />
+    </div>
+    <div class="col-md-4 mt-4">
+      <label class="form-label" for="apellidoMaterno">Apellido materno:</label>
+      <input class="form-control gris-color" type="text" formControlName="apellidoMaterno" readonly />
+    </div>
+  </div>
+</form>
+
+@if (mostrarRfcAlerta) {
+<section>
+  <lib-notificaciones 
+  [notificacionInput]="nuevaRfcNotificacion" >
+  </lib-notificaciones>
+</section>
+}

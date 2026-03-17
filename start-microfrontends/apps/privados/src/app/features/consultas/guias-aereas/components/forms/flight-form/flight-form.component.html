@@ -1,0 +1,72 @@
+<form [formGroup]="flightForm" autocomplete="off">
+  <div class="row mt-5">
+    <!-- First column -->
+    <div class="col-md-4 col-sm-4 col-xs-6">
+      <div class="form-group">
+        <date-picker
+          label="Fecha Inicio:"
+          formControlName="startDate"
+          [hasError]="formUtils.formHasError(flightForm, 'startDateRequired', 'startDate')">
+        </date-picker>
+        <small class="form-text form-text-error" *ngIf="formUtils.formHasError(flightForm, 'startDateRequired', 'startDate')">
+          {{ formUtils.getTextError(flightForm.errors) }}
+        </small>
+      </div>
+      <div class="form-group">
+        <label>Aduana/sección aduanera:</label>
+        <select
+          formControlName="custom"
+          class="form-control"
+          [ngClass]="{
+            'form-control-error': formUtils.formHasError(flightForm, 'customRequired', 'custom')
+          }"
+        >
+          <option value="">Seleccione un valor</option>
+          <option *ngFor="let custom of customs; let i = index" [value]="custom.idClave">
+            {{ custom.aduanaNombre }}
+          </option>
+        </select>
+        <small class="form-text form-text-error" *ngIf="formUtils.formHasError(flightForm, 'customRequired', 'custom')">
+          {{ formUtils.getTextError(flightForm.errors) }}
+        </small>
+      </div>
+    </div>
+
+    <!-- Second column -->
+    <div class="col-md-4 col-sm-4 col-xs-6">
+      <div class="form-group">
+        <date-picker
+          label="Fecha Fin:"
+          formControlName="endDate"
+          [minDate]="minEndDate()"
+          [maxDate]="maxEndDate()"
+          [isDisable]="isEndDateDisabled"
+          [hasError]="formUtils.formHasError(flightForm, 'endDateRequired', 'endDate')">
+        </date-picker>
+        <small class="form-text form-text-error" *ngIf="formUtils.formHasError(flightForm, 'endDateRequired', 'endDate')">
+          {{ formUtils.getTextError(flightForm.errors) }}
+        </small>
+      </div>
+    </div>
+
+    <!-- Third column -->
+    <div class="col-md-4 col-sm-4 col-xs-6">
+      <div class="form-group">
+        <label
+          >No. Vuelo:
+        </label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="numFlight"
+          [ngClass]="{
+            'form-control-error': formUtils.formHasError(flightForm, 'numFlightRequired', 'numFlight')
+          }"
+        />
+        <small class="form-text form-text-error" *ngIf="formUtils.formHasError(flightForm, 'numFlightRequired', 'numFlight')">
+          {{ formUtils.getTextError(flightForm.errors) }}
+        </small>
+      </div>
+    </div>
+  </div>
+</form>

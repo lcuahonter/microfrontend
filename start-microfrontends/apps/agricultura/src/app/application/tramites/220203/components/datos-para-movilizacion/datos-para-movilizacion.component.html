@@ -1,0 +1,76 @@
+<div class="container">
+  <div class="row">
+    <ng-titulo [titulo]="'Medio de transporte'"></ng-titulo>
+  </div>
+  <div class="row">
+    <form [formGroup]="formularioMovilizacion">
+      <div class="row">
+        <div class="col-md-4">
+          <app-catalogo-select
+            [catalogo]="transportes"
+            formControlName="medioDeTransporte"
+            [label]="'Medio de transporte'"
+            [required]="true"
+            name="medioDeTransporte"
+            [isDisabled]="esFormularioSoloLectura"
+            (change)="setValoresStore()" 
+            [markTouched]='markTouched'
+          ></app-catalogo-select>
+            
+        </div>
+        <div class="col-md-4 form-group">
+          <label class="form-label" for="coordenadas"
+            >Identificación del transporte:</label
+          >
+          <input
+            class="form-control"
+            id="identificacionTransporte"
+            formControlName="identificacionTransporte"
+            placeholder=""
+            name="identificacionTransporte"
+            type="text"
+            (change)="setValoresStore()" 
+            [maxlength]="30"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8 mt-10">
+          <app-catalogo-select
+            [catalogo]="puntos"
+            formControlName="puntoVerificacion"
+            [label]="'Punto de verificación federal'"
+            [required]="false"
+            name="puntoVerificacion"
+            [isDisabled]="esFormularioSoloLectura"
+            (change)="setValoresStore()"
+            [tooltipQuestionCircle]="true"
+            [tooltipQuestionCircleText]="'Es el primer punto de Inspección Federal dentro del territorio nacional por donde cruzará el embarque'"
+          ></app-catalogo-select>
+        </div>
+        <div class="col-md-8 form-group">
+          <label class="form-label" for="coordenadas"
+            >Nombre de la empresa transportista *:</label
+          >
+      
+          <input
+            class="form-control"
+            id="nombreEmpresaTransportista"
+            formControlName="nombreEmpresaTransportista"
+            name="nombreEmpresaTransportista"
+            placeholder=""
+            type="text"
+            (change)="setValoresStore()" 
+            [maxlength]="80"
+            [class.is-invalid]="formularioMovilizacion.get('nombreEmpresaTransportista')?.invalid && formularioMovilizacion.get('nombreEmpresaTransportista')?.touched"
+
+          />
+            <div
+          *ngIf="formularioMovilizacion.get('nombreEmpresaTransportista')?.invalid && formularioMovilizacion.get('nombreEmpresaTransportista')?.touched">
+          <small class="mensaje-error">Este campo es obligatorio.</small>
+        </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,57 @@
+
+<div class="page">
+  <div class="container">
+    <!-- CASE 1: If CAAT exists -->
+    @if (isCaat) {
+    <ng-alert [CONTENIDO]="catErrorMessage" [CUSTOMECLASS]="info"></ng-alert>
+    }
+
+    <!-- CASE 2: If NOT CAAT but is Extranjero -->
+    @else if (isExtrajero) {
+    <app-acuse-recibo [datosTabla]="acuseDocumentos" [datosTablaAcuseNotificacion]="[]" [guardarDatos]="guardarDatos"
+      [banderaVista]="'Acuse'">
+    </app-acuse-recibo>
+    }
+
+    <!-- CASE 3: If NOT CAAT and NOT Extranjero -->
+    @else {
+    <div class="row">
+      <div class="col-md-6">
+        <h3>Registro del código alfanumérico armonizado del transportista</h3>
+      </div>
+      <app-wizard [listaPasos]="pasos"></app-wizard>
+    </div>
+    <!-- Modal de notificación de error -->
+    <lib-notificaciones
+      *ngIf="btnContinuar"
+      [notificacionInput]="nuevaNotificacion"
+      (confirmacionModal)="btnContinuar = false"
+    ></lib-notificaciones>
+    <div class="row">
+      <!--
+        Muestra el componente correspondiente según el valor de `indice`.
+        @switch: Directiva que permite cambiar entre diferentes componentes.
+        @case: Caso específico que se muestra cuando `indice` tiene un valor determinado.
+      -->
+      @switch (indice) {
+      @case (1) {
+      <paso-uno #pasoUnoRef></paso-uno>
+      }
+      @case (2) {
+      <app-paso-dos></app-paso-dos>
+      }
+      }
+
+      <!--
+        Componente de botón para continuar al siguiente paso.
+        @input [datos]: Datos que se pasan al componente `btn-continuar`.
+        @output (continuarEvento): Evento que se emite cuando se hace clic en el botón continuar.
+      -->
+      @if (isBtnShow === 'yes') {
+      <btn-continuar [datos]="datosPasos" (continuarEvento)="getValorIndice($event)">
+      </btn-continuar>
+      }
+    </div>
+    }
+  </div>
+</div>

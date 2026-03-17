@@ -1,0 +1,33 @@
+<div class="container">
+  <ng-titulo [titulo]="'Consulta CAAT Terrestre'"></ng-titulo>
+  @if(mostrarAlerta){
+    <ng-alert [CONTENIDO]="CONTENIDO" [CUSTOMECLASS]="CUSTOMECLASS"></ng-alert>
+    <br/>
+  }
+  <form [formGroup]="buscarFormulario">
+    <div class="col-md-12">
+      <label>Nombre, denominaci&oacute;n o raz&oacute;n social</label>
+      <input type="text" maxlength="50" placeholder="nombre"
+        class="form-control mb-3 w-auto ng-untouched ng-pristine ng-valid" formControlName="denominacion" id="nombre" />
+
+      <label>RFC</label>
+
+      <input type="text" maxlength="20" placeholder="rfc"
+        class="form-control mb-3 w-auto ng-untouched ng-pristine ng-valid" formControlName="rfc" id="rfc" />
+
+      <label>CAAT</label>
+      <input type="text" maxlength="20" placeholder="caat"
+        class="form-control mb-3 w-auto ng-untouched ng-pristine ng-valid" formControlName="folio_solicitud_caat"
+        id="folio_solicitud_caat" />
+
+      <button class="btn btn-primary mb-3" (click)="buscar()">Buscar</button>
+    </div>
+  </form>
+
+  <ng-titulo [titulo]="'Empresa con CAAT registrado'"></ng-titulo>
+  <app-tabla-dinamica [mode]="'SERVER'" [datos]="listConsultaCAAT" [configuracionTabla]="configuracionTabla"
+    [showPagination]="true" [totalItems]="totalItems" [itemsPerPage]="elementosPagina" [currentPage]="paginaActual"
+    (pageChange)="cambioPagina($event)" (itemsPerPageChange)="elementosPaginaCambio($event)">
+  </app-tabla-dinamica>
+
+</div>

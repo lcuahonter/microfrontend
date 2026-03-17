@@ -1,0 +1,255 @@
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-md-12">
+            <h5>Si el Material Peligroso pertenece al Tratado de ROTTERDAM se debe anexar el Documento que demuestre el
+                cumplimiento de los requisitos de etiquetado.</h5>
+        </div>
+    </div>
+
+
+    <form [formGroup]="datosSolicitudForm">
+        <div class="row mt-3">
+            <div class="col-md-4" style="margin-left: 2.5%;">
+                <span
+                tooltip="Si el material peligroso no
+                pertenece al tratado de
+                ROTTERDAM no es
+                obligatorio anexar el
+                Documento que demuestre
+                el cumplimiento de los
+                requisitos de etiquetado."
+                data-bs-toggle="tooltip">
+                <i class="bi bi-question-circle-fill"></i></span>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="form-check">
+                    <lib-input-check [id]="'tratadoRotterdam'"
+                        [label]="'El material peligroso está contenido en el Tratado de ROTTERDAM'" [required]="false"
+                        formControlName="tratadoRotterdam"
+                        [isDisabled]="esFormularioSoloLectura"
+                        (change)="actualizarElValorDeLaTienda('tratadoRotterdam', 'boolean')"></lib-input-check>
+                </div>
+                <div class="form-check">
+                    <lib-input-check [id]="'listadoNacional'"
+                        [label]="'El material peligroso está incluido en el Listado Nacional de la Ley Federal para el Control de Sustancias Químicas Susceptibles de desvío para la fabricación de armas químicas'"
+                        [required]="false" formControlName="listadoNacional"
+                        [isDisabled]="true"
+                        (change)="actualizarElValorDeLaTienda('listadoNacional', 'boolean')"></lib-input-check>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <app-catalogo-select [catalogo]="listaDeFraccionesArancelarias"
+                    [isDisabled]="esFormularioSoloLectura"
+                         formControlName="fraccionArancelaria"
+                        [label]="'Fracción arancelaria'" name="Fracción arancelaria"
+                        (change)="fraccionArancelariaSeleccione()" [required]="true"
+                        [tooltipQuestionCircle]="true"></app-catalogo-select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label" for="descripcionFraccion">Descripción de la fracción arancelaria:</label>
+                    <input type="text" class="form-control" id="descripcionFraccion"
+                        formControlName="descripcionFraccion"
+                        (change)="actualizarElValorDeLaTienda('descripcionFraccion', 'text')" />
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3 justify-content-end">
+            <div class="col-md-6 text-end">
+                <div class="">
+                    <lib-input-check [id]="'convenioMinamata'" 
+                        [label]="'El material está contenido en el convenio de Minamata'" [required]="false"
+                        formControlName="convenioMinamata"
+                        [isDisabled]="esFormularioSoloLectura"
+                        (change)="actualizarElValorDeLaTienda('convenioMinamata', 'boolean')"></lib-input-check>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <app-catalogo-select [catalogo]="listaDeNumeroCas"
+                    [isDisabled]="esFormularioSoloLectura"
+                        formControlName="numeroCas" [label]="'Número CAS'" name="Número CAS"
+                        (change)="numeroCasSeleccione()" [required]="true"></app-catalogo-select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label" for="descripcionNoArancelaria">Descripción no arancelaria:</label>
+                    <input type="text" class="form-control" id="descripcionNoArancelaria"
+                        formControlName="descripcionNoArancelaria"
+                        (change)="actualizarElValorDeLaTienda('descripcionNoArancelaria', 'text')" />
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3 justify-content-end">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label" for="nombreQuimico">Nombre químico / Nomenclatura IUPAC del
+                        material:*</label>
+                    <input type="text" class="form-control" id="nombreQuimico" formControlName="nombreQuimico"
+                        (change)="actualizarElValorDeLaTienda('nombreQuimico', 'text')" />
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <div class="pull-right ml-2">
+                    <button type="button" name="eliminarNumero" class="btn btn-danger ms-2"
+                        (click)="eliminarNumeroCas()" [disabled]="numeroCasSellecionLista.length === 0">
+                        Eliminar
+                    </button>
+                    <button type="button" name="agregarNumero" class="btn btn-primary ms-2"
+                     (click)="agregarNumero()"
+                        [disabled]="!areSpecificControlsValid()">
+                        Agregar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <h5 class="mt-3">List de Número C A S*:</h5>
+            <app-tabla-dinamica [tipoSeleccionTabla]="tipoSeleccionTabla"
+                [configuracionTabla]="numeroCasTablaConfiguracion" [datos]="tramiteState.numeroCasTablaDatos"
+                (listaDeFilaSeleccionada)="numeroCasSellecionLista = $event"></app-tabla-dinamica>
+        </div>
+
+
+        <div class="row mt-3">
+            <div class="col-md-4">
+                <label class="form-label">Nombre común:*</label>
+                <input type="text" class="form-control" formControlName="nombreComun"
+                [class.is-invalid]="datosSolicitudForm.get('nombreComun')?.touched && datosSolicitudForm.get('nombreComun')?.errors?.['required']"
+                    (change)="actualizarElValorDeLaTienda('nombreComun', 'text')" />
+                <div *ngIf="datosSolicitudForm.get('nombreComun')?.touched && datosSolicitudForm.get('nombreComun')?.invalid">
+                <small *ngIf="datosSolicitudForm.get('nombreComun')?.errors?.['required']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Nombre comercial:*</label>
+                <input type="text" class="form-control" formControlName="nombreComercial"
+                [class.is-invalid]="datosSolicitudForm.get('nombreComercial')?.touched && datosSolicitudForm.get('nombreComercial')?.errors?.['required']"
+                    (change)="actualizarElValorDeLaTienda('nombreComercial', 'text')" />
+                <div *ngIf="datosSolicitudForm.get('nombreComercial')?.touched && datosSolicitudForm.get('nombreComercial')?.invalid">
+                <small *ngIf="datosSolicitudForm.get('nombreComercial')?.errors?.['required']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="listaDeEstadoFisico"
+                [isDisabled]="esFormularioSoloLectura"
+                    formControlName="estadoFisico" [label]="'Estado físico del material'"
+                    name="Estado físico del material" [required]="true"
+                    (change)="estadoFisicoSeleccione()"></app-catalogo-select>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-md-4">
+                <label class="form-label">Cantidad:*</label>
+                <input type="number" class="form-control" formControlName="cantidad"
+                    (ngModelChange)="onCambioDeTiempo($event)"
+                    [class.is-invalid]="datosSolicitudForm.get('cantidad')?.touched && datosSolicitudForm.get('cantidad')?.errors?.['required']"
+                    (change)="actualizarElValorDeLaTienda('cantidad', 'number')" />
+                <div *ngIf="datosSolicitudForm.get('cantidad')?.touched && datosSolicitudForm.get('cantidad')?.invalid">
+                    <small *ngIf="datosSolicitudForm.get('cantidad')?.errors?.['required']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <label class="form-label">Cantidad (letra):</label>
+                <input type="text" class="form-control" formControlName="cantidadLetra"
+                    [class.is-invalid]="datosSolicitudForm.get('cantidadLetra')?.touched && datosSolicitudForm.get('cantidadLetra')?.errors?.['required']"
+                    (change)="actualizarElValorDeLaTienda('cantidadLetra', 'text')" />
+                <div *ngIf="datosSolicitudForm.get('cantidadLetra')?.touched && datosSolicitudForm.get('cantidadLetra')?.invalid">
+                    <small *ngIf="datosSolicitudForm.get('cantidadLetra')?.errors?.['required']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-md-4">
+                <app-catalogo-select [catalogo]="listaDeUnidadMedida"
+                [isDisabled]="esFormularioSoloLectura"
+                    formControlName="unidadMedida" [label]="'Unidad de medida'" name="Unidad de medida"
+                    [required]="true" (change)="unidadMedidaSeleccione()"></app-catalogo-select>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">No. de licencia sanitaria</label>
+                <input type="text" class="form-control" formControlName="licenciaSanitaria"
+                    (change)="actualizarElValorDeLaTienda('licenciaSanitaria', 'text')" />
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Uso específico de la exportación:*</label>
+                <input type="text" class="form-control" formControlName="usoEspecifico"
+                [class.is-invalid]="datosSolicitudForm.get('usoEspecifico')?.touched && datosSolicitudForm.get('usoEspecifico')?.errors?.['required']"
+                    (change)="actualizarElValorDeLaTienda('usoEspecifico', 'text')" />
+                <div *ngIf="datosSolicitudForm.get('usoEspecifico')?.touched && datosSolicitudForm.get('usoEspecifico')?.invalid">
+                    <small *ngIf="datosSolicitudForm.get('usoEspecifico')?.errors?.['required']" class="text-danger espaciador-campo-pequeño">Este campo es obligatorio</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-md-8">
+                <input-fecha (valorCambiado)="onFechaCambiada($event)"
+                    [setFecha]="datosSolicitudForm.get('fechaExportacion')?.value"
+                    [datos]="fechaDeLaFacturaInput"></input-fecha>
+
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-md-6 d-flex align-items-center">
+                <app-input-radio [radioOptions]="radioOpcions"
+                    (valueChange)="actualizarElValorDeLaTienda('usoEspecifico', 'boolean')" id="modoCantidad"
+                    [layout]="'horizontal'" formControlName="modoCantidad" [isRequired]="true">
+                </app-input-radio>
+            </div>
+        </div>
+
+        <h3>
+            Composición*
+        </h3>
+
+        <div class="row mt-5 justify-content-center">
+            <div class="col-md-8 text-center">
+                <app-tabla-dinamica [tipoSeleccionTabla]="tipoSeleccionTabla"
+                    [configuracionTabla]="composicionTablaConfiguracion" [datos]="tramiteState.composicionTablaDatos"
+                    (listaDeFilaSeleccionada)="composicionSeleccionLista = $event"></app-tabla-dinamica>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <div class="pull-right ml-2">
+                    <button type="button" name="eliminarcomposicion" class="btn btn-danger ms-2"
+                        (click)="eliminarComposicion()" [disabled]="composicionSeleccionLista.length === 0">
+                        Eliminar
+                    </button>
+                    <button type="button" name="agregarcomposicion" class="btn btn-primary ms-2"  (click)="agregarcomposicion()">
+                        Agregar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>

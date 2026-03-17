@@ -1,0 +1,43 @@
+<div class="page">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>{{titulo}}</h1>
+                @if(indice === 2) {
+                    <ng-alert [CONTENIDO]="TEXTOS.Importante"></ng-alert>
+                }
+            </div>
+            @if (esFormaValido) {
+                <ng-alert [CONTENIDO]="formErrorAlert" [CUSTOMECLASS]="'alert-danger text-center'"></ng-alert>
+              }
+            <app-wizard [listaPasos]="pantallasPasos"></app-wizard>
+        </div>
+        <div class="row">
+            @switch (indice) {
+                @case (1) {
+                    <app-paso-uno #pasoUnoRef  [isContinuarTriggered]="isContinuarTriggered"></app-paso-uno>
+                }
+                @case (2) {
+                   
+                     <app-paso-carga-documento 
+          [idSolicitud]="solicitudState.idSolicitud"
+          [idTipoTRamite]="'260302'"
+          [cargaArchivosEvento]="cargarArchivosEvento"
+          (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+          (reenviarCargaRealizada)="cargaRealizada($event)"
+          (cargaEnProgreso)="onCargaEnProgreso($event)"
+          (enBlancoObligatoria)="onBlancoObligatoria($event)">
+        </app-paso-carga-documento>
+
+                }
+                @case (3) {
+                    <paso-firma [idSolicitud]="solicitudState.idSolicitud" [procedure]="260302" [procedureUrl]="'exportacion-materias-primas-estupefacientes/contenedor-de-pasos'"></paso-firma>
+                }
+            }
+            <btn-continuar 
+                [datos]="datosPasos" 
+                (continuarEvento)="getValorIndice($event)" [dePadre]="true">
+            </btn-continuar>
+        </div>
+    </div>
+</div>

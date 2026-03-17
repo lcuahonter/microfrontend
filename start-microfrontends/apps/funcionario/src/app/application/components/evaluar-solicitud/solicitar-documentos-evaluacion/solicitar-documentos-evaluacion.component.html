@@ -1,0 +1,68 @@
+<form [formGroup]="formSolicitudDocumentos">
+  <h5>Seleccione los documentos que van a ser requeridos</h5>
+  <div class="col-md-12">
+    <div class="row">
+      <table class="table table-bordered">
+        <thead class="table-light">
+          <tr>
+            <th>Requerir</th>
+            <th>Tipo de documento</th>
+            <th>Nombre del archivo</th>
+            <th>Estatus</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let documento of exampleDocumentosRequeridos">
+            <td>
+              <input type="checkbox" [checked]="documento.requerido" />
+            </td>
+            <td>{{documento.tipoDocumento}}</td>
+            <td>{{documento.nombreArchivo}}</td>
+            <td>{{documento.estatus}}</td>
+            <td>
+              <div class="icono">
+                <span class="d-flex justify-content-center">
+                  <i class="bi bi-archive"></i></span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <div class="row ">
+      <div class="col-md-6">
+        <br>
+        <table class="table table-bordered mt-3">
+          <thead class="table-light">
+            <tr>
+              <th>#</th>
+              <th></th>
+              <th>Tipo de Documento</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let doc of documentosSeleccionados; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td><input type="checkbox" /></td>
+              <td>{{ doc }}</td>
+              <td>
+                <button class="btn btn-danger btn-sm btn-size" (click)="eliminarDocumento(i)">Eliminar</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-md-6">
+        <app-catalogo-select [catalogo]="catTipoDocumento" formControlName="tipoDocumento" [label]="'Tipo documento'"
+          [required]="true" name="tipoDocumento"></app-catalogo-select>
+        <br>
+        <button class="btn btn-primary ms-2" (click)="agregarDocumento()">Agregar nuevo</button>
+        <br>
+      </div>
+    </div>
+  </div>
+</form>

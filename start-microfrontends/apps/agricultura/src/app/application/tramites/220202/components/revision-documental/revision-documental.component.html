@@ -1,0 +1,72 @@
+<div class="container">
+  <div class="row my-4">
+
+    <div class="col-md-12 col-lg-10 mb-3">
+      <div class="d-flex justify-content-end">
+        <button type="button" class="btn btn-default mx-3" (click)="guardar()">
+          Guardar
+        </button>
+        <button type="button" class="btn btn-default" (click)="siguiente()">
+          Siguiente
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <ul class="nav nav-tabs mt-5">
+      <li [ngClass]="indicePadre === 1 ? 'active' : ''">
+        <a data-toggle="tab" (click)="seleccionaTab(1,true)">Revision documental</a>
+      </li>
+    </ul>
+
+    <ng-container>
+      <div class="tab-content">
+        @switch (indicePadre) {
+          @case (1) {
+            <div class="container">
+              <div class="row ">
+                <ul class="nav nav-tabs mt-5">
+                  <li [ngClass]="indice === 1 ? 'active' : ''">
+                    <a data-toggle="tab" (click)="seleccionaTab(1)">Hoja trabajo</a>
+                  </li>
+                  <li [ngClass]="indice === 2 ? 'active' : ''">
+                    <a data-toggle="tab" (click)="seleccionaTab(2)">Remisión de muestras para diagnóstico</a>
+                  </li>
+                  <li [ngClass]="indice === 3 ? 'active' : ''">
+                    <a data-toggle="tab" (click)="seleccionaTab(3)">Orden de servicios para tratamiento</a>
+                  </li>
+                </ul>
+
+                <ng-container>
+                  <div class="tab-content">
+                    @switch (indice) {
+                      @case (1) {
+                        <app-hoja-trabajo [numFolioTramite]="folioTramite"></app-hoja-trabajo>
+                      }
+                      @case (2) {
+                        <app-remision-muestras-diagnostico
+                          [tiposLaboratorio]="tiposLaboratorio"
+                          [unidadMedidaComercial]="unidadMedidaComercial"
+                          [nombresLaboratorios]="nombresLaboratorios"
+                          [numFolioTramite]="folioTramite"
+                          [nombreDictaminador]="nombreDictaminador"
+                        ></app-remision-muestras-diagnostico>
+                      }
+                      @case (3) {
+                        <app-orden-servicios-tratamiento
+                          [unidadMedidaComercial]="unidadMedidaComercial"
+                          [numFolioTramite]="folioTramite"
+                          [nombreDictaminador]="nombreDictaminador"
+                        ></app-orden-servicios-tratamiento>
+                      }
+                    }
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          }
+        }
+      </div>
+    </ng-container>
+  </div>
+</div>

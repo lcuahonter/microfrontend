@@ -1,0 +1,1054 @@
+<div class="container terceros-relacionados-container">
+  <div *ngIf="showTableDiv">
+    <ng-titulo titulo="Terceros relacionados" />
+
+    <ng-alert [CONTENIDO]="TEXTO_DE_ALERTA"></ng-alert>
+
+    <!-- Tabla de fabricante cuando está en pantalla" -->
+    <div class="mt-5">
+      <h5>Fabricante:</h5>
+      <div class="table-responsive mt-5">
+ 
+              <app-tabla-dinamica
+      [configuracionTabla]="configuracionTablaFabricante"
+      [datos]="fabricanteTablaDatos"
+      [tipoSeleccionTabla]="checkbox"   
+      (listaDeFilaSeleccionada)="fabricanteSeleccionadoDatos = $event"   
+      [disableSeleccionTablaCheckBox]="esFormularioSoloLectura ? true : false"
+    ></app-tabla-dinamica> 
+      </div>
+      <br />
+
+      <div class="d-flex justify-content-end mt-3">   
+          @if (fabricanteSeleccionadoDatos.length > 0) {     
+      <button  class="btn btn-danger me-3" type="button"  (click)="eliminarFabricante()" >Eliminar</button>
+          }
+          @if (fabricanteSeleccionadoDatos.length === 1){
+      <button  class="btn btn-default me-3" type="button"  (click)="modificarFabricante()">Modificar</button>
+          }
+          <button type="button" class="btn btn-primary" (click)="toggleDivFabricante()" [disabled]="esFormularioSoloLectura">
+        Agregar
+      </button>
+      </div>
+    </div>
+
+    <!-- Destinatario tabla -->
+    <div class="mt-5">
+      <h5>Destinatario (destino final)*:</h5>
+      <div class="table-responsive mt-5">
+       
+
+      <app-tabla-dinamica
+      [configuracionTabla]="configuracionTablaDestinatarioFinal"
+      [datos]="destinatarioFinalTablaDatos"
+      [tipoSeleccionTabla]="checkbox"
+      (listaDeFilaSeleccionada)="destinatarioSeleccionadoDatos = $event"      
+      [disableSeleccionTablaCheckBox]="esFormularioSoloLectura ? true : false"
+    ></app-tabla-dinamica>
+       
+      </div>
+      <br />
+
+      <div class="d-flex justify-content-end mt-3">
+        @if (destinatarioSeleccionadoDatos.length > 0) {  
+      <button  class="btn btn-danger me-3" type="button" (click)="eliminarDestinario()">Eliminar</button>
+        }
+      @if (destinatarioSeleccionadoDatos.length === 1){ 
+  <button  class="btn btn-default me-3" type="button" (click)="modificarDestinatario()">Modificar</button>
+      }
+  <button type="button" class="btn btn-primary" (click)="toggleDivDestinatario()" [disabled]="esFormularioSoloLectura">
+    Agregar
+  </button>
+      </div>
+    </div>
+
+    <!-- Proveedor tabla -->
+    <div class="mt-5">
+      <h5>Proveedor:</h5>
+      <div class="table-responsive mt-5">
+        <app-tabla-dinamica
+      [configuracionTabla]="configuracionTablaProveedor"
+      [datos]="proveedorTablaDatos"
+      [tipoSeleccionTabla]="checkbox"
+   (listaDeFilaSeleccionada)="proveedorSeleccionadoDatos = $event"
+      [disableSeleccionTablaCheckBox]="esFormularioSoloLectura ? true : false"
+    ></app-tabla-dinamica>
+      </div>
+      <br />
+
+      <div class="d-flex justify-content-end mt-3">
+           @if (proveedorSeleccionadoDatos.length > 0) {  
+        <button  class="btn btn-danger me-3" type="button"  (click)="eliminarProveedor()">Eliminar</button>
+           }
+         @if (proveedorSeleccionadoDatos.length === 1){ 
+  <button  class="btn btn-default me-3" type="button" (click)="modificarProveedor()">Modificar</button>
+         }
+  <button type="button" class="btn btn-primary" (click)="toggleDivProveedor()" [disabled]="esFormularioSoloLectura">
+    Agregar
+  </button>
+      </div>
+    </div>
+
+    <!-- Facturador tabla -->
+    <div class="mt-5">
+      <h5>Facturador:</h5>
+      <div class="table-responsive mt-5">
+   
+               <app-tabla-dinamica
+      [configuracionTabla]="configuracionTablaFacturador"
+      [datos]="facturadorTablaDatos"
+      [tipoSeleccionTabla]="checkbox"   
+      (listaDeFilaSeleccionada)="facturadorSeleccionadoDatos = $event"  
+      [disableSeleccionTablaCheckBox]="esFormularioSoloLectura ? true : false"
+    ></app-tabla-dinamica>
+      </div>
+      <br />
+
+      <div class="d-flex justify-content-end mt-3">
+         @if (facturadorSeleccionadoDatos.length > 0) {  
+       <button  class="btn btn-danger me-3" type="button"  (click)="eliminarFacturador()">Eliminar</button>
+         }
+       @if (facturadorSeleccionadoDatos.length === 1){ 
+  <button  class="btn btn-default me-3" type="button" (click)="modificarFacturador()">Modificar</button>
+       }
+  <button type="button" class="btn btn-primary" (click)="toggleDivFacturador()" [disabled]="esFormularioSoloLectura">
+    Agregar
+  </button>
+      </div>
+    </div>
+
+    <br />
+
+  </div>
+</div>
+
+<!-- Cuando el formulario Agregar fabricante está en pantalla -->
+<app-modal [active]="showFabricante">
+  <div class="agregar-fabricante-container">
+    <ng-titulo titulo="Agregar fabricante" />
+    <h5>Datos generales</h5>
+
+    <form [formGroup]="agregarFabricanteFormGroup">
+      <div class="row">
+        <div class="col-md-6">
+          <div>
+            <h6>Terceros nacionalidad*:</h6>
+            <div class="mt-2">
+              <app-input-radio [radioOptions]="nacionalidadOptions" [isRequired]="true"
+                formControlName="tercerosNacionalidad" [layout]="'vertical'" (valueChange)="cambiarRadio($event)"
+                [showTooltip]="true"></app-input-radio>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div>
+            <h6>Tipo persona*:</h6>
+            <div class="mt-2">
+              <app-input-radio [radioOptions]="tipoPersonaOptions" [isRequired]="true" formControlName="tipoPersona"
+                [layout]="'vertical'" (valueChange)="cambiarRadioFisica($event)" [showTooltip]="true"></app-input-radio>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr />
+
+      <!-- alternar entradas según la selección del botón de radio -->
+
+      <div class="row">
+        @if (nacional && fisica || (!fisica && !moral)){
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="rfc" class="form-label">R.F.C*:<span class="bi bi-question-circle-fill fs-4 m-1" title="R.F.C"
+                  ata-bs-toggle="tooltip"></span>
+              </label>
+              <input type="text" id="rfc" formControlName="rfc" class="form-control" name="rfc" />
+                 @if (agregarFabricanteFormGroup.get('rfc')?.hasError('required') && agregarFabricanteFormGroup.get('rfc')?.touched) {
+                      <div class="mensaje-error">Este campo es obligatorio.</div>
+                    }
+            </div>
+          </div>
+        </div>
+        <hr>
+        <hr>
+        <h5>Datos personales</h5>
+        <div class="row d-flex datos-personales-form-container">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="nombre" class="form-label">Nombre(s)*: </label>
+              <input type="text" id="nombre" formControlName="nombre" name="nombre" class="form-control" />
+                @if (agregarFabricanteFormGroup.get('nombre')?.hasError('required') && agregarFabricanteFormGroup.get('nombre')?.touched) {
+                      <div class="mensaje-error">Este campo es obligatorio.</div>
+                    }
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="primerApellido">Primer apellido*:</label>
+              <input type="text" id="primerApellido" formControlName="primerApellido" name="primerApellido"
+                class="form-control" />
+               @if (agregarFabricanteFormGroup.get('primerApellido')?.hasError('required') && agregarFabricanteFormGroup.get('primerApellido')?.touched) {
+                      <div class="mensaje-error">Este campo es obligatorio.</div>
+                    }
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="segundoApellido">Segundo apellido:</label>
+              <input type="text" id="segundoApellido" formControlName="segundoApellido" name="segundoApellido"
+                class="form-control" />
+            </div>
+          </div>
+        </div>
+        }
+
+        @if (nacional && moral){
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="curp" class="form-label">R.F.C*:<span class="bi bi-question-circle-fill fs-4 m-1"
+                  title="R.F.C" ata-bs-toggle="tooltip"></span>
+              </label>
+              <input type="text" id="curp" formControlName="curp" class="form-control" name="curp" />
+                @if (agregarFabricanteFormGroup.get('curp')?.hasError('required') && agregarFabricanteFormGroup.get('curp')?.touched) {
+                      <div class="mensaje-error">Este campo es obligatorio.</div>
+                    }
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-8">
+            <div class="form-group">
+              <label class="form-label" for="denominacionRazonSocial">Denominación/razón social*:</label>
+              <input type="text" class="form-control" id="denominacionRazonSocial"
+                formControlName="denominacionRazonSocial" name="denominacionRazonSocial" />
+                  @if (agregarFabricanteFormGroup.get('denominacionRazonSocial')?.hasError('required') && agregarFabricanteFormGroup.get('denominacionRazonSocial')?.touched) {
+                      <div class="mensaje-error">Este campo es obligatorio.</div>
+                    }
+            </div>
+          </div>
+        </div>
+        }
+
+        @if (extranjero && moral || (!fisica && !moral)){
+        <div class="row">
+          <div class="col-md-8">
+            <div class="form-group">
+              <label class="form-label" for="denominacionRazonSocial">Denominación/razón social*:</label>
+              <input type="text" class="form-control" id="denominacionRazonSocial"
+                formControlName="denominacionRazonSocial" name="denominacionRazonSocial" />
+                  @if (agregarFabricanteFormGroup.get('denominacionRazonSocial')?.hasError('required') && agregarFabricanteFormGroup.get('denominacionRazonSocial')?.touched) {
+                      <div class="mensaje-error">Este campo es obligatorio.</div>
+                    }
+            </div>
+          </div>
+        </div>
+        }
+
+        @if (extranjero && fisica){
+        <h5>Datos personales</h5>
+        <div class="row d-flex datos-personales-form-container">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="nombre" class="form-label">Nombre(s)*: </label>
+              <input type="text" id="nombre" formControlName="nombre" name="nombre" class="form-control" />
+                @if (agregarFabricanteFormGroup.get('nombre')?.hasError('required') && agregarFabricanteFormGroup.get('nombre')?.touched) {
+                      <div class="mensaje-error">Este campo es obligatorio.</div>
+                    }
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="primerApellido">Primer apellido*:</label>
+              <input type="text" id="primerApellido" formControlName="primerApellido" name="primerApellido"
+                class="form-control" />
+                   @if (agregarFabricanteFormGroup.get('primerApellido')?.hasError('required') && agregarFabricanteFormGroup.get('primerApellido')?.touched) {
+                      <div class="mensaje-error">Este campo es obligatorio.</div>
+                    }
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="segundoApellido">Segundo apellido:</label>
+              <input type="text" id="segundoApellido" formControlName="segundoApellido" name="segundoApellido"
+                class="form-control" />
+            </div>
+          </div>
+        </div>
+        }
+
+
+
+        <hr>
+        <hr>
+
+        <!-- Contenedor de formulario de domicilio -->
+        <h5>Domicilio</h5>
+        <div class="row d-flex domicilio-form-container">
+
+          @if(nacional){
+          <div>
+            <div class="col-md-4 mt-2">
+              <div class="form-group">
+                <app-catalogo-select [catalogo]="paisDropdownData" [label]="'Pais'" [required]="true" for="pais"
+                  id="pais" formControlName="pais"
+                  [isDisabled]="esFormularioSoloLectura ? true : false"
+                  [placeholder]="'Seleccione una opción'"></app-catalogo-select>
+              </div>
+            </div>
+
+            <div class="col-md-4 mt-2">
+              <div class="form-group">
+                <app-catalogo-select [catalogo]="dropdownData" [label]="'Estado/localidad'" [required]="true"
+                  for="estadoLocalidad" id="estadoLocalidad" formControlName="estadoLocalidad"
+                  [isDisabled]="esFormularioSoloLectura ? true : false"></app-catalogo-select>
+              </div>
+            </div>
+
+            <div class="col-md-4 mt-2">
+              <div class="form-group">
+                <app-catalogo-select [catalogo]="municipioDropdownData" [label]="'Municipio/Alcaldía'" [required]="true"
+                  for="municipioAlcaldia" id="municipioAlcaldia" formControlName="municipioAlcaldia"
+                  [isDisabled]="esFormularioSoloLectura ? true : false" [placeholder]="'Seleccione una opción'"></app-catalogo-select>
+              </div>
+            </div>
+            <hr />
+
+            <div class="col-md-4 mt-2">
+              <div class="form-group">
+                <app-catalogo-select [catalogo]="localidadDropdownData" [label]="'Localidad'" [required]="true"
+                  for="localidad" id="localidad" formControlName="localidad"
+                  [isDisabled]="esFormularioSoloLectura ? true : false" [placeholder]="'Seleccione una opción'"></app-catalogo-select>
+              </div>
+            </div>
+
+            <div class="col-md-4 mt-2">
+              <div class="form-group">
+                <app-catalogo-select [catalogo]="codigoPostalDropdownData" [label]="'Código postal o equivalente'"
+                  [required]="false" for="codigoPostaloEquivalente" id="codigoPostaloEquivalente"
+                  formControlName="codigoPostaloEquivalente"
+                  [isDisabled]="esFormularioSoloLectura ? true : false" [placeholder]="'Seleccione una opción'"></app-catalogo-select>
+              </div>
+            </div>
+
+            <div class="col-md-4 mt-2">
+              <div class="form-group">
+                <app-catalogo-select [catalogo]="coloniaDropdownData" [label]="'Colonia'" for="colonia" id="colonia"
+                  formControlName="colonia" [isDisabled]="esFormularioSoloLectura ? true : false" [placeholder]="'Seleccione una opción'"></app-catalogo-select>
+              </div>
+            </div>
+          </div>
+          }
+
+          @if(extranjero){
+          <div class="pl-0">
+            <div class="col-md-4">
+              <div class="form-group">
+                <app-catalogo-select [catalogo]="paisDropdownData" [label]="'País'" [required]="true" for="pais"
+                  id="pais" formControlName="pais"
+                  [isDisabled]="esFormularioSoloLectura ? true : false" [placeholder]="'Seleccione una opción'"></app-catalogo-select>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="extranjeroEstado" class="form-label">Estado*: </label>
+                <input type="text" id="extranjeroEstado" formControlName="extranjeroEstado" name="extranjeroEstado"
+                  class="form-control" />
+                    @if (agregarFabricanteFormGroup.get('extranjeroEstado')?.hasError('required') && agregarFabricanteFormGroup.get('extranjeroEstado')?.touched) {
+                      <div class="mensaje-error">Este campo es obligatorio.</div>
+                    }
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="extranjeroCodigo">Código postal o equivalente:</label>
+                <input type="text" id="extranjeroCodigo" formControlName="extranjeroCodigo" name="extranjeroCodigo"
+                  class="form-control" />
+              </div>
+            </div>
+
+          </div>
+          <div class="pl-0">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="extranjeroColonia">Colonia o equivalente:</label>
+                <input class="form-control" type="text" id="extranjeroColonia" formControlName="extranjeroColonia"
+                  name="extranjeroColonia" />
+              </div>
+            </div>
+          </div>
+          }
+
+          <div class="mt-5 p-0">
+            <div class="col-md-8">
+              <div class="form-group">
+                <label class="form-label" for="calle">Calle*:<span class="bi bi-question-circle-fill fs-4 m-1"
+                    title="Calle" ata-bs-toggle="tooltip"></span></label>
+                <input type="text" class="form-control" id="calle" formControlName="calle" name="calle" />
+                 @if (agregarFabricanteFormGroup.get('calle')?.hasError('required') && agregarFabricanteFormGroup.get('calle')?.touched) {
+                      <div class="mensaje-error">Este campo es obligatorio.</div>
+                    }
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="numeroExterior" class="form-label">Número exterior*:
+                </label>
+                <input type="text" id="numeroExterior" formControlName="numeroExterior" class="form-control"
+                  name="numeroExterior" />
+                     @if (agregarFabricanteFormGroup.get('numeroExterior')?.hasError('required') && agregarFabricanteFormGroup.get('numeroExterior')?.touched) {
+                      <div class="mensaje-error">Este campo es obligatorio.</div>
+                    }
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col-md-4 mt-5">
+            <div class="form-group">
+              <label class="form-label" for="numeroInterior">Número interior:</label>
+              <input class="form-control" type="text" id="numeroInterior" formControlName="numeroInterior"
+                name="numeroInterior" />
+            </div>
+          </div>
+
+          <div class="col-md-1 mt-5">
+            <div class="form-group">
+              <label class="form-label" for="lada">Lada:</label>
+              <input class="form-control" type="text" id="lada" formControlName="lada" name="lada" />
+            </div>
+          </div>
+
+          <div class="col-md-3 mt-5">
+            <div class="form-group">
+              <label class="form-label" for="telefono">Teléfono:</label>
+              <input class="form-control" type="text" id="telefono" formControlName="telefono" name="telefono" />
+            </div>
+          </div>
+
+          <div class="col-md-4 mt-5">
+            <div class="form-group">
+              <label class="form-label" for="correoElectronico">Correo electrónico:<span
+                  class="bi bi-question-circle-fill fs-4 m-1" title="Correo electrónico" ata-bs-toggle="tooltip"></span></label>
+              <input class="form-control" type="text" id="correoElectronico" formControlName="correoElectronico"
+                name="correoElectronico" />
+            </div>
+          </div>
+          <hr />
+
+          <div class="col-md-3 text-muted text-vertical-align-button">
+            <span>Campos obligatorios</span>
+          </div>
+
+          <!-- últimos tres botones -->
+          <div class="row">
+            <div class="col-md-12 d-flex justify-content-end gap-1">
+              <button type="button" class="btn btn-danger" (click)="toggleDivFabricante()">
+                Cancelar
+              </button>
+              <button type="button" class="btn btn-default" (click)="limpiarFabricanteForm()">
+                Limpiar
+              </button>
+              <button type="button" class="btn btn-primary" (click)="submitFabricantesForm()">
+                Guardar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</app-modal>
+
+<!-- Cuando el formulario Agregar destinatario está en pantalla -->
+<app-modal [active]="showDestinatario">
+  <div class="agregar-destinatario-container">
+    <ng-titulo titulo="Agregar destinatario (destino final)" />
+    <h5>Datos generales</h5>
+
+    <form [formGroup]="agregarDestinatarioFormGroup">
+      <!-- botones de radio -->
+      <div class="row">
+        <div class="col-md-6 offset-md-6">
+          <div>
+            <h6>Tipo persona*:</h6>
+            <div class="mt-2">
+              <app-input-radio [radioOptions]="tipoPersonaOptions" [isRequired]="true" formControlName="tipoPersona"
+                [layout]="'vertical'" (valueChange)="cambiarRadioFisica($event)" [showTooltip]="true"></app-input-radio>
+            </div>
+          </div>
+        </div>
+      </div>
+   <hr />
+      <div class="row">
+        
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="rfc" class="form-label">R.F.C*:<span class="bi bi-question-circle-fill fs-4 m-1" title="R.F.C"
+                  ata-bs-toggle="tooltip"></span>
+              </label>
+              <input type="text" id="rfc" formControlName="rfc" class="form-control" name="rfc" />
+               @if (agregarDestinatarioFormGroup.get('rfc')?.hasError('required') && agregarDestinatarioFormGroup.get('rfc')?.touched) {
+                      <div class="mensaje-error">Este campo es obligatorio.</div>
+                    }
+            </div>
+          
+        </div>
+      </div>
+
+        @if (fisica || (!fisica && !moral)){
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="curp" class="form-label">C.U.R.P*:<span class="bi bi-question-circle-fill fs-4 m-1"
+                  title="C.U.R.P" ata-bs-toggle="tooltip"></span>
+              </label>
+              <input type="text" id="curp" formControlName="curp" class="form-control" name="curp" />
+               @if (agregarDestinatarioFormGroup.get('curp')?.hasError('required') && agregarDestinatarioFormGroup.get('curp')?.touched) {
+                      <div class="mensaje-error">Este campo es obligatorio.</div>
+                    }
+            </div>
+          </div>
+        </div>
+        }
+
+        @if (moral || (!fisica && !moral)){
+        <div class="row">
+          <div class="col-md-8">
+            <div class="form-group">
+              <label class="form-label" for="denominacionRazonSocial">Denominación/razón social*:</label>
+              <input type="text" class="form-control" id="denominacionRazonSocial"
+                formControlName="denominacionRazonSocial" name="denominacionRazonSocial" />
+                  @if (agregarDestinatarioFormGroup.get('denominacionRazonSocial')?.hasError('required') && agregarDestinatarioFormGroup.get('denominacionRazonSocial')?.touched) {
+                      <div class="mensaje-error">Este campo es obligatorio.</div>
+                    }
+            </div>
+          </div>
+        </div>
+        }
+
+        <hr />
+        <hr />
+
+        <!-- Contenedor de formulario de domicilio -->
+        <h5>Domicilio</h5>
+        <div class="row d-flex domicilio-form-container">
+          <div class="col-md-4 mt-5">
+            <div class="form-group">
+              <app-catalogo-select [catalogo]="paisDropdownData" [label]="'Pais'" [required]="true" for="pais" id="pais"
+                formControlName="pais" [isDisabled]="esFormularioSoloLectura ? true : false" [placeholder]="'Seleccione una opción'"></app-catalogo-select>
+            </div>
+          </div>
+
+          <div class="col-md-4 mt-5">
+            <div class="form-group">
+              <app-catalogo-select [catalogo]="dropdownData" [label]="'Estado/localidad'" [required]="true"
+                for="estadoLocalidad" id="estadoLocalidad" formControlName="estadoLocalidad"
+                [isDisabled]="esFormularioSoloLectura ? true : false"  [placeholder]="'Seleccione una opción'"></app-catalogo-select>
+            </div>
+          </div>
+
+          <div class="col-md-4 mt-5">
+            <div class="form-group">
+              <app-catalogo-select [catalogo]="municipioDropdownData" [label]="'Municipio/alcaldia'" [required]="true"
+                for="municipioAlcaldia" id="municipioAlcaldia" formControlName="municipioAlcaldia"
+                [isDisabled]="esFormularioSoloLectura ? true : false"  [placeholder]="'Seleccione una opción'"></app-catalogo-select>
+            </div>
+          </div>
+
+          <div class="col-md-4 mt-5">
+            <div class="form-group">
+              <app-catalogo-select [catalogo]="localidadDropdownData" [label]="'Localidad*'" [required]="false"
+                for="localidad" id="localidad" formControlName="localidad"
+                [isDisabled]="esFormularioSoloLectura ? true : false" [placeholder]="'Seleccione una opción'"></app-catalogo-select>
+            </div>
+          </div>
+
+          <div class="col-md-4 mt-5">
+            <div class="form-group">
+              <app-catalogo-select [catalogo]="codigoPostalDropdownData" [label]="'Código postal o equivalente'"
+                for="codigoPostaloEquivalente" id="codigoPostaloEquivalente" formControlName="codigoPostaloEquivalente"
+                [isDisabled]="esFormularioSoloLectura ? true : false" [placeholder]="'Seleccione una opción'"></app-catalogo-select>
+            </div>
+          </div>
+
+          <div class="col-md-4 mt-5">
+            <div class="form-group">
+              <app-catalogo-select [catalogo]="coloniaDropdownData" [label]="'Colonia'" for="colonia" id="colonia"
+                formControlName="colonia" [isDisabled]="esFormularioSoloLectura ? true : false" [placeholder]="'Seleccione una opción'"></app-catalogo-select>
+            </div>
+          </div>
+
+          <br />
+          <br />
+
+          <div class="col-md-8">
+            <div class="form-group">
+              <label class="form-label" for="calle">Calle*:<span class="bi bi-question-circle-fill fs-4 m-1"
+                  title="Calle" ata-bs-toggle="tooltip"></span></label>
+              <input type="text" id="calle" formControlName="calle" class="form-control" name="calle" />
+                 @if (agregarDestinatarioFormGroup.get('calle')?.hasError('required') && agregarDestinatarioFormGroup.get('calle')?.touched) {
+                      <div class="mensaje-error">Este campo es obligatorio.</div>
+                    }
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="numeroExterior" class="form-label">Número exterior*:
+              </label>
+              <input type="text" id="numeroExterior" formControlName="numeroExterior" class="form-control"
+                name="numeroExterior" />
+                  @if (agregarDestinatarioFormGroup.get('numeroExterior')?.hasError('required') && agregarDestinatarioFormGroup.get('numeroExterior')?.touched) {
+                      <div class="mensaje-error">Este campo es obligatorio.</div>
+                    }
+            </div>
+          </div>
+
+          <div class="col-md-4 mt-5">
+            <div class="form-group">
+              <label class="form-label" for="numeroInterior">Número interior:</label>
+              <input type="text" id="numeroInterior" formControlName="numeroInterior" class="form-control"
+                name="numeroInterior" />
+            </div>
+          </div>
+
+          <div class="col-md-1 mt-5">
+            <div class="form-group">
+              <label class="form-label" for="lada">Lada:</label>
+              <input type="text" id="lada" formControlName="lada" class="form-control" name="lada" />
+            </div>
+          </div>
+
+          <div class="col-md-3 mt-5">
+            <div class="form-group">
+              <label class="form-label" for="telefono">Teléfono:</label>
+              <input type="text" id="telefono" formControlName="telefono" class="form-control" name="telefono" />
+            </div>
+          </div>
+
+          <div class="col-md-4 mt-5">
+            <div class="form-group">
+              <label class="form-label" for="correoElectronico">Correo electrónico:<span
+                  class="bi bi-question-circle-fill fs-4 m-1" title="Correo electrónico" ata-bs-toggle="tooltip"></span></label>
+              <input type="text" id="correoElectronico" formControlName="correoElectronico" class="form-control"
+                name="correoElectronico" />
+            </div>
+          </div>
+          <hr />
+
+          <div class="col-md-3 text-muted text-vertical-align-button">
+            <span>*Campos obligatorios</span>
+          </div>
+
+          <!-- últimos tres botones -->
+          <div class="row">
+            <div class="col-md-12 d-flex justify-content-end gap-1">
+              <button type="button" class="btn btn-danger" (click)="toggleDivDestinatario()">
+                Cancelar
+              </button>
+              <button type="button" class="btn btn-default"(click)="limpiarDestinatarioForm()">
+                Limpiar
+              </button>
+              <button type="button" class="btn btn-primary" (click)="submitDestinatariosForm()">
+                Guardar
+              </button>
+            </div>
+          </div>
+        </div>
+      
+    </form>
+  </div>
+</app-modal>
+
+<!-- Cuando el formulario Agregar proveedor está en pantalla -->
+<app-modal [active]="showProveedor">
+  <div class="agregar-proveedor-container">
+    <ng-titulo titulo="Agregar proveedor" />
+    <h5>Datos generales </h5>
+
+    <form [formGroup]="agregarProveedorFormGroup">
+      <div class="row">
+        <div class="col-md-6 offset-md-6">
+          <div>
+            <h6>Tipo persona*:</h6>
+            <div class="mt-2">
+              <app-input-radio [radioOptions]="tipoPersonaOptions" [isRequired]="true" formControlName="tipoPersona"
+                [layout]="'vertical'" (valueChange)="cambiarRadioFisica($event)" [showTooltip]="true"></app-input-radio>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr />
+
+      @if (fisica || (!fisica && !moral)) {
+      <h5>Datos personales</h5>
+      <div class="row d-flex datos-personales-form-container">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="nombre" class="form-label">Nombre(s)*: </label>
+            <input type="text" id="nombre" formControlName="nombre" name="nombre" class="form-control" />
+              @if (agregarProveedorFormGroup.get('nombre')?.hasError('required') && agregarProveedorFormGroup.get('nombre')?.touched) {
+                      <div class="mensaje-error">Este campo es obligatorio.</div>
+                    }
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="primerApellido">Primer apellido*:</label>
+            <input type="text" id="primerApellido" formControlName="primerApellido" name="primerApellido"
+              class="form-control" />
+                @if (agregarProveedorFormGroup.get('primerApellido')?.hasError('required') && agregarProveedorFormGroup.get('primerApellido')?.touched) {
+                      <div class="mensaje-error">Este campo es obligatorio.</div>
+                    }
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="segundoApellido">Segundo apellido:</label>
+            <input type="text" id="segundoApellido" formControlName="segundoApellido" name="segundoApellido"
+              class="form-control" />
+          </div>
+        </div>
+      </div>
+      }
+
+      @if (moral || (!fisica && !moral)) {
+      <div class="row">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label class="form-label" for="denominacionRazonSocial">Denominación/razón social*:</label>
+            <input type="text" class="form-control" id="denominacionRazonSocial"
+              formControlName="denominacionRazonSocial" name="denominacionRazonSocial" />
+               @if (agregarProveedorFormGroup.get('denominacionRazonSocial')?.hasError('required') && agregarProveedorFormGroup.get('denominacionRazonSocial')?.touched) {
+                      <div class="mensaje-error">Este campo es obligatorio.</div>
+                    }
+          </div>
+        </div>
+      </div>
+      }
+
+      <br />
+      <br />
+
+      <h5>Domicilio</h5>
+      <div class="row d-flex domicilio-form-container">
+        <div class="col-md-4 mt-5">
+          <div class="form-group">
+            <app-catalogo-select [catalogo]="paisDropdownData" [label]="'Pais'" [required]="true" for="pais" id="pais"
+              formControlName="pais" [isDisabled]="esFormularioSoloLectura ? true : false"
+              [placeholder]="'Seleccione una opción'"></app-catalogo-select>
+          </div>
+        </div>
+
+        <div class="col-md-4 mt-5">
+          <div class="form-group">
+            <label class="form-label" for="estado">Estado*:</label>
+            <input class="form-control" type="text" id="estado" formControlName="estado" name="estado" />
+                @if (agregarProveedorFormGroup.get('estado')?.hasError('required') && agregarProveedorFormGroup.get('estado')?.touched) {
+                      <div class="mensaje-error">Este campo es obligatorio.</div>
+                    }
+          </div>
+        </div>
+
+        <div class="col-md-4 mt-5">
+          <div class="form-group">
+            <label class="form-label" for="codigoPostaloEquivalente">Código postal o equivalente:</label>
+            <input class="form-control" type="text" id="codigoPostaloEquivalente"
+              formControlName="codigoPostaloEquivalente" name="codigoPostaloEquivalente" />
+          </div>
+        </div>
+
+        <div class="col-md-4 mt-5">
+          <div class="form-group">
+            <label class="form-label" for="coloniaoEquivalente">Colonia o equivalente:</label>
+            <input class="form-control" type="text" id="coloniaoEquivalente" formControlName="coloniaoEquivalente"
+              name="coloniaoEquivalente" />
+          </div>
+        </div>
+
+        <hr />
+        <hr />
+
+        <div class="col-md-8">
+          <div class="form-group">
+            <label class="form-label" for="calle">Calle*:<span class="bi bi-question-circle-fill fs-4 m-1" title="Calle"
+                ata-bs-toggle="tooltip"></span></label>
+            <input type="text" class="form-control" id="calle" formControlName="calle" name="calle" />
+               @if (agregarProveedorFormGroup.get('calle')?.hasError('required') && agregarProveedorFormGroup.get('calle')?.touched) {
+                      <div class="mensaje-error">Este campo es obligatorio.</div>
+                    }
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="numeroExterior" class="form-label">Número exterior*:
+            </label>
+            <input type="text" class="form-control" id="numeroExterior" formControlName="numeroExterior"
+              name="numeroExterior" />
+                  @if (agregarProveedorFormGroup.get('numeroExterior')?.hasError('required') && agregarProveedorFormGroup.get('numeroExterior')?.touched) {
+                      <div class="mensaje-error">Este campo es obligatorio.</div>
+                    }
+          </div>
+        </div>
+
+        <div class="col-md-4 mt-5">
+          <div class="form-group">
+            <label class="form-label" for="numeroInterior">Número interior:</label>
+            <input type="text" class="form-control" id="numeroInterior" formControlName="numeroInterior"
+              name="numeroInterior" />
+          </div>
+        </div>
+
+        <div class="col-md-1 mt-5">
+          <div class="form-group">
+            <label class="form-label" for="lada">Lada:</label>
+            <input type="text" class="form-control" id="lada" formControlName="lada" name="lada" />
+          </div>
+        </div>
+
+        <div class="col-md-3 mt-5">
+          <div class="form-group">
+            <label class="form-label" for="telefono">Teléfono:</label>
+            <input type="text" class="form-control" id="telefono" formControlName="telefono" name="telefono" />
+          </div>
+        </div>
+
+        <div class="col-md-4 mt-5">
+          <div class="form-group">
+            <label class="form-label" for="correoElectronico">Correo electrónico:<span
+                class="bi bi-question-circle-fill fs-4 m-1" title="Correo electrónico" ata-bs-toggle="tooltip"></span></label>
+            <input type="text" class="form-control" id="correoElectronico" formControlName="correoElectronico"
+              name="correoElectronico" />
+          </div>
+        </div>
+        <hr />
+
+        <div class="col-md-3 text-muted text-vertical-align-button">
+          <span>*Campos obligatorios</span>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12 d-flex justify-content-end gap-1">
+            <button type="button" class="btn btn-danger" (click)="toggleDivProveedor()">
+              Cancelar
+            </button>
+            <button type="button" class="btn btn-default" (click)="limpiarProveedorForm()">
+              Limpiar
+            </button>
+            <button type="button" class="btn btn-primary" (click)="submitProveedoresForm()">
+              Guardar
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</app-modal>
+
+<!-- Cuando el formulario Agregar facturador está en pantalla -->
+<app-modal [active]="showFacturador">
+  <div class="agregar-facturador-container">
+    <ng-titulo titulo="Agregar facturador" />
+    <h5>Datos generales</h5>
+
+    <form [formGroup]="agregarFacturadorFormGroup">
+      <div class="row">
+        <div class="col-md-6 offset-md-6">
+          <div>
+            <h6>Tipo persona*:</h6>
+            <app-input-radio [radioOptions]="tipoPersonaOptions" [isRequired]="true" formControlName="tipoPersona"
+              [layout]="'vertical'" (valueChange)="cambiarRadioFisica($event)" [showTooltip]="true"></app-input-radio>
+          </div>
+        </div>
+      </div>
+      <hr />
+
+      <div>
+        @if (fisica || (!fisica && !moral)) {
+        <h5>Datos personales</h5>
+        <div class="row d-flex datos-personales-form-container">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="nombre" class="form-label">Nombre(s)*: </label>
+              <input type="text" id="nombre" formControlName="nombre" name="nombre" class="form-control" />
+               @if (agregarFacturadorFormGroup.get('nombre')?.hasError('required') && agregarFacturadorFormGroup.get('nombre')?.touched) {
+                      <div class="mensaje-error">Este campo es obligatorio.</div>
+                    }
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="primerApellido">Primer apellido*:</label>
+              <input type="text" id="primerApellido" formControlName="primerApellido" name="primerApellido"
+                class="form-control" />
+                  @if (agregarFacturadorFormGroup.get('primerApellido')?.hasError('required') && agregarFacturadorFormGroup.get('primerApellido')?.touched) {
+                      <div class="mensaje-error">Este campo es obligatorio.</div>
+                    }
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label" for="segundoApellido">Segundo apellido:</label>
+              <input type="text" id="segundoApellido" formControlName="segundoApellido" name="segundoApellido"
+                class="form-control" />
+            </div>
+          </div>
+        </div>
+        }
+
+        @if (moral || (!fisica && !moral)) {
+        <div class="row">
+          <div class="col-md-8">
+            <div class="form-group">
+              <label class="form-label" for="denominacionRazonSocial">Denominación/razón social*:</label>
+              <input type="text" class="form-control" id="denominacionRazonSocial"
+                formControlName="denominacionRazonSocial" name="denominacionRazonSocial" />
+                   @if (agregarFacturadorFormGroup.get('denominacionRazonSocial')?.hasError('required') && agregarFacturadorFormGroup.get('denominacionRazonSocial')?.touched) {
+                      <div class="mensaje-error">Este campo es obligatorio.</div>
+                    }
+            </div>
+          </div>
+        </div>
+        }
+        <hr>
+        <hr>
+
+        <h5>Domicilio</h5>
+        <div class="row d-flex domicilio-form-container">
+          <div class="col-md-4 mt-5">
+            <div class="form-group">
+              <app-catalogo-select [catalogo]="paisDropdownData" [label]="'Pais'" [required]="true" for="pais" id="pais"
+                formControlName="pais" [isDisabled]="esFormularioSoloLectura ? true : false"
+                [placeholder]="'Seleccione una opción'"></app-catalogo-select>
+            </div>
+          </div>
+
+          <div class="col-md-4 mt-5">
+            <div class="form-group">
+              <label class="form-label" for="estado">Estado*:</label>
+              <input class="form-control" type="text" id="estado" formControlName="estado" name="estado" />
+               @if (agregarFacturadorFormGroup.get('estado')?.hasError('required') && agregarFacturadorFormGroup.get('estado')?.touched) {
+                      <div class="mensaje-error">Este campo es obligatorio.</div>
+                    }
+            </div>
+          </div>
+
+          <div class="col-md-4 mt-5">
+            <div class="form-group">
+              <label class="form-label" for="codigoPostaloEquivalente">Código postal o equivalente:</label>
+              <input class="form-control" type="text" id="codigoPostaloEquivalente"
+                formControlName="codigoPostaloEquivalente" name="codigoPostaloEquivalente" />
+            </div>
+          </div>
+
+          <div class="col-md-4 mt-5">
+            <div class="form-group">
+              <label class="form-label" for="coloniaoEquivalente">Colonia o equivalente:</label>
+              <input class="form-control" type="text" id="coloniaoEquivalente" formControlName="coloniaoEquivalente"
+                name="coloniaoEquivalente" />
+            </div>
+          </div>
+
+          <hr />
+          <hr />
+
+          <div class="col-md-8">
+            <div class="form-group">
+              <label class="form-label" for="calle">Calle*:<span class="bi bi-question-circle-fill fs-4 m-1"
+                  title="Calle" ata-bs-toggle="tooltip"></span></label>
+              <input type="text" class="form-control" id="calle" formControlName="calle" name="calle" />
+                 @if (agregarFacturadorFormGroup.get('calle')?.hasError('required') && agregarFacturadorFormGroup.get('calle')?.touched) {
+                      <div class="mensaje-error">Este campo es obligatorio.</div>
+                    }
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="numeroExterior" class="form-label">Número exterior*:
+              </label>
+              <input type="text" id="numeroExterior" formControlName="numeroExterior" name="numeroExterior"
+                class="form-control" />
+                 @if (agregarFacturadorFormGroup.get('numeroExterior')?.hasError('required') && agregarFacturadorFormGroup.get('numeroExterior')?.touched) {
+                      <div class="mensaje-error">Este campo es obligatorio.</div>
+                    }
+            </div>
+          </div>
+
+          <div class="col-md-4 mt-5">
+            <div class="form-group">
+              <label class="form-label" for="numeroInterior">Número interior:</label>
+              <input type="text" id="numeroInterior" formControlName="numeroInterior" name="numeroInterior"
+                class="form-control" />
+            </div>
+          </div>
+
+          <div class="col-md-1 mt-5">
+            <div class="form-group">
+              <label class="form-label" for="lada">Lada:</label>
+              <input class="form-control" type="text" id="lada" formControlName="lada" name="lada" />
+            </div>
+          </div>
+
+          <div class="col-md-3 mt-5">
+            <div class="form-group">
+              <label class="form-label" for="telefono">Teléfono:</label>
+              <input class="form-control" type="text" id="telefono" formControlName="telefono" name="telefono" />
+            </div>
+          </div>
+
+          <div class="col-md-4 mt-5">
+            <div class="form-group">
+              <label class="form-label" for="correoElectronico">Correo electrónico:<span
+                  class="bi bi-question-circle-fill fs-4 m-1" title="Correo electrónico" ata-bs-toggle="tooltip"></span></label>
+              <input class="form-control" type="text" id="correoElectronico" formControlName="correoElectronico"
+                name="correoElectronico" />
+            </div>
+          </div>
+          <hr />
+
+          <div class="col-md-3 text-muted text-vertical-align-button">
+            <span>*Campos obligatorios</span>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12 d-flex justify-content-end gap-1">
+              <button type="button" class="btn btn-danger" (click)="toggleDivFacturador()">
+                Cancelar
+              </button>
+              <button type="button" class="btn btn-default" (click)="limpiarFacturadorForm()">
+                Limpiar
+              </button>
+              <button type="button" class="btn btn-primary" (click)="submitFacturadoresForm()">
+                Guardar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+  </div>
+</app-modal>
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion"
+        (confirmacionModal)="eliminarPedimentoDatos($event)"></lib-notificaciones>
+
+</section>
+}

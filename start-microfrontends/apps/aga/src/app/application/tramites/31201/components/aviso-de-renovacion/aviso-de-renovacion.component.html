@@ -1,0 +1,143 @@
+<form [formGroup]="avisoForm">
+  <div class="container mt-3">
+    <h4>*Renovación Modalidad IVA e IEPS</h4>
+    <p> Únicamente se podrá renovar en la misma modalidad de origen, en caso de seleccionar de manera incorrecta la modalidad, se entenderá que se renueva en la modalidad con la que cuenta al momento de presentar el aviso. </p>
+    <div>
+      <label>
+        <app-input-radio [radioOptions]="tipoPersonaOptions" [isRequired]="true" formControlName="mapTipoTramite" [layout]="'vertical'" (change)="setValoresStore(avisoForm,'mapTipoTramite', 'setmapTipoTramite')"></app-input-radio>
+      </label>
+      @if (esInvalido('mapTipoTramite')) {
+        <div class="text-danger">
+          @if (avisoForm.controls['mapTipoTramite'].errors?.['required']) {
+            <small class="d-block">
+              Respuesta Obligatoria
+            </small>
+          }
+        </div>
+      }
+    </div>
+    <div class="mt-3">
+      <lib-input-check [label]="'* Bajo protesta de decir verdad, manifiesto que los datos asentados en el presente documento son ciertos y que las facultades que me fueron otorgadas para representar a la solicitante no me han sido modificadas y/o revocadas.'" [id]="'acepto3061'" [required]="true" formControlName="mapDeclaracionSolicitud" (change)="setValoresStore(avisoForm,'mapDeclaracionSolicitud', 'setmapDeclaracionSolicitud')" [isDisabled]="soloLectura"></lib-input-check>
+      @if (esInvalido('mapDeclaracionSolicitud')) {
+        <div class="text-danger">
+          @if (avisoForm.controls['mapDeclaracionSolicitud'].errors?.['required']) {
+            <small class="d-block">
+              Respuesta Obligatoria
+            </small>
+          }
+        </div>
+      }
+    </div>
+    <div class="mt-3">
+      <lib-input-check [label]="'* Con el envío del presente aviso, me doy por enterado que en caso de que se presente fuera de los plazos legales señalados en la normatividad vigente, se tendrá por no presentado sin que medie declaración, notificación o requerimiento por parte de la autoridad.'" [id]="'envioAviso'" [required]="true" formControlName="envioAviso" (change)="setValoresStore(avisoForm,'envioAviso', 'setenvioAviso')" [isDisabled]="soloLectura"></lib-input-check>
+      @if (esInvalido('envioAviso')) {
+        <div class="text-danger">
+          @if (avisoForm.controls['envioAviso'].errors?.['required']) {
+            <small class="d-block">
+              Respuesta Obligatoria
+            </small>
+          }
+        </div>
+      }
+    </div>
+    <div class="mt-3">
+      <lib-input-check [label]="' * Que las circunstancias por la cual se me otorgó el registro en el Esquema Integral de Certificación, en el rubro que ostento, no han variado y se continúan cumpliendo con los requisitos inherentes de la misma.'" [id]="'numeroAviso'" [required]="true" formControlName="numeroAviso" (change)="setValoresStore(avisoForm,'numeroAviso', 'setnumeroAviso')" [isDisabled]="soloLectura"></lib-input-check>
+      @if (esInvalido('numeroAviso')) {
+        <div class="text-danger">
+          @if (avisoForm.controls['numeroAviso'].errors?.['required']) {
+            <small class="d-block">
+              Respuesta Obligatoria
+            </small>
+          }
+        </div>
+      }
+    </div>
+  </div>
+  <div class="container mt-5">
+    <ng-titulo titulo="Pago de derechos" />
+    <div class="row mt-5">
+      <div class="col-md-6">
+        <label for="claveReferencia">Clave de referencia:</label>
+        <input id="claveReferencia" type="text" class="form-control" formControlName="claveReferencia" (change)="setValoresStore(avisoForm,'claveReferencia', 'setclaveReferencia')" />
+      </div>
+      <div class="col-md-6">
+        <label for="numeroOperacion">Número de operación:</label>
+        <input id="numeroOperacion" type="text" class="form-control" formControlName="numeroOperacion" id="numeroOperacion"
+          [ngClass]="{'is-invalid': esInvalido('numeroOperacion')}"
+          (blur)="onFieldBlur('numeroOperacion')"
+          (change)="setValoresStore(avisoForm,'numeroOperacion', 'setnumeroOperacion')" />
+        @if (esInvalido('numeroOperacion')) {
+          <div class="text-danger">
+            @if (avisoForm.controls['numeroOperacion'].errors?.['required'] || avisoForm.get('numeroOperacion')?.errors?.['minlength']) {
+              <small class="d-block">
+                Debe capturar al menos 1 caracter.
+              </small>
+            }
+            @if (avisoForm.get('numeroOperacion')?.errors?.['maxlength']) {
+              <small class="d-block">
+                El texto no debe exceder 50 caracteres.
+              </small>
+            }
+          </div>
+        }
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-6">
+        <label for="cadenaDependencia">Cadena de la dependencia:</label>
+        <input id="cadenaDependencia" type="text" class="form-control" formControlName="cadenaDependencia" (change)="setValoresStore(avisoForm,'cadenaDependencia', 'setcadenaDependencia')" />
+      </div>
+      <div class="col-md-6 custom-banco">
+        <app-catalogo-select [catalogo]="localidadList" formControlName="banco" [label]="'Banco'" [required]="false" (change)="setValoresStore(avisoForm,'banco', 'setbanco')" [isDisabled]="soloLectura"></app-catalogo-select>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-4">
+        <label for="llavePago">Llave de pago:</label>
+        <input id="llavePago" type="text" class="form-control" formControlName="llavePago" 
+          maxlength="30" minlength="10" [ngClass]="{'is-invalid': esInvalido('llavePago')}"
+          (blur)="onFieldBlur('llavePago')"
+          (change)="setValoresStore(avisoForm,'llavePago', 'setllavePago')" />
+        @if (esInvalido('llavePago')) {
+          <div class="text-danger">
+            @if (avisoForm.controls['llavePago'].errors?.['required']) {
+              <small>
+                Este campo es obligatorio.
+              </small>
+            }
+            @if (avisoForm.get('llavePago')?.errors?.['minlength'] || avisoForm.get('llavePago')?.errors?.['maxlength']) {
+              <small class="d-block">
+                Debe capturar exactamente 10 caracteres alfanuméricos en mayúsculas.
+              </small>
+            }
+          </div>
+        }
+      </div>
+      <div class="col-md-4 custom-fetchapago">
+        <div class="form-group" [ngClass]="{'has-error': esInvalido('fechaPago')}">
+        <input-fecha [datos]="fechaInicioInput" formControlName="fechaPago" (valorCambiado)="onFechaCambiada($event)" [setFecha]="avisoForm.get('fechaPago')?.value" [isDisabled]="soloLectura"></input-fecha>
+        </div>
+        @if (esInvalido('fechaPago')) {
+          <div class="text-danger">
+            @if (avisoForm.get('fechaPago')?.errors?.['futureDateNotAllowed']) {
+              <small class="d-block">
+                La fecha de pago debe ser menor o igual a la fecha actual.
+              </small>
+            }
+          </div>
+        }
+      </div>
+      <div class="col-md-4">
+        <label for="importePago">Importe de pago:</label>
+        <input id="importePago" type="text" class="form-control" formControlName="importePago" (change)="setValoresStore(avisoForm,'importePago', 'setimportePago')" />
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-12 ">
+        <div class="pull-right">
+          <button type="button" class="btn btn-primary" (click)="resetPagoDatos()" [disabled]="soloLectura">Borrar datos del pago</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

@@ -1,0 +1,31 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h1>{{ tituloMensaje || null }}</h1>
+    </div>
+    <ng-container *ngIf="indice === 2"> </ng-container>
+    <app-wizard [listaPasos]="pasos"></app-wizard>
+  </div>
+
+  <div class="row">
+    @switch (indice) { @case (1) {
+    <app-paso-uno [indice]="subIndice"></app-paso-uno>
+    } @case (2) {
+    <app-paso-dos [idTipoTRamite]="'240108'" [datosUsuario]="datosUsuario" [cargaArchivosEvento]="cargarArchivosEvento"
+      (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)" (reenviarCargaRealizada)="cargaRealizada($event)"
+      (cargaEnProgresoChange)="onCargaEnProgresoPadre($event)"></app-paso-dos>
+    } @case (3) {
+    <app-paso-tres></app-paso-tres>
+
+    } }
+
+    <btn-continuar [datos]="datosPasos" (continuarEvento)="getValorIndice($event)"
+      (anteriorEvento)="getValorIndice($event)"></btn-continuar>
+  </div>
+</div>
+
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion"></lib-notificaciones>
+</section>
+}

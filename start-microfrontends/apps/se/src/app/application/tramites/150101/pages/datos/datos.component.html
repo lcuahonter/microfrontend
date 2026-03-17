@@ -1,0 +1,70 @@
+<div class="container">
+  <div class="row">
+    <ul class="nav nav-tabs">
+      <li [ngClass]="indice === 1 ? 'active' : ''">
+        <a
+          data-toggle="tab"
+          (click)="seleccionaTab(1)"
+          (keydown.enter)="seleccionaTab(1)"
+          (keydown.space)="seleccionaTab(1)"
+          role="button"
+          tabindex="1"
+          >Solicitante</a
+        >
+      </li>
+      @if(mostrarTab) {
+        <li [ngClass]="indice === 2 ? 'active' : ''">
+          <a
+            data-toggle="tab"
+            (click)="seleccionaTab(2)"
+            (keydown.enter)="seleccionaTab(2)"
+            (keydown.space)="seleccionaTab(2)"
+            role="button"
+            tabindex="2"
+            >Programas presentados por reporte anual</a
+          >
+        </li>
+      }
+      @if(mostrarTab) {
+      <li [ngClass]="indice === 3 ? 'active' : ''">
+        <a
+          data-toggle="tab"
+          (click)="seleccionaTab(3)"
+          (keydown.enter)="seleccionaTab(3)"
+          (keydown.space)="seleccionaTab(3)"
+          role="button"
+          tabindex="3"
+          [ngClass]="!estaHabilitado ? 'disabled-link' : ''"
+          >Datos de reporte anual</a
+        >
+      </li>
+      } @else {
+      <li [ngClass]="indice === 3 ? 'active' : ''">
+        <a
+          data-toggle="tab"
+          (click)="seleccionaTab(3)"
+          (keydown.enter)="seleccionaTab(3)"
+          (keydown.space)="seleccionaTab(3)"
+          role="button"
+          tabindex="3"
+          [ngClass]="!estaHabilitado ? 'disabled-link' : ''"
+          >Reporte anual</a
+        >
+      </li>
+      }
+    </ul>
+    <ng-container>
+      @switch (indice) { @case (1) {
+      <solicitante #Solicitante></solicitante>
+      } @case (2) { @if(esDatosRespuesta && mostrarTab){
+      <app-programas-reporte-anual #programasDeComp
+        [solicitudDatosGuardados]="tablaDatos"
+        (filaDeInformeSeleccionada)="getFilaDeInformeSeleccionada($event)"
+      >
+      </app-programas-reporte-anual>
+      } } @case (3) { @if(esDatosRespuesta){
+      <app-datos-de-reporte-anual #datosDeComp> </app-datos-de-reporte-anual>
+      } } }
+    </ng-container>
+  </div>
+</div>

@@ -1,0 +1,76 @@
+<div class="page">
+  <div class="container">
+    <div class="row">
+      <ul class="nav nav-tabs">
+        <li [ngClass]="indice === 1 ? 'active' : ''">
+          <a data-toggle="tab" (click)="seleccionaTab(1)" (keydown.enter)="seleccionaTab(1)"
+            (keydown.space)="seleccionaTab(1)" role="button" tabindex="1">Solicitante</a>
+        </li>
+        <li [ngClass]="indice === 2 ? 'active' : ''">
+          <a data-toggle="tab" (click)="seleccionaTab(2)" (keydown.enter)="seleccionaTab(2)"
+            (keydown.space)="seleccionaTab(2)" role="button" tabindex="2">Datos de la Solicitud</a>
+        </li>
+        <li [ngClass]="indice === 3 ? 'active' : ''">
+          <a data-toggle="tab" (click)="seleccionaTab(3)" (keydown.enter)="seleccionaTab(3)"
+            (keydown.space)="seleccionaTab(2)" role="button" tabindex="3">Terceros relacionados</a>
+        </li>
+        <li [ngClass]="indice === 4 ? 'active' : ''">
+          <a data-toggle="tab" (click)="seleccionaTab(4)" (keydown.enter)="seleccionaTab(4)"
+            (keydown.space)="seleccionaTab(2)" role="button" tabindex="4">Pago de derechos</a>
+        </li>
+        <li [ngClass]="indice === 5 ? 'active' : ''">
+          <a data-toggle="tab" (click)="seleccionaTab(5)" (keydown.enter)="seleccionaTab(5)"
+            (keydown.space)="seleccionaTab(5)" role="button" tabindex="5">Tramites Asociados</a>
+        </li>
+      </ul>
+
+        <ng-container>
+      <solicitante [hidden]="indice !== 1"></solicitante>
+
+        <app-datos-del-solicitud-modificacion
+          #datosdelmodification 
+          [hidden]="indice !== 2" 
+          [idProcedimiento]="idProcedimiento" 
+          [idBaseProcedimiento]="260203"
+          [showPreFillingOptions]="showPreFillingOptions" 
+          [mostrarBotonCopiarDatos]="false" 
+          [mostrarNumeroYFecha]="false" 
+          [showAifaCheckbox]="false"
+          (tipoTramiteChange)="tipoTramite = $event">
+        </app-datos-del-solicitud-modificacion>
+        
+        <app-manifiestos 
+          #manifestosDeclaraciones
+          [hidden]="indice !== 2" 
+          [tipoTramite]="tipoTramite"
+          >
+        </app-manifiestos>
+        <app-representante-legal
+          #representeLegal 
+          [hidden]="indice !== 2" 
+          [idProcedimiento]="idProcedimiento"  
+          [tipoTramite]="tipoTramite"
+          (datasolicituActualizar)="datasolicituActualizar($event)" >
+      </app-representante-legal>
+      <!-- </ng-container> -->
+      <app-terceros-relacionados-vista
+          #tercerosRelacionados
+          [tipoTramite]="tipoTramite" 
+          [hidden]="indice !== 3"
+      ></app-terceros-relacionados-vista>
+      <app-pago-de-derechos-contenedora 
+        #pagoDeDerechos 
+        [tipoTramite]="tipoTramite" 
+        [hidden]="indice !== 4"
+      ></app-pago-de-derechos-contenedora>
+
+      <app-tramites-asociados-seccion 
+        [hidden]="indice !== 5" 
+        [idProcedimiento]="idProcedimiento" 
+        [folio]="'0402600900320264001000002'">
+      </app-tramites-asociados-seccion>
+    </ng-container>
+
+    </div>
+  </div>
+</div>

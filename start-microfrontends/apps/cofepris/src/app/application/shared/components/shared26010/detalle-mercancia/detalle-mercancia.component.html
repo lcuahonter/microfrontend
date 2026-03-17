@@ -1,0 +1,106 @@
+<div class="container col-12">
+  <form [formGroup]="formaDetalleMercancia" class="col-12">
+    <div class="row">
+      <div class="col-md-10 ml-2">
+        <div class="form-group">
+          <app-catalogo-select
+            [catalogo]="datosFormFormaceutica"
+            formControlName="formaFormaceutica"
+            [label]="'Forma farmacéutica'"
+            [required]="true"
+            name="formaFormaceutica"
+             [placeholder]="'Selecciona una opción'"
+          ></app-catalogo-select>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-10">
+        <div class="form-group">
+          <label class="form-label" for="numeroDeRegistro"
+            >Número de registro sanitario:
+          </label>
+          <input
+            class="form-control"
+            id="numeroDeRegistro"
+            type="text"
+            formControlName="numeroDeRegistro"
+            [ngClass]="
+              isValid(formaDetalleMercancia, 'numeroDeRegistro')
+                ? 'required'
+                : ''
+            "
+          />
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-10">
+        <div class="form-group">
+          <label class="form-label" for="marcasDistintivas"
+            >Marcas Distintivas *:
+          </label>
+          <input
+            class="form-control"
+            id="marcasDistintivas"
+            type="text"
+            formControlName="marcasDistintivas"
+            [ngClass]="
+              isValid(formaDetalleMercancia, 'marcasDistintivas')
+                ? 'required'
+                : ''
+            "
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-6 ml-1">
+        <label class="form-label text-start" for="tipoDeEnvase">
+          Presentación farmacéutica o tipo de envase*:
+        </label>
+        <textarea
+          id="tipoDeEnvase"
+          class="form-control height"
+          rows="3"
+          formControlName="tipoDeEnvase"
+          style="height: 90px"
+        ></textarea>
+      </div>
+    </div>
+  </form>
+  <div class="row mt-5">
+    <div class="col-md-12">
+      <div class="pull-right">
+        <button
+          type="button"
+          name="eliminarMercancias"
+          class="btn btn-danger ms-2"
+          (click)="eliminarMercancias()"
+          [disabled]="!this.tablaMercanciasLista.length"
+        >
+          Eliminar
+        </button>
+        
+        <button
+          type="button"
+          name="agregarMercancias"
+          class="btn btn-primary ms-2"
+          (click)="agregarMercancias()"
+        >
+          Agregar
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <h5 class="mt-3">Detalle Mercancía*:</h5>
+    <app-tabla-dinamica
+      [tipoSeleccionTabla]="tipoSeleccionTabla"
+      [configuracionTabla]="tablaDetalleMercancia"
+      [datos]="(datosTablaDetalleMercancia| async) || []"
+      (listaDeFilaSeleccionada)="tablaMercanciasLista = $event"
+    ></app-tabla-dinamica>
+  </div>
+</div>

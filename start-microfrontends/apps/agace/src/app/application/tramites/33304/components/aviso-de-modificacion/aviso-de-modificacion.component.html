@@ -1,0 +1,359 @@
+<div class="container">
+  <ng-titulo
+    titulo="Aviso cuando varíe o cambie la situación respecto del documento con el que se haya acreditado el legal uso y goce del inmueble o inmuebles en donde se lleven a cabo los procesos productivos o la prestación de servicios según se trate, referente a la vigencia, las partes y domicilio">
+  </ng-titulo>
+
+  <form [formGroup]="formularioAvisoDeModification">
+    <div class="row">
+      <div class="col-md-12">
+        <label class="form-label text-start">
+          Indique el domicilio con el que acreditó legal uso y goce al momento de obtener su registro
+        </label>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 pt-5">
+        <div class="alert alert-info py-6">
+          <div class="row align-items-center mb-3">
+            <div class="col">
+              El domicilio deberá coincidir plenamente con el registrado ante el Registro Federal de Contribuyentes
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label for="direccionInmuebleC" class="form-label">Colonia, calle y número*:</label>
+          <input type="text" id="direccionInmuebleC" formControlName="direccion" class="form-control"
+            (change)="setValoresStore(formularioAvisoDeModification,'direccion')" />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="codigoPostalInmuebleC" class="form-label">Código postal*:</label>
+          <input type="text" id="codigoPostalInmuebleC" formControlName="codigoPostal" class="form-control"
+            (change)="setValoresStore(formularioAvisoDeModification,'codigoPostal')" />
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-4">
+        <div class="form-group">
+          <app-catalogo-select [label]="'Entidad federativa*'" [placeholder]="'Seleccione un valor'"
+            [catalogo]="entidadFederativa" formControlName="cveEntidad" [isDisabled]="esFormularioSoloLectura"
+            (change)="setValoresStore(formularioAvisoDeModification, 'cveEntidad')">
+          </app-catalogo-select>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <app-catalogo-select [catalogo]="fraccionArancelaria" formControlName="cveMunicipio"
+          [label]="'Alcaldía o municipio'" [required]="true" name="cveFraccionArancelaria"
+          [isDisabled]="esFormularioSoloLectura"
+          (change)="setValoresStore(formularioAvisoDeModification, 'cveMunicipio')">
+        </app-catalogo-select>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-8">
+        <app-catalogo-select [catalogo]="cveTipoDoc" formControlName="cveTipoDoc"
+          [label]="'Tipo de documento con el que se acredita el uso y goce'" [required]="true" name="cveTipoDoc"
+          [isDisabled]="esFormularioSoloLectura"
+          (change)="setValoresStore(formularioAvisoDeModification, 'cveTipoDoc')">
+        </app-catalogo-select>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="fechaInicialAnteriorCon">Fecha inicial anterior*:</label>
+          <input-fecha class="flex-grow-1" id="fechaInicioAnterior" [datos]="fechaInputDatos"
+            [setFecha]="formularioAvisoDeModification.get('fechaInicioAnterior')?.value"
+            [isDisabled]="esFormularioSoloLectura"
+            (valorCambiado)="actualizarFecha($event, 'fechaInicioAnterior'); setValoresStore(formularioAvisoDeModification,'fechaInicioAnterior')">
+          </input-fecha>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="fechaFinalAnteriorCon">Fecha final anterior*:</label>
+          <input-fecha class="flex-grow-1" id="fechaFinAnterior" [datos]="fechaInputDatos"
+            [setFecha]="formularioAvisoDeModification.get('fechaFinAnterior')?.value"
+            [isDisabled]="esFormularioSoloLectura"
+            (valorCambiado)="actualizarFecha($event, 'fechaFinAnterior'); setValoresStore(formularioAvisoDeModification,'fechaFinAnterior')">
+          </input-fecha>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="rfcPartesC" class="form-label">Registro Federal de Contribuyentes*:</label>
+          <input type="text" id="rfcPartesC" formControlName="rfcPartesC" class="form-control"
+            (change)="setValoresStore(formularioAvisoDeModification,'rfcPartesC')" />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label d-block">&nbsp;</label>
+          <button type="button" class="btn btn-default" [disabled]="esFormularioSoloLectura"
+            (click)="cargarDatosRfcPartesC()">
+            Buscar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="rfcPartesCons" class="form-label">RFC</label>
+          <input type="text" id="rfcPartesCons" formControlName="rfcPartesCons" class="form-control"
+            (change)="setValoresStore(formularioAvisoDeModification,'rfcPartesCons')" />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="nombrePartesCons" class="form-label">Nombre</label>
+          <input type="text" id="nombrePartesCons" formControlName="nombrePartesCons" class="form-control"
+            (change)="setValoresStore(formularioAvisoDeModification,'nombrePartesCons')" />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="caracterDeCons" class="form-label">En su carácter de*:</label>
+          <input type="text" id="caracterDeCons" formControlName="caracterDeCons" class="form-control"
+            (change)="setValoresStore(formularioAvisoDeModification,'caracterDeCons')" />
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-md-12 text-right">
+        <button type="button" class="btn btn-default" [disabled]="esFormularioSoloLectura"
+          (click)="limpiaCamposParteC()">
+          Limpiar
+        </button>
+        <button type="button" class="btn btn-primary ms-2" [disabled]="esFormularioSoloLectura"
+          (click)="agregarParteC()">
+          Aceptar
+        </button>
+      </div>
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-md-12 table-responsive" id="gridListaModificacionPartes">
+        <div class="innercontainer text-center">
+          <ng-table [commonTableHeader]="modificacionPartesHeader" [commonTableBody]="modificacionPartesData"
+            [disableSeleccionTablaCheckBox]="esFormularioSoloLectura">
+          </ng-table>
+
+        </div>
+
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 text-right">
+        <button type="button" class="btn btn-danger" (click)="eliminarParteC()" [disabled]="esFormularioSoloLectura">
+          Eliminar
+        </button>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-12">
+        <div class="form-group">
+          <label for="observacionesM" class="form-label">Observaciones:</label>
+          <textarea class="form-control" rows="3" id="observacionesM" formControlName="observaciones"
+            style="height: 80px" (change)="setValoresStore(formularioAvisoDeModification,'observaciones')"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-12">
+        <div class="form-group">
+          <label for="TipoDomicilio" class="form-label">¿ El domicilio con el que se acreditó legal uso y goce al
+            momento de obtener su registro continua siendo el mismo?</label>
+          <app-input-radio [radioOptions]="radioOptions" [layout]="'horizontal'" [gap]="'50px'"
+            formControlName="ideGenerica2"
+            (change)="setValoresStore(formularioAvisoDeModification,'ideGenerica2')"></app-input-radio>
+        </div>
+      </div>
+    </div>
+
+    <ng-container *ngIf="formularioAvisoDeModification.get('ideGenerica2')?.value === '1'">
+
+      <div class="row mt-5">
+        <div class="col-md-12">
+          <label class="form-label text-start">
+            Indique el nuevo domicilio con el que acredita el legal uso y goce del inmueble.
+          </label>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12 pt-5">
+          <div class="alert alert-info py-6">
+            <div class="row align-items-center mb-3">
+              <div class="col">
+                El domicilio deberá coincidir plenamente con el registrado ante el Registro Federal de Contribuyentes
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label for="direccionInmuebleC2" class="form-label">Colonia, calle y número*:</label>
+            <input type="text" id="direccionInmuebleC2" formControlName="direccion2" class="form-control"
+              (change)="setValoresStore(formularioAvisoDeModification,'direccion2')" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="codigoPostal2" class="form-label">Código postal*:</label>
+            <input type="text" id="codigoPostal2" formControlName="codigoPostal2" class="form-control"
+              (change)="setValoresStore(formularioAvisoDeModification,'codigoPostal2')" />
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-md-4">
+          <div class="form-group">
+            <app-catalogo-select [label]="'Entidad federativa*'" [placeholder]="'Seleccione un valor'"
+              [catalogo]="entidadFederativa" formControlName="cveEntidad2" [isDisabled]="esFormularioSoloLectura"
+              (change)="setValoresStore(formularioAvisoDeModification, 'cveEntidad2')">
+            </app-catalogo-select>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <app-catalogo-select [catalogo]="fraccionArancelaria" formControlName="cveMunicipio2"
+            [label]="'Alcaldía o municipio'" [required]="true" name="cveMunicipio2"
+            [isDisabled]="esFormularioSoloLectura"
+            (change)="setValoresStore(formularioAvisoDeModification, 'cveMunicipio2')">
+          </app-catalogo-select>
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-md-8">
+          <app-catalogo-select [catalogo]="cveTipoDoc" formControlName="cveTipo2"
+            [label]="'Tipo de documento con el que se acredita el uso y goce'" [required]="true" name="cveTipo2"
+            [isDisabled]="esFormularioSoloLectura"
+            (change)="setValoresStore(formularioAvisoDeModification, 'cveTipo2')">
+          </app-catalogo-select>
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="fechaInicialAnteriorCon">Fecha inicial anterior*:</label>
+            <input-fecha class="flex-grow-1" id="fechaInicioAnterior2" [datos]="fechaInputDatos"
+              [setFecha]="formularioAvisoDeModification.get('fechaInicioAnterior2')?.value"
+              [isDisabled]="esFormularioSoloLectura"
+              (valorCambiado)="actualizarFecha($event, 'fechaInicioAnterior2'); setValoresStore(formularioAvisoDeModification,'fechaInicioAnterior2')">
+            </input-fecha>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="fechaFinalAnteriorCon">Fecha final anterior*:</label>
+            <input-fecha class="flex-grow-1" id="fechaFinAnterior2" [datos]="fechaInputDatos"
+              [setFecha]="formularioAvisoDeModification.get('fechaFinAnterior2')?.value"
+              [isDisabled]="esFormularioSoloLectura"
+              (valorCambiado)="actualizarFecha($event, 'fechaFinAnterior2'); setValoresStore(formularioAvisoDeModification,'fechaFinAnterior2')">
+            </input-fecha>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="rfcPartesC" class="form-label">Registro Federal de Contribuyentes*:</label>
+            <input type="text" id="rfcPartesC" formControlName="rfcPartesCNuevo" class="form-control"
+              (change)="setValoresStore(formularioAvisoDeModification,'rfcPartesCNuevo')" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label d-block">&nbsp;</label>
+            <button type="button" class="btn btn-default" [disabled]="esFormularioSoloLectura"
+              (click)="cargarDatosRfcPartesC()">
+              Buscar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="rfcPartesCons" class="form-label">RFC</label>
+            <input type="text" id="rfcPartesCons" formControlName="rfcPartesConsNuevo" class="form-control"
+              (change)="setValoresStore(formularioAvisoDeModification,'rfcPartesConsNuevo')" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="nombrePartesCons" class="form-label">Nombre</label>
+            <input type="text" id="nombrePartesCons" formControlName="nombrePartesConsNuevo" class="form-control"
+              (change)="setValoresStore(formularioAvisoDeModification,'nombrePartesConsNuevo')" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="caracterDeCons" class="form-label">En su carácter de*:</label>
+            <input type="text" id="caracterDeCons" formControlName="caracterDeConsNuevo" class="form-control"
+              (change)="setValoresStore(formularioAvisoDeModification,'caracterDeConsNuevo')" />
+          </div>
+        </div>
+      </div>
+
+    </ng-container>
+
+    <ng-container *ngIf="formularioAvisoDeModification.get('ideGenerica2')?.value === '2'">
+      <div class="row mt-3">
+        <div class="col-md-8">
+          <app-catalogo-select [catalogo]="cveTipoDoc" formControlName="cveTipoDoc2"
+            [label]="'Tipo de documento con el que se acredita el uso y goce'" [required]="true" name="cveTipoDoc2"
+            [isDisabled]="esFormularioSoloLectura"
+            (change)="setValoresStore(formularioAvisoDeModification, 'cveTipoDoc2')">
+          </app-catalogo-select>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="row mt-3">
+      <div class="col-md-12">
+        <app-modificacion-vigencias></app-modificacion-vigencias>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-12">
+        <app-modificacion-partes></app-modificacion-partes>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+<lib-notificaciones *ngIf="esFilaSeleccionada" [notificacionInput]="nuevaNotificacion"
+  (confirmacionModal)="modificarItemTransportista()">
+</lib-notificaciones>

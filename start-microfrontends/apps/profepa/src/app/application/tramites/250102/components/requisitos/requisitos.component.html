@@ -1,0 +1,166 @@
+<div class="container">
+    <ng-titulo titulo="Datos transporte" />
+    <form [formGroup]="transporteForm">
+        <div class="row custom-spacing">
+            <div class="col-md-4 ">
+                <div class="form-group ">
+                    <app-catalogo-select [catalogo]="medio" formControlName="medio" [label]="'Medio transporte'"
+                        [required]="true" name="medio"
+                        (change)="setValoresStore(transporteForm, 'medio')" [isDisabled]="esFormularioSoloLectura"></app-catalogo-select>
+                </div>
+            </div>
+        </div>
+        <div class="row ">
+            <h6>Transporte:*</h6>
+            <app-tabla-dinamica [configuracionTabla]="configuracionTransporteTabla" [datos]="TransporteTabla"
+                [tipoSeleccionTabla]="checkbox" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"></app-tabla-dinamica>
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item"><a class="page-link">1</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="col-md-12 mt-5 d-flex justify-content-end">
+            <button type="button" class="btn btn-danger" [disabled]="esFormularioSoloLectura">Eliminar</button>
+            <button type="button" class="btn btn-primary ms-3" (click)="transporte()" [disabled]="esFormularioSoloLectura">Agregar</button>
+        </div>
+        <app-modal [active]="showtransporteModal">
+            <ng-titulo titulo="Transporte" />
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label" for="identificacion">No. identificación:*</label>
+                        <input class="form-control" id="identificacion" type="number" formControlName="identificacion"
+                            (change)="setValoresStore(transporteForm, 'identificacion')" />
+                    </div>
+                    @if(transporteForm.controls['identificacion'].invalid &&
+                    transporteForm.controls['identificacion'].touched) {
+                    <div class="d-grid">
+                        @if(transporteForm.controls['identificacion'].errors?.['required']) {
+                        <span class="mensaje-error">Este campo es obligatorio</span>
+                        }
+                        @if(transporteForm.controls['identificacion'].errors?.['maxlength']) {
+                        <span class="mensaje-error">El número de identificación no puede ser mayor a 25
+                            caracteres</span>
+                        }
+                    </div>
+                    }
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label" for="economico">No. económico:*:</label>
+                        <input class="form-control" id="economico" type="number" formControlName="economico"
+                            (change)="setValoresStore(transporteForm, 'economico')" />
+                    </div>
+                    @if(transporteForm.controls['economico'].invalid && transporteForm.controls['economico'].touched) {
+                    <div class="d-grid">
+                        @if(transporteForm.controls['economico'].errors?.['required']) {
+                        <span class="mensaje-error">Este campo es obligatorio</span>
+                        }
+                        @if(transporteForm.controls['economico'].errors?.['maxlength']) {
+                        <span class="mensaje-error">El número económico no puede ser mayor a 50 caracteres</span>
+                        }
+                    </div>
+                    }
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label" for="placa">Placa:*</label>
+                        <input class="form-control" id="placa" maxlength="25" type="number" formControlName="placa"
+                            (change)="setValoresStore(transporteForm, 'placa')" />
+                    </div>
+                    @if(transporteForm.controls['placa'].invalid && transporteForm.controls['placa'].touched) {
+                    <div class="d-grid">
+                        @if(transporteForm.controls['placa'].errors?.['required']) {
+                        <span class="mensaje-error">Este campo es obligatorio</span>
+                        }
+                        @if(transporteForm.controls['placa'].errors?.['maxlength']) {
+                        <span class="mensaje-error">La placa no puede ser mayor a 25 caracteres</span>
+                        }
+                    </div>
+                    }
+                </div>
+            </div>
+            <div class="col-md-12 mt-5 d-flex justify-content-end">
+                <button type="button" class="btn btn-danger" id="btnCancelarAgente"
+                    (click)="transporteEliminar()">Cancelar</button>
+                <button type="button" class="btn btn-primary ms-3" id="btnAgregarAgente"
+                    (click)="transporteDatos()">Agregar</button>
+            </div>
+        </app-modal>
+        <ng-titulo titulo="Requisitos" />
+        <div class="row">
+            <h6>Requisitos:*</h6>
+            <app-tabla-dinamica [configuracionTabla]="configuracionRequisitosTabla" [datos]="RequisitosTabla"
+                [tipoSeleccionTabla]="checkbox" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"></app-tabla-dinamica>
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item"><a class="page-link">1</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="col-md-12 mt-5 d-flex justify-content-end">
+            <button type="button" class="btn btn-danger" [disabled]="esFormularioSoloLectura">Eliminar</button>
+            <button type="button" class="btn btn-primary ms-3" (click)="requisitos()" [disabled]="esFormularioSoloLectura">Agregar</button>
+        </div>
+        <app-modal [active]="showrequisitosModal">
+            <ng-titulo titulo=" Seleccionar requisito" />
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <app-catalogo-select [catalogo]="requisitoCatalogo" formControlName="requisito"
+                            [label]="'Seleccionar requisito'" [required]="true" name="requisito"
+                            (change)="setValoresStore(transporteForm, 'requisito')"></app-catalogo-select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label" for="numero">Número*:</label>
+                        <input class="form-control" id="numero" type="number" formControlName="numero"
+                            (change)="setValoresStore(transporteForm, 'numero')" />
+                    </div>
+                    @if(transporteForm.controls['numero'].invalid && transporteForm.controls['numero'].touched) {
+                    <div class="d-grid">
+                        @if(transporteForm.controls['numero'].errors?.['required']) {
+                        <span class="mensaje-error">Este campo es obligatorio</span>
+                        }
+                        @if(transporteForm.controls['numero'].errors?.['maxlength']) {
+                        <span class="mensaje-error">El número no puede ser mayor a 50 caracteres</span>
+                        }
+                    </div>
+                    }
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <input-fecha [datos]="INPUT_FECHA" [setFecha]="transporteForm.get('fechas')?.value"
+                            (valorCambiado)="cambioFechasFinal($event)">
+                        </input-fecha>
+
+                    </div>
+                    @if(transporteForm.controls['fechas'].invalid && transporteForm.controls['fechas'].touched) {
+                    <div class="d-grid">
+                        @if(transporteForm.controls['fechas'].errors?.['required']) {
+                        <span class="mensaje-error">Este campo es obligatorio</span>
+                        }
+                    </div>
+                    }
+                </div>
+
+            </div>
+
+
+            <div class="col-md-12 mt-5 d-flex justify-content-end">
+                <button type="button" class="btn btn-danger" id="btnCancelarAgente"
+                    (click)="requisitosEliminar()">Cancelar</button>
+                <button type="button" class="btn btn-primary ms-3" id="btnAgregarAgente"
+                    (click)="requisitosDatos()">Agregar</button>
+            </div>
+
+        </app-modal>
+    </form>
+
+</div>

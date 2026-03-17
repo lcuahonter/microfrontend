@@ -1,0 +1,111 @@
+<div class="container form-container">
+    <ng-titulo titulo="Pago de derechos" />
+    <div>
+      <form [formGroup]="FormSolicitud" (ngSubmit)="validarFormulario()">
+         <div>
+            <label for="exentoDePago">Exento de pago*:</label>
+            <div class="radio-container">
+              <div class="radio-option">
+                <input type="radio" id="no" formControlName="exentoDePago" value="No"
+                (change)="setValoresStore(FormSolicitud,'exentoDePago', 'setexentoDePago')">
+                <label for="no">No</label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" id="yes" formControlName="exentoDePago" value="Yes"
+                (change)="setValoresStore(FormSolicitud,'exentoDePago', 'setexentoDePago')" >
+                <label for="yes">Si</label>
+              </div>
+             
+            </div>
+          </div>
+          
+  
+          <!-- Select Dropdown -->
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+               
+
+                <app-catalogo-select [catalogo]="Justificacion" formControlName="Justificacion" [label]="'Justificación'" [isDisabled]="esFormularioSoloLectura"
+                [required]="true" name="Justificacion"  (change)="setValoresStore(FormSolicitud,'Justificacion', 'setJustificacion')"></app-catalogo-select>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Clave de referencia, Cadena de la dependencia, Banco, etc. -->
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="rfcImportExport">Clave de referencia*:</label>
+                <input class="form-control" id="rfcImportExport" formControlName="rfcImportExport"  type="text" maxlength="50">
+              </div>
+            </div>
+  
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="cadenaDependencia">Cadena de la dependencia*:</label>
+                <input class="form-control" id="cadenaDependencia" formControlName="cadenaDependencia"  type="text" libUppercase maxlength="50">
+              </div>
+            </div>
+  
+            <div class="col-md-4">
+              <div class="form-group">
+                
+                <app-catalogo-select [catalogo]="Banco" formControlName="Banco" [label]="'Banco'" [isDisabled]="esFormularioSoloLectura"
+                [required]="true" name="Banco"  
+                (change)="setValoresStore(FormSolicitud,'Banco', 'setBanco')" ></app-catalogo-select>
+               </div>
+            </div>
+           </div>
+  
+          <!-- Llave de pago, Fecha de pago, Importe de pago -->
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="llaveDePago">Llave de pago*:</label>
+                <input class="form-control" id="llaveDePago" formControlName="llaveDePago" maxlength="50" type="text"
+                (change)="setValoresStore(FormSolicitud,'llaveDePago', 'setllaveDePago')">
+              </div>
+            </div>
+  
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="fechaPago">Fecha de pago*:</label>
+                <input class="form-control" id="fechaPago" formControlName="fechaPago"  type="date" 
+                (change)="setValoresStore(FormSolicitud,'fechaPago', 'setfechaPago');
+                          FormSolicitud.get('fechaPago')?.markAsTouched();">
+                <div *ngIf="FormSolicitud.get('fechaPago')?.errors?.['futureDate'] && FormSolicitud.get('fechaPago')?.touched" class="text-danger">
+                   La fecha de pago debe ser menor o igual a la fecha actual.
+                </div>
+              </div>
+            </div>
+  
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="importePago">Importe de pago*:</label>
+                <input class="form-control" id="importePago" formControlName="importePago"  type="text" libUppercase (keypress)="$event.charCode >= 48 && $event.charCode <= 57 || $event.charCode === 46" maxlength="17">
+              </div>
+              @if (
+                FormSolicitud.controls['importePago'].invalid &&
+                FormSolicitud.controls['importePago'].touched
+                ) {
+                <div class="text-danger small">
+                  @if (FormSolicitud.controls['importePago'].errors?.['max']) {
+                  <div>Por favor, escribe un valor menor o igual a 10000000000000000</div>
+                  }
+                </div>
+                }
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-md-12 text-right">
+              <div class="form-group">
+                <button type="button" class="btn btn-outline-warning custom-button" [disabled]="esFormularioSoloLectura? true : false" (click)="borrarFechaPago()">Borrar datos del pago</button>
+              </div>
+            </div>
+          </div>
+        </form>
+    </div>
+  </div>
+  
+  

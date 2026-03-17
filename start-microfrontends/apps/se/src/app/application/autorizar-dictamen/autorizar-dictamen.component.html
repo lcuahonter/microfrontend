@@ -1,0 +1,191 @@
+@if(slectTramite) {
+<div class="container mt-2">
+    <div>
+        <div *ngIf="isDictamen">
+
+            <div class="row">
+                <div class="col-md-12 mt-3 mb-3">
+                    <lib-encabezado-requerimiento [isAturorizar]="true" [numFolioTramite]="guardarDatos.folioTramite"
+                        [tipoTramite]="guardarDatos.tipoDeTramite"></lib-encabezado-requerimiento>
+                </div>
+            </div>
+            <div class="row margin-top">
+
+                <ng-container>
+                    @if (!vistasModificacion110101.actualizarVista) {
+                    @if (tramite.toString().startsWith('130') && tramite.toString() !== '130118' && tramite.toString() !== '130120') {
+                    <app-autorizar-generar-dictamen-130 
+                        [isAntecedentes]="config.isAntecedentes" 
+                        [mostrarTitulo]="true"
+                        [dataIniciarDictamenAutorizar]="dataAutorizarDictamen"
+                        [opcionesSentidosDisponibles]="opcionesSentidosDispobles" 
+                        [soloLectura]="true"
+                        [habilitarFechasPorAceptacion]="true" 
+                        [habilitarFechasPorAceptacion]="config.habilitarFechas"
+                        [isAntecedentes]="false" 
+                        [anexo222se]="config.anexo222se"
+                        [modificarPartidas]="config.isModificarPartidas ?? false"
+                        [idTramite]="tramite"
+                        [idSolicitud]="guardarDatos.id_solicitud"
+                        [parameter]="guardarDatos.parameter"
+                        [habilitarFechasPorAceptacion]="config.habilitarFechas">
+                    </app-autorizar-generar-dictamen-130>
+                    }@else {
+                        <app-generar-dictamen [isAntecedentes]="config.isAntecedentes" [mostrarTitulo]="true"
+                        [dataIniciarDictamenAutorizar]="dataAutorizarDictamen"
+                        [opcionesSentidosDisponibles]="opcionesSentidosDispobles" [soloLectura]="true"
+                        [habilitarFechasPorAceptacion]="true" [habilitarFechasPorAceptacion]="config.habilitarFechas"
+                        [isAntecedentes]="config.isAntecedentes" [anexo222se]="config.anexo222se"
+                        [habilitarFechasPorAceptacion]="config.habilitarFechas">
+                    </app-generar-dictamen>
+                    }
+                    }@else{
+                    <app-generar-dictamen-clasificacion [isAntecedentes]="config.isAntecedentes" [mostrarTitulo]="true"
+                        [dataIniciarDictamenAutorizar]="dataAutorizarDictamen"
+                        [opcionesSentidosDisponibles]="opcionesSentidosDispobles" [soloLectura]="true"
+                        [habilitarFechasPorAceptacion]="true" [habilitarFechasPorAceptacion]="config.habilitarFechas"
+                        [isAntecedentes]="config.isAntecedentes" [anexo222se]="config.anexo222se"
+                        [habilitarFechasPorAceptacion]="config.habilitarFechas">
+                    </app-generar-dictamen-clasificacion>
+                    }
+                    @if (config.descargaSolicitud) {
+                    <ng-container>
+                        <div class="row">
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <label class="form-label text-title"
+                                    style="cursor: pointer; text-decoration: underline;" (click)="descargarSolicitud()">
+                                    Descargar datos de la solicitud
+                                </label>
+                            </div>
+                        </div>
+                    </ng-container>
+                    }
+
+                    <div class="d-flex justify-content-lg-end h3">
+                        @if (tramite.toString() === '130109') {
+                        <button type="button" class="btn btn-default ms-2" (click)="cancelar()">Cancelar</button>
+                        }
+                        <button class="btn  btn-primary ms-2" type="button"
+                            (click)="firmarMostrarAutorizarDictamen()">Autorizar</button>
+                        <button type="button" class="btn btn-default ms-2" (click)="getObservar()">Observar</button>
+                    </div>
+
+                </ng-container>
+            </div>
+        </div>
+        <div *ngIf="isFirma">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="titulo mt-5 mb-5">Firmar</h2>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <firma-electronica 
+                        [tipo]="''" 
+                        [cadenaOriginal]="cadenaOriginal"
+                        [cadenasOriginalesDocumentos]="firmaOficioCadena"
+                        (datosFirma)="obtieneFirma($event)"
+                        (documentosFirmados)="sellos($event)"
+                        ></firma-electronica>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="isDocumento">
+            <div class="row margin-top">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="titulo titulo-gold text-gold">Acuses y resoluciones</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4 mb-4">
+                <div class="col-md 6">
+                    <h5 class="titulo titulo-gold text-gold">Resolución(es)</h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-container">
+                        <thead>
+                            <tr class="table-header">
+                                @for (item of encabezadoTablaResolucion; track $index) {
+                                <th class="text-center">{{ item.valor }}</th>
+                                }
+                                <th class="text-center">Descargar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (row of datosTablaResolucion; track $index) {
+                            <tr class="table-row text-center">
+                                @for (item of encabezadoTablaResolucion; let i = $index; track $index) {
+                                <td class="text-center">{{ row[item.key] }}</td>
+                                }
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-link me-2" id="descargarPdfResol"
+                                        data-bs-toggle="button" data-bs-placement="top" title="Ver Documento"
+                                        (click)="descargarPdfResolucion(row.urlPdf)">
+                                        <i class="bi bi-download bi-c text-gray"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="isObservacion">
+            <div class="row">
+                <div class="col-md-12 mt-3 mb-3">
+                    <lib-encabezado-requerimiento [numFolioTramite]="guardarDatos.folioTramite"
+                        [tipoTramite]="guardarDatos.tipoDeTramite"></lib-encabezado-requerimiento>
+                </div>
+            </div>
+            <form [formGroup]="observacionForm">
+                <div class="row mb-5">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="observacion" class="form-label">Justificación de la observación
+                                @if(this.config.validacionesEspeciales){
+                                <span
+                                    [ngClass]="observacionForm.get('observacion')?.errors?.['required'] && observacionForm.get('observacion')?.touched ? 'text-danger' : ''">*</span>:
+                                }
+                            </label>
+                            <textarea id="observacion" class="form-control text-height " formControlName="observacion"
+                                [attr.maxlength]="tramite === 130109 ? 2000 : null" libUppercase></textarea>
+                            <div class="text-danger mt-2"
+                                *ngIf="observacionForm.get('observacion')?.hasError('required') && observacionForm.get('observacion')?.touched">
+                                Este campo es obligatorio.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="d-flex justify-content-lg-end h3">
+                <button class="btn  btn-primary ms-2" type="button" (click)="postTerminar()">Terminar</button>
+                <button type="button" class="btn btn-default ms-2" (click)="getRegresar()">Regresar</button>
+            </div>
+        </div>
+
+        <div class="row mb-5 mt-5" *ngIf="!isDocumento">
+            <app-reviewers-tabs [viewChild]="viewChild" [tramite]="tramite" [tabs]="tabs"
+                [documentos]="documentosSolicitud" [tareasSolicitud]="tareasSolicitud"
+                [dictamenes]="dictamenesSolicitud" [envioDigital]="envioDigital" [opinion]="opinion"
+                [requerimientos]="requerimientosSolicitud" [acusesResolucion]="acusesResolucion"
+                [isFechasDetalleDictamenes]="tabsConfig.isFechasDetallesDictamen"
+                (viewChildcambioDePestana)="viewChildcambioDePestana($event)"
+                (tabSeleccionado)="onTabSeleccionado($event)">
+            </app-reviewers-tabs>
+        </div>
+    </div>
+</div>
+}
+@if(nuevaNotificacion) {
+<section>
+    <lib-notificaciones [notificacionInput]="nuevaNotificacion">
+    </lib-notificaciones>
+</section>
+}

@@ -1,0 +1,92 @@
+<div class="container">
+    <h2 class="titulo titulo-gold mb-5">Consultar Configuración de programa</h2>
+    <section id="inmex-registrar" class="registrar-config-container bg-light p-5">
+        <div>
+            INMEX
+            <p class="required-text">Datos requeridos</p>
+        </div>
+        <table>
+            <tr>
+                <td>
+                    Tipo programa:
+                </td>
+                <td>INMEX</td>
+                <td>Activación de configuracion del programa INMEX</td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Tratamiento especial</p>
+                </td>
+                <td>
+                    <p>{{tramiteSeleccionado?.tratamiento}}</p>
+                </td>
+                <td>
+                    <label for="activo">activo:</label><input type="checkbox" disabled id="activo" class="ms-5">
+                </td>
+            </tr>
+        </table>
+    </section>
+    <section class="bg-light p-5">
+        <article>
+            <p>Gestión de fracciones arancelarias</p>
+            <ol>
+                <li><span>Agregar: </span>En esta sección se agregará cada elemento de forma individual y realizando sus
+                    validaciones correspondientes según sea el caso.</li>
+                <li><span>Eliminar: </span>En esta sección se eliminarán los elementos ya sea de forma individual o por
+                    conjuntos por medio de filtros para su mejor visualización, además se cuenta con un botón dónde se
+                    podrán eliminar todos los elementos.</li>
+                <li><span>Consultar: </span>En esta sección se muestran los elementos cargados ya sea de forma manual o
+                    masiva (por archivo) por medio de filtros para una mejor visualización, además se podra descargar un
+                    archivo donde se muestran todos los elementos cargados.</li>
+                <li><span>Cargar archivo: </span>En esta sección se cargará un archivo con el formato predeterminado, en
+                    caso de ser exitoso los resultados se podrán observar en la sección de consulta, si el archivo
+                    contiene errores se muestra un botón donde se podrá descargar un archivo indicando la línea y una
+                    descripcion del error.</li>
+            </ol>
+        </article>
+        <div class="btn-container-gfa my-5">
+            <button class="btn btn-primary" disabled>Agregar Fracción(es)</button>
+            <button class="btn btn-primary" (click)="abrirModal(2)">Eliminar Fracción(es)</button>
+            <button class="btn btn-primary" (click)="abrirModal(3)">Consultar Fracción</button>
+            <button class="btn btn-primary" (click)="abrirModal(4)">Cargar Archivo</button>
+        </div>
+    </section>
+    <br />
+    <section class="bg-light p-5">
+        <p>Vigencia</p>
+        <div>
+            <table class="w-100">
+                <tr>
+                    <td>Fecha inicio de vigencia</td>
+                    <td>Fecha fin de vigencia</td>
+                </tr>
+                <tr>
+                    <td>{{fechaInicioVigencia}}</td>
+                    <td>{{fechaFinVigencia}}</td>
+                </tr>
+            </table>
+        </div>
+    </section>
+    <br />
+    <section class="bg-light p-5">
+        <app-tabla-dinamica [configuracionTabla]="configuracionTablaBitacoras" [datos]="bitacora"
+            [showPagination]="true" [mode]="'client'" [showPagination]="true" [totalItems]="bitacora.length" [itemsPerPage]="10" />
+    </section>
+    <br />
+    <section class="btn-container-actions p-5 mb-5">
+        <button class="btn btn-primary" (click)="regresarALaBusqueda()">Regresar</button>
+    </section>
+</div>
+
+@if(mostrarModalEliminarFraccion) {
+<eliminar-fraccion-component [datos]="datosFracciones" [showModal]="mostrarModalEliminarFraccion"
+    (cerrar)="mostrarModalEliminarFraccion = false" (actualizarDatos)="actualizarFracciones($event)" />
+}
+
+@if(mostrarModalConsultarFraccion){
+<consultar-fraccion-component [datos]="datosFracciones" [showModal]="mostrarModalConsultarFraccion"
+    (cerrar)="mostrarModalConsultarFraccion = false"></consultar-fraccion-component>
+}
+@if(mostrarCargarArchivo){
+<cargar-archivo-component [showModal]="mostrarCargarArchivo" (cerrar)="mostrarCargarArchivo = false" />
+}

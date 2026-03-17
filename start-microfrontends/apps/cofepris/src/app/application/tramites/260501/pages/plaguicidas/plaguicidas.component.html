@@ -1,0 +1,89 @@
+<div class="page">
+    <div class="container mt-5">
+      <div class="row">
+        <h1>
+          Permiso de importación de plaguicidas
+        </h1>
+        @if (isPeligro) {
+          <div class="col-md-12">
+            <ng-alert [CONTENIDO]="formErrorAlert" [CUSTOMECLASS]="'alert-danger'"></ng-alert>
+          </div>
+        }
+        @if (esFormaValido) {
+          <div class="col-md-12">
+            <ng-alert [CONTENIDO]="formSuccessAlert"></ng-alert>
+          </div>
+        }
+        <app-wizard [listaPasos]="pasos"></app-wizard>
+      </div>
+  
+      <div class="row">
+        @switch (indice) { @case (1) {
+        <app-paso-uno #pasoUnoRef [isContinuarTriggered]="isContinuarTriggered"></app-paso-uno>
+        } @case (2) {
+        <app-paso-carga-documento 
+          [idSolicitud]="guardarIdSolicitud"
+          [idTipoTRamite]="'260501'"
+          [cargaArchivosEvento]="cargarArchivosEvento"
+          (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+          (reenviarCargaRealizada)="cargaRealizada($event)"
+          (cargaEnProgreso)="onCargaEnProgreso($event)"
+        ></app-paso-carga-documento>
+        } @case (3) {
+          <paso-firma [idSolicitud]="guardarIdSolicitud" [procedure]="260501" [procedureUrl]="'permiso-plaguicidas/plaguicidas'"></paso-firma>
+        } }
+  
+    <div class="row">
+      <div class="col-md-12">
+        @if (indice !== 2) {
+        <btn-continuar
+          [datos]="datosPasos"
+          [dePadre]="consultaState.update ? false : true"
+          (continuarEvento)="getValorIndice($event)"
+        ></btn-continuar>
+        } @else {
+          <div class="mt-5 mb-3 d-flex justify-content-end">
+          <button
+            type="button"
+            class="btn btn-default"
+            (click)="anterior()"
+            *ngIf="seccionCargarDocumentos"
+          >
+            Anterior
+          </button>
+
+        @if(isSaltar) {
+          <button
+            type="button"
+            class="btn btn-default ms-3"
+            (click)="saltar()"
+          >
+            Saltar
+          </button>
+        }
+          <button
+            class="btn btn-primary ms-3"
+            (click)="
+              seccionCargarDocumentos ? onClickCargaArchivos() : siguiente()
+            "
+            [disabled]="(seccionCargarDocumentos && !activarBotonCargaArchivos) || (!seccionCargarDocumentos && cargaEnProgreso)"
+          >
+            {{ seccionCargarDocumentos ? 'Cargar archivos' : 'Continuar' }}
+          </button>
+        </div>
+        }
+        </div>
+      </div>
+      @if(indice === 1) {
+        <ng-alert
+          [CONTENIDO]="TEXTOS"
+          [CUSTOMECLASS]="'mt-3'"
+        ></ng-alert>
+      }
+    </div>
+  </div>
+  <app-representante-legal-rfc *ngIf="shwComponent" hidden="true"> </app-representante-legal-rfc>
+  <app-manifiestos *ngIf="shwComponent" hidden="true"> </app-manifiestos>
+  <app-datos-del-establecimiento-rfc *ngIf="shwComponent" hidden="true"> </app-datos-del-establecimiento-rfc>
+  <app-domicillo *ngIf="shwComponent" hidden="true"> </app-domicillo>
+  <app-terceros-fabricante *ngIf="shwComponent" hidden="true"> </app-terceros-fabricante>

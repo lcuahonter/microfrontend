@@ -1,0 +1,685 @@
+<div class="col-md-12">
+  <ng-titulo titulo="Relación de cajas y/o vehículos con los que se presentará el servicio de consolidación de carga" />
+  <app-tabla-dinamica
+    [tipoSeleccionTabla]="tipoSeleccionTabla"
+    [configuracionTabla]="ParqueVehicular"
+    [datos]="registroVehiculosInfoList"
+    (listaDeFilaSeleccionada)="manejarFilaSeleccionada($event)"
+    [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+  >
+  </app-tabla-dinamica>
+
+  <div class="d-flex justify-content-end">
+    <div class="d-flex flex-row flex-wrap gap-3">
+      <button class="btn btn-primary" (click)="cargaArchivo()" [disabled]="esFormularioSoloLectura">
+        Carga por archivo
+      </button>
+      <button
+        class="btn btn-primary"
+        [ngClass]="{ 'btn-secondary': !enableEliminarBoton }"
+        [disabled]="!enableEliminarBoton"
+        (click)="confirmEliminarVehiculosItem()"
+      >
+        Eliminar
+      </button>
+      <button
+        class="btn btn-primary"
+        [disabled]="!enableModficarBoton"
+        [ngClass]="{ 'btn-secondary': !enableEliminarBoton }"
+        (click)="modificarItemVehiculos()"
+      >
+        Modificar
+      </button>
+      <button class="btn btn-primary" (click)="agregarDialogoDatos()"
+      [disabled]="esFormularioSoloLectura">
+        Agregar
+        
+      </button>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="registroDeVehiculos"
+  tabindex="-1"
+  aria-labelledby="registroDeVehiculosLabel"
+  aria-hidden="true"
+  data-bs-backdrop="static"
+  #registroDeVehiculos
+>
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form [formGroup]="registroVehiculosForm">
+          <ng-container formGroupName="solicitud">
+            <ng-titulo [titulo]="'Registro de vehículos'"></ng-titulo>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label text-left" for="marca">Marca*:</label>
+                  <input
+                    type="text"
+                    formControlName="marca"
+                    class="form-control"
+                    id="marca"
+                    maxlength="6"
+                  />
+                   <div class="text-danger" *ngIf="registroVehiculosForm.get('solicitud.marca')?.touched && registroVehiculosForm.get('solicitud.marca')?.invalid && registroVehiculosForm.get('solicitud.marca')?.errors?.['pattern']">
+                      <small>Existen datos incorrectos que no cumplen con el formato esperado.</small>
+                    </div>
+                  <div
+                    *ngIf="esInvalido('solicitud.marca')"
+                    class="text-danger"
+                  >
+                    <small
+                      *ngIf="
+                        registroVehiculosForm
+                          .get('solicitud.marca')
+                          ?.hasError('required')
+                      "
+                    >
+                      La marca es requerida.
+                    </small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label text-left" for="modelo">Modelo (s)*:</label>
+                  <input
+                    type="text"
+                    formControlName="modelo"
+                    class="form-control"
+                    id="modelo"
+                    maxlength="80"
+                  />
+                   <div class="text-danger" *ngIf="registroVehiculosForm.get('solicitud.modelo')?.touched && registroVehiculosForm.get('solicitud.modelo')?.invalid && registroVehiculosForm.get('solicitud.modelo')?.errors?.['pattern']">
+                      <small>Existen datos incorrectos que no cumplen con el formato esperado.</small>
+                    </div>
+                  <div
+                    *ngIf="esInvalido('solicitud.modelo')"
+                    class="text-danger"
+                  >
+                    <small
+                      *ngIf="
+                        registroVehiculosForm
+                          .get('solicitud.modelo')
+                          ?.hasError('required')
+                      "
+                    >
+                      El modelo es requerido.
+                    </small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label text-left" for="vin"
+                    >Número de identificación vehicular o serie delvehículo*:
+                    </label
+                  >
+                  <input
+                    type="text"
+                    formControlName="idVehiculoSerie"
+                    class="form-control"
+                    id="idVehiculoSerie"
+                    maxlength="17"
+                  />
+                   <div class="text-danger" *ngIf="registroVehiculosForm.get('solicitud.idVehiculoSerie')?.touched && registroVehiculosForm.get('solicitud.idVehiculoSerie')?.invalid && registroVehiculosForm.get('solicitud.idVehiculoSerie')?.errors?.['pattern']">
+                      <small>Existen datos incorrectos que no cumplen con el formato esperado.</small>
+                    </div>
+                  <div
+                    *ngIf="esInvalido('solicitud.idVehiculoSerie')"
+                    class="text-danger"
+                  >
+                    <small
+                      *ngIf="
+                        registroVehiculosForm
+                          .get('solicitud.idVehiculoSerie')
+                          ?.hasError('required')
+                      "
+                    >
+                      El VIN es requerido.
+                    </small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label text-left" for="color">Número de caja*:</label>
+                  <input
+                    type="text"
+                    formControlName="caja"
+                    class="form-control"
+                    id="caja"
+                    maxlength="30"
+                  />
+                  <div *ngIf="esInvalido('solicitud.caja')" class="text-danger">
+                    <small
+                      *ngIf="
+                        registroVehiculosForm
+                          .get('solicitud.caja')
+                          ?.hasError('required')
+                      "
+                    >
+                      El Número de caja es requerido.
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <!-- Dirección del Vehículo -->
+          <ng-container formGroupName="direccionVehiculo">
+            <ng-titulo [titulo]="'Domicilio para la verificación del vehículo'"></ng-titulo>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label text-left" for="calleVehiculo">Calle*:</label>
+                  <input
+                    type="text"
+                    formControlName="calleVehiculo"
+                    class="form-control"
+                    id="calleVehiculo"
+                    maxlength="100"
+                  />
+                  <div class="text-danger" *ngIf="registroVehiculosForm.get('direccionVehiculo.calleVehiculo')?.touched && registroVehiculosForm.get('direccionVehiculo.calleVehiculo')?.invalid && registroVehiculosForm.get('direccionVehiculo.calleVehiculo')?.errors?.['pattern']">
+                      <small>Existen datos incorrectos que no cumplen con el formato esperado.</small>
+                    </div>
+                        <div
+                    *ngIf="esInvalido('direccionVehiculo.calleVehiculo')"
+                    class="text-danger"
+                  >
+                    <small
+                      *ngIf="
+                        registroVehiculosForm
+                          .get('direccionVehiculo.calleVehiculo')
+                          ?.hasError('required')
+                      "
+                    >
+                      La calle es requerida.
+                    </small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label text-left" for="numExteriorVehiculo">Número Exterior*:</label>
+                  <input
+                    type="text"
+                    formControlName="numExteriorVehiculo"
+                    class="form-control"
+                    id="numExteriorVehiculo"
+                    maxlength="55"
+                  />
+                   <div class="text-danger" *ngIf="registroVehiculosForm.get('direccionVehiculo.numExteriorVehiculo')?.touched && registroVehiculosForm.get('direccionVehiculo.numExteriorVehiculo')?.invalid && registroVehiculosForm.get('direccionVehiculo.numExteriorVehiculo')?.errors?.['pattern']">
+                      <small>Existen datos incorrectos que no cumplen con el formato esperado.</small>
+                    </div>
+                  <div
+                    *ngIf="esInvalido('direccionVehiculo.numExteriorVehiculo')"
+                    class="text-danger"
+                  >
+                    <small
+                      *ngIf="
+                        registroVehiculosForm
+                          .get('direccionVehiculo.numExteriorVehiculo')
+                          ?.hasError('required')
+                      "
+                    >
+                      El número exterior es requerido.
+                    </small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label text-left" for="numInteriorVehiculo">Número Interior:</label>
+                  <input
+                    type="text"
+                    formControlName="numInteriorVehiculo"
+                    class="form-control"
+                    id="numInteriorVehiculo"
+                    maxlength="55"
+                  />
+                   <div class="text-danger" *ngIf="registroVehiculosForm.get('direccionVehiculo.numInteriorVehiculo')?.touched && registroVehiculosForm.get('direccionVehiculo.numInteriorVehiculo')?.invalid && registroVehiculosForm.get('direccionVehiculo.numInteriorVehiculo')?.errors?.['pattern']">
+                      <small>Existen datos incorrectos que no cumplen con el formato esperado.</small>
+                    </div>
+                  <div
+                    *ngIf="esInvalido('direccionVehiculo.numInteriorVehiculo')"
+                    class="text-danger"
+                  >
+                    <small
+                      *ngIf="
+                        registroVehiculosForm
+                          .get('direccionVehiculo.numInteriorVehiculo')
+                          ?.hasError('required')
+                      "
+                    >
+                      El número interior es requerido.
+                    </small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <app-catalogo-select
+                    [catalogo]="estados"
+                    [label]="'Entidad federativa'"
+                    [placeholder]="'Seleccione un valor'"
+                    [required]="true"
+                    id="comboEntidadVehiculo"
+                    formControlName="comboEntidadVehiculo"
+
+                  ></app-catalogo-select>
+                  <div
+                    *ngIf="esInvalido('direccionVehiculo.comboEntidadVehiculo')"
+                    class="text-danger"
+                  >
+                    <small
+                      *ngIf="
+                        registroVehiculosForm
+                          .get('direccionVehiculo.comboEntidadVehiculo')
+                          ?.hasError('required')
+                      "
+                    >
+                      Seleccione una entidad federativa.
+                    </small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <app-catalogo-select
+                    [catalogo]="municipios"
+                    [label]="'Municipio o alcaldía'"
+                    [placeholder]="'Seleccione un valor'"
+                    [required]="true"
+                    id="comboDelegacionVehiculo"
+                    formControlName="comboDelegacionVehiculo"
+
+                  ></app-catalogo-select>
+                  <div
+                    *ngIf="
+                      esInvalido('direccionVehiculo.comboDelegacionVehiculo')
+                    "
+                    class="text-danger"
+                  >
+                    <small
+                      *ngIf="
+                        registroVehiculosForm
+                          .get('direccionVehiculo.comboDelegacionVehiculo')
+                          ?.hasError('required')
+                      "
+                    >
+                      Seleccione una Municipio o alcaldía.
+                    </small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <app-catalogo-select
+                    [catalogo]="colonias"
+                    [label]="'Colonia'"
+                    [placeholder]="'Seleccione un valor'"
+                    [required]="true"
+                    id="comboColoniaVehiculo"
+                    formControlName="comboColoniaVehiculo"
+
+                  ></app-catalogo-select>
+                  <div
+                    *ngIf="esInvalido('direccionVehiculo.comboColoniaVehiculo')"
+                    class="text-danger"
+                  >
+                    <small
+                      *ngIf="
+                        registroVehiculosForm
+                          .get('direccionVehiculo.comboColoniaVehiculo')
+                          ?.hasError('required')
+                      "
+                    >
+                      Seleccione una colonia vehículo.
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Localidad, Código Postal y Aduana -->
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label text-left" for="localidadVehiculo">Localidad*:</label>
+                  <input
+                    type="text"
+                    formControlName="localidadVehiculo"
+                    class="form-control"
+                    id="localidadVehiculo"
+                    maxlength="250"
+                  />
+                   <div class="text-danger" *ngIf="registroVehiculosForm.get('direccionVehiculo.localidadVehiculo')?.touched && registroVehiculosForm.get('direccionVehiculo.localidadVehiculo')?.invalid && registroVehiculosForm.get('direccionVehiculo.localidadVehiculo')?.errors?.['pattern']">
+                      <small>Existen datos incorrectos que no cumplen con el formato esperado.</small>
+                    </div>
+                  <div
+                    *ngIf="esInvalido('direccionVehiculo.localidadVehiculo')"
+                    class="text-danger"
+                  >
+                    <small
+                      *ngIf="
+                        registroVehiculosForm
+                          .get('direccionVehiculo.localidadVehiculo')
+                          ?.hasError('required')
+                      "
+                    >
+                      La localidad es requerida.
+                    </small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label text-left" for="codigoPostalVehiculo">Código Postal*:</label>
+                  <input
+                    type="text"
+                    formControlName="codigoPostalVehiculo"
+                    class="form-control"
+                    id="codigoPostalVehiculo"
+                    maxlength="6"
+                  />
+ <div class="mensaje-error" *ngIf="registroVehiculosForm.get('direccionVehiculo.codigoPostalVehiculo')?.errors?.['pattern']">
+            Por favor, escribe un número entero válido.
+          </div>                  <div
+                    *ngIf="esInvalido('direccionVehiculo.codigoPostalVehiculo')"
+                    class="text-danger"
+                  >
+                    <small
+                      *ngIf="
+                        registroVehiculosForm
+                          .get('direccionVehiculo.codigoPostalVehiculo')
+                          ?.hasError('required')
+                      "
+                    >
+                      El código postal es requerido.
+                    </small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <app-catalogo-select
+                    [catalogo]="aduanas"
+                    [label]="'Aduana'"
+                    [placeholder]="'Seleccione un valor'"
+                    [required]="false"
+                    id="comboAduanaVehiculo"
+                    formControlName="comboAduanaVehiculo"
+
+                  ></app-catalogo-select>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+
+          <ng-container formGroupName="persona">
+            <ng-titulo [titulo]="'Nombre de una persona de contacto en la circunscripción de la aduana'"></ng-titulo>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label text-left" for="nombre">Nombre(s)*:</label>
+                  <input
+                    type="text"
+                    formControlName="nombre"
+                    class="form-control"
+                    id="nombre"
+                    maxlength="200"
+                  />
+                  <div *ngIf="esInvalido('persona.nombre')" class="text-danger">
+                    <small
+                      *ngIf="
+                        registroVehiculosForm
+                          .get('persona.nombre')
+                          ?.hasError('required')
+                      "
+                    >
+                      El nombre es requerido.
+                    </small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label text-left" for="apellidoPaterno">Primer Apellido*:</label>
+                  <input
+                    type="text"
+                    formControlName="apellidoPaterno"
+                    class="form-control"
+                    id="apellidoPaterno"
+                    maxlength="200"
+                  />
+                  <div
+                    *ngIf="esInvalido('persona.apellidoPaterno')"
+                    class="text-danger"
+                  >
+                    <small
+                      *ngIf="
+                        registroVehiculosForm
+                          .get('persona.apellidoPaterno')
+                          ?.hasError('required')
+                      "
+                    >
+                      El Primer Apellido es requerido.
+                    </small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label text-left" for="apellidoMaterno">Segundo Apellido*:</label>
+                  <input
+                    type="text"
+                    formControlName="apellidoMaterno"
+                    class="form-control"
+                    id="apellidoMaterno"
+                    maxlength="200"
+                  />
+                  <div
+                    *ngIf="esInvalido('persona.apellidoMaterno')"
+                    class="text-danger"
+                  >
+                    <small
+                      *ngIf="
+                        registroVehiculosForm
+                          .get('persona.apellidoMaterno')
+                          ?.hasError('required')
+                      "
+                    >
+                      El Segundo apellido es requerido.
+                    </small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label text-left" for="correoElectronico">Correo electrónico*:</label>
+                  <input
+                    type="email"
+                    formControlName="correoElectronico"
+                    class="form-control"
+                    id="correoElectronico"
+                    maxlength="50"
+                  />
+                        @if (registroVehiculosForm.get('persona.correoElectronico')?.errors?.['email']) {
+            <div class="text-danger">
+              <small>Por favor, escribe una dirección de correo válida.</small>
+            </div>
+            }
+                  <div
+                    *ngIf="esInvalido('persona.correoElectronico')"
+                    class="text-danger"
+                  >
+                    <small
+                      *ngIf="
+                        registroVehiculosForm
+                          .get('persona.correoElectronico')
+                          ?.hasError('required')
+                      "
+                    >
+                      El correo electrónico es requerido.
+                    </small>
+                    <small
+                      *ngIf="
+                        registroVehiculosForm
+                          .get('persona.correoElectronico')
+                          ?.hasError('email')
+                      "
+                    >
+                      El correo electrónico no es válido.
+                    </small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label text-left" for="telefonoContacto">Teléfono*:</label>
+                  <input
+                    type="text"
+                    formControlName="telefonoContacto"
+                    class="form-control"
+                    id="telefonoContacto"
+                    maxlength="30"
+                  />
+                  <div
+                    *ngIf="esInvalido('persona.telefonoContacto')"
+                    class="text-danger"
+                  >
+                    <small
+                      *ngIf="
+                        registroVehiculosForm
+                          .get('persona.telefonoContacto')
+                          ?.hasError('required')
+                      "
+                    >
+                      El teléfono es requerido.
+                    </small>
+                    <small
+                      *ngIf="
+                        registroVehiculosForm
+                          .get('persona.telefonoContacto')
+                          ?.hasError('maxlength')
+                      "
+                    >
+                      El teléfono no debe exceder 30 caracteres.
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </form>
+
+        <footer class="footer d-flex py-5 gap-3 justify-content-end">
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="modalCancelar()"
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="limpiarFormulario()"
+          >
+            Limpiar
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="enviarDialogData()"
+          >
+            Agregar
+          </button>
+        </footer>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="modalArchivo"
+  tabindex="-1"
+  #modalArchivo
+  data-bs-backdrop="static"
+  aria-labelledby="modalArchivo"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form [formGroup]="formularioArchivo">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label class="form-label text-left" class="form-label text-left">Seleccionar Archivo</label>
+                <input
+                  class="form-control"
+                  type="file"
+                  formControlName="archivo"
+                  id="archivoAdjuntar"
+                  size="60"
+                />
+                <div *ngIf="esInvalido('archivo')" class="text-danger">
+                  <small
+                    *ngIf="
+                      registroVehiculosForm.controls['archivo'].hasError(
+                        'required'
+                      )
+                    "
+                  >
+                    El archivo es requerido.
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer d-flex justify-content-end p-5 gap-3">
+        <button
+          type="button"
+          class="btn btn-default"
+          data-bs-dismiss="modal"
+          #closeModal
+        >
+          Cerrar
+        </button>
+        <button type="submit" class="btn btn-primary" (click)="cerrarModal()">
+          Enviar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<lib-notificaciones
+  *ngIf="esHabilitarElDialogo"
+  [notificacionInput]="nuevaNotificacion"
+  (confirmacionModal)="cerrarModal()"
+>
+</lib-notificaciones>
+
+<lib-notificaciones
+  *ngIf="confirmEliminarPopupAbierto"
+  [notificacionInput]="nuevaNotificacion"
+  (confirmacionModal)="eliminarVehiculosItem($event)"
+>
+</lib-notificaciones>
+
+<lib-notificaciones
+  *ngIf="multipleSeleccionPopupAbierto"
+  [notificacionInput]="nuevaNotificacion"
+  (confirmacionModal)="cerrarMultipleSeleccionPopup()"
+>
+</lib-notificaciones>

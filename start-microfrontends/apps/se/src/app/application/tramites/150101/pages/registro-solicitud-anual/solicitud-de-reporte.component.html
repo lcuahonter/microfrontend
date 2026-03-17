@@ -1,0 +1,36 @@
+<div class="Page">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h1>Registro de solicitud de Reporte Anual</h1>
+      </div>
+      <div class="col-12">
+        @if (esFormaValido) {
+        <div class="alert alert-info alert-danger" [innerHTML]="formErrorAlert"></div>
+        }
+        @if (esFormaValidoDos) {
+        <div class="alert alert-info alert-danger" [innerHTML]="formErrorAlertDos"></div>
+        }
+        @if (esFormaValidoTres) {
+        <div class="alert alert-info alert-danger" [innerHTML]="formErrorAlertTres"></div>
+        }
+        @if (esFormaValidoCuatro) {
+        <div class="alert alert-info alert-danger" [innerHTML]="formErrorAlertQuad"></div>
+        }
+
+      </div>
+      <app-wizard [listaPasos]="pantallasPasos"></app-wizard>
+    </div>
+    <div class="row">
+      @switch (indice) { @case (1) {
+      <app-datos #pasoUnoRef [solicitudState]="solicitudState" (cambioDePestana)="alCambiarPestana()"></app-datos>
+      } @case (2) {
+      <!-- <app-paso-tres></app-paso-tres> -->
+      <paso-firma [idSolicitud]="solicitudState.idSolicitud" [procedure]="150101"
+        [procedureUrl]="'registro-solicitud-anual/solicitud'"></paso-firma>
+      } }
+    </div>
+    <btn-continuar [datos]="datosPasos" [dePadre]="true" (continuarEvento)="getValorIndice($event)"></btn-continuar>
+    <ng-alert [CONTENIDO]="TEXTOSR.inst"></ng-alert>
+  </div>
+</div>

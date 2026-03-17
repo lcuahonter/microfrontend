@@ -1,0 +1,73 @@
+<div class="container">
+  <ng-titulo titulo="Información de la muestra en despacho" />
+  <form *ngIf="Informaciondela" [formGroup]="Informaciondela">
+    <div formGroupName="datosImportadorExportador">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="form-group">
+            <app-catalogo-select
+              [catalogo]="mercancia"
+              formControlName="mercancia"
+              [label]="
+                '¿El producto al que hace referencia a esta solicitud ha sido previamente inscrito en el registro para la toma de muestras?'
+              "
+              [isDisabled]="esFormularioSoloLectura"
+              [required]="true"
+              name="mercancia"
+              (change)="
+                mercanciaSeleccion();
+                setValoresStore(
+                  Informaciondela,
+                  'datosImportadorExportador.mercancia',
+                  'setMercancia'
+                )
+              "
+            ></app-catalogo-select>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label" for="folio">Folio anterior*: </label>
+            <div class="margin-top">
+              <input
+              class="form-control"
+              id="folio"
+              formControlName="folio"
+              type="text"
+              [ngClass]="{ 'required': esInvalido() }"
+              (change)="
+                sobreElCambioFolio();
+                setValoresStore(
+                  Informaciondela,
+                  'datosImportadorExportador.folio',
+                  'setFolio'
+                )
+              "
+            />
+            </div>
+            @if (Informaciondela.get('datosImportadorExportador.folio')?.hasError('required') && Informaciondela.get('datosImportadorExportador.folio')?.touched) {
+              <div class="mensaje-error">Este campo es obligatorio.</div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="modal fade" #modalConfirmacionRef id="modalConfirmacion" tabindex="-1" aria-labelledby="modalConfirmacionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <p></p>
+        </div>
+        <div class="modal-body">
+          <p>El folio debe contener 25 caractéres.</p>
+          <div class="modal-footer custom-footer">
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" #closeModal>Aceptar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

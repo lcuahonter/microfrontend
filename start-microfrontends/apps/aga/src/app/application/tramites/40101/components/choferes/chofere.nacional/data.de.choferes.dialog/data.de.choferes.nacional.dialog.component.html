@@ -1,0 +1,357 @@
+<div class="modal-dialog modal-dialog-centered modal-fullscreen">
+  <div class="modal-content">
+
+    <div class="modal-header">
+      <h5 class="modal-title">Datos de Choferes</h5>
+      <button type="button" class="btn-close" (click)="cerrarModal()"></button>
+    </div>
+    <div class="modal-body ">
+      <div class="container-fluid">
+        <form [formGroup]="formChoferes">
+          <div class="row">
+            <div class="col-md-12">
+              <h3>Datos del chofer nacional</h3>
+              <hr class="red" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <div>
+                <label>CURP*: <span class="bi bi-question-circle-fill fs-4 m-1"
+                    title="Clave Única de Registro de Población" ata-bs-toggle="tooltip">
+                  </span></label>
+              </div>
+              <div>
+                <input type="text" maxlength="18" class="form-control" formControlName="curp" />
+              </div>
+              @if (formChoferes.get('curp')?.errors?.['required'] && (formChoferes.get('curp')?.touched || submitted)) {
+              <div class="text-danger">
+                <small class="text-danger">Este campo es obligatorio.</small>
+              </div>
+              }
+              @if (formChoferes.get('curp')?.errors?.['pattern'] && (formChoferes.get('curp')?.touched || submitted)) {
+              <div class="text-danger">
+                <small>Existen datos incorrectos que no cumplen con el formato esperado.</small>
+              </div>
+              }
+              @if (formChoferes.get('curp')?.errors?.['maxlength'] && (formChoferes.get('curp')?.touched || submitted)) {
+              <div class="text-danger">
+                <small>El CURP no puede tener más de 18 caracteres.</small>
+              </div>
+              }
+            </div>
+            <div class="col-md-4">
+              <div>
+                <label for="rfc">RFC*: <span class="bi bi-question-circle-fill fs-4 m-1"
+                    title="Registro Federal de Contribuyente" ata-bs-toggle="tooltip">
+                  </span></label>
+              </div>
+              <div>
+                <input type="text" class="form-control" formControlName="rfc" maxlength="13" />
+              </div>
+              @if (formChoferes.get('rfc')?.errors?.['required'] && (formChoferes.get('rfc')?.touched || submitted)) {
+              <div class="text-danger">
+                <small class="text-danger">Este campo es obligatorio.</small>
+              </div>
+              }
+              @if (formChoferes.get('rfc')?.errors?.['pattern'] && (formChoferes.get('rfc')?.touched || submitted)) {
+              <div class="text-danger">
+                <small>Existen datos incorrectos que no cumplen con el formato esperado.</small>
+              </div>
+              }
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8 mt-3">
+              <div class="pull-right justify-content-end">
+                <button type="button" class="btn btn-primary" (click)="ObtenerDatosConductorNacional()">
+                  Buscar
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <div>
+                <label for="nombre">Nombre(s)*:</label>
+              </div>
+              <div>
+                <input type="text" class="form-control" formControlName="nombre" size="30" id="nombreCHN"
+                  maxlength="120" readonly on />
+              </div>
+              @if (formChoferes.get('nombre')?.errors?.['required'] && (formChoferes.get('nombre')?.touched ||
+              submitted)) {
+              <div class="text-danger">
+                <small class="text-danger">Este campo es obligatorio.</small>
+              </div>
+              }
+            </div>
+
+            <div class="col-md-4">
+              <div>
+                <label for="primerApellido">Primer Apellido*:</label>
+              </div>
+              <div>
+                <input type="text" class="form-control" formControlName="primerApellido" />
+              </div>
+              @if (formChoferes.get('primerApellido')?.errors?.['required'] &&
+              (formChoferes.get('primerApellido')?.touched || submitted)) {
+              <div class="text-danger">
+                <small class="text-danger">Este campo es obligatorio.</small>
+              </div>
+              }
+            </div>
+            <div class="col-md-4">
+              <div>
+                <label for="apellidoMaterno">Segundo Apellido:</label>
+              </div>
+              <div>
+                <input type="text" class="form-control" formControlName="segundoApellido" readonly />
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <div>
+                <label for="numeroDeGafete">Número de gafete del chofer:</label>
+              </div>
+              <div>
+                <input type="text" class="form-control" formControlName="numeroDeGafete" />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div>
+                <label for="vigenciaGafete">Fecha fin de vigencia del gafete:</label>
+              </div>
+              <div>
+                <input type="text" class="form-control" formControlName="vigenciaGafete" />
+              </div>
+            </div>
+          </div>
+
+
+          <div class="row">
+            <ng-titulo titulo="Domicilio fiscal"></ng-titulo>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <div>
+                <label for="calle">Calle*:</label>
+              </div>
+              <div>
+                <input type="text" class="form-control" formControlName="calle" maxlength="100" />
+              </div>
+              @if (formChoferes.get('calle')?.errors?.['required'] && (formChoferes.get('calle')?.touched || submitted))
+              {
+              <div class="text-danger">
+                <small class="text-danger">Este campo es obligatorio.</small>
+              </div>
+              }
+            </div>
+            <div class="col-md-4">
+              <div>
+                <label for="numeroExterior">Número exterior*:</label>
+              </div>
+              <div>
+                <input type="text" class="form-control" formControlName="numeroExterior" maxlength="55" />
+              </div>
+              @if (formChoferes.get('numeroExterior')?.errors?.['required'] &&
+              (formChoferes.get('numeroExterior')?.touched || submitted)) {
+              <div class="text-danger">
+                <small class="text-danger">Este campo es obligatorio.</small>
+              </div>
+              }
+            </div>
+            <div class="col-md-4">
+              <div>
+                <label for="numeroInterior">Número interior:</label>
+              </div>
+              <div>
+                <input type="text" class="form-control" formControlName="numeroInterior" />
+              </div>
+            </div>
+          </div>
+
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label">País</label>
+                <select class="form-control form-select" formControlName="pais" (change)="onPaisChange()"
+                  [attr.disabled]="true">
+                  <option [ngValue]="null">Seleccione un país</option>
+                  <option *ngFor="let pais of paisList" [title]="pais.descripcion" [value]="pais.clave">
+                    {{ pais.descripcion }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label">Estado*</label>
+                <select class="form-control form-select" formControlName="estado" (change)="onEstadoChange()"
+                  [attr.disabled]="readonly ? '' : null">
+                  <option [ngValue]="null">Seleccione un valor</option>
+                  <option *ngFor="let estado of estadoList" [title]="estado.descripcion" [value]="estado.clave">
+                    {{ estado.descripcion }}
+                  </option>
+                </select>
+                @if (formChoferes.get('estado')?.errors?.['required'] && (formChoferes.get('estado')?.touched ||
+                submitted)) {
+                <small class="text-danger">Este campo es obligatorio.</small>
+                }
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label">Municipio o alcaldía*</label>
+                <select class="form-control form-select" formControlName="municipioAlcaldia"
+                  (change)="onMunicipioChange()" [attr.disabled]="readonly ? '' : null">
+                  <option [ngValue]="null">Seleccione un valor</option>
+                  <option *ngFor="let municipio of municipioList" [title]="municipio.descripcion"
+                    [value]="municipio.clave">
+                    {{ municipio.descripcion }}
+                  </option>
+                </select>
+                @if (formChoferes.get('municipioAlcaldia')?.errors?.['required'] &&
+                (formChoferes.get('municipioAlcaldia')?.touched || submitted)) {
+                <small class="text-danger">Este campo es obligatorio.</small>
+                }
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label">Colonia*</label>
+                <select class="form-control form-select" formControlName="colonia"
+                   [attr.disabled]="readonly ? '' : null">
+                  <option [ngValue]="null">Seleccione un valor</option>
+                  <option *ngFor="let colonia of coloniaList" [title]="colonia.descripcion" [value]="colonia.clave">
+                    {{ colonia.descripcion }}
+                  </option>
+                </select>
+                @if (formChoferes.get('colonia')?.errors?.['required'] && (formChoferes.get('colonia')?.touched ||
+                submitted)) {
+                <small class="text-danger">Este campo es obligatorio.</small>
+                }
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label">País de residencia*</label>
+                <select class="form-control form-select" formControlName="paisDeResidencia"
+                  [attr.disabled]="readonly ? '' : null">
+                  <option [ngValue]="null">Seleccione un valor</option>
+                  <option *ngFor="let pais of paisList" [title]="pais.descripcion" [value]="pais.clave">
+                    {{ pais.descripcion }}
+                  </option>
+                </select>
+                @if (formChoferes.get('paisDeResidencia')?.errors?.['required'] &&
+                (formChoferes.get('paisDeResidencia')?.touched || submitted)) {
+                <small class="text-danger">Este campo es obligatorio.</small>
+                }
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div>
+                <label for="ciudad">Ciudad*:</label>
+              </div>
+              <div>
+                <input type="text" class="form-control" formControlName="ciudad" maxlength="251" />
+              </div>
+              @if (formChoferes.get('ciudad')?.errors?.['required'] && (formChoferes.get('ciudad')?.touched ||
+              submitted)) {
+              <div class="text-danger">
+                <small class="text-danger">Este campo es obligatorio.</small>
+              </div>
+              }
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-8">
+              <div>
+                <label for="localidad">Localidad*:</label>
+              </div>
+              <div>
+                <input type="text" class="form-control" formControlName="localidad" maxlength="255" />
+              </div>
+              @if (formChoferes.get('localidad')?.errors?.['required'] && (formChoferes.get('localidad')?.touched ||
+              submitted)) {
+              <div class="text-danger">
+                <small class="text-danger">Este campo es obligatorio.</small>
+              </div>
+              }
+            </div>
+            <div class="col-md-4">
+              <div>
+                <label for="codigoPostal">Código postal*:</label>
+              </div>
+              <div>
+                <input type="text" class="form-control" formControlName="codigoPostal" maxlength="12" />
+              </div>
+              @if (formChoferes.get('codigoPostal')?.errors?.['required'] && (formChoferes.get('codigoPostal')?.touched
+              || submitted)) {
+              <div class="text-danger">
+                <small class="text-danger">Este campo es obligatorio.</small>
+              </div>
+              }
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-8">
+              <div>
+                <label for="solicitud.correo">Correo electrónico:</label>
+              </div>
+              <div>
+                <input type="email" class="form-control" formControlName="correoElectronico" maxlength="55" />
+              </div>
+              @if (formChoferes.get('correoElectronico')?.errors?.['email'] &&
+              (formChoferes.get('correoElectronico')?.touched || submitted)) {
+              <div class="text-danger">
+                <small>Por favor, escribe una dirección de correo válida.</small>
+              </div>
+              }
+            </div>
+            <div class="col-md-4">
+              <div>
+                <label for="solicitud.telefono">Teléfono:</label>
+              </div>
+              <div>
+                <input type="tel" class="form-control" formControlName="telefono" maxlength="12" />
+              </div>
+              @if (formChoferes.get('telefono')?.errors?.['pattern'] && (formChoferes.get('telefono')?.touched ||
+              submitted)) {
+              <div class="text-danger">
+                <small>Por favor, sólo escribe dígitos.</small>
+              </div>
+              }
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-md-12">
+              <div class="pull-right justify-content-end">
+                <button type="button" class="btn btn-default mr-3" (click)="limpiarFormulario()">Limpiar</button>
+                <button type="button" class="btn btn-danger mr-3" (click)="cerrarModal()">Cancelar</button>
+                <button type="button" class="btn btn-primary mr-3" (click)="guardarFilaEditada()">Guardar</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  @if(alertaNotificacion) {
+  <section>
+    <lib-notificaciones [notificacionInput]="alertaNotificacion"></lib-notificaciones>
+  </section>
+  }
+</div>

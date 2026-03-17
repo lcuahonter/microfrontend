@@ -1,0 +1,110 @@
+<div class="container">
+  <form [formGroup]="form" (ngSubmit)="onSearch()">
+    <div class="row">
+      <div class="col-md-12">
+        <ng-titulo titulo="PROSEC"></ng-titulo>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="consultType">Consulta por:</label>
+          <app-input-radio
+            [radioOptions]="radioOptions"
+            [isRequired]="true"
+            [selectedValue]="defaultSelect"
+            formControlName="consultType"
+            (change)="setValores(form, 'consultType', 'setConsultType')"
+            [layout]="'vertical'"
+          ></app-input-radio>
+        </div>
+      </div>
+      @if (shouldShowSectorField) {
+      <div class="col-md-8">
+        <div class="form-group">
+          <label for="sectorSelect">Sector</label>
+          <select
+            id="sectorSelect"
+            class="form-control form-select"
+            formControlName="sector"
+          >
+            <option [ngValue]="null">Seleccione</option>
+            <option
+              *ngFor="let sector of sectorCatalogo"
+              [value]="sector.clave"
+            >
+              {{ sector.descripcion }}
+            </option>
+          </select>
+          @if (form.controls['sector'].invalid &&
+          form.controls['sector'].touched) {
+          <div class="text-danger">
+            @if (form.controls['sector'].errors?.['required']) {
+            <small>Este campo es obligatorio.</small>
+            }
+          </div>
+          }
+        </div>
+      </div>
+      }
+      @if (shouldShowFraccionField) {
+      <div class="col-md-8">
+        <div class="form-group">
+          <label for="fraccionSelect">Fracción</label>
+          <input
+            type="text"
+            id="fraccionSelect"
+            class="form-control"
+            formControlName="fraccion"
+          />
+          @if (form.controls['fraccion'].invalid &&
+          form.controls['fraccion'].touched) {
+          <div class="text-danger">
+            @if (form.controls['fraccion'].errors?.['required']) {
+            <small>Este campo es obligatorio.</small>
+            }
+          </div>
+          }
+        </div>
+      </div>
+      }
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <button type="submit" class="btn btn-primary" [disabled]="isSearching">
+          {{ isSearching ? 'Buscando...' : 'Buscar' }}
+        </button>
+      </div>
+    </div>
+  </form>
+  @if (hasSearched) {
+  @if (searchResults.length > 0) {
+  <div class="row">
+    <div class="col-md-12 d-flex justify-content-end">
+      <h5>Haga doble click para seleccionar un Programa</h5>
+    </div>
+  </div>
+  }
+  <div class="row">
+    <div class="col-md-12">
+      @if (searchResults.length > 0) {
+      <app-expandir-tabla [title]="'Resultados de la Búsqueda'">
+        <app-tabla-dinamica
+          [tipoSeleccionTabla]="TablaSeleccion.UNDEFINED"
+          [configuracionTabla]="columns"
+          [datos]="searchResults"
+          (filaDobleClic)="onDobleClick($event)"
+          [itemsPerPage]="2"
+          [currentPage]="1"
+        ></app-tabla-dinamica>
+        <app-table-pagination [showCurrentPage]="true"></app-table-pagination>
+      </app-expandir-tabla>
+      } @else {
+      <div class="alert alert-info">
+        No se encontraron resultados para la búsqueda.
+      </div>
+      }
+    </div>
+  </div>
+  }
+</div>

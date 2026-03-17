@@ -1,0 +1,124 @@
+<div class="container">
+    <ng-titulo titulo="Pago de derechos" />
+      <form [formGroup]="formSolicitud">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="claveDeReferencia"
+                  >Clave de referencia:</label
+                >
+                <input
+                  class="form-control"
+                  id="claveDeReferencia"
+                  formControlName="claveDeReferencia"
+                  (change)="setValoresStore(formSolicitud,'claveDeReferencia', 'setClaveDeReferencia')"
+                  type="text"/>
+              </div>
+              @if(formSolicitud.controls['claveDeReferencia'].invalid && formSolicitud.controls['claveDeReferencia'].touched) {
+                <div class="d-grid">
+                    @if(formSolicitud.controls['claveDeReferencia'].errors?.['maxlength']) {
+                        <span class="mensaje-error">No puede exceder los 50 caracteres.</span>
+                    }
+                </div>
+              }
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="cadenaDependencia"
+                  >Cadena de la dependencia:</label
+                >
+                <input
+                  class="form-control"
+                  id="cadenaDependencia"
+                  formControlName="cadenaDependencia"
+                  type="text"
+                  (change)="setValoresStore(formSolicitud,'cadenaDependencia', 'setCadenaDependencia')"/>
+              </div>
+              @if(formSolicitud.controls['cadenaDependencia'].invalid && formSolicitud.controls['cadenaDependencia'].touched) {
+                <div class="d-grid">
+                    @if(formSolicitud.controls['cadenaDependencia'].errors?.['maxlength']) {
+                        <span class="mensaje-error">No puede exceder los 50 caracteres.</span>
+                    }
+                </div>
+              }
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <div class="form-group">
+                  <app-catalogo-select
+                  [isDisabled]="esFormularioSoloLectura"
+                    [catalogo]="bancoCatalogo"
+                    formControlName="banco"
+                    [label]="'Banco'"
+                    [required]="true"
+                    (change)="setValoresStore(formSolicitud,'banco', 'setBanco')">
+                  </app-catalogo-select>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="llaveDePago"
+                  >Llave de pago:</label
+                >
+                <input
+                  class="form-control"
+                  id="llaveDePago"
+                  formControlName="llaveDePago"
+                  type="text"
+                  (change)="setValoresStore(formSolicitud,'llaveDePago', 'setLlaveDePago')"
+                  />
+              </div>
+              @if(formSolicitud.controls['llaveDePago'].invalid && formSolicitud.controls['llaveDePago'].touched) {
+                <div class="d-grid">
+                    @if(formSolicitud.controls['llaveDePago'].errors?.['required']) {
+                        <span class="mensaje-error">Este campo es obligatorio.</span>
+                    }
+                    @if(formSolicitud.controls['llaveDePago'].errors?.['pattern']) {
+                        <span class="mensaje-error">Por favor, introduzca la clave de pago correcta.</span>
+                    }
+                </div>
+              }
+            </div>
+  
+            <div class="col-md-4">
+              <div class="form-group">
+                <input-fecha
+                    [isDisabled]="esFormularioSoloLectura"
+                    [datos]="INPUT_FECHA_CONFIG"
+                    [setFecha]="formSolicitud.get('fechaPago') ?.value">
+                </input-fecha>
+              </div>
+            </div>
+  
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="form-label" for="importePago"
+                  >Importe de pago:</label
+                >
+                <input
+                  class="form-control"
+                  id="importePago"
+                  formControlName="importePago"
+                  type="text"
+                  (change)="setValoresStore(formSolicitud,'importePago', 'setImportePago')"
+                  />
+              </div>
+              @if(formSolicitud.controls['importePago'].invalid && formSolicitud.controls['importePago'].touched) {
+                <div class="d-grid">
+                    @if(formSolicitud.controls['importePago'].errors?.['pattern']) {
+                        <span class="mensaje-error">ingrese el monto de pago correcto.</span>
+                    }
+                </div>
+              }
+            </div>
+          </div>
+        <div class="d-flex justify-content-end mt-5">
+            <button type="button" class="btn btn-danger" [disabled]="esFormularioSoloLectura">Borrar datos del pago</button>
+        </div>
+    </form>
+</div>
+  

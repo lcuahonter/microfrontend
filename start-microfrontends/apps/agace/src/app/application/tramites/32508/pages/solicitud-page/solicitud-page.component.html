@@ -1,0 +1,81 @@
+<div class="page">
+  <div class="container">
+    <div class="row mt-5">
+      <div class="col-md-12">
+        <h2 *ngIf="indice === 1">
+          Dictamen de compensación o disminución<br />contra el aprovechamiento
+          a cargo de <br />Recintos Fiscalizados (Regla 2.3.5.)
+        </h2>
+        <h2 *ngIf="indice === 2">
+          Cargar Archivos
+        </h2>
+        <h2 *ngIf="indice === 3">
+          Firmar
+        </h2>
+      </div>
+      <div class="col-md-12" *ngIf="indice === 1">
+        <ng-alert class="text-center" [CONTENIDO]="TEXTO_PASO_UNO"></ng-alert>
+      </div>
+      <div class="col-md-12" *ngIf="indice === 2">
+        <ng-alert class="text-center" [CONTENIDO]="MSG_REGISTRO_EXITOSO(idSolicitud)"></ng-alert>
+      </div>
+      @if (mostrarAlertaFirma && indice === 3) {
+        <div class="col-md-12">
+          <ng-alert class="text-center" [CONTENIDO]="ALERTA_FIRMA"></ng-alert>
+        </div>
+      }
+      <app-wizard #wizardRef [listaPasos]="pasos"></app-wizard>
+    </div>
+    <div class="row">
+      @switch (indice) {
+        @case (1) {
+          <app-paso-uno></app-paso-uno>
+        }
+        @case (2) {
+          <app-paso-dos
+            (cargaRealizada)="onCargaRealizada($event)"
+            (activarBotonCargaArchivos)="onActivarBotonCargaArchivos($event)"
+            (cargaEnProgresoChange)="onCargaEnProgreso($event)">
+          </app-paso-dos>
+        }
+        @case (3) {
+          <app-paso-tres (esAcuseChange)="onEsAcuseChange($event)"></app-paso-tres>
+        }
+      }
+
+      @if (indice !== 2) {
+        <btn-continuar
+          [datos]="datosPasos"
+          [dePadre]="true"
+          (continuarEvento)="getBtnGuardarAction($event)"
+        ></btn-continuar>
+      } @else {
+        <!-- Botones customizados para paso 2 -->
+        <div class="mt-5 mb-3 d-flex justify-content-end">
+          <button
+            class="btn btn-primary ms-3"
+            (click)="seccionCargarDocumentos ? onClickCargaArchivos() : continuar()"
+            [disabled]="(seccionCargarDocumentos && !activarBotonCargaArchivos) || (!seccionCargarDocumentos && cargaEnProgreso)">
+            {{ seccionCargarDocumentos ? 'Cargar archivos' : 'Continuar' }}
+          </button>
+        </div>
+      }
+    </div>
+    @if(indice === 1) {
+      <div class="row">
+        <div class="col-md-12">
+          <ng-alert [CONTENIDO]="alertText"></ng-alert>
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- ✅ NUEVO: Componente de notificaciones -->
+@if(nuevaNotificacion){
+  <section>
+    <lib-notificaciones
+      [notificacionInput]="nuevaNotificacion"
+    ></lib-notificaciones>
+  </section>
+}

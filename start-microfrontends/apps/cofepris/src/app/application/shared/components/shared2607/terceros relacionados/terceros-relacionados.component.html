@@ -1,0 +1,495 @@
+<div class="container">
+  <div class="row mt-5">
+      <div class="col-md-12">
+        <ng-titulo titulo="Terceros relacionados" /> 
+        <ng-alert [CONTENIDO]="TEXTOS.TEXTOS_TERCEROS"></ng-alert>
+        <div class="col-md-12">
+          <label class="form-label" for="">Fabricante*:</label>
+          <app-tabla-dinamica
+            [tipoSeleccionTabla]="destinatarioSeleccionTabla"
+            [configuracionTabla]="destinatarioConfiguracionTabla"
+            [datos]="fabricanteDatos"
+            [isInvalida]="fabricanteDatos && fabricanteDatos.length === 0 && isContinuarTriggered"
+            (listaDeFilaSeleccionada)="enCambioDeFilasSeleccionadas($event, 'fabricante')"
+            [disableSeleccionTablaCheckBox]="esFormularioSoloLectura">
+          </app-tabla-dinamica>
+        </div>
+        @if(botonDesactivarParaProrrogar) {
+                  <div class="col-md-12 d-flex justify-content-end">
+          <div class="btn-group">
+           <div>
+            <button
+            *ngIf="filasSeleccionadasFabricante.size > 0"
+            class="btn btn-default"
+              class="btn btn-default 3"
+              type="button"
+              data-bs-toggle="modal"
+              (click)="enEliminado('fabricante')"
+            >
+              Eliminar
+            </button>
+            <button
+              *ngIf="tablaActual && filasSeleccionadasFabricante.size === 1 && tablaActual === 'fabricante'"
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#modalAgregarMercancias"
+              class="btn btn-default btn-space ms-3"
+              (click)="openModificarMercancias()"
+            >
+              Modificar
+            </button>
+           </div>
+            <button
+              type="button"
+              class="btn btn-primary ms-3"
+              data-bs-toggle="modal"
+              data-bs-target="#modalAgregarMercanciasL"
+             (click)="agregarMercancias('fabricante', 'Agregar Fabricante')"
+             [disabled]="esFormularioSoloLectura"
+            >
+              Agregar
+            </button>
+          </div>  
+      </div>
+        }
+        <div class="col-md-12 mt-5">
+          <label class="form-label" for="">Destinatario(destino final)*:</label>
+          <app-tabla-dinamica
+            [tipoSeleccionTabla]="destinatarioSeleccionTabla"
+            [configuracionTabla]="destinatarioConfiguracionTabla"
+            [datos]="destinatarioDatos"
+             [isInvalida]="destinatarioDatos && destinatarioDatos.length === 0 && isContinuarTriggered"
+            (listaDeFilaSeleccionada)="enCambioDeFilasSeleccionadas($event, 'destinatario')"
+            [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"
+          >
+          </app-tabla-dinamica>
+        </div>
+      </div>
+      @if (botonDesactivarParaProrrogar) {
+              <div class="col-md-12 d-flex justify-content-end">
+        <div class="btn-group">
+         
+        <button
+            *ngIf="filasSeleccionadasDestinatario.size > 0"
+            class="btn btn-default"
+              class="btn btn-default 3"
+              type="button"
+              data-bs-toggle="modal"
+              (click)="enEliminado('destinatario')"
+            >
+              Eliminar
+            </button>
+            <button
+              *ngIf="tablaActual && filasSeleccionadasDestinatario.size === 1 && tablaActual === 'destinatario'"
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#modalAgregarMercancias"
+              class="btn btn-default btn-space ms-3"
+              (click)="openModificarMercancias()"    
+            >
+              Modificar
+            </button>
+             <button
+          type="button"
+          class="btn btn-primary ms-3"
+          data-bs-toggle="modal"
+              data-bs-target="#modalAgregarMercancias"
+            [disabled]="esFormularioSoloLectura"
+                (click)="agregarMercancias('destinatario', 'Agregar Destinatario(destino final)')"
+               >
+          Agregar
+        </button>
+        </div>
+      </div>
+      }
+  </div>
+  </div>
+  @if (nuevaNotificacion) {
+    <section >
+    <lib-notificaciones 
+    [notificacionInput]="nuevaNotificacion" 
+    (confirmacionModal)="eliminarPedimento($event)">
+    </lib-notificaciones>
+    </section>
+    }
+  <div class="modal fade" id="modalAgregarMercancias" tabindex="-1" aria-labelledby="modalAgregarMercanciasLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalAgregarMercanciasLabel">{{formTitle}}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form *ngIf="destinatarioForm" [formGroup]="destinatarioForm">
+          <ng-titulo [titulo]="formTitle"></ng-titulo>
+          <ng-container formGroupName="agregarDestinatario">
+            
+            <div class="row mb-3">
+              <div class="col-md-12">
+                <label class="form-label" for="tipoPersona">Tipo persona*:</label>
+              </div>
+              <app-input-radio 
+                [radioOptions]="tipoPersonaRadioOptions" 
+                [selectedValue]="tipoDePublicos" 
+                [isRequired]="true" 
+                (valueChange)="setTipoPersona($event)" 
+                formControlName="tipoPersona" 
+                (change)="setValoresStore(agregarDestinatario,'tipoPersona', 'setTipoPersona')">
+              </app-input-radio>
+            </div>
+          </ng-container>
+          <ng-titulo titulo="Datos personales"></ng-titulo>
+          <ng-container formGroupName="datosPersonales">
+            @if (selectedTipoPersona === 'fisica') {
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label class="form-label" for="nombre">Nombre(s)*:</label>
+                <input class="form-control" id="nombre" type="text" formControlName="nombre"
+                  (change)="setValoresStore(agregarDestinatario,'nombre', 'setNombre')" />
+                   @if (destinatarioForm.get(['datosPersonales', 'nombre'])?.hasError('required') &&
+                destinatarioForm.get(['datosPersonales', 'nombre'])?.touched) {
+                <div class="text-danger">
+                  <small>Este campo es obligatorio</small>
+                </div>
+                }
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label" for="primerApellido">Primer apellido*:</label>
+                <input class="form-control" id="primerApellido" type="text" formControlName="primerApellido" maxlength="200"
+                  (change)="setValoresStore(agregarDestinatario,'primerApellido', 'setPrimerApellido')" />
+                @if (destinatarioForm.get(['datosPersonales', 'primerApellido'])?.hasError('required') &&
+                destinatarioForm.get(['datosPersonales', 'primerApellido'])?.touched) {
+                <div class="text-danger">
+                  <small>Este campo es obligatorio</small>
+                </div>
+                }
+                  @if (destinatarioForm.get(['datosPersonales', 'primerApellido'])?.errors?.['pattern'] && destinatarioForm.get(['datosPersonales', 'primerApellido'])?.touched) {
+              <div class="text-danger">
+                <small>Existen datos incorrectos que no cumplen con el formato esperado.</small>
+              </div>
+              }
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label" for="segundoApellido">Segundo apellido:</label>
+                <input class="form-control" id="segundoApellido" type="text" formControlName="segundoApellido" maxlength="200"
+                  (change)="setValoresStore(agregarDestinatario,'segundoApellido', 'setSegundoApellido')" />
+                      @if (destinatarioForm.get(['datosPersonales', 'segundoApellido'])?.errors?.['pattern'] && destinatarioForm.get(['datosPersonales', 'segundoApellido'])?.touched) {
+              <div class="text-danger">
+                <small>Existen datos incorrectos que no cumplen con el formato esperado.</small>
+              </div>
+              }
+              </div>
+            </div>
+            } @if (selectedTipoPersona === 'moral') {
+            <div class="row">
+              <div class="col-md-8 mb-3">
+                <label class="form-label" for="nombre">Denominación/razón social*:</label>
+                <input class="form-control" id="nombre" type="text" formControlName="nombre"
+                  (change)="setValoresStore(agregarDestinatario,'nombre', 'setNombre')" />
+                      @if (destinatarioForm.get(['datosPersonales', 'nombre'])?.hasError('required') &&
+                destinatarioForm.get(['datosPersonales', 'nombre'])?.touched) {
+                <div class="text-danger">
+                  <small>Este campo es obligatorio</small>
+                </div>
+                }
+              </div>
+            </div>
+            }
+            <ng-titulo titulo="Domicilio"></ng-titulo>
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <app-catalogo-select 
+                  id="paisData"
+                  formControlName="pais"
+                  [catalogo]="paisData.catalogos" 
+                  [label]="'Pais'"
+                  [required]="true"
+                  [isDisabled]="esFormularioSoloLectura"
+                  (change)="setValoresStore(agregarDestinatario,'pais', 'setPais')">
+                </app-catalogo-select>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label" for="estado">Estado*:</label>
+                <input class="form-control" id="estado" type="text" formControlName="estado"
+                  (change)="setValoresStore(agregarDestinatario,'estado', 'setEstado')" />
+                  @if (destinatarioForm.get(['datosPersonales', 'estado'])?.hasError('required') &&
+                  destinatarioForm.get(['datosPersonales', 'estado'])?.touched) {
+                  <div class="text-danger">
+                    <small>Este campo es obligatorio</small>
+                  </div>
+                  }
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label" for="codigopostal">Codigo postal o equivalente:</label>
+                <input class="form-control" id="codigopostal" type="text" formControlName="codigopostal"
+                  (change)="setValoresStore(agregarDestinatario,'codigopostal', 'setCodigoPostal')" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-8">
+                <label class="form-label" for="calle">Calle*:</label>
+                <input class="form-control" id="calle" type="text" formControlName="calle"
+                  (change)="setValoresStore(agregarDestinatario,'calle', 'setCalle')" />
+                      @if (destinatarioForm.get(['datosPersonales', 'calle'])?.hasError('required') &&
+                      destinatarioForm.get(['datosPersonales', 'calle'])?.touched) {
+                      <div class="text-danger">
+                        <small>Este campo es obligatorio</small>
+                      </div>
+                      }
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="numeroexterior">Numero exterior*:</label>
+                <input class="form-control" id="numeroexterior" type="text" formControlName="numeroExterior"
+                  (change)="setValoresStore(agregarDestinatario,'numeroExterior', 'setNumeroExterior')" />
+                        @if (destinatarioForm.get(['datosPersonales', 'numeroExterior'])?.hasError('required') &&
+                      destinatarioForm.get(['datosPersonales', 'numeroExterior'])?.touched) {
+                      <div class="text-danger">
+                        <small>Este campo es obligatorio</small>
+                      </div>
+                      }
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <label class="form-label" for="numerointerior">Numero interior*:</label>
+                <input class="form-control" id="numerointerior" type="text" formControlName="numeroInterior"
+                  (change)="setValoresStore(agregarDestinatario,'numeroInterior', 'setNumeroInterior')" />
+                       @if (destinatarioForm.get(['datosPersonales', 'numeroInterior'])?.hasError('required') &&
+                      destinatarioForm.get(['datosPersonales', 'numeroInterior'])?.touched) {
+                      <div class="text-danger">
+                        <small>Este campo es obligatorio</small>
+                      </div>
+                      }
+              </div>
+              <div class="col-md-1 mb-3">
+                <label class="form-label" for="lada">Lada:</label>
+                <input class="form-control" id="lada" type="number" formControlName="lada"
+                  (change)="setValoresStore(agregarDestinatario,'lada', 'setLada')" />
+              </div>
+              <div class="col-md-3 mb-3">
+                <label class="form-label" for="telefono">Teléfono:</label>
+                <input class="form-control" id="telefono" type="text" formControlName="telefono"
+                  (change)="setValoresStore(agregarDestinatario,'telefono', 'setTelefono')" />
+                @if (destinatarioForm.get(['datosPersonales', 'telefono'])?.errors?.['pattern'] && destinatarioForm.get(['datosPersonales', 'telefono'])?.touched) {
+                  <div class="text-danger">
+                    <small>Existen datos incorrectos que no cumplen con el formato esperado.</small>
+                  </div>
+                }
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label" for="correoElectronico">Correo electrónico:</label>
+                <div class="input-group">
+                  <input class="form-control" id="correoElectronico" type="email" formControlName="correoElectronico"
+                    (change)="setValoresStore(agregarDestinatario,'correoElectronico', 'setCorreoElectronico')" />
+                  @if (destinatarioForm.get(['datosPersonales', 'correoElectronico'])?.errors?.['email'] && destinatarioForm.get(['datosPersonales', 'correoElectronico'])?.touched) {
+                    <div class="text-danger">
+                      <small>Por favor, escribe una dirección de correo válida.</small>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <div class="col-md-12 d-flex justify-content-end">
+            <div class="btn-group">
+              <button class="btn btn-danger" type="button" (click)="cancelarFormulario()" data-bs-dismiss="modal">Cancelar</button>
+              <button class="btn btn-danger" type="button" (click)="limpiarFormulario()">Limpiar</button>
+              <button class="btn btn-primary me-2" type="submit" data-bs-dismiss="modal" (click)="guardarDestinatario()">Guardar</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalAgregarMercanciasL" tabindex="-1" aria-labelledby="modalAgregarMercanciasLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalAgregarMercanciasLabel">{{formTitle}}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="fabricanteForm" >
+          <ng-titulo [titulo]="formTitle"></ng-titulo>
+          <h5>Datos generales</h5>
+          <ng-container formGroupName="agregarFabricante">
+            <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label " for="tipoPersonaFabricante">Terceros nacionalidad*:</label>
+                           <app-input-radio 
+                  [radioOptions]="tipoPersonaOption" 
+                  [selectedValue]="tipoPersonaSeleccionada" 
+                  [isRequired]="true" 
+                  formControlName="tipoPersona"
+                  [layout]="'vertical'"
+                  >
+                </app-input-radio>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 ms-auto">
+                        <label class="form-label " for="tipoPersona">Tipo persona*:</label>
+                <app-input-radio 
+                  [radioOptions]="tipoPersonaOptions" 
+                  [selectedValue]="tipoPersonaSeleccionada" 
+                  [isRequired]="true" 
+                  formControlName="tipoPersona"
+                  [layout]="'vertical'"
+                  >
+                </app-input-radio>
+                    </div>
+                </div>
+            <ng-titulo titulo="Datos del fabricante"></ng-titulo>
+            <div class="row">
+             <div class="col-md-6 mb-3">
+                <label class="form-label" for="rfc">RFC*:</label>
+                <input class="form-control" id="rfc" type="text" formControlName="rfc"
+                  />
+                  @if (fabricanteForm.get(['datosFabricante', 'rfc'])?.hasError('required') &&
+                fabricanteForm.get(['datosFabricante', 'rfc'])?.touched) {
+                <div class="text-danger">
+                  <small>Este campo es obligatorio</small>
+                </div>
+                }
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label" for="curp">CURP*:</label>
+                <input class="form-control" id="curp" type="text" formControlName="curp"
+                  />
+                  @if (fabricanteForm.get(['datosFabricante', 'curp'])?.hasError('required') &&
+                fabricanteForm.get(['datosFabricante', 'curp'])?.touched) {
+                <div class="text-danger">
+                  <small>Este campo es obligatorio</small>
+                </div>
+                }
+              </div>
+            </div>
+            <ng-titulo titulo="Domicilio"></ng-titulo>
+            <div class="row">
+              <div class="col-md-4 mb-3">
+               <label class="form-label" for="paisFabricante">Pais:</label>
+                <input class="form-control" id="paisFabricante" type="text" formControlName="pais"
+                   />
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label" for="estadoFabricante">Estado\localidad*:</label>
+                <input class="form-control" id="estadoFabricante" type="text" formControlName="estado" maxlength="200"
+                   />
+                  @if (fabricanteForm.get(['datosFabricante', 'estado'])?.hasError('required') &&
+                  fabricanteForm.get(['datosFabricante', 'estado'])?.touched) {
+                  <div class="text-danger">
+                    <small>Este campo es obligatorio</small>
+                  </div>
+                  }
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label" for="municipioFabricante">Municipio/alcandia:</label>
+                <input class="form-control" id="municipioFabricante" type="text" formControlName="municipio"
+                   />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label class="form-label" for="codigopostalFabricante">Localidad:</label>
+                <input class="form-control" id="localidadFabricante" type="text" formControlName="localidad"
+                   />
+                </div>
+                 <div class="col-md-4 mb-3">
+                <label class="form-label" for="codigopostalFabricante">Codigo postal o equivalente*:</label>
+                <input class="form-control" id="codigopostalFabricante" type="text" formControlName="codigopostal" maxlength="12"
+                   />
+                </div>
+                 <div class="col-md-4 mb-3">
+                <label class="form-label" for="coloniaFabricante">Colonia:</label>
+                <input class="form-control" id="coloniaFabricante" type="text" formControlName="colonia"
+                   />
+                </div>
+
+            </div>
+            <div class="row">
+              <div class="col-md-8">
+                <label class="form-label" for="calleFabricante">Calle*:</label>
+                <input class="form-control" id="calleFabricante" type="text" formControlName="calle" maxlength="300"
+                   />
+                      @if (fabricanteForm.get(['datosFabricante', 'calle'])?.hasError('required') &&
+                      fabricanteForm.get(['datosFabricante', 'calle'])?.touched) {
+                      <div class="text-danger">
+                        <small>Este campo es obligatorio</small>
+                      </div>
+                      }
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="numeroexteriorFabricante">Numero exterior*:</label>
+                <input class="form-control" id="numeroexteriorFabricante" type="text" formControlName="numeroExterior"
+                   />
+                        @if (fabricanteForm.get(['datosFabricante', 'numeroExterior'])?.hasError('required') &&
+                      fabricanteForm.get(['datosFabricante', 'numeroExterior'])?.touched) {
+                      <div class="text-danger">
+                        <small>Este campo es obligatorio</small>
+                      </div>
+                      }
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <label class="form-label" for="numerointeriorFabricante">Numero interior:</label>
+                <input class="form-control" id="numerointeriorFabricante" type="text" formControlName="numeroInterior"
+                   />
+                       @if (fabricanteForm.get(['datosFabricante', 'numeroInterior'])?.hasError('required') &&
+                      fabricanteForm.get(['datosFabricante', 'numeroInterior'])?.touched) {
+                      <div class="text-danger">
+                        <small>Este campo es obligatorio</small>
+                      </div>
+                      }
+              </div>
+              <div class="col-md-1 mb-3">
+                <label class="form-label" for="ladaFabricante">Lada:</label>
+                <input class="form-control" id="ladaFabricante" type="number" formControlName="lada"
+                   />
+              </div>
+              <div class="col-md-3 mb-3">
+                <label class="form-label" for="telefonoFabricante">Teléfono:</label>
+                <input class="form-control" id="telefonoFabricante" type="text" formControlName="telefono" maxlength="24"
+                   />
+                @if (fabricanteForm.get(['datosFabricante', 'telefono'])?.errors?.['pattern'] && fabricanteForm.get(['datosFabricante', 'telefono'])?.touched) {
+                  <div class="text-danger">
+                    <small>Existen datos incorrectos que no cumplen con el formato esperado.</small>
+                  </div>
+                }
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label" for="correoElectronicoFabricante">Correo electrónico:</label>
+                <div class="input-group">
+                  <input class="form-control" id="correoElectronicoFabricante" type="email" formControlName="correoElectronico"
+                    />
+              <div class="text-danger" *ngIf="fabricanteForm.get('agregarFabricante.correoElectronico')?.invalid
+            && fabricanteForm.get('agregarFabricante.correoElectronico')?.touched">
+
+            <div *ngIf="fabricanteForm.get('agregarFabricante.correoElectronico')?.errors?.['required']">
+              El correo electrónico es obligatorio.
+            </div>
+
+            <div *ngIf="fabricanteForm.get('agregarFabricante.correoElectronico')?.errors?.['pattern']">
+              El formato del correo electrónico no es válido.
+            </div>
+
+            </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <div class="col-md-12 d-flex justify-content-end">
+            <div class="btn-group">
+              <button class="btn btn-danger" type="button" (click)="cancelarFormulario()" data-bs-dismiss="modal">Cancelar</button>
+              <button class="btn btn-danger" type="button" (click)="limpiarFormulario()">Limpiar</button>
+              <button class="btn btn-primary me-2" type="submit" data-bs-dismiss="modal" (click)="guardarFabricante()">Guardar</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

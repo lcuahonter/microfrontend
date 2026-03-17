@@ -1,0 +1,43 @@
+<ng-titulo titulo="CAAT Aéreo"></ng-titulo>
+<form *ngIf="formulario" [formGroup]="formulario">
+  <div>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <app-catalogo-select class="tipoDeCaatAerea" [catalogo]="tipoDeCaatAerea" formControlName="tipoDeCaatAerea" [required]="true" label="Tipo de CAAT Aéreo" name="tipoDeCaatAerea" (change)="setValoresStore(formulario, 'tipoDeCaatAerea', 'setTipoDeCaatAerea')" [isDisabled]="soloLectura" id="tipoDeCaatAerea"></app-catalogo-select>
+        @if(formulario.get('tipoDeCaatAerea')?.invalid && (formulario.get('tipoDeCaatAerea')?.touched || formulario.get('tipoDeCaatAerea')?.dirty)) {
+          <div class="text-danger small">
+            @if(formulario.get('tipoDeCaatAerea')?.errors?.['required']) {
+              <span>Este campo es obligatorio</span>
+            }
+          </div>
+        }
+      </div>
+      <div class="col-md-4">
+        <app-catalogo-select class="ideCodTransportacionAerea" [catalogo]="ideCodTransportacionAerea" formControlName="ideCodTransportacionAerea" [required]="true" label="Código de Transportación Aéreo" name="ideCodTransportacionAerea" (change)="setValoresStore(formulario, 'ideCodTransportacionAerea', 'setIdeCodTransportacionAerea')" [isDisabled]="soloLectura"></app-catalogo-select>
+        @if(formulario.get('ideCodTransportacionAerea')?.invalid && (formulario.get('ideCodTransportacionAerea')?.touched || formulario.get('ideCodTransportacionAerea')?.dirty)) {
+          <div class="text-danger small">
+            @if(formulario.get('ideCodTransportacionAerea')?.errors?.['required']) {
+              <span>Este campo es obligatorio</span>
+            }
+          </div>
+        }
+      </div>
+      <div class="col-md-4">
+        <label for="solicitudIataIcao" class="form-label">Código<span [ngClass]="{'text-danger': formulario.get('codIataIcao')?.invalid && (formulario.get('codIataIcao')?.touched || formulario.get('codIataIcao')?.dirty)}">*</span>:</label>
+        <input type="text" formControlName="codIataIcao" class="form-control" (change)=" setValoresStore(formulario, 'codIataIcao', 'setCodIataIcao')" maxlength="3"/>
+        @if(formulario.get('codIataIcao')?.invalid && (formulario.get('codIataIcao')?.touched || formulario.get('codIataIcao')?.dirty)) {
+          <div class="text-danger small">
+            @if(formulario.get('codIataIcao')?.errors?.['required']) {
+              <span>Este campo es obligatorio</span>
+            }
+          </div>
+        }
+      </div>
+    </div>
+    <div class="row button-right">
+      <div>
+        <button type="button" class="btn btn-default btn-space" (click)="limpiarFormulario()" [disabled]="!hayCamposLlenos()"> Limpiar </button>
+      </div>
+    </div>
+  </div>
+</form>

@@ -1,0 +1,1300 @@
+<div class="mt-4">
+  <form [formGroup]="preOperativeForm">
+
+    <div class="w-100 p-3">
+      <div class="form-group">
+
+        <section class="body-text fw-bold mb-2">
+          <span class="text-danger">*</span> ¿Desea obtener la autorización del Esquema Integral modalidad IVA e IEPS, como pre-operativo? (el periodo pre-operativo, únicamente podrá ser solicitado por única ocasión de conformidad con la regla 7.1.2 y el mismo deberá ser solicitado al momento del llenado de la presente solicitud, no podrá solicitarlo posteriormente)
+        </section>
+        <app-input-radio [radioOptions]="radioOptions" [isRequired]="true" [layout]="'horizontal'" [gap]="'493px'"
+          [isBold]="true" [labelMargin]="'0px'" [description]="descriptionData.radio1.description"
+          [showDescription]="true" formControlName="autorizacionIVAIEPS" (change)="
+            setValoresStore(
+              preOperativeForm,
+              'autorizacionIVAIEPS',
+              'setAutorizacionIVAIEPS'
+            )
+          "></app-input-radio>
+        <div *ngIf="
+            preOperativeForm.controls['autorizacionIVAIEPS'].invalid &&
+            preOperativeForm.controls['autorizacionIVAIEPS'].touched
+          " class="text-danger">
+          Este campo es obligatorio.
+        </div>
+      </div>
+    </div>
+
+    <!-- Fieldsets Section -->
+    <div class="w-100 p-3 mt-4">
+      <div class="row d-flex align-items-center mt-4">
+        <!-- Centered First Fieldset -->
+        <div class="col-12 col-md-4 d-flex justify-content-center">
+          <fieldset class="border p-3 text-center">
+            <div class="w-auto">
+              Indique los regimenes aduaneros a los que pertenece
+            </div>
+          </fieldset>
+        </div>
+
+        <!-- Régimen Aduanero Fieldset -->
+        <div class="col-12 col-md-8">
+          <fieldset class="border p-3">
+            <legend class="w-auto">Régimen aduanero:</legend>
+
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="regimen_0" value="" name="regimen_0"
+                formControlName="regimen_0" (change)="
+                  setValoresStore(preOperativeForm, 'regimen_0', 'setRegimen_0')
+                " />
+              <label class="form-check-label" for="regimen_0">
+                Importación temporal para la elaboración, transformación o
+                reparación en programas de maquila o de exportación (I M M E X)
+              </label>
+              <div class="d-none">
+                <input type="checkbox" id="regimen_0Def" name="mapDeclaracionSolicitud['3027'].acepto" value="0" />
+              </div>
+            </div>
+
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="regimen_1" value="" name="regimen_1"
+                formControlName="regimen_1" (change)="
+                  setValoresStore(preOperativeForm, 'regimen_1', 'setRegimen_1')
+                " />
+              <label class="form-check-label" for="regimen_1">
+                Depósito fiscal para someterse al proceso de ensamble y
+                fabricación de vehículo a empresas de la industria automotriz
+                terminal
+              </label>
+              <div class="d-none">
+                <input type="checkbox" id="regimen_1Def" name="mapDeclaracionSolicitud['3028'].acepto" value="0" />
+              </div>
+            </div>
+
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="regimen_2" value="" name="regimen_2"
+                formControlName="regimen_2" (change)="
+                  setValoresStore(preOperativeForm, 'regimen_2', 'setRegimen_2')
+                " />
+              <label class="form-check-label" for="regimen_2">
+                Elaboración, transformación o reparación en recinto fiscalizado
+              </label>
+              <div class="d-none">
+                <input type="checkbox" id="regimen_2Def" name="mapDeclaracionSolicitud['3029'].acepto" value="0" />
+              </div>
+            </div>
+
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="regimen_3" value="" name="regimen_3"
+                formControlName="regimen_3" (change)="
+                  setValoresStore(preOperativeForm, 'regimen_3', 'setRegimen_3')
+                " />
+              <label class="form-check-label" for="regimen_3">
+                Recinto Fiscalizado Estratégico
+              </label>
+              <div class="d-none">
+                <input type="checkbox" id="regimen_3Def" name="mapDeclaracionSolicitud['3030'].acepto" value="0" />
+              </div>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+
+    <div class="w-100 p-3 mt-4">
+      <label class="form-label fw-bold mb-3" for="">
+        Sector productivo o servicio al que pertenece
+      </label>
+      <div class="row mb-5">
+        <div class="col-md-6">
+          <app-catalogo-select [label]="'Sector Productivo'" [placeholder]="'Seleccione un valor'"
+            [catalogo]="sectorProductivoAgace" formControlName="sectorProductivo"
+            [isDisabled]="esFormularioSoloLectura ? true : false" (change)="
+              setValoresStore(
+                preOperativeForm,
+                'sectorProductivo',
+                'setSectorProductivo'
+              )
+            ">
+          </app-catalogo-select>
+        </div>
+        <div class="col-md-6">
+          <app-catalogo-select [label]="'Servicio'" [placeholder]="'Seleccione un valor'" [catalogo]="serviciosAgace"
+            formControlName="servicio" [isDisabled]="esFormularioSoloLectura ? true : false" (change)="
+              setValoresStore(preOperativeForm, 'servicio', 'setServicio')
+            ">
+          </app-catalogo-select>
+        </div>
+      </div>
+      <div class="alert alert-info mt-3">
+        <h6 class="mb-0">
+          <strong>Nota:</strong> Si no encuadra en los sectores o los servicios
+          de los catálogos, deberá seleccionar el más cercano a sus actividades.
+        </h6>
+      </div>
+    </div>
+
+    <div class="w-100 p-3 mt-4">
+      <div class="mt-4 form-group">
+        <section class="body-text fw-bold mb-2">
+          <span class="text-danger">*</span> Señale si al momento de ingresar su
+          solicitud si se encuentra al corriente en el cumplimiento de sus
+          obligaciones fiscales y aduaneras.
+        </section>
+        <app-input-radio [radioOptions]="radioOptions" [isRequired]="true" [layout]="'horizontal'" [gap]="'493px'"
+          [isBold]="true" [labelMargin]="'0px'" [description]="descriptionData.radio2.description"
+          [showDescription]="true" formControlName="preOperativo" (change)="
+            setValoresStore(preOperativeForm, 'preOperativo', 'setPreOperativo')
+          "></app-input-radio>
+        <div *ngIf="
+            preOperativeForm.controls['preOperativo'].invalid &&
+            preOperativeForm.controls['preOperativo'].touched
+          " class="text-danger">
+          Este campo es obligatorio.
+        </div>
+      </div>
+
+      <div class="mt-4 form-group">
+        <section class="body-text fw-bold mb-2">
+          <span class="text-danger">*</span>Indique si autorizó al SAT hacer pública su opinión positiva sobre el
+          cumplimiento de obligaciones fiscales.
+        </section>
+        <app-input-radio [radioOptions]="radioOptions" [isRequired]="true" [layout]="'horizontal'" [gap]="'493px'"
+          [isBold]="true" [labelMargin]="'0px'" [description]="descriptionData.radio3.description"
+          [showDescription]="true" formControlName="indiqueSi" (change)="
+            setValoresStore(preOperativeForm, 'indiqueSi', 'setIndiqueSi')
+          "></app-input-radio>
+        <div *ngIf="
+            preOperativeForm.controls['indiqueSi'].invalid &&
+            preOperativeForm.controls['indiqueSi'].touched
+          " class="text-danger">
+          Este campo es obligatorio.
+        </div>
+      </div>
+      <div class="mt-4 mb-5">
+        <section class="body-text fw-bold mb-2">
+          <span class="text-danger">*</span> Señale si cuenta con empleados propios.
+        </section>
+        <app-input-radio [radioOptions]="radioOptions" [isRequired]="true" [layout]="'horizontal'" [gap]="'493px'"
+          [isBold]="true" [labelMargin]="'0px'" [description]="descriptionData.radio4.description"
+          [showDescription]="true" formControlName="senale"
+          (change)="setValoresStore(preOperativeForm, 'senale', 'setSenale')"></app-input-radio>
+        <div *ngIf="
+            preOperativeForm.controls['senale'].invalid &&
+            preOperativeForm.controls['senale'].touched
+          " class="text-danger">
+          Este campo es obligatorio.
+        </div>
+      </div>
+      <div *ngIf="showsenale">
+        <div class="alert alert-danger mt-3 mb-5">
+          <h6 class="mb-0">
+            <strong>Nota:</strong> En el caso de la Modalidad de IVA e IEPS,
+            tendrá que contar con al menos 10 trabajadores registrados.
+          </h6>
+        </div>
+        <label class="fw-bold mb-5" for="">
+          Cual es el número de empleados propios con los que contó en el último
+          bimestre anterior a su solicitud
+        </label>
+
+        <div class="row mb-5">
+          <div class="col-md-1"></div>
+          <div class="col-md-10">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="empPropios" class="form-label">Número de empleados</label>
+                  <input type="number" class="form-control" id="empPropios" name="empPropios" maxlength="8"
+                    formControlName="empPropios"
+                    (change)="setValoresStore(preOperativeForm,'empPropios', 'setEmpPropios')" />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <app-catalogo-select [label]="'Bimestre'" [placeholder]="'Seleccione un valor'"
+                  [catalogo]="comboBimestresIDC" formControlName="bimestre"
+                  [isDisabled]="esFormularioSoloLectura ? true : false"
+                  (change)="setValoresStore(preOperativeForm,'bimestre', 'setBimestre')">
+                </app-catalogo-select>
+              </div>
+            </div>
+            <div *ngIf="
+              (preOperativeForm.get('empPropios')?.invalid && preOperativeForm.get('empPropios')?.touched) ||
+              (preOperativeForm.get('bimestre')?.invalid && preOperativeForm.get('bimestre')?.touched)"
+              class="text-danger">
+              Se debe agregar los datos del número de empleados propios del último bimestre
+            </div>
+          </div>
+          <div class="col-md-1"></div>
+        </div>
+
+      </div>
+
+
+      <div class="mt-4 mb-5">
+        <section class="body-text fw-bold mb-2">
+          <span class="text-danger">*</span> Señale si al momento de ingresar su solicitud la empresa solicitante cuenta
+          con trabajadores subcontratados en los términos y condiciones que establecen los artículos 15- A al 15- D de
+          la Ley Federal de Trabajo
+        </section>
+        <app-input-radio [radioOptions]="radioOptions" [isRequired]="true" [layout]="'horizontal'" [gap]="'493px'"
+          [isBold]="true" [labelMargin]="'0px'" [description]="descriptionData.radio5.description"
+          [showDescription]="true" formControlName="senaleSi" (change)="
+            setValoresStore(preOperativeForm, 'senaleSi', 'setSenaleSi')
+          "></app-input-radio>
+        <div *ngIf="
+            preOperativeForm.controls['senaleSi'].invalid &&
+            preOperativeForm.controls['senaleSi'].touched
+          " class="text-danger">
+          Este campo es obligatorio.
+        </div>
+      </div>
+
+      @if(showMencioneTabla){
+      <label for="mecioneLabel" class="mb-5">
+        <span class="require">* </span>
+        Mencione el nombre, RFC y número de empleados que le proveen las
+        empresas que le prestan el servicio de subcontratación
+      </label>
+      <label class="fw-bold" for="">
+        Número de empleados que le proveen en el último bimestre anterior a su
+        solicitud
+      </label>
+      <app-tabla-dinamica [configuracionTabla]="configuracionTablaMencione" [datos]="datosTablaMencione"
+        [tipoSeleccionTabla]="tipoSeleccionTabla" (listaDeFilaSeleccionada)="manejarFilaSeleccionada($event)"
+        [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"></app-tabla-dinamica>
+      <div class="d-flex justify-content-center" [class.disabled]="esFormularioSoloLectura"
+        [style.pointerEvents]="esFormularioSoloLectura ? 'none' : 'auto'"
+        [style.opacity]="esFormularioSoloLectura ? '0.5' : '1'">
+        <app-table-pagination [totalItems]="totalItems" [itemsPerPage]="itemsPerPage" [currentPage]="currentPage"
+          (pageChange)="onPageChange($event)" (itemsPerPageChange)="onItemsPerPageChange($event)">
+        </app-table-pagination>
+      </div>
+
+      <div class="d-flex justify-content-end">
+        <button type="button" class="btn btn-default btn-space" (click)="openModifyModal()"
+          [disabled]="!enableModficarBoton || datosTablaMencione.length === 0">
+          Modificar
+        </button>
+        <button type="button" class="btn btn-primary btn-space"
+          [disabled]="!enableEliminarBoton || datosTablaMencione.length === 0" (click)="confirmEliminarMencioneItem()">
+          Eliminar
+        </button>
+        <button type="button" class="btn btn-default btn-primary" (click)="openAgregarModal()"
+          [disabled]="esFormularioSoloLectura">
+          Agregar
+        </button>
+      </div>
+
+      <div class="mt-4 form-group">
+        <section class="body-text fw-bold mb-2">
+          <span class="text-danger">*</span> En su caso acredite cumplir con lo establecido en el artículo 27, fracción
+          V, tercer párrafo de la Ley del ISR
+        </section>
+        <app-input-radio [radioOptions]="radioOptions" [isRequired]="true" [layout]="'horizontal'" [gap]="'493px'"
+          [isBold]="true" [labelMargin]="'0px'" [description]="descriptionData.radio21.description"
+          [showDescription]="true" formControlName="acredite" (change)="
+            setValoresStore(preOperativeForm, 'acredite', 'setAcredite')
+          "></app-input-radio>
+        <div *ngIf="
+            preOperativeForm.controls['acredite'].invalid &&
+            preOperativeForm.controls['acredite'].touched
+          " class="text-danger">
+          Este campo es obligatorio.
+        </div>
+      </div>
+      <div class="modal" tabindex="-1" role="dialog" [ngClass]="{ show: multipleSeleccionPopupAbierto }" [ngStyle]="{
+          display: multipleSeleccionPopupAbierto ? 'block' : 'none'
+        }">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-div"></div>
+            <div class="modal-body">
+              <p>Selecciona sólo un registro para modificar.</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" (click)="cerrarMultipleSeleccionPopup()"
+                [disabled]="esFormularioSoloLectura">
+                Aceptar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-backdrop fade show" *ngIf="multipleSeleccionPopupAbierto"></div>
+
+      <div class="modal" tabindex="-1" role="dialog" [ngClass]="{ show: confirmEliminarPopupAbierto }"
+        [ngStyle]="{ display: confirmEliminarPopupAbierto ? 'block' : 'none' }">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-div"></div>
+            <div class="modal-body">
+              <p>¿Estás seguro que deseas eliminar los registros marcados?</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" (click)="cerrarEliminarConfirmationPopup()"
+                [disabled]="esFormularioSoloLectura">
+                Cancelar
+              </button>
+              <button type="button" class="btn btn-primary" (click)="eliminarMercanciaItem()"
+                [disabled]="esFormularioSoloLectura">
+                Aceptar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-backdrop fade show" *ngIf="confirmEliminarPopupAbierto"></div>
+      }
+      <div class="mt-4 form-group">
+        <section class="body-text fw-bold mb-2">
+          <span class="text-danger">*</span> Indique si se encuentra en el listado de empresas publicadas por el SAT en
+          términos de los artículos 69 o 69-B Bis, noveno párrafo, con excepción de lo dispuesto en el 69 fracción VI y
+          69-B, cuarto párrafo, del Código Fiscal Federal.
+        </section>
+        <app-input-radio [radioOptions]="radioOptions" [isRequired]="true" [layout]="'horizontal'" [gap]="'493px'"
+          [isBold]="true" [labelMargin]="'0px'" [description]="descriptionData.radio6.description"
+          [showDescription]="true" formControlName="seMomento" (change)="
+            setValoresStore(preOperativeForm, 'seMomento', 'setSeMomento')
+          "></app-input-radio>
+        <div *ngIf="
+            preOperativeForm.controls['seMomento'].invalid &&
+            preOperativeForm.controls['seMomento'].touched
+          " class="text-danger">
+          Este campo es obligatorio.
+        </div>
+      </div>
+      <div class="mt-4 form-group">
+        <section class="body-text fw-bold mb-2">
+          <span class="text-danger">*</span> Del mismo modo indique si al momento de ingresar su solicitud se encuentra
+          en el listado de empresas publicadas por el SAT en términos de los artículos y 69-B, cuarto párrafo del
+          Código.
+        </section>
+        <app-input-radio [radioOptions]="radioOptions" [isRequired]="true" [layout]="'horizontal'" [gap]="'493px'"
+          [isBold]="true" [labelMargin]="'0px'" [description]="descriptionData.radio7.description"
+          [showDescription]="true" formControlName="cumplir"
+          (change)="setValoresStore(preOperativeForm, 'cumplir', 'setCumplir')"></app-input-radio>
+        <div *ngIf="
+            preOperativeForm.controls['cumplir'].invalid &&
+            preOperativeForm.controls['cumplir'].touched
+          " class="text-danger">
+          Este campo es obligatorio.
+        </div>
+      </div>
+    </div>
+    <div class="w-100 p-3">
+      <div class="mt-4 form-group" for="indique">
+        <section class="body-text fw-bold mb-2">
+          <span class="text-danger">*</span> Señale si al momento de ingresar su solicitud sus certificados de sellos
+          digitales están vigentes.
+        </section>
+        <app-input-radio [radioOptions]="radioOptions" [isRequired]="true" [layout]="'horizontal'" [gap]="'493px'"
+          [isBold]="true" [labelMargin]="'0px'" [description]="descriptionData.radio8.description"
+          [showDescription]="true" formControlName="indique"
+          (change)="setValoresStore(preOperativeForm, 'indique', 'setIndique')"></app-input-radio>
+        <div *ngIf="
+            preOperativeForm.controls['indique'].invalid &&
+            preOperativeForm.controls['indique'].touched
+          " class="text-danger">
+          Este campo es obligatorio.
+        </div>
+      </div>
+    </div>
+
+    <div class="w-100 p-3">
+      <div class="mb-3 form-group">
+        <section class="body-text fw-bold mb-2">
+          <span class="text-danger">*</span> En caso afirmativo señale si se infringió alguno de los supuestos previstos
+          en el artículo 17-H, Bis del Código, durante los últimos 12 meses, contados a partir de la fecha de
+          presentación de la solicitud.
+        </section>
+        <app-input-radio [radioOptions]="radioOptions" [isRequired]="true" [layout]="'horizontal'" [gap]="'493px'"
+          [isBold]="true" [labelMargin]="'0px'" [description]="descriptionData.radio9.description"
+          [showDescription]="true" formControlName="encuentra" (change)="
+            setValoresStore(preOperativeForm, 'encuentra', 'setEncuentra')
+          "></app-input-radio>
+        <div *ngIf="
+            preOperativeForm.controls['encuentra'].invalid &&
+            preOperativeForm.controls['encuentra'].touched
+          " class="text-danger">
+          Este campo es obligatorio.
+        </div>
+      </div>
+
+
+
+    </div>
+    <div class="w-100 p-3">
+      <div class="col-4 mb-3">
+        <app-catalogo-select [placeholder]="'Seleccione un valor'" [catalogo]="comboBimestresIDC"
+          formControlName="comboBimestresIDCSeleccione" [isDisabled]="esFormularioSoloLectura ? true : false" (change)="
+            setValoresStore(
+              preOperativeForm,
+              'comboBimestresIDCSeleccione',
+              'setComboBimestresIDCSeleccione'
+            )
+          ">
+        </app-catalogo-select>
+      </div>
+      <label class="fw-bold" for="">
+        Indique todos los domicilios registrados ante el RFC del solicitante e
+        indique aquellos en que se desarrollen actividades relacionadas con su
+        proceso productivo y/o la prestación de servicios.
+      </label>
+      <div class="alert alert-info mt-3">
+        <h6 class="mb-0">
+          <strong>Nota:</strong> De contar con un programa IMMEX activo y
+          vigente al momento de ingresar la solicitud, se mostrarán los
+          domicilios registrados ante la Secretaría de Economía. Así mismo,
+          podrá incluir otros domicilios que se encuentren relacionados con el
+          RFC del solicitante, dando click en el botón "Agregar" y seleccionado
+          la Entidad Federativa.
+        </h6>
+      </div>
+
+      <app-tabla-dinamica [configuracionTabla]="configuracionindiqueDatos" [datos]="modificarDatos"
+        [tipoSeleccionTabla]="checkboxValor" [disableSeleccionTablaCheckBox]="esFormularioSoloLectura? true : false"
+        (listaDeFilaSeleccionada)="onFilasSeleccionadas($event)"></app-tabla-dinamica>
+      <div class="d-flex justify-content-center" [class.disabled]="esFormularioSoloLectura"
+        [style.pointerEvents]="esFormularioSoloLectura ? 'none' : 'auto'"
+        [style.opacity]="esFormularioSoloLectura ? '0.5' : '1'">
+        <app-table-pagination [totalItems]="totalItems" [itemsPerPage]="itemsPerPage" [currentPage]="currentPage"
+          (pageChange)="onPageChange($event)" (itemsPerPageChange)="onItemsPerPageChange($event)">
+        </app-table-pagination>
+      </div>
+      <div class="d-flex justify-content-end">
+        <button type="button" class="btn btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#modalAgregar"
+          (click)="abrirModal()" [disabled]="esFormularioSoloLectura || !hayFilasSeleccionadas">
+          Modificar
+        </button>
+        <button type="button" class="btn btn-primary btn-space ms-3"
+          [disabled]="esFormularioSoloLectura || !hayFilasSeleccionadas" (click)="confirmEliminarMencioneItem()"
+          (click)="eliminarFilaSeleccionada()">
+          Eliminar
+        </button>
+        <button type="button" class="btn btn-primary btn-space" (click)="openInstalacionesModal()"
+          [disabled]="esFormularioSoloLectura">
+          Agregar
+        </button>
+      </div>
+    </div>
+    <div class="w-100 p-3">
+      <div class="mt-4 form-group">
+        <section class="body-text fw-bold mb-2">
+          <span class="text-danger">*</span> Señale si al momento de ingresar sus solicitud tiene actualizado su correo
+          electrónico para efectos del Buzón Tributario.
+        </section>
+        <app-input-radio [radioOptions]="radioOptions" [isRequired]="true" [layout]="'horizontal'" [gap]="'493px'"
+          [isBold]="true" [labelMargin]="'0px'" [description]="descriptionData.radio13.description"
+          [showDescription]="true" formControlName="ingresar" (change)="
+            setValoresStore(preOperativeForm, 'ingresar', 'setIngresar')
+          "></app-input-radio>
+        <div *ngIf="
+            preOperativeForm.controls['ingresar'].invalid &&
+            preOperativeForm.controls['ingresar'].touched
+          " class="text-danger">
+          Este campo es obligatorio.
+        </div>
+      </div>
+      <div class="mt-4 form-group">
+        <section class="body-text fw-bold mb-2">
+          <span class="text-danger">*</span> Señale si se encuentra suspendida en el Padrón de Importadores o en el
+          Padrón de Importadores de Sectores Específicos o Padrón de Exportadores Sectorial.
+        </section>
+        <app-input-radio [radioOptions]="radioOptions" [isRequired]="true" [layout]="'horizontal'" [gap]="'493px'"
+          [isBold]="true" [labelMargin]="'0px'" [description]="descriptionData.radio14.description"
+          [showDescription]="true" formControlName="encuentraSus" (change)="
+            setValoresStore(preOperativeForm, 'encuentraSus', 'setEncuentraSus')
+          "></app-input-radio>
+        <div *ngIf="
+            preOperativeForm.controls['encuentraSus'].invalid &&
+            preOperativeForm.controls['encuentraSus'].touched
+          " class="text-danger">
+          Este campo es obligatorio.
+        </div>
+      </div>
+    </div>
+    <div class="w-100 p-3">
+      <div class="mb-3">
+        <ng-titulo titulo="Clientes y Proveedores en el Extranjero"></ng-titulo>
+        <div class="mt-3">
+          <div class="col-12">
+            <label class="" for="">Anexar archivo con la totalidad de sus clientes y proveedores en
+              el extranjero, directa o indirectamente vinculados con el régimen
+              aduanero con el que se solicita la certificación, con los que haya
+              realizado operaciones de comercio exterior durante los últimos 12
+              meses
+            </label>
+          </div>
+          <label class="form-label text-justify" for="">
+            Para descargar plantilla del archivo de excel de click
+            <a [href]="esFormularioSoloLectura ? null :
+                contextPath +
+                '/agace/rubroAIC/registrarSolicitud.action?mostrarArchivoExcelExtranjeros'
+              " [class.disabled]="esFormularioSoloLectura"
+              [style.pointerEvents]="esFormularioSoloLectura ? 'none' : 'auto'" target="_blank"
+              class="text-primary fw-bold">aquí</a>.
+          </label>
+        </div>
+        <div class="d-flex justify-content-between">
+          <div>
+            <button class="btn btn-primary" [disabled]="esFormularioSoloLectura">
+              Examinar
+            </button>
+            <input type="file" id="archivoNacionales" class="d-none" formControlName="archivoNacionales"
+              (change)="onFileSelected($event)" [disabled]="esFormularioSoloLectura" />
+
+            <span class="border px-2 py-2 ms-1 border-secondary">{{ selectedFileName || 'No file choosen' }}</span>
+
+          </div>
+          <div>
+            <button id="uploadNewFileExtranjerosN" class="btn btn-primary" (click)="subirArchivo(template)"
+              [disabled]="esFormularioSoloLectura">
+              Anexar
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group d-flex align-items-center gap-2">
+        <label for="registrosQue2" class="form-label mb-0">Registros que existen actualmente.</label>
+        <input type="text" class="form-control w-50" id="registrosQue2" formControlName="registrosQue2" (change)="
+            setValoresStore(
+              preOperativeForm,
+              'registrosQue2',
+              'setRegistrosQue2'
+            )
+          " />
+      </div>
+    </div>
+
+    <div class="w-100 p-3">
+      <div class="mb-3">
+        <ng-titulo titulo="Proveedores"></ng-titulo>
+        <div class="mt-3">
+          <div class="col-12">
+            <label class="form-label text-justify" for="">
+              Anexe un archivo que contenga el RFC de sus proveedores de insumos
+              adquiridos en territorio nacional, vinculados al proceso bajo el
+              régimen que solicita, de los últimos 12 meses.
+            </label>
+          </div>
+          <label class="form-label text-justify" for="">
+            Para descargar plantilla del archivo de excel de click
+            <a [href]="esFormularioSoloLectura ? null :
+                contextPath +
+                '/agace/rubroAIC/registrarSolicitud.action?mostrarArchivoExcelExtranjeros'
+              " [class.disabled]="esFormularioSoloLectura"
+              [style.pointerEvents]="esFormularioSoloLectura ? 'none' : 'auto'" target="_blank"
+              class="text-primary fw-bold">aquí</a>.
+          </label>
+        </div>
+        <div class="d-flex justify-content-between">
+          <div>
+            <button class="btn btn-primary" [disabled]="esFormularioSoloLectura">
+              Examinar
+            </button>
+            <input type="file" id="archivoNacionales" class="d-none" formControlName="archivoNacionales"
+              (change)="onFileSelected($event)" [disabled]="esFormularioSoloLectura" />
+            <span class="border px-2 py-2 ms-1 border-secondary">{{ selectedFileName || 'No file choosen' }}</span>
+
+          </div>
+          <div>
+            <button id="uploadNewFileExtranjerosN" class="btn btn-primary" (click)="subirArchivo(template)"
+              [disabled]="esFormularioSoloLectura">
+              Anexar
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group d-flex align-items-center gap-2 mb-5">
+        <label for="registrosQueO" class="form-label mb-0">Registros que existen actualmente.</label>
+        <input type="text" class="form-control w-50" id="registrosQue" formControlName="registrosQue" (change)="
+            setValoresStore(preOperativeForm, 'registrosQue', 'setRegistrosQue')
+          " />
+      </div>
+      <label for="">
+        Nota: Los proveedores nacionales que se declaren deberán contar con la
+        opinión positiva del cumplimiento de las obligaciones fiscales prevista
+        en el artículo 32-D del código en la RFM.
+      </label>
+    </div>
+    <div class="w-100 p-3">
+      <ng-titulo titulo="Querella"></ng-titulo>
+      <div class="mt-4 form-group">
+        <section class="body-text fw-bold mb-2">
+          <span class="text-danger">*</span> Señale si al momento de ingresar su solicitud el SAT ha interpuesto
+          querella o denuncia penal en contra de los socios, accionistas, según corresponda, representante legal con
+          facultad para actos de dominio, e integrantes de la administración de la empresa solicitante o declaratoria de
+          perjuicio, según corresponda, durante los últimos tres años anteriores a la presentación de la solicitud de
+          certificación.
+        </section>
+        <app-input-radio [radioOptions]="radioOptions" [isRequired]="true" [layout]="'horizontal'" [gap]="'493px'"
+          [isBold]="true" [labelMargin]="'0px'" [description]="descriptionData.radio15.description"
+          [showDescription]="true" formControlName="momentoIngresar" (change)="
+            setValoresStore(
+              preOperativeForm,
+              'momentoIngresar',
+              'setMomentoIngresar'
+            )
+          "></app-input-radio>
+        <div *ngIf="
+            preOperativeForm.controls['momentoIngresar'].invalid &&
+            preOperativeForm.controls['momentoIngresar'].touched
+          " class="text-danger">
+          Este campo es obligatorio.
+        </div>
+      </div>
+    </div>
+    <div class="w-100 p-3">
+      <ng-titulo titulo="Control Inventarios"></ng-titulo>
+      <div class="mt-4 form-group">
+        <section class="body-text fw-bold mb-2">
+          <span class="text-danger">*</span> Indique si cuenta con un sistema de control de inventarios.
+        </section>
+        <app-input-radio [radioOptions]="radioOptions" [isRequired]="true" [layout]="'horizontal'" [gap]="'493px'"
+          [isBold]="true" [labelMargin]="'0px'" [description]="descriptionData.radio16.description"
+          [showDescription]="true" formControlName="indiqueCuenta" (change)="
+            setValoresStore(
+              preOperativeForm,
+              'indiqueCuenta',
+              'setIndiqueCuenta'
+            )
+          "></app-input-radio>
+        <div *ngIf="
+            preOperativeForm.controls['indiqueCuenta'].invalid &&
+            preOperativeForm.controls['indiqueCuenta'].touched
+          " class="text-danger">
+          Este campo es obligatorio.
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- First Form Group -->
+        <div class="col-md-6">
+          <div class="form-group">
+            <span class="require">* </span>
+            <label for="nombreDel" class="form-label">Nombre del sistema o datos para su identificación</label>
+            <input type="text" class="form-control" id="nombreDel" formControlName="nombreDel" (change)="
+                setValoresStore(preOperativeForm, 'nombreDel', 'setNombreDel')
+              " />
+            <div *ngIf="
+                preOperativeForm.controls['nombreDel'].invalid &&
+                (preOperativeForm.controls['nombreDel'].touched || formSubmittedControlInventarios)
+              " class="text-danger">
+              <span *ngIf="preOperativeForm.controls['nombreDel'].errors?.['required']">Este campo es
+                obligatorio.</span>
+              <span *ngIf="preOperativeForm.controls['nombreDel'].errors?.['minlength']">Debe tener al menos 3
+                caracteres.</span>
+              <span *ngIf="preOperativeForm.controls['nombreDel'].errors?.['maxlength']">No puede exceder los 250
+                caracteres.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Second Form Group -->
+        <div class="col-md-6">
+          <div class="form-group">
+            <span class="require">* </span>
+            <label for="lugarDeRadicacion" class="form-label">Lugar de radicación</label>
+            <input type="text" class="form-control" id="lugarDeRadicacion" formControlName="lugarDeRadicacion" (change)="
+                setValoresStore(
+                  preOperativeForm,
+                  'lugarDeRadicacion',
+                  'setLugarDeRadicacion'
+                )
+              " />
+            <div *ngIf="
+                preOperativeForm.controls['lugarDeRadicacion'].invalid &&
+                (preOperativeForm.controls['lugarDeRadicacion'].touched || formSubmittedControlInventarios)
+              " class="text-danger">
+              <span *ngIf="preOperativeForm.controls['lugarDeRadicacion'].errors?.['required']">Este campo es
+                obligatorio.</span>
+              <span *ngIf="preOperativeForm.controls['lugarDeRadicacion'].errors?.['minlength']">Debe tener al menos 3
+                caracteres.</span>
+              <span *ngIf="preOperativeForm.controls['lugarDeRadicacion'].errors?.['maxlength']">No puede exceder los
+                250
+                caracteres.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <div class="d-flex align-items-center">
+          <label class="me-2" for="indiqueCheck">
+            Indique, si cuenta con un sistema de control de inventarios de
+            conformidad con las disposiciones previstas por el Anexo 24.
+            <span>
+              <input class="form-check-input" type="checkbox" id="indiqueCheck" formControlName="indiqueCheck" (change)="
+                  setValoresStore(
+                    preOperativeForm,
+                    'indiqueCheck',
+                    'setIndiqueCheck'
+                  )
+                " /> </span></label>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-end justify-content-end mb-3">
+        <button type="button" class="btn btn-primary" (click)="agregarNuevoElementoControlInventarios()"
+          [disabled]="esFormularioSoloLectura">
+          Agregar
+        </button>
+      </div>
+
+      <label for="" class="mb-3"> Control Inventarios </label>
+
+      <app-tabla-dinamica [configuracionTabla]="configuracionTablaControlInventarios"
+        [datos]="datosTablaControlInventarios" [tipoSeleccionTabla]="tipoSeleccionTabla"
+        (listaDeFilaSeleccionada)="manejarFilaSeleccionadaControlInventarios($event)"
+        [disableSeleccionTablaCheckBox]="esFormularioSoloLectura"></app-tabla-dinamica>
+
+      <div class="d-flex justify-content-center mb-3" [class.disabled]="esFormularioSoloLectura"
+        [style.pointerEvents]="esFormularioSoloLectura ? 'none' : 'auto'"
+        [style.opacity]="esFormularioSoloLectura ? '0.5' : '1'" [class.disabled]="esFormularioSoloLectura"
+        [style.pointerEvents]="esFormularioSoloLectura ? 'none' : 'auto'"
+        [style.opacity]="esFormularioSoloLectura ? '0.5' : '1'">
+        <app-table-pagination [totalItems]="datosTablaControlInventarios.length" [itemsPerPage]="itemsPerPage"
+          [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+          (itemsPerPageChange)="onItemsPerPageChange($event)">
+        </app-table-pagination>
+      </div>
+
+      <div class="d-flex justify-content-end mb-3">
+        <button type="button" class="btn btn-default btn-space" (click)="openModifyControlInventariosModal()"
+          [disabled]="!enableModificarBotonControlInventarios || esFormularioSoloLectura">
+          Modificar
+        </button>
+        <button type="button" class="btn btn-primary btn-space"
+          [disabled]="!enableEliminarBotonControlInventarios || esFormularioSoloLectura"
+          (click)="confirmEliminarControlInventariosItem()">
+          Eliminar
+        </button>
+      </div>
+
+      <div class="modal" tabindex="-1" role="dialog" [ngClass]="{ show: confirmEliminarPopupAbiertoControlInventarios }"
+        [ngStyle]="{ display: confirmEliminarPopupAbiertoControlInventarios ? 'block' : 'none' }">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-div"></div>
+            <div class="modal-body">
+              <p>¿Estás seguro que deseas eliminar los registros marcados?</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" [disabled]="esFormularioSoloLectura"
+                (click)="cerrarEliminarConfirmationPopupControlInventarios()">
+                Cancelar
+              </button>
+              <button type="button" class="btn btn-primary" [disabled]="esFormularioSoloLectura"
+                (click)="eliminarControlInventariosItem()">
+                Aceptar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-backdrop fade show" *ngIf="confirmEliminarPopupAbiertoControlInventarios"></div>
+
+      <label for="" class="blue-text mt-3">
+        Deberá anexar un archivo con el reporte de saldos de mercancía de importación temporal o de mercancías objeto de
+        operaciones de comercio exterior, de un periodo de un mes, que se encuentre dentro de los tres meses anteriores
+        a la presentación de la solicitud.
+      </label>
+    </div>
+
+    <div class="modal fade" #controlInventariosModal tabindex="-1" aria-labelledby="controlInventariosModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="controlInventariosModalLabel">
+              {{ filaSeleccionadaControlInventarios ? 'Modificar' : 'Agregar' }} Inventario
+            </h5>
+          </div>
+          <form [formGroup]="controlInventariosModalForm">
+            <div class="modal-body p-4">
+              <div class="row">
+                <div class="col-8">
+                  <div class="form-group">
+                    <span class="require">*</span>
+                    <label for="nombreDelModal" class="form-label">Nombre del sistema o datos para su
+                      identificación</label>
+                    <input type="text" class="form-control" id="nombreDelModal" formControlName="nombreDel" />
+                    <div *ngIf="
+                       controlInventariosModalForm.controls['nombreDel'].invalid &&
+                      (controlInventariosModalForm.controls['nombreDel'].touched || formSubmittedControlInventarios)
+                    " class="text-danger">
+                      <span *ngIf="controlInventariosModalForm.controls['nombreDel'].errors?.['required']">
+                        Este campo es obligatorio.
+                      </span>
+                      <span *ngIf="controlInventariosModalForm.controls['nombreDel'].errors?.['minlength']">
+                        Debe tener al menos 3 caracteres.
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-8">
+                  <div class="form-group">
+                    <span class="require">*</span>
+                    <label for="lugarDeRadicacionModal" class="form-label">
+                      Lugar de radicación
+                    </label>
+                    <input type="text" class="form-control" id="lugarDeRadicacionModal"
+                      formControlName="lugarDeRadicacion" />
+                    <div *ngIf="
+                      controlInventariosModalForm.controls['lugarDeRadicacion'].invalid &&
+                      (controlInventariosModalForm.get('lugarDeRadicacion')?.touched || formSubmittedControlInventarios)
+                    " class="text-danger">
+                      <span *ngIf="controlInventariosModalForm.controls['lugarDeRadicacion'].errors?.['required']">
+                        Este campo es obligatorio.
+                      </span>
+                      <span *ngIf="controlInventariosModalForm.controls['lugarDeRadicacion'].errors?.['minlength']">
+                        Debe tener al menos 3 caracteres.
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="indiqueCheckModal"
+                      formControlName="indiqueCheck" />
+                    <label class="form-check-label" for="indiqueCheckModal">
+                      Indique, si cuenta con un sistema de control de inventarios de
+                      conformidad con las disposiciones previstas por el Anexo 24.
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal" [disabled]="esFormularioSoloLectura"
+                (click)="filaSeleccionadaControlInventarios ? modificaControlInventariosItem() : agregarNuevoElementoControlInventarios()">
+                {{ filaSeleccionadaControlInventarios ? 'Modificar' : 'Agregar' }}
+              </button>
+
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <lib-notificaciones *ngIf="notificacionExito" [notificacionInput]="notificacionExito"
+      (confirmacionModal)="onConfirmacionNotificacion($event)">
+    </lib-notificaciones>
+    <div class="w-100 p-3">
+      <div class="form-group">
+        <section class="body-text fw-bold mb-2">
+          <span class="text-danger">*</span> Indique si lleva la contabilidad en medios electrónicos y la ingresa
+          mensualmente a través del portal del SAT, de conformidad con el artículo 28, fracciones III y IV, del CFF y
+          las reglas 2.8.1.6. y la 2.8.1.7. de la RMF.
+        </section>
+        <app-input-radio [radioOptions]="radioOptions" [isRequired]="true" [layout]="'horizontal'" [gap]="'493px'"
+          [isBold]="true" [labelMargin]="'0px'" [description]="descriptionData.radio17.description"
+          [showDescription]="true" formControlName="contabilidad" (change)="
+            setValoresStore(preOperativeForm, 'contabilidad', 'setContabilidad')
+          "></app-input-radio>
+        <div *ngIf="
+            preOperativeForm.controls['contabilidad'].invalid &&
+            preOperativeForm.controls['contabilidad'].touched
+          " class="text-danger">
+          <span>Debe seleccionar una opción.</span>
+        </div>
+      </div>
+    </div>
+    <div class="w-100 p-3">
+      <div class="form-group">
+        <section class="body-text fw-bold mb-2">
+          <span class="text-danger">*</span> Señale si ingresa mensualmente su información contable a través del portal
+          del SAT, de conformidad con el artículo 28, fracciones III y IV, del CFF y las reglas 2.8.1.5. y la 2.8.1.6 de
+          la RMF.
+
+        </section>
+        <app-input-radio [radioOptions]="radioOptions" [isRequired]="true" [layout]="'horizontal'" [gap]="'493px'"
+          [isBold]="true" [labelMargin]="'0px'" [description]="descriptionData.radio18.description"
+          [showDescription]="true" formControlName="rmfRadio" (change)="
+            setValoresStore(preOperativeForm, 'rmfRadio', 'setRmfRadio')
+          "></app-input-radio>
+        <div *ngIf="
+            preOperativeForm.controls['rmfRadio'].invalid &&
+            preOperativeForm.controls['rmfRadio'].touched
+          " class="text-danger">
+          <span>Debe seleccionar una opción.</span>
+        </div>
+      </div>
+    </div>
+    <div class="w-100 p-3">
+      <div class="form-group">
+        <section class="body-text fw-bold mb-2">
+          <span class="text-danger">*</span> Manifiesta que los socios, accionistas, representantes legales con facultad
+          para actos de dominio e integrantes de la administración, no se encuentren vinculados con alguna empresa a la
+          que se le hubiere cancelado su Registro en el Esquema de Certificación de Empresas, de conformidad con la
+          regla 7.2.4., apartado A, fracciones V, VI y VII y apartado B, fracciones II, y III y V y/o de la regla
+          7.2.5., fracciones VI, VII y XI.
+        </section>
+        <app-input-radio [radioOptions]="radioOptions" [isRequired]="true" [layout]="'horizontal'" [gap]="'493px'"
+          [isBold]="true" [labelMargin]="'0px'" [description]="descriptionData.radio19.description"
+          [showDescription]="true" formControlName="vinculacionRegistroCancelado" (change)="
+            setValoresStore(
+              preOperativeForm,
+              'vinculacionRegistroCancelado',
+              'setVinculacionRegistroCancelado'
+            )
+          "></app-input-radio>
+        <div *ngIf="
+            preOperativeForm.controls['vinculacionRegistroCancelado'].invalid &&
+            preOperativeForm.controls['vinculacionRegistroCancelado'].touched
+          " class="text-danger">
+          <span>Debe seleccionar una opción.</span>
+        </div>
+      </div>
+    </div>
+    <div class="w-100 p-3">
+      <div class="form-group">
+        <section class="body-text fw-bold mb-2">
+          <span class="text-danger">*</span> Indique si sus proveedores se encuentran en el listado de empresas
+          publicadas por el SAT, en términos del artículo 69-B, cuarto párrafo del CFF.
+        </section>
+        <app-input-radio [radioOptions]="radioOptions" [isRequired]="true" [layout]="'horizontal'" [gap]="'493px'"
+          [isBold]="true" [labelMargin]="'0px'" [description]="descriptionData.radio20.description"
+          [showDescription]="true" formControlName="proveedoresListadoSAT" (change)="
+            setValoresStore(
+              preOperativeForm,
+              'proveedoresListadoSAT',
+              'setProveedoresListadoSAT'
+            )
+          "></app-input-radio>
+        <div *ngIf="
+            preOperativeForm.controls['proveedoresListadoSAT'].invalid &&
+            preOperativeForm.controls['proveedoresListadoSAT'].touched
+          " class="text-danger">
+          <span>Debe seleccionar una opción.</span>
+        </div>
+      </div>
+    </div>
+  </form>
+  <app-agregar-miembro-de-la-empresa></app-agregar-miembro-de-la-empresa>
+</div>
+
+<div class="modal fade" #instalacionesModal tabindex="-1" aria-labelledby="instalacionesModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form [formGroup]="entidadForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="instalacionesModalLabel">Instalaciones</h5>
+        </div>
+        <div class="modal-body p-4">
+          <div class="row mb-5">
+            <div class="col-6 form-group">
+              <app-catalogo-select [label]="'Entidad Federativa'" [placeholder]="'Seleccione un valor'"
+                [catalogo]="entidadFederativa" [isDisabled]="esFormularioSoloLectura ? true : false"
+                formControlName="federativaSeleccionada"
+                (change)="setValoresStore(entidadForm, 'federativaSeleccionada', 'setFederativaSeleccionada')">
+              </app-catalogo-select>
+            </div>
+            <label class="fw-bold" for=""> Instalaciones </label>
+            <ng-table [commonTableHeader]="InstalacionesHeaderData"
+              [commonTableBody]="InstalacionesBodyData"></ng-table>
+            <div class="d-flex justify-content-center" [class.disabled]="esFormularioSoloLectura"
+              [style.pointerEvents]="esFormularioSoloLectura ? 'none' : 'auto'"
+              [style.opacity]="esFormularioSoloLectura ? '0.5' : '1'">
+              <app-table-pagination [totalItems]="totalItems" [itemsPerPage]="itemsPerPage" [currentPage]="currentPage"
+                (pageChange)="onPageChange($event)" (itemsPerPageChange)="onItemsPerPageChange($event)">
+              </app-table-pagination>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" [disabled]="esFormularioSoloLectura"
+              (click)="acceptarValor()">
+              Aceptar
+            </button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" [disabled]="esFormularioSoloLectura">
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" #modifyModal tabindex="-1" aria-labelledby="modifyModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modifyModalLabel">Agregar</h5>
+      </div>
+      <div class="modal-body p-4" [formGroup]="preOperativeForm">
+        <div class="row">
+          <div class="col-6">
+            <div class="form-group">
+              <span class="require">*</span>
+              <label for="numeroAutorizacionCITES" class="form-label">RFC</label>
+              <input type="text" class="form-control" formControlName="numeroAutorizacionCITES" />
+              <div *ngIf="
+                  preOperativeForm.controls['numeroAutorizacionCITES']
+                    .invalid &&
+                  preOperativeForm.controls['numeroAutorizacionCITES'].touched
+                ">
+                <span *ngIf="preOperativeForm.controls['numeroAutorizacionCITES'].errors?.['required']"
+                  class="text-danger">
+                  El RFC es obligatorio.
+                </span>
+                <span *ngIf="preOperativeForm.controls['numeroAutorizacionCITES'].errors?.['pattern']"
+                  class="text-danger">
+                  Formato de RFC inválido. Debe seguir el formato correcto.
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="col-4 d-flex align-items-end">
+            <button type="button" class="btn btn-primary" [disabled]="esFormularioSoloLectura">Buscar</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <div class="form-group">
+              <span class="require">*</span>
+              <label for="numeroAutorizacionCITES" class="form-label">Registro Federal de Contribuyentes</label>
+              <input type="text" class="form-control" formControlName="rfc" id="" />
+            </div>
+            <div *ngIf="
+                preOperativeForm.controls['rfc'].invalid &&
+                preOperativeForm.controls['rfc'].touched
+              ">
+              <span *ngIf="preOperativeForm.controls['rfc'].errors?.['required']" class="text-danger">
+                El RFC es obligatorio.
+              </span>
+              <span *ngIf="preOperativeForm.controls['rfc'].errors?.['pattern']" class="text-danger">
+                Formato de RFC inválido. Debe seguir el formato correcto
+                (ejemplo: ABCD123456XYZ).
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-8">
+            <div class="form-group">
+              <span class="require">*</span>
+              <label for="numeroAutorizacionCITES" class="form-label">
+                Razón Social
+              </label>
+              <input type="text" class="form-control" formControlName="razonSocial" id="" />
+            </div>
+            <div *ngIf="
+                preOperativeForm.controls['razonSocial'].invalid &&
+                preOperativeForm.controls['razonSocial'].touched
+              ">
+              <span *ngIf="preOperativeForm.controls['razonSocial'].errors?.['required']" class="text-danger">
+                La Razón Social es obligatoria.
+              </span>
+              <span *ngIf="preOperativeForm.controls['razonSocial'].errors?.['minlength']" class="text-danger">
+                La Razón Social debe tener al menos 3 caracteres.
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <div class="form-group">
+              <span class="require">*</span>
+              <label for="numeroAutorizacionCITES" class="form-label">Numero de empleados</label>
+              <input type="number" class="form-control" formControlName="numeroEmpleados" id="" />
+              <div *ngIf="
+                  preOperativeForm.controls['numeroEmpleados'].invalid &&
+                  preOperativeForm.controls['numeroEmpleados'].touched
+                ">
+                <span *ngIf="preOperativeForm.controls['numeroEmpleados'].errors?.['required']" class="text-danger">
+                  El número de empleados es obligatorio.
+                </span>
+                <span *ngIf="preOperativeForm.controls['numeroEmpleados'].errors?.['pattern']" class="text-danger">
+                  Solo se permiten números.
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6 form-group">
+            <app-catalogo-select [label]="'Bimestre'" [placeholder]="'Seleccione un valor'"
+              [catalogo]="comboBimestresIDC" [isDisabled]="esFormularioSoloLectura ? true : false"
+              formControlName="bimestreValor">
+            </app-catalogo-select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="addNewMencioneItem()"
+          [disabled]="esFormularioSoloLectura">
+          Aceptar
+        </button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+          [disabled]="esFormularioSoloLectura">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #template>
+  @if(noSeHaSubidoNingunArchivo) {
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Mensaje</h4>
+    <button type="button" class="btn-close close pull-right" aria-label="Close" [disabled]="esFormularioSoloLectura">
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">Error,No se ha seleccionado un archivo</div>
+  <div class="modal-footer custom-footer">
+    <button type="button" class="btn btn-default" (click)="cerrar()" [disabled]="esFormularioSoloLectura">
+      Aceptar
+    </button>
+  </div>
+  }
+</ng-template>
+<div class="container mt-4">
+  <div class="modal fade" id="modalAgregar" tabindex="-1" aria-labelledby="modalAgregarLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Modificar</h4>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="modificarForm">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+
+                  <section class="body-text fw-bold mb-2">
+                    <span class="text-danger">*</span>Instalaciones principales
+                  </section>
+                  <app-input-radio [radioOptions]="radioOptions" [isRequired]="true" [layout]="'horizontal'"
+                    [gap]="'493px'" [isBold]="true" [labelMargin]="'0px'"
+                    [description]="descriptionData.radio22.description" [showDescription]="true"
+                    formControlName="principales" (change)="
+            setValoresStore(
+              modificarForm,
+              'principales',
+              'setPrincipales'
+            )
+          "></app-input-radio>
+                  <div *ngIf="
+            modificarForm.controls['principales'].invalid &&
+            modificarForm.controls['principales'].touched
+          " class="text-danger">
+                    Este campo es obligatorio.
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <app-catalogo-select [catalogo]="comboIMMEX" [label]="'Municipio o alcaldía'" name="municipio"
+                    formControlName="municipio" (change)="setValoresStore(modificarForm,'municipio', 'setMunicipio')">
+                  </app-catalogo-select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <app-catalogo-select [catalogo]="comboIMMEX" [label]="'Tipo de instalación'" name="instalacion"
+                    [required]="true" formControlName="instalacion"
+                    (change)="setValoresStore(modificarForm,'instalacion', 'setInstalacion')">
+                  </app-catalogo-select>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="federativa">Entidad federativa</label>
+                  <input class="form-control" id="federativa" type="text" formControlName="federativa"
+                    (change)="setValoresStore(modificarForm, 'federativa', 'setFederativa')" />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="registro">Registro ante SE/SAT</label>
+                  <input class="form-control" id="registro" type="text" formControlName="registro"
+                    (change)="setValoresStore(modificarForm, 'registro', 'setRegistro')" />
+                </div>
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col-md-8">
+                <div class="form-group">
+                  <label class="form-label" for="colonia">Colonia, calle y número</label>
+                  <input class="form-control" id="colonia" type="text" formControlName="colonia"
+                    (change)="setValoresStore(modificarForm, 'colonia', 'setColonia')" />
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="postal">Código postal</label>
+                  <input class="form-control" id="postal" type="number" formControlName="postal"
+                    (change)="setValoresStore(modificarForm, 'postal', 'setPostal')" />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <section class="body-text fw-bold mb-2">
+                    <span class="text-danger">*</span>Proceso productivo
+                  </section>
+                  <app-input-radio [radioOptions]="radioOptions" [isRequired]="true" [layout]="'horizontal'"
+                    [gap]="'493px'" [isBold]="true" [labelMargin]="'0px'"
+                    [description]="descriptionData.radio23.description" [showDescription]="true"
+                    formControlName="proceso" (change)="
+            setValoresStore(
+              modificarForm,
+              'proceso',
+              'setProceso'
+            )
+          "></app-input-radio>
+                  <div *ngIf="
+            modificarForm.controls['proceso'].invalid &&
+            modificarForm.controls['proceso'].touched
+          " class="text-danger">
+                    Este campo es obligatorio.
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <section class="body-text fw-bold mb-2">
+                    <span class="text-danger">*</span>Acreditación del uso y goce del inmueble
+                  </section>
+                  <app-input-radio [radioOptions]="radioOptions" [isRequired]="true" [layout]="'horizontal'"
+                    [gap]="'493px'" [isBold]="true" [labelMargin]="'0px'"
+                    [description]="descriptionData.radio24.description" [showDescription]="true"
+                    formControlName="inmueble" (change)="
+            setValoresStore(
+              modificarForm,
+              'inmueble',
+              'setInmueble'
+            )
+          "></app-input-radio>
+                  <div *ngIf="
+            modificarForm.controls['inmueble'].invalid &&
+            modificarForm.controls['inmueble'].touched
+          " class="text-danger">
+                    Este campo es obligatorio.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer custom-footer justify-content-center">
+          <button type="button" class="btn btn-primary" (click)="guardarModificarDatos()">Acceptar</button>
+          <button type="button" class="btn btn-default" data-bs-dismiss="modal" #closeModal>
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

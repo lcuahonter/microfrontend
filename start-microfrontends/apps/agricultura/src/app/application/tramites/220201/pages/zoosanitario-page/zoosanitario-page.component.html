@@ -1,0 +1,121 @@
+<div class="page">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h1 *ngIf="!cargarArchivosEvento.observed">{{ tituloMensaje || null }}</h1>
+        <h1 *ngIf="cargarArchivosEvento.observed && indice === 2">Cargar Archivos</h1>
+        <h1 *ngIf="cargarArchivosEvento.observed && indice === 3">Firmar</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12" *ngIf="indice === 2">
+        <ng-alert [CONTENIDO]="'La solicitud ha quedado registrada con el número temporal ' + numeroSolicitud + '. Éste no tiene validez legal y sirve solamente para efectos de identificar tu solicitud. Un folio oficial le será asignado a la solicitud al momento en que ésta sea firmada.'" >
+        </ng-alert>
+      </div>
+    </div>
+    <div class="row">
+      @if(esFormaValido){
+      <div class="col-md-12">
+        <ng-alert
+          [CONTENIDO]="formErrorAlert"
+          [CUSTOMECLASS]="'alert-danger'"
+        ></ng-alert>
+      </div>
+      }
+      <app-wizard [listaPasos]="pasos"></app-wizard>
+    </div>
+    <div class="row">
+      @switch (indice) { @case (1) {
+      <app-paso-uno
+        (tabChanged)="enTabChange($event)"
+        #pasoUnoRef
+      ></app-paso-uno>
+      } @case (2) {
+      <app-paso-dos
+        [idTipoTRamite]="'220201'"
+        [datosUsuario]="datosUsuario"
+        [idSolicitud]="numeroSolicitud.toString()"
+        [cargaArchivosEvento]="cargarArchivosEvento"
+        (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+        (reenviarCargaRealizada)="cargaRealizada($event)"
+        (cargaEnProgresoChange)="onCargaEnProgresoPadre($event)"
+      ></app-paso-dos>
+      } @case (3) {
+      <paso-firma
+        [idSolicitud]="+this.numeroSolicitud"
+        [procedure]="220201"
+        [procedureUrl]="'registrozoosanitario'"
+      ></paso-firma>
+      } @default {
+      <app-paso-uno></app-paso-uno>
+      } }
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        @if (indice === 1) {
+        <btn-continuar
+          [datos]="datosPasos"
+          [btnGuardar]="btnGuardar"
+          [btnGuardarVisible]="btnGuardarVisible"
+          (continuarEvento)="getValorIndice($event)"
+          [dePadre]="true"
+          [btnHabilitarContinuar]="true"
+          (btnGuardarClicked)="guardadoParcialSolicitud()"
+        ></btn-continuar>
+        } 
+        <div class="mt-5 mb-3 d-flex justify-content-end">
+        @if (indice === 2) {
+        <button
+          type="button"
+          class="btn btn-default  ms-3"
+          (click)="anterior()"
+        >
+          Anterior
+        </button>
+            <button
+            class="btn btn-primary ms-3"
+            (click)="
+              onClickCargaArchivos() 
+            "
+            [disabled]="
+              (seccionCargarDocumentos && !activarBotonCargaArchivos) ||
+              (!seccionCargarDocumentos && cargaEnProgreso)
+            "
+            *ngIf="seccionCargarDocumentos"
+            >
+              {{ 'Cargar archivos' }}
+            </button>
+            <button
+            type="button"
+            class="btn btn-default  ms-3"
+            (click)="siguiente()"
+            
+          >
+            Continuar
+          </button>
+          }
+
+        @if (indice === 3){
+          <button
+            type="button"
+            class="btn btn-default  ms-3"
+            (click)="anterior()"
+          >
+            Anterior
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <p></p>
+          <ng-alert [CONTENIDO]="PRIVACY_NOTICE_CONTENT"></ng-alert>
+          <p></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

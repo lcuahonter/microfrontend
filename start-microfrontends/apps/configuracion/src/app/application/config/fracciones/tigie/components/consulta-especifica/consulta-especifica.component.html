@@ -1,0 +1,130 @@
+<div class="container py-4">
+  <div class="d-flex align-items-center gap-2 mb-3">
+    <a href="javascript:void(0)" (click)="onCancelar()" class="text-decoration-none text-primary fw-bold small">Antecesor</a>
+    <span class="text-muted small">|</span>
+    <span class="text-secondary small">Activo</span>
+  </div>
+  <ng-titulo [titulo]="'Consulta Específica de Fracción Arancelaria'"></ng-titulo>
+  <app-error-messages [errors]="errors"></app-error-messages>
+  <div class="card mt-4 border-0 shadow-sm bg-light">
+    <div class="card-body p-5">
+      <form [formGroup]="form">
+        <div class="row mb-5 justify-content-center">
+          <div class="col-md-6 d-flex align-items-center justify-content-center gap-3">
+            <label class="form-label mb-0 fw-bold text-muted">Fracción Arancelaria:</label>
+            <input type="text" class="form-control border-secondary w-50" formControlName="fraccionArancelaria">
+          </div>
+        </div>
+        <div class="row mb-4 justify-content-center align-items-center">
+          <div class="col-md-5">
+            <div class="border rounded p-3 text-center position-relative bg-white">
+              <span class="position-absolute top-0 start-50 translate-middle bg-white px-3 text-muted fw-bold small">Tipo de Operación:</span>
+              <div class="d-flex justify-content-center gap-4 mt-2">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" value="importacion" formControlName="tipoOperacion" id="opImportacion">
+                  <label class="form-check-label text-muted" for="opImportacion">Importación</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" value="exportacion" formControlName="tipoOperacion" id="opExportacion">
+                  <label class="form-check-label text-muted" for="opExportacion">Exportación</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" value="ambas" formControlName="tipoOperacion" id="opAmbas">
+                  <label class="form-check-label text-muted" for="opAmbas">Ambas</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-5">
+            <div class="border border-success rounded p-3 bg-white">
+              <label class="position-absolute top-0 start-50 translate-middle bg-white px-3 text-muted fw-bold small">Tipo de Unidad de Medida de Tarifa:</label>
+              <select class="form-control form-select" formControlName="tipoUnidadMedida">
+                <option [ngValue]="null">Seleccione un valor</option>
+                <option value="kg">Kilogramo</option>
+                <option value="pza">Pieza</option>
+                <option value="lts">Litros</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-4 justify-content-center align-items-center">
+          <div class="col-md-5">
+            <div class="border rounded p-3 d-flex justify-content-center align-items-center gap-4 bg-white">
+              <span class="text-muted fw-bold small">Exenta:</span>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" [value]="true" formControlName="exenta" id="exentaSi">
+                <label class="form-check-label text-muted" for="exentaSi">Si</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" [value]="false" formControlName="exenta" id="exentaNo">
+                <label class="form-check-label text-muted" for="exentaNo">No</label>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-5">
+            <div class="border rounded p-3 d-flex justify-content-center align-items-center gap-4 bg-white">
+              <span class="text-muted fw-bold small">Prohibida:</span>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" [value]="true" formControlName="prohibida" id="prohibidaSi">
+                <label class="form-check-label text-muted" for="prohibidaSi">Si</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" [value]="false" formControlName="prohibida" id="prohibidaNo">
+                <label class="form-check-label text-muted" for="prohibidaNo">No</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="border rounded p-4 bg-white">
+          <div class="d-flex justify-content-center gap-5 mb-4">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" value="inicio" formControlName="vigencia" id="vigInicio">
+              <label class="form-check-label text-muted" for="vigInicio">Fecha de Inicio de Vigencia:</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" value="fin" formControlName="vigencia" id="vigFin">
+              <label class="form-check-label text-muted" for="vigFin">Fecha Fin de Vigencia:</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" value="ninguna" formControlName="vigencia" id="vigNinguna">
+              <label class="form-check-label text-muted" for="vigNinguna">Ninguna</label>
+            </div>
+          </div>
+          <div class="row justify-content-center g-4">
+            <div class="col-md-4">
+              <input-fecha [datos]="configFechaDesde"></input-fecha>
+            </div>
+            <div class="col-md-4">
+              <input-fecha [datos]="configFechaHasta"></input-fecha>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-center gap-3 mt-5">
+          <button type="button" class="btn btn-primary rounded-pill" (click)="onAceptar()">Aceptar</button>
+          <button type="button" class="btn btn-info text-white rounded-pill" (click)="onDescargarTigie()">Descargar TIGIE</button>
+          <button type="button" class="btn btn-default rounded-pill" (click)="onCancelar()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="modalConfirmarDescarga" tabindex="-1" #modalDescarga>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow border-0 overflow-hidden">
+      <div class="modal-header bg-dark border-0 py-2">
+        <h6 class="modal-title fw-bold text-white mb-0 small">Descarga TIGIE</h6>
+        <button type="button" class="btn-close btn-close-white" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body p-4 text-center">
+        <div class="mb-3 text-primary">
+          <i class="bi bi-question-circle" style="font-size: 3.5rem;"></i>
+        </div>
+        <p class="mb-4 fw-bold">¿Desea Generar el Reporte de todas las Fracciones Arancelarias?</p>
+        <div class="d-flex justify-content-center gap-3">
+          <button type="button" class="btn btn-primary rounded-pill px-4" (click)="confirmarDescarga()">Aceptar</button>
+          <button type="button" class="btn btn-primary rounded-pill px-4" (click)="closeModal()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

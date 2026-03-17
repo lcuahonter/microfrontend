@@ -1,0 +1,168 @@
+<form [formGroup]="transporteFerroviarioForm">
+  <div class="page">
+    <div class="container">
+      <div class="row mt-5">
+        <label class="form-label text-start"
+          >Conforme a la regla 7.1.5., fraccion I, acredite lo siguiente.</label
+        >
+      </div>
+      <div class="row">
+        <formas-dinamicas
+          [forma]="ninoFormGroupUno"
+          [formularioDatos]="formDataUno"
+          [estado]="rubroTransporteFerrovariostate"
+          [soloLectura]="consultaState.readonly"
+          [templateMap]="templateMap"
+          (emitirCambioDeValor)="establecerCambioDeValorUno($event)"
+        ></formas-dinamicas>
+      </div>
+      <!-- Reconocimiento Mutuo -->
+      <div class="row">
+        <ng-titulo titulo="Reconocimiento Mutuo" />
+        <div class="col-md-12">
+          <label class="form-label text-start">
+            La adopción de México de las normas establecidas en el Marco Normativo SAFE de la 
+            OMA para Asegurar y Facilitar el Comercio Global publicado por la OMA, donde se 
+            incorporan prácticas y normas en materia de seguridad, tiene como uno de sus objetivos, 
+            alcanzar el Reconocimiento Mutuo" con aquellos países que cuentan con un programa similar 
+            en materia de seguridad, que cumplen con la condición de Operadores Económicos Autorizados
+             de acuerdo al "Marco SAFE" y la legislación de cada país. Por lo tanto, como parte de la 
+             estrategia para evitar la duplicación de controles de seguridad y contribuir de manera significativa
+              a la facilitación y control de las mercancías que circulan en la cadena de suministro internacional,
+               es necesario contar con la participación de aquellos que logren obtener el Registro en el
+                Esquema de Certificación de Empresas y autorizar el intercambio de información que permita
+                 enriquecer los sistemas informáticos, eliminar y/o reducir la redundancia y/o duplicación de
+                  esfuerzos en el proceso de inscripción.
+          </label>
+        </div>
+        <div class="col-md-12">
+          <label class="form-label text-start">
+            Por lo anterior y de conformidad con lo dispuesto en el artículo 21 de la Ley
+             Federal de Transparencia y Acceso a la Información Pública Gubernamental,
+              autorizo al sujeto obligado denominado SAT, a través de la AGACE, a compartir,
+               difundir o distribuir con otras autoridades nacionales o extranjeras los datos
+                personales y demás información de la empresa que represento, y que se genere
+                 durante el transcurso en que la misma se encuentre inscrita en el Registro 
+                 en el Esquema de Certificación de Empresas *.
+          </label>
+          <app-input-radio
+            formControlName="reconocimientoMutuo"
+            [radioOptions]="sinoOpciones"
+            [isRequired]="true"
+            [gridLayout]="true"
+            (valueChange)="radioValorCambio($event, 'reconocimientoMutuo')"
+          ></app-input-radio>
+        </div>
+      </div>
+      <!-- Listado de Socio Comercial Certificado -->
+      <div class="row">
+        <formas-dinamicas
+            formularioTitulo="Listado de Socio Comercial Certificado"
+            [forma]="ninoFormGroupDos"
+            [formularioDatos]="formDataDos"
+            [templateMap]="templateMap"
+            [estado]="rubroTransporteFerrovariostate"
+            [soloLectura]="consultaState.readonly"
+            (emitirCambioDeValor)="establecerCambioDeValorDos($event)"
+        ></formas-dinamicas>
+      </div>
+      <!-- Clasificación de la Información -->
+       <div class="row">
+        <ng-titulo titulo="Clasificación de la Información" />
+        <div class="col-md-12">
+          <label class="form-label text-start">
+            La información proporcionada, durante este trámite para el Registro de
+             Certificación de Empresas es clasificada por la empresa como:
+          </label>
+          <app-input-radio
+            formControlName="clasificacionInformacion"
+            [radioOptions]="clasificacionInformacionOpciones"
+            [isRequired]="false"
+            [gridLayout]="true"
+            (valueChange)="radioValorCambio($event, 'clasificacionInformacion')"
+          ></app-input-radio>
+        </div>
+      </div>
+      <!-- Pago de derechos -->
+      <div class="row">
+        <pago-de-derechos [estado]="rubroTransporteFerrovariostate" (emitirCambioValor)="emitirCambioValor($event)" [consultaState]="consultaState"></pago-de-derechos>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #customTemplate1>
+    <input class="form-control" type="text" name="senaleRadioInput" id="senaleRadioInput" formControlName="senaleRadioInput" (change)="textValorCambio($event, 'senaleRadioInput')"/>
+  </ng-template>
+
+  <ng-template #customTemplate2>
+    @if (mostrarAlertaUno) {
+        <div class="alert alert-info">
+            <div class="form-check">
+                <p>
+                Anexar copia del documento expedido por la SCT, con el que acredite
+                que cuenta con la concesión o el permiso vigente para prestar el
+                servicio de transporte ferroviario de carga.
+                </p>
+            </div>
+        </div>
+    }
+  </ng-template>
+
+  <ng-template #customTemplate3>
+    @if (mostrarTemplate3) {
+       <row-type-form-input [form]="customTemplate3Form" [fields]="template3Array" (emitirValorDeCampo)="customTemplate3Events($event)"></row-type-form-input>
+        @if(mostrarTemplate3Alerta) {
+            <div class="alert alert-info">
+                <div class="form-check">
+                    <p>
+                    Anexar el contrato con el que se acredite la posesión de las unidades para la 
+                    prestación del servicio.
+                    </p>
+                </div>
+            </div>
+        }
+    }
+  </ng-template>
+
+  <ng-template #customTemplate4>
+    @if (mostrarTemplate4) {
+        <input class="form-control" type="text" name="paginaTextInput" id="paginaTextInput" formControlName="paginaTextInput" [ngClass]="esValido('paginaTextInput') ? 'required' : ''" (change)="textValorCambio($event, 'paginaTextInput')"/>
+        @if (transporteFerroviarioForm.get('paginaTextInput')?.hasError('required') && transporteFerroviarioForm.get('paginaTextInput')?.touched) {
+          <div class="mensaje-error">Respuesta Obligatoria</div>
+        }
+    }
+  </ng-template>
+
+  <ng-template #customTemplate5>
+    @if (mostrarTemplate5) {
+        <input class="form-control" type="text" name="correoTextInput" id="correoTextInput" formControlName="correoTextInput" [ngClass]="esValido('correoTextInput') ? 'required' : ''" (change)="textValorCambio($event, 'correoTextInput')"/>
+        @if (transporteFerroviarioForm.get('correoTextInput')?.hasError('required') && transporteFerroviarioForm.get('correoTextInput')?.touched) {
+          <div class="mensaje-error">Respuesta Obligatoria</div>
+        }
+    }
+  </ng-template>
+
+  <ng-template #customTemplate6>
+    @if (mostrarTemplate6) {
+        <div formArrayName="correosTelefonicos">
+            @for (correoGroup of correosTelefonicos.controls; track $index) {
+                <div class="row mb-3" [formGroupName]="$index">
+                    <div class="col-md-1">
+                        <label for="correoLada-{{ $index }}">Lada</label>
+                        <input type="text" class="form-control" id="correoLada-{{ $index }}" formControlName="correoLada" (change)="textValorCambio($event, 'correoLada', $index)"/>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="correoTelefono-{{ $index }}">Teléfono</label>
+                        <input type="text" class="form-control" id="correoTelefono-{{ $index }}" formControlName="correoTelefono" (change)="textValorCambio($event, 'correoTelefono', $index)"/>
+                    </div>
+                </div>
+            } 
+            @if (correosTelefonicos.invalid && transporteFerroviarioForm.get('correosTelefonicos')?.touched) {
+                <div class="row text-danger mt-2">
+                    Respuesta Obligatoria
+                </div>
+            }
+        </div>
+    } 
+  </ng-template>
+</form>

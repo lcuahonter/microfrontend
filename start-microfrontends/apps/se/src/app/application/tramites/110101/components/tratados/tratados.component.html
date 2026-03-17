@@ -1,0 +1,242 @@
+@if (consultaState.create === true) {
+  <ng-titulo titulo="Tratados y criterios solicitados" />
+<ng-alert [CONTENIDO]="alerta.MENSAJE_ALERTA"></ng-alert>
+<form [formGroup]="formularioTratados">
+  <div class="row">
+    <div class="col-md-8">
+      <app-catalogo-select [catalogo]="paisCatalogo" formControlName="pais" [label]="'País o bloque'" [required]="true"
+        name="Pais o bloque" [isDisabled]="esFormularioSoloLectura"
+        (change)="setValoresStore(formularioTratados,'pais', 'setPais');getLabelFromCatalogData(paisCatalogo,'pais')"
+        (selectionChange)="onTratadoAcuerdo($event, 'pais')"></app-catalogo-select>
+    </div>
+    <div class="col-md-8">
+      <app-catalogo-select [catalogo]="tratadoCatalogo" formControlName="tratado" [label]="'Tratado o Acuerdo'"
+        [required]="true" name="Tratado o Acuerdo" [isDisabled]="esFormularioSoloLectura"
+        (change)="setValoresStore(formularioTratados,'tratado', 'setTratado');getLabelFromCatalogData(tratadoCatalogo,'tratado')"
+        (selectionChange)="onTratadoAcuerdo($event, 'tratado')"></app-catalogo-select>
+    </div>
+    <div class="col-md-8">
+      <app-catalogo-select [catalogo]="origenCatalogo" formControlName="origen" [label]="'Criterio de origen'"
+        [required]="true" name="Criterio de origen" [isDisabled]="esFormularioSoloLectura"
+        (change)="setValoresStore(formularioTratados,'origen', 'setOrigen');getLabelFromCatalogData(origenCatalogo,'origen')"></app-catalogo-select>
+    </div>
+  </div>
+  <div class="col-12 d-flex justify-content-end mt-3 mb-4">
+    <button class="btn btn-primary" (click)="agregarTratado()" [disabled]="esFormularioSoloLectura">Agregar
+      tratado</button>
+  </div>
+</form>
+}
+@if (consultaState.create === true) {
+<ng-alert [CONTENIDO]="'Para continuar con el trámite, deberá agregar por lo menos un tratado o acuerdo.'"></ng-alert>
+
+<h6 class="fs-4">País/bloque-tratado/acuerdo seleccionados por el solicitante</h6>
+
+<div class="row">
+  <div class="col-md-12">
+    <app-tabla-dinamica *ngIf="mostrarTabla" [tipoSeleccionTabla]="tipoSeleccionTabla" [configuracionTabla]="configuracionTabla"
+      [datos]="registroDeSolicitudesTablaDatos" (listaDeFilaSeleccionada)="onSeleccionChange($event)"
+      [disableSeleccionTablaCheckBox]="esFormularioSoloLectura? true : false">
+    </app-tabla-dinamica>
+  </div>
+  <div class=" text-end mt-5">
+    <button class="btn btn-default me-2" [disabled]="esFormularioSoloLectura" (click)="modificarTratado()">
+      Modificar tratado
+    </button>
+    <button class="btn btn-primary" [disabled]="esFormularioSoloLectura" (click)="eliminarTratado()">
+      Eliminar tratado
+    </button>
+  </div>
+</div>
+}
+
+@if(consultaState.create === false){
+<ng-titulo titulo="País/bloque-tratado/acuerdo seleccionados por el solicitante" />
+<div class="col-md-12">
+  <div class="table-wrapper">
+    <table class="table table-hover table-bordered table-responsive">
+      <thead>
+        <tr>
+          <th class="text-center" style="width: 50px;"></th>
+          <th class="text-center">País o bloque</th>
+          <th class="text-center">Tratado o Acuerdo</th>
+          <th class="text-center">Criterio de origen</th>
+          <th class="text-center">Norma de origen</th>
+          <th class="text-center">Requisito específico</th>
+          <th class="text-center">Calificación sistema</th>
+          <th class="text-center">Calificación dictaminador</th>
+          <th class="text-center">Criterio otras instancias</th>
+          <th class="text-center">Proceso de transformación</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let item of tratadosEvaluacionTablaDatos"
+            (click)="toggleFila(item)"
+            [class.table-active]="isSelected(item)"
+            class="cursor-pointer">
+
+          <td class="text-center">
+            <input  type="radio"
+                    name="tratadoSeleccionado"
+                    [checked]="isSelected(item)"
+                    (click)="toggleCheckbox($event, item)">
+          </td>
+
+          <td class="text-center">{{ item.pais_bloque_nombre }}</td>
+          <td class="text-center">{{ item.tratado_acuerdo }}</td>
+          <td class="text-center">{{ item.criterio_origen }}</td>
+          <td class="text-center">{{ item.norma_origen }}</td>
+          <td class="text-center">{{ item.requisito_especifico }}</td>
+          <td class="text-center">
+            {{ item.cal_aprobada_sistema ? 'APROBADA' : 'NO APROBADA' }}
+          </td>
+          <td class="text-center">
+            {{ item.cal_aprobada_dictaminador ? 'APROBADA' : 'NO APROBADA' }}
+          </td>
+          <td class="text-center">{{ item.otras_instancias }}</td>
+          <td class="text-center">{{ item.proceso_transformacion ?? '' }}</td>
+
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class=" text-end mt-5">
+    <button class="btn btn-primary me-2" (click)="criterioTratadoResumen()">
+      Resumen de valores
+    </button>
+    <button class="btn btn-primary  me-2" (click)="insumosEmpaques()">
+      Insumos
+    </button>
+    <button class="btn btn-primary  me-2" (click)="requisitoProceso()">
+      Requisito Proceso
+    </button>
+    @if (this.consultaState.parameter === "EvaluarSolicitud" && esCalificacionBandera) {
+      <button class="btn btn-primary  me-2" (click)="abrirModalDictaminador()" >
+        Calificación del dictaminador
+      </button>
+    }
+  </div>
+</div>
+
+<div class="modal fade" id="modalAgregar" #modalAgregar tabindex="-1" aria-labelledby="modalAgregarLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0 d-flex justify-content-end">
+        <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="cerrarDialogo()"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="dictaminador">
+          <div class="col-md-12">
+            <div class="form-check">
+              <input
+                  class="form-check-input"
+                  type="radio"
+                  name="opcionSeleccionada"
+                  id="radioSi"
+                  value="true"
+                  formControlName="opcionSeleccionada"
+                />
+                <label class="form-check-label" for="radioSi">Aprobada</label>
+            </div>
+            <div class="form-check">
+              <input  class="form-check-input"
+                  type="radio"
+                  name="opcionSeleccionada"
+                  id="radioNo"
+                  value="false"
+                  formControlName="opcionSeleccionada">
+              <label class="form-check-label" for="radioNo" >
+                No aprobada
+              </label>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer d-flex justify-content-center p-5">
+        <button class="btn btn-primary ms-2" (click)="modificarRegistros()">Aceptar</button>     
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalInsumoEmpaques" #modalInsumoEmpaques tabindex="-1" aria-labelledby="modalAgregarLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form [formGroup]="dictaminador">
+          <div class="col-md-12">
+            @if (tratadosInsumosTablaDatos.length > 0) {
+              <ng-titulo titulo="Insumos (materias prima, partes y piezas)" />
+              <app-tabla-dinamica 
+              [configuracionTabla]="tablaInsumos" 
+              [datos]="tratadosInsumosTablaDatos">
+              </app-tabla-dinamica>
+            }
+            @if (tratadosEmpaquesTablaDatos.length > 0) {
+              <ng-titulo titulo="Envases y empaques para la venta al menudeo" />
+              <app-tabla-dinamica 
+              [configuracionTabla]="tablaEmpaques" 
+              [datos]="tratadosEmpaquesTablaDatos">
+              </app-tabla-dinamica> 
+            }
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer d-flex justify-content-end p-5 gap-3">
+        <button class="btn btn-default" (click)="cerrarDialogo()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalRequisitoProceso" #modalRequisitoProceso tabindex="-1" aria-labelledby="modalAgregarLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        {{textoRequisitoProceso}}
+      </div>
+      <div class="modal-footer d-flex justify-content-end p-5 gap-3">
+        <button class="btn btn-default" (click)="cerrarDialogo()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalResumenValores" #modalResumenValores tabindex="-1" aria-labelledby="modalResumenLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <app-resumen-valores-formulario [valoresRecibidosResumen]="valoresFormularioResumen"></app-resumen-valores-formulario>
+      </div>
+      <div class="modal-footer d-flex justify-content-end p-3 gap-2">
+        <button class="btn btn-default" (click)="cerrarDialogo()">Regresar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+}
+
+@for (pais of paisesInstancias; track pais) {
+  <app-otras-instancias
+    #otrasInstancias
+    [pais]="pais"
+    [titulo]="instanciasConfig[pais].titulo"
+    [mensajeAlerta]="instanciasConfig[pais].alerta"
+    [catalogo]="instanciasConfig[pais].cargarCatalogo" 
+    [modificacionTxt]="instanciasConfig[pais].modificacionText">
+  </app-otras-instancias>
+}
+
+@if (nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion" (confirmacionModal)="eliminarPedimento($event)">
+  </lib-notificaciones>
+</section>
+}

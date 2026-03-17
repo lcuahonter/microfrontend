@@ -1,0 +1,172 @@
+<form [formGroup]="dictamenForm">
+    <div class="row ">
+        @if (mostrarTitulo) {
+        <div class="col-md-12">
+            <h3 class="titulo-dictamen">Generar Dictamen</h3>
+        </div>
+        }
+        <div class="col-md-12">
+            <div class="col-md-3 d-flex align-items-center">
+                <label class="form-label mb-0" style="min-width: 150px;">Sentido dictamen<span [ngClass]="dictamenForm.get('cumplimiento')?.errors?.['required'] ? 'text-danger' : ''">*</span>:</label>
+            </div>
+
+
+           
+            @if(opcionesSentidosDisponibles.length > 0) {
+                 <div class="col-md-8 d-flex justify-content-center">
+                    <div class="d-flex gap-3">
+                        <div 
+                            *ngFor="let opcion of opcionesSentidosDisponibles" 
+                            class="border px-4 py-2 d-flex align-items-center radio-button"
+                            
+                        >
+                            <input
+                                class="form-check-input me-3 seleccion-radio"
+                                type="radio"
+                                formControlName="cumplimiento"
+                                name="cumplimiento"
+                                [value]="opcion.clave"
+                                [id]="'sentidoDictamen' + opcion.clave"
+                                [ngClass]="{ 'radio-invalid': dictamenForm.get('mensajeDictamen')?.invalid && dictamenForm.get('mensajeDictamen')?.touched }"
+                            />
+                            <label class="control-label mb-0" [for]="'sentidoDictamen' + opcion.clave">
+                                {{ opcion.descripcion }}
+                            </label>
+                        </div>
+                    </div>                    
+                </div>
+                
+            }
+            
+            @else {
+                 <div class="col-md-8 d-flex justify-content-center">
+                    <div class="d-flex gap-3">
+                        <div class="border px-4 py-2 d-flex align-items-center radio-button">
+                            <input class="form-check-input me-3 seleccion-radio" type="radio" formControlName="cumplimiento" name="cumplimiento" value="SEDI.AC"
+                                id="sentidoDictamenAceptado">
+                            <label class="control-label mb-0" for="sentidoDictamenAceptado">Aceptado</label>
+                        </div>
+                        <div class="border px-4 py-2 d-flex align-items-center radio-button">
+                            <input class="form-check-input me-3 seleccion-radio" type="radio" formControlName="cumplimiento" name="cumplimiento" value="SEDI.RZ"
+                                id="sentidoDictamenRechazado">
+                            <label class="control-label mb-0" for="sentidoDictamenRechazado">Rechazado</label>
+                        </div>
+                    </div>
+            </div>
+            }
+         
+        </div>
+        <div class="col-md-12 d-flex align-items-center text-danger mt-2" *ngIf="dictamenForm.get('cumplimiento')?.invalid && dictamenForm.get('cumplimiento')?.touched">
+                Este campo es obligatorio.
+            </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <label for="justificacionDictamen" class="form-label">
+                Justificación del dictamen<span [ngClass]="dictamenForm.get('mensajeDictamen')?.errors?.['required'] ? 'text-danger' : ''">*</span>:
+            </label>
+            <textarea id="justificacionDictamen" maxlength="10000" class="form-control text-height" formControlName="mensajeDictamen"
+                [ngClass]="{ 'is-invalid': dictamenForm.get('mensajeDictamen')?.invalid && dictamenForm.get('mensajeDictamen')?.touched }"></textarea>
+
+            @if (dictamenForm.get('mensajeDictamen')?.touched && dictamenForm.get('mensajeDictamen')?.errors) {
+            <div class="text-danger" *ngIf="dictamenForm.get('mensajeDictamen')?.errors?.['required']">
+                Este campo es obligatorio.
+            </div>
+            <div class="text-danger" *ngIf="dictamenForm.get('mensajeDictamen')?.errors?.['soloEspacios']">
+                No se permiten solo espacios en blanco.
+            </div>
+            <div class="text-danger" *ngIf="dictamenForm.get('mensajeDictamen')?.errors?.['maxlength']">
+                No puede exceder los 2000 caracteres.
+            </div>
+            }
+        </div>
+    </div>
+
+    <!-- De conformidad con section -->
+    <div class="row mt-5" *ngIf="anexo222se">
+        <div class="col-md-12">
+            <h4>De conformidad con</h4>
+        </div>
+
+        <div class="col-md-12">
+            <label for="antecedentesEditables" class="form-label">
+                Antecedentes que sustentan el dictamen<span [ngClass]="dictamenForm.get('antecedentesEditables')?.errors?.['required'] ? 'text-danger' : ''">*</span>:
+            </label>
+        </div>
+    </div>
+    <div class="row mt-3" *ngIf="isAntecedentes">
+        <div class="col-md-12">
+            <textarea id="antecedentesEditables" class="form-control text-height"
+                formControlName="antecedentesEditables"
+                [ngClass]="{ 'is-invalid': dictamenForm.get('antecedentesEditables')?.invalid && dictamenForm.get('antecedentesEditables')?.touched }"></textarea>
+
+            @if (dictamenForm.get('antecedentesEditables')?.touched &&
+            dictamenForm.get('antecedentesEditables')?.errors) {
+            <div class="text-danger" *ngIf="dictamenForm.get('antecedentesEditables')?.errors?.['required']">
+                Este campo es obligatorio.
+            </div>
+            <div class="text-danger" *ngIf="dictamenForm.get('antecedentesEditables')?.errors?.['soloEspacios']">
+                No se permiten solo espacios en blanco.
+            </div>
+            <div class="text-danger" *ngIf="dictamenForm.get('mensajeDictamen')?.errors?.['maxlength']">
+                No puede exceder los 2000 caracteres.
+            </div>
+            }
+        </div>
+    </div>
+    <div class="row mt-3" *ngIf="anexo222se">
+        <div class="col-md-12">
+            <textarea id="antecedentesReadonly" class="form-control text-height" formControlName="antecedentesReadonly"
+                placeholder="Fracción I numeral 2 del Anexo 2.2.2 del Acuerdo por el que la Secretaría de Economía emite reglas y criterios de carácter general en materia de Comercio Exterior, publicado en el Diario Oficial de la Federación el 6 de julio de 2007 y sus modificaciones.">
+            </textarea>
+        </div>
+    </div>
+
+    <!-- Campos de fecha condicionales -->
+    @if (mostrarCamposFecha) {
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <label for="fechaInicioVigenciaAutorizada" class="form-label">*Fecha de inicio de vigencia
+                autorizada:</label>
+            <input type="date" id="fechaInicioVigenciaAutorizada" class="form-control"
+                formControlName="fechaInicioVigenciaAutorizada"
+                [ngClass]="isValid('fechaInicioVigenciaAutorizada') ? 'required' : ''">
+            @if (dictamenForm.get('fechaInicioVigenciaAutorizada')?.invalid &&
+            dictamenForm.get('fechaInicioVigenciaAutorizada')?.touched) {
+            <div class="text-danger">
+                Este campo es obligatorio.
+            </div>
+            }
+        </div>
+        <div class="col-md-6">
+            <label for="fechaFinVigenciaAutorizada" class="form-label">*Fecha de fin de vigencia autorizada:</label>
+            <input type="date" id="fechaFinVigenciaAutorizada" class="form-control"
+                formControlName="fechaFinVigenciaAutorizada"
+                [ngClass]="isValid('fechaFinVigenciaAutorizada') ? 'required' : ''">
+            @if (dictamenForm.get('fechaFinVigenciaAutorizada')?.invalid &&
+            dictamenForm.get('fechaFinVigenciaAutorizada')?.touched) {
+            <div class="text-danger">
+                Este campo es obligatorio.
+            </div>
+            }
+        </div>
+    </div>
+    }
+            @if (evaluarObservacionesDictamen.length > 0) {
+            <ng-titulo [titulo]="'Observaciones al dictamen'" />
+            <div class="col-md-12">
+                <app-tabla-dinamica [configuracionTabla]="tablaObservacionesDictamen" [datos]="evaluarObservacionesDictamen">
+                </app-tabla-dinamica>
+            </div>
+            }
+
+    @if(!soloLectura){
+     <div class="row mt-5 mb-5">
+        <div class="col-md-12 d-flex justify-content-end">
+            <button type="button" class="btn btn-primary me-3" (click)="firmar()">Guardar y firmar</button>
+            <button type="button" class="btn btn-primary me-3" (click)="guardar()">Guardar</button>
+            <button type="button" class="btn btn-default me-3" (click)="cancelar()">Cancelar</button>
+        </div>
+     </div>
+    }
+</form>

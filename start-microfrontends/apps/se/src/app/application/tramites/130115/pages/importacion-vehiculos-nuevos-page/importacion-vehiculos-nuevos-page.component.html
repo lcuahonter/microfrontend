@@ -1,0 +1,39 @@
+<div class="page">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h2>Solicitud importación vehículos considerados nuevos al momento de su ingreso a depósito fiscal.</h2>
+      </div>
+    </div>
+    <div class="row mt-5" *ngIf="indice === 3">
+      <div class="col-md-12">
+        <lib-notificaciones [notificacionInput]="alertaNotificacion"></lib-notificaciones>
+      </div>
+    </div>
+    <div class="col-12">
+      @if(esFormaValido){
+      <div class="col-md-12">
+        <ng-alert [CONTENIDO]="formErrorAlert" [CUSTOMECLASS]="'alert-danger'"></ng-alert>
+      </div>
+      }
+    </div>
+    <app-wizard [listaPasos]="pasosSolicitar"></app-wizard>
+    <div class="row">
+      @switch(indice){
+        @case(1){
+          <app-paso-uno></app-paso-uno>
+          }@case(2){
+            <app-paso-carga-documento [idSolicitud]="solicitudState.idSolicitud" [idTipoTRamite]="'130115'"
+              [cargaArchivosEvento]="cargarArchivosEvento"
+              (reenviarEventoCarga)="manejaEventoCargaDocumentos($event)"
+              (reenviarCargaRealizada)="cargaRealizada($event)"
+              (cargaEnProgreso)="onCargaEnProgreso($event)">
+            </app-paso-carga-documento>
+          }@case(3){
+            <paso-firma [idSolicitud]="solicitudState.idSolicitud" [procedure]="130115" [procedureUrl]="'importacion-vehiculos-nuevos/solicitud'"></paso-firma>
+          }
+      }
+      <btn-continuar [datos]="datosPasos" (continuarEvento)="getValorIndice($event)"></btn-continuar>
+  </div>
+</div>
+</div>

@@ -1,0 +1,57 @@
+<div class="row">
+    <ul class="nav nav-tabs">
+        <li [ngClass]="indice === 1 ? 'active' : ''">
+            <a data-toggle="tab" (click)="seleccionaTab(1)" (keydown.enter)="seleccionaTab(1)"
+                (keydown.space)="seleccionaTab(1)" role="button" tabindex="0">Dictamenes</a>
+        </li>
+        <li [ngClass]="{ 'active': indice === 2, 'disabled': indice < 2 }">
+            <a data-toggle="tab" (click)="indice < 2 ? $event.preventDefault() : seleccionaTab(2)"
+                (keyup.enter)="indice < 2 && seleccionaTab(2)" (keydown.space)="indice < 2 && seleccionaTab(2)"
+                role="button" tabindex="0">Detalle</a>
+        </li>
+        <li [ngClass]="{ 'active': indice === 3, 'disabled': indice < 3 }">
+            <a data-toggle="tab" (click)="indice < 3 ? $event.preventDefault() : seleccionaTab(3)"
+                (keyup.enter)="indice < 3 && seleccionaTab(3)" (keydown.space)="indice === 3 && seleccionaTab(3)"
+                role="button" tabindex="0">Detalle de observación</a>
+        </li>
+    </ul>
+
+    <ng-container>
+        @switch (indice) {
+        @case (1) {
+        <lib-dictamenes [dictamenes]="dictamenes" [tramite]="tramite"
+            (idDictamenSeleccionado)="onIdDictamenSeleccionado($event)"></lib-dictamenes>
+        }
+        @case (2) {
+                @switch (departamento) {
+                @case ('cofepris') {
+                    @if(series_260514.includes(tramite)) {
+                        <lib-detalle-dictamen-cofepris-512-516  (idObservacionSeleccionado)="onIdObservacionSeleccionado($event)" [dictamenDetalle]="dictamenDetalle" [tramite]="tramite"></lib-detalle-dictamen-cofepris-512-516>
+                    } @else if (series_26050.includes(tramite)) {
+                        <lib-consulta-detalle-dictamen-cofepris-501-511 *ngIf="dictamenDetalle" [isFechaFinVigencia]="!FechaFinVigencia.includes(tramite)"  (idObservacionSeleccionado)="onIdObservacionSeleccionado($event)" [dictamenDetalle]="dictamenDetalle" [tramite]="tramite"></lib-consulta-detalle-dictamen-cofepris-501-511>
+                    } @else if (series_26040.includes(tramite)) {
+                        <lib-consulta-detalle-dictamen-cofepris-401-402 *ngIf="dictamenDetalle" (idObservacionSeleccionado)="onIdObservacionSeleccionado($event)" [dictamenDetalle]="dictamenDetalle" [tramite]="tramite"></lib-consulta-detalle-dictamen-cofepris-401-402>
+                    } @else if (series_26030.includes(tramite)) {
+                        <lib-detalle-dictamen-cofepris-26030 (idObservacionSeleccionado)="onIdObservacionSeleccionado($event)" [dictamenDetalle]="dictamenDetalle" [tramite]="tramite"></lib-detalle-dictamen-cofepris-26030>
+                    } 
+                    @else {
+                        <lib-detalle-dictamen-cofepris (idObservacionSeleccionado)="onIdObservacionSeleccionado($event)" [dictamenDetalle]="dictamenDetalle" [tramite]="tramite"></lib-detalle-dictamen-cofepris>
+                    }
+                }
+                @default {
+                <lib-detalle-dictamen (idObservacionSeleccionado)="onIdObservacionSeleccionado($event)" [dictamenDetalle]="dictamenDetalle" [isFechasDetalleDictamenes]="isFechasDetalleDictamenes"></lib-detalle-dictamen>
+                }
+            }
+        }
+        @case (3) {
+        <lib-detalle-observacion-dictamen [dictamenObservacionDetalle]="observacionDictamen"></lib-detalle-observacion-dictamen>
+        }
+        }
+    </ng-container>
+</div>
+
+@if(nuevaNotificacion) {
+<section>
+  <lib-notificaciones [notificacionInput]="nuevaNotificacion"></lib-notificaciones>
+</section>
+}
