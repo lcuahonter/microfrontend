@@ -1,9 +1,15 @@
 /* eslint-disable */
 // @ts-nocheck
 
-const { ModuleFederationPlugin } = require('webpack').container;
 const mf = require('@angular-architects/module-federation/webpack');
-const webpack = require("webpack");
+// Usar la misma instancia de webpack que @angular-devkit para evitar conflicto de 'compilation'
+let webpack: any;
+try {
+  webpack = require('@angular-devkit/build-angular/node_modules/webpack');
+} catch {
+  webpack = require('webpack');
+}
+const { ModuleFederationPlugin } = webpack.container;
 const path = require('path');
 const share = mf.share;
 

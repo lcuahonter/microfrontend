@@ -1,11 +1,12 @@
-/* eslint-disable */
-// @ts-nocheck
 import { Route } from '@angular/router';
-import { RemoteEntryComponent } from './entry.component';
 
-export const remoteRoutes: Route[] = [
+export const REMOTE_ROUTES: Route[] = [
   {
-    path: '', loadChildren: () => import('./../application/app.module').then(module => module.AppUsuariosModule)
-  }
+    path: '',
+    loadChildren: () =>
+      import('./../application/app.module').then(
+        (module) => module.AppUsuariosModule
+      ),
+  },
 ];
  

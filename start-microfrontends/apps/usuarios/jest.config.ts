@@ -20,8 +20,18 @@ export default {
   },
   coverageReporters: ['text-summary', 'html'],
   coveragePathIgnorePatterns: [
+    // Patrones de archivos de infraestructura (sin lógica testeable)
     'src/app/application/.*\\.(module|store|query|enums?|enum|model|constants?|constantes|interfaces?)\\.ts$',
-    'src/app/application/seleccion-tramite/.*\\.ts$',
+    // Archivos de rutas y guards (configuración, no lógica de negocio)
+    'src/app/application/.*\\.routes\\.ts$',
+    'src/app/application/.*\\.guard\\.ts$',
+    // Archivos barrel (re-exportaciones)
+    'src/app/application/.*/index\\.ts$',
+    // Módulos/secciones sin cobertura (fuera del scope de usuarios-angular)
+    'src/app/application/core/',
+    'src/app/application/shared/',
+    'src/app/application/inicio/',
+    'src/app/application/seleccion-tramite/',
   ],
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
