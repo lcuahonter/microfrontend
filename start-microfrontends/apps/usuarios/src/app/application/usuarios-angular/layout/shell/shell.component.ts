@@ -1,38 +1,8 @@
-import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatListModule } from '@angular/material/list';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatChipsModule } from '@angular/material/chips';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { AuthService } from '../../core/services/auth.service';
-
-interface NavItem {
-  label: string;
-  icon: string;
-  route: string;
-  roles?: string[];
-}
-
-const NAV_ITEMS: NavItem[] = [
-  { label: 'Dashboard', icon: 'dashboard', route: 'dashboard' },
-  { label: 'Registro de Usuario', icon: 'person_add', route: 'registro' },
-  { label: 'Asignar Roles', icon: 'manage_accounts', route: 'roles/asignar' },
-  { label: 'Desasignar Roles', icon: 'person_remove', route: 'roles/desasignar' },
-  { label: 'Cambio de Contraseña', icon: 'lock_reset', route: 'password/cambio' },
-  { label: 'Recuperar Contraseña', icon: 'key', route: 'password/recuperar' },
-  { label: 'Cambio de Correo', icon: 'email', route: 'correo/cambio' },
-  { label: 'Alta de Accionista', icon: 'group_add', route: 'accionista/alta' },
-  { label: 'Alta de Capturista', icon: 'edit_note', route: 'capturista/alta' },
-  { label: 'Persona Oír/Recibir', icon: 'contact_phone', route: 'persona-oir-recibir' },
-  { label: 'Trámites', icon: 'description', route: 'tramites' },
-  { label: 'Suplencias', icon: 'swap_horiz', route: 'suplencias' },
-  { label: 'Modificar Datos', icon: 'edit', route: 'funcionarios/modificar', roles: ['FUNCIONARIO', 'ADMINISTRADOR'] },
-];
+import { CommonModule } from '@angular/common';
+import { NAV_ITEMS } from './nav-items.constants';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'vuc-shell',
@@ -40,99 +10,103 @@ const NAV_ITEMS: NavItem[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule, RouterModule,
-    MatSidenavModule, MatToolbarModule, MatListModule,
-    MatIconModule, MatButtonModule, MatMenuModule,
-    MatDividerModule, MatChipsModule,
   ],
   template: `
-    <mat-sidenav-container class="shell-container">
+    <div class="shell-container d-flex">
       <!-- Sidebar -->
-      <mat-sidenav mode="side" [opened]="sidenavOpen()" class="shell-sidenav">
-        <!-- Logo -->
-        <div class="shell-logo">
-          <img src="assets/logo-vucem.svg" alt="VUCEM" onerror="this.style.display='none'">
-          <div class="shell-logo__text">
-            <span class="shell-logo__title">VUCEM</span>
-            <span class="shell-logo__sub">Módulo Usuarios</span>
+      @if (sidenavOpen()) {
+        <nav class="shell-sidenav d-flex flex-column">
+          <!-- Logo -->
+          <div class="shell-logo d-flex align-items-center gap-2">
+            <img src="assets/logo-vucem.svg" alt="VUCEM" onerror="this.style.display='none'" style="height:32px">
+            <div class="shell-logo__text d-flex flex-column">
+              <span class="shell-logo__title">VUCEM</span>
+              <span class="shell-logo__sub">Módulo Usuarios</span>
+            </div>
           </div>
-        </div>
 
-        <!-- Rol activo -->
-        @if (auth.rol()) {
-          <div class="shell-rol">
-            <mat-icon>badge</mat-icon>
-            <span>{{ auth.rol()!.nombreRol }}</span>
-          </div>
-        }
-
-        <mat-divider></mat-divider>
-
-        <!-- Navegación -->
-        <mat-nav-list class="shell-nav">
-          @for (item of navItems; track item.route) {
-            <a mat-list-item [routerLink]="[item.route]" routerLinkActive="active-link">
-              <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
-              <span matListItemTitle>{{ item.label }}</span>
-            </a>
+          <!-- Rol activo -->
+          @if (auth.rol()) {
+            <div class="shell-rol d-flex align-items-center gap-2">
+              <i class="bi bi-person-badge"></i>
+              <span>{{ auth.rol()!.nombreRol }}</span>
+            </div>
           }
-        </mat-nav-list>
-      </mat-sidenav>
+
+          <hr class="border-secondary my-0">
+
+          <!-- Navegación -->
+          <ul class="shell-nav list-unstyled flex-grow-1 mt-2">
+            @for (item of navItems; track item.route) {
+              <li>
+                <a class="shell-nav__link d-flex align-items-center gap-2"
+                   [routerLink]="[item.route]" routerLinkActive="active-link">
+                  <i class="bi" [class]="item.icon"></i>
+                  <span>{{ item.label }}</span>
+                </a>
+              </li>
+            }
+          </ul>
+        </nav>
+      }
 
       <!-- Contenido principal -->
-      <mat-sidenav-content class="shell-content">
+      <div class="shell-content d-flex flex-column flex-grow-1">
         <!-- Toolbar -->
-        <mat-toolbar class="shell-toolbar" color="primary">
-          <button mat-icon-button (click)="toggleSidenav()">
-            <mat-icon>menu</mat-icon>
+        <nav class="shell-toolbar navbar navbar-dark px-3">
+          <button class="btn btn-sm btn-link p-0 text-white" (click)="toggleSidenav()">
+            <i class="bi bi-list fs-4"></i>
           </button>
-          <span class="shell-toolbar__title">Ventanilla Única de Comercio Exterior</span>
-          <span class="flex-spacer"></span>
+          <span class="shell-toolbar__title ms-3 text-white">Ventanilla Única de Comercio Exterior</span>
+          <span class="flex-grow-1"></span>
 
           <!-- Usuario -->
           @if (auth.usuario()) {
-            <button mat-button [matMenuTriggerFor]="userMenu" class="shell-user-btn">
-              <mat-icon>account_circle</mat-icon>
-              <span>{{ auth.usuario()!.nombre }} {{ auth.usuario()!.primerApellido }}</span>
-              <mat-icon>arrow_drop_down</mat-icon>
-            </button>
-            <mat-menu #userMenu="matMenu">
-              <button mat-menu-item disabled>
-                <mat-icon>badge</mat-icon>
-                <span>{{ auth.usuario()!.rfc }}</span>
+            <div class="dropdown">
+              <button class="btn btn-sm btn-link text-white d-flex align-items-center gap-1 dropdown-toggle"
+                      type="button" data-bs-toggle="dropdown">
+                <i class="bi bi-person-circle"></i>
+                <span>{{ auth.usuario()!.nombre }} {{ auth.usuario()!.primerApellido }}</span>
               </button>
-              <mat-divider></mat-divider>
-              <button mat-menu-item (click)="auth.logout()">
-                <mat-icon>logout</mat-icon>
-                <span>Cerrar Sesión</span>
-              </button>
-            </mat-menu>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                  <span class="dropdown-item-text">
+                    <i class="bi bi-person-badge me-2"></i>{{ auth.usuario()!.rfc }}
+                  </span>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                  <button class="dropdown-item" (click)="auth.logout()">
+                    <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
+                  </button>
+                </li>
+              </ul>
+            </div>
           }
-        </mat-toolbar>
+        </nav>
 
         <!-- Router outlet -->
-        <div class="shell-body">
+        <div class="shell-body flex-grow-1">
           <router-outlet></router-outlet>
         </div>
-      </mat-sidenav-content>
-    </mat-sidenav-container>
+      </div>
+    </div>
   `,
   styles: [`
-    .shell-container { height: 100vh; }
-    .shell-sidenav { width: 260px; background: #1a2035; color: white; }
-    .shell-logo { display: flex; align-items: center; gap: 12px; padding: 20px 16px; }
-    .shell-logo__text { display: flex; flex-direction: column; }
+    .shell-container { height: 100vh; overflow: hidden; }
+    .shell-sidenav { width: 260px; min-width: 260px; background: #1a2035; color: white; overflow-y: auto; }
+    .shell-logo { padding: 20px 16px; }
     .shell-logo__title { font-size: 18px; font-weight: 700; color: white; }
-    .shell-logo__sub { font-size: 11px; color: #90caf9; }
-    .shell-rol { display: flex; align-items: center; gap: 8px; padding: 8px 16px 12px; font-size: 13px; color: #90caf9; }
-    .shell-nav .active-link { background: rgba(255,255,255,0.1) !important; border-left: 3px solid #006847; }
-    .shell-nav mat-icon { color: #90caf9 !important; }
-    .shell-nav .active-link mat-icon { color: #4caf50 !important; }
-    ::ng-deep .shell-nav .mat-list-item-title { color: white !important; }
-    .shell-toolbar { position: sticky; top: 0; z-index: 100; background: #006847 !important; }
+    .shell-logo__sub { font-size: 11px; color: #adb5bd; }
+    .shell-rol { padding: 8px 16px 12px; font-size: 13px; color: #adb5bd; }
+    .shell-nav__link { padding: 10px 16px; color: rgba(255,255,255,0.8); text-decoration: none; border-left: 3px solid transparent; transition: background 0.2s; font-size: 16px; }
+    .shell-nav__link:hover { background: rgba(255,255,255,0.08); color: white; }
+    .shell-nav__link.active-link { background: rgba(255,255,255,0.1); border-left-color: #006847; color: white; }
+    .shell-nav__link.active-link i { color: #9FD16C; }
+    .shell-toolbar { background: #006847; position: sticky; top: 0; z-index: 100; min-height: 56px; }
     .shell-toolbar__title { font-size: 15px; font-weight: 500; }
-    .flex-spacer { flex: 1; }
-    .shell-user-btn { color: white !important; }
-    .shell-body { padding: 24px; min-height: calc(100vh - 64px); background: #f5f5f5; }
+    .shell-content { overflow-y: auto; }
+    .shell-body { padding: 24px; background: #f8f9fa; min-height: calc(100vh - 56px); }
   `],
 })
 export class ShellComponent {

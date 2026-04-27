@@ -1,19 +1,14 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
-import { InicioComponent } from './inicio/inicio.component';
+
 const ROUTES: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'inicio' },
   {
-    path: 'inicio',
-    component: InicioComponent,
-  },
-  /*{
-    path: 'octava-temporal',
+    path: '',
     loadChildren: () =>
-      import('./tramites/130102/octava-temporal.module').then(
-        (m) => m.OctavaTemporalModule
+      import('./usuarios-angular/usuarios-angular.routes').then(
+        (m) => m.USUARIOS_ANGULAR_ROUTES
       ),
-  }*/
+  },
 ];
 
 @NgModule({

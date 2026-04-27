@@ -1,20 +1,15 @@
-import { Component, forwardRef, Input, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule, FormControl, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { AbstractControl, ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, forwardRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { UsuariosApiService } from '../../../core/services/usuarios-api.service';
 
 // Validador RFC Mexicano
 function rfcValidator(control: AbstractControl): ValidationErrors | null {
-  const val = control.value?.toString().toUpperCase() || '';
-  const rfcPF = /^[A-Z]{4}\d{6}[A-Z0-9]{3}$/;
-  const rfcPM = /^[A-Z]{3}\d{6}[A-Z0-9]{3}$/;
-  if (!val) return null;
-  if (rfcPF.test(val) || rfcPM.test(val)) return null;
+  const VAL = control.value?.toString().toUpperCase() || '';
+  const RFC_PF = /^[A-Z]{4}\d{6}[A-Z0-9]{3}$/;
+  const RFC_PM = /^[A-Z]{3}\d{6}[A-Z0-9]{3}$/;
+  if (!VAL) { return null; }
+  if (RFC_PF.test(VAL) || RFC_PM.test(VAL)) { return null; }
   return { rfcInvalido: true };
 }
 
@@ -22,30 +17,34 @@ function rfcValidator(control: AbstractControl): ValidationErrors | null {
   selector: 'vuc-rfc-input',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatIconModule, MatButtonModule, MatProgressSpinnerModule],
+  imports: [CommonModule, ReactiveFormsModule],
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => RfcInputComponent), multi: true }],
   template: `
-    <mat-form-field appearance="outline" style="width:100%">
-      <mat-label>{{ label }}</mat-label>
-      <input matInput [formControl]="rfcControl"
-             [placeholder]="placeholder"
-             (input)="onInput($event)"
-             maxlength="13"
-             style="text-transform:uppercase">
-      <mat-hint>Formato: AAAA000000XX0 (Física) / AAA000000XX0 (Moral)</mat-hint>
-      @if (buscando) {
-        <mat-spinner matSuffix diameter="18"></mat-spinner>
-      }
+    <div class="mb-3">
+      <label class="form-label">{{ label }}</label>
+      <div class="input-group">
+        <input class="form-control" [formControl]="rfcControl"
+               [placeholder]="placeholder"
+               (input)="onInput($event)"
+               maxlength="13"
+               style="text-transform:uppercase">
+        @if (buscando) {
+          <span class="input-group-text">
+            <div class="spinner-border spinner-border-sm" role="status"></div>
+          </span>
+        }
+      </div>
+      <div class="form-text">Formato: AAAA000000XX0 (Física) / AAA000000XX0 (Moral)</div>
       @if (rfcControl.hasError('rfcInvalido') && rfcControl.touched) {
-        <mat-error>RFC con formato incorrecto</mat-error>
+        <div class="invalid-feedback d-block">RFC con formato incorrecto</div>
       }
       @if (rfcControl.hasError('required') && rfcControl.touched) {
-        <mat-error>El RFC es requerido</mat-error>
+        <div class="invalid-feedback d-block">El RFC es requerido</div>
       }
-    </mat-form-field>
+    </div>
     @if (usuarioEncontrado) {
       <div class="rfc-found">
-        <mat-icon color="primary">person</mat-icon>
+        <i class="bi bi-person text-primary"></i>
         <span>{{ usuarioEncontrado.nombre }} {{ usuarioEncontrado.primerApellido }}</span>
       </div>
     }
@@ -64,28 +63,30 @@ export class RfcInputComponent implements ControlValueAccessor {
 
   rfcControl = new FormControl('', [Validators.required, rfcValidator]);
   buscando = false;
-  usuarioEncontrado: any = null;
+  usuarioEncontrado: { nombre: string; primerApellido: string } | null = null;
 
-  private onChange: (v: string) => void = () => {};
-  private onTouched: () => void = () => {};
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  private onChange: (v: string) => void = (_v: string) => { /* ControlValueAccessor stub */ };
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  private onTouched: () => void = () => { /* ControlValueAccessor stub */ };
 
   writeValue(val: string): void {
     this.rfcControl.setValue(val, { emitEvent: false });
   }
-  registerOnChange(fn: any): void { this.onChange = fn; }
-  registerOnTouched(fn: any): void { this.onTouched = fn; }
+  registerOnChange(fn: (v: string) => void): void { this.onChange = fn; }
+  registerOnTouched(fn: () => void): void { this.onTouched = fn; }
   setDisabledState(disabled: boolean): void {
-    disabled ? this.rfcControl.disable() : this.rfcControl.enable();
+    if (disabled) { this.rfcControl.disable(); } else { this.rfcControl.enable(); }
   }
 
   onInput(event: Event) {
-    const val = (event.target as HTMLInputElement).value.toUpperCase();
-    this.rfcControl.setValue(val, { emitEvent: false });
-    this.onChange(val);
+    const VAL = (event.target as HTMLInputElement).value.toUpperCase();
+    this.rfcControl.setValue(VAL, { emitEvent: false });
+    this.onChange(VAL);
     this.onTouched();
 
-    if (this.buscarUsuario && val.length >= 12 && !this.rfcControl.hasError('rfcInvalido')) {
-      this.buscarUsuarioRfc(val);
+    if (this.buscarUsuario && VAL.length >= 12 && !this.rfcControl.hasError('rfcInvalido')) {
+      this.buscarUsuarioRfc(VAL);
     } else {
       this.usuarioEncontrado = null;
     }

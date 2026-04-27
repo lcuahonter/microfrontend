@@ -1,17 +1,12 @@
-import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { StepperComponent, WizardStep } from '../../shared/components/stepper/stepper.component';
 import { AlertComponent } from '../../shared/components/alert/alert.component';
-import { UserSearchComponent } from '../../shared/components/user-search/user-search.component';
+import { CommonModule } from '@angular/common';
 import { FielSignatureComponent } from '../../shared/components/fiel-signature/fiel-signature.component';
-import { UsuariosApiService } from '../../core/services/usuarios-api.service';
+import { UserSearchComponent } from '../../shared/components/user-search/user-search.component';
 import { Usuario } from '../../core/models/usuario.model';
+import { UsuariosApiService } from '../../core/services/usuarios-api.service';
 
 @Component({
   selector: 'vuc-persona-oir-recibir',
@@ -19,21 +14,20 @@ import { Usuario } from '../../core/models/usuario.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule, ReactiveFormsModule,
-    MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule,
-    MatProgressSpinnerModule, StepperComponent, AlertComponent,
+    StepperComponent, AlertComponent,
     UserSearchComponent, FielSignatureComponent,
   ],
   template: `
     <div class="page-container">
-      <h2 class="page-title"><mat-icon>contact_phone</mat-icon> Persona Autorizada para Oír y Recibir</h2>
+      <h4 class="page-title"><i class="bi bi-telephone"></i> Persona Autorizada para Oír y Recibir</h4>
       <vuc-stepper [pasos]="pasos" [pasoActual]="paso()" (pasoClick)="paso.set($event)"></vuc-stepper>
 
       @if (paso() === 0) {
         <h3>Buscar Usuario</h3>
         <vuc-user-search (seleccionado)="usuario.set($event)"></vuc-user-search>
         @if (usuario()) {
-          <button mat-raised-button color="primary" (click)="paso.set(1)" style="margin-top:12px">
-            Continuar <mat-icon>arrow_forward</mat-icon>
+          <button class="btn btn-primary mt-3" (click)="paso.set(1)">
+            Continuar <i class="bi bi-arrow-right"></i>
           </button>
         }
       }
@@ -41,31 +35,31 @@ import { Usuario } from '../../core/models/usuario.model';
       @if (paso() === 1) {
         <h3>Datos de la Persona Autorizada</h3>
         <form [formGroup]="form" class="form-fields">
-          <mat-form-field appearance="outline">
-            <mat-label>Nombre(s)</mat-label>
-            <input matInput formControlName="nombre">
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Primer Apellido</mat-label>
-            <input matInput formControlName="primerApellido">
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Segundo Apellido</mat-label>
-            <input matInput formControlName="segundoApellido">
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Correo Electrónico</mat-label>
-            <input matInput formControlName="correo" type="email">
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Teléfono (opcional)</mat-label>
-            <input matInput formControlName="telefono" maxlength="10">
-          </mat-form-field>
+          <div class="mb-3">
+            <label class="form-label">Nombre(s)</label>
+            <input class="form-control" formControlName="nombre">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Primer Apellido</label>
+            <input class="form-control" formControlName="primerApellido">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Segundo Apellido</label>
+            <input class="form-control" formControlName="segundoApellido">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Correo Electrónico</label>
+            <input class="form-control" formControlName="correo" type="email">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Teléfono (opcional)</label>
+            <input class="form-control" formControlName="telefono" maxlength="10">
+          </div>
         </form>
         <div class="step-nav">
-          <button mat-stroked-button (click)="paso.set(0)"><mat-icon>arrow_back</mat-icon> Anterior</button>
-          <button mat-raised-button color="primary" (click)="paso.set(2)" [disabled]="form.invalid">
-            Confirmar con e.firma <mat-icon>arrow_forward</mat-icon>
+          <button class="btn btn-outline-primary" (click)="paso.set(0)"><i class="bi bi-arrow-left"></i> Anterior</button>
+          <button class="btn btn-primary" (click)="paso.set(2)" [disabled]="form.invalid">
+            Confirmar con e.firma <i class="bi bi-arrow-right"></i>
           </button>
         </div>
       }
@@ -74,9 +68,9 @@ import { Usuario } from '../../core/models/usuario.model';
         <vuc-fiel-signature (firmado)="onFirmado($event)"></vuc-fiel-signature>
         @if (exito()) { <vuc-alert type="success">Persona autorizada registrada correctamente.</vuc-alert> }
         @if (fielData) {
-          <button mat-raised-button color="primary" (click)="guardar()" [disabled]="cargando()" style="margin-top:12px">
-            @if (cargando()) { <mat-spinner diameter="20"></mat-spinner> }
-            @else { <mat-icon>save</mat-icon> Registrar Persona }
+          <button class="btn btn-primary mt-3" (click)="guardar()" [disabled]="cargando()">
+            @if (cargando()) { <div class="spinner-border spinner-border-sm text-light" role="status"></div> }
+            @else { <i class="bi bi-save"></i> Registrar Persona }
           </button>
         }
       }
@@ -99,11 +93,11 @@ export class PersonaOirRecibirComponent {
 
   paso = signal(0);
   usuario = signal<Usuario | null>(null);
-  fielData: any = null;
+  fielData: unknown = null;
   cargando = signal(false);
   exito = signal(false);
 
-  pasos: WizardStep[] = [
+  readonly pasos: WizardStep[] = [
     { label: 'Usuario', icon: 'person' },
     { label: 'Datos', icon: 'badge' },
     { label: 'e.firma', icon: 'security' },
@@ -118,11 +112,11 @@ export class PersonaOirRecibirComponent {
     telefono: [''],
   });
 
-  onFirmado(data: any) { this.fielData = data; }
+  onFirmado(data: unknown) { this.fielData = data; }
 
   guardar() {
     this.cargando.set(true);
-    const dto = {
+    const DTO = {
       nombre: this.form.value.nombre!,
       primerApellido: this.form.value.primerApellido!,
       segundoApellido: this.form.value.segundoApellido || undefined,
@@ -131,7 +125,7 @@ export class PersonaOirRecibirComponent {
       activo: true,
       fechaAlta: new Date().toISOString().split('T')[0],
     };
-    this.api.altaPersonaOirRecibir(this.usuario()!.rfc, dto).subscribe(() => {
+    this.api.altaPersonaOirRecibir(this.usuario()!.rfc, DTO).subscribe(() => {
       this.cargando.set(false);
       this.exito.set(true);
       this.paso.set(3);

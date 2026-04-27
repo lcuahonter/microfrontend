@@ -1,13 +1,13 @@
-import { Injectable, signal, computed } from '@angular/core';
-import { Router } from '@angular/router';
-import { of } from 'rxjs';
+import { Injectable, computed, inject, signal } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { RolAsignado, SesionActiva, Usuario } from '../models/usuario.model';
 import { delay, tap } from 'rxjs/operators';
-import { SesionActiva, Usuario, RolAsignado } from '../models/usuario.model';
+import { Router } from '@angular/router';
 import { USUARIOS_MOCK } from '../../mocks/usuarios.mock';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private router = inject_router();
+  private router = inject(Router);
 
   // --- State con Signals ---
   private _sesion = signal<SesionActiva | null>(null);
@@ -18,12 +18,12 @@ export class AuthService {
   readonly rolesDisponibles = computed(() => this._sesion()?.usuario?.roles ?? []);
 
   // --- Login con password ---
-  loginConPassword(rfc: string, password: string) {
-    const usuario = USUARIOS_MOCK.find(u => u.rfc === rfc);
-    if (!usuario) {
+  loginConPassword(rfc: string, _password: string): Observable<Usuario | { error: string }> {
+    const USUARIO = USUARIOS_MOCK.find(u => u.rfc === rfc);
+    if (!USUARIO) {
       return of({ error: 'Usuario no encontrado' }).pipe(delay(800));
     }
-    return of(usuario).pipe(
+    return of(USUARIO as Usuario).pipe(
       delay(1000),
       tap(u => {
         if (u.roles && u.roles.length > 1) {
@@ -47,9 +47,9 @@ export class AuthService {
   }
 
   // --- Login con e.firma ---
-  loginConFiel(cerFile: File, keyFile: File, passphrase: string) {
-    const usuario = USUARIOS_MOCK[0];
-    return of(usuario).pipe(
+  loginConFiel(_cerFile: File, _keyFile: File, _passphrase: string): Observable<Usuario> {
+    const USUARIO = USUARIOS_MOCK[0];
+    return of(USUARIO).pipe(
       delay(1500),
       tap(u => {
         this._sesion.set({
@@ -64,9 +64,9 @@ export class AuthService {
 
   // --- Selección de rol ---
   seleccionarRol(rol: RolAsignado) {
-    const sesion = this._sesion();
-    if (sesion) {
-      this._sesion.set({ ...sesion, rolActivo: rol });
+    const SESION = this._sesion();
+    if (SESION) {
+      this._sesion.set({ ...SESION, rolActivo: rol });
     }
   }
 
@@ -79,10 +79,4 @@ export class AuthService {
   getSesion(): SesionActiva | null {
     return this._sesion();
   }
-}
-
-// Helper para evitar circular DI en standalone
-function inject_router(): Router {
-  const { inject } = require('@angular/core');
-  return inject(Router);
 }

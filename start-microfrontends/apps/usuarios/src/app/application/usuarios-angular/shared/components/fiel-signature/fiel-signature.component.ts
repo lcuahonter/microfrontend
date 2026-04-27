@@ -1,12 +1,7 @@
-import { Component, Output, EventEmitter, ChangeDetectionStrategy, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output, inject } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AlertComponent } from '../alert/alert.component';
+import { CommonModule } from '@angular/common';
 import { UsuariosApiService } from '../../../core/services/usuarios-api.service';
 
 export interface FielResult {
@@ -24,13 +19,12 @@ export interface FielResult {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule, ReactiveFormsModule,
-    MatFormFieldModule, MatInputModule, MatButtonModule,
-    MatIconModule, MatProgressSpinnerModule, AlertComponent,
+    AlertComponent,
   ],
   template: `
     <div class="fiel-container">
       <h3 class="fiel-title">
-        <mat-icon>security</mat-icon> e.firma (FIEL)
+        <i class="bi bi-shield-lock"></i> e.firma (FIEL)
       </h3>
       <p class="fiel-desc">Firme digitalmente con su certificado (.cer) y llave privada (.key)</p>
 
@@ -39,7 +33,7 @@ export interface FielResult {
         <div class="fiel-upload">
           <label class="fiel-upload__label">Certificado (.cer)</label>
           <div class="fiel-upload__zone" (click)="cerInput.click()">
-            <mat-icon>upload_file</mat-icon>
+            <i class="bi bi-upload"></i>
             <span>{{ cerNombre || 'Seleccionar archivo .cer' }}</span>
           </div>
           <input #cerInput type="file" accept=".cer" hidden (change)="onCerChange($event)">
@@ -49,20 +43,22 @@ export interface FielResult {
         <div class="fiel-upload">
           <label class="fiel-upload__label">Llave Privada (.key)</label>
           <div class="fiel-upload__zone" (click)="keyInput.click()">
-            <mat-icon>vpn_key</mat-icon>
+            <i class="bi bi-key"></i>
             <span>{{ keyNombre || 'Seleccionar archivo .key' }}</span>
           </div>
           <input #keyInput type="file" accept=".key" hidden (change)="onKeyChange($event)">
         </div>
 
         <!-- Contraseña -->
-        <mat-form-field appearance="outline" style="width:100%">
-          <mat-label>Contraseña de la llave privada</mat-label>
-          <input matInput [type]="mostrarPass ? 'text' : 'password'" formControlName="passphrase">
-          <button mat-icon-button matSuffix type="button" (click)="mostrarPass = !mostrarPass">
-            <mat-icon>{{ mostrarPass ? 'visibility_off' : 'visibility' }}</mat-icon>
-          </button>
-        </mat-form-field>
+        <div class="mb-3">
+          <label class="form-label">Contraseña de la llave privada</label>
+          <div class="input-group">
+            <input class="form-control" [type]="mostrarPass ? 'text' : 'password'" formControlName="passphrase">
+            <button class="btn btn-outline-secondary" type="button" (click)="mostrarPass = !mostrarPass">
+              <i class="bi" [class.bi-eye]="!mostrarPass" [class.bi-eye-slash]="mostrarPass"></i>
+            </button>
+          </div>
+        </div>
 
         <!-- Error -->
         @if (error) {
@@ -76,14 +72,13 @@ export interface FielResult {
           </vuc-alert>
         }
 
-        <button mat-raised-button color="primary" type="submit"
-                [disabled]="cargando || !cerFile || !keyFile || form.invalid"
-                style="width:100%; margin-top:8px">
+        <button class="btn btn-primary w-100 mt-2" type="submit"
+                [disabled]="cargando || !cerFile || !keyFile || form.invalid">
           @if (cargando) {
-            <mat-spinner diameter="20" style="display:inline-block;margin-right:8px"></mat-spinner>
+            <div class="spinner-border spinner-border-sm text-light me-2" role="status"></div>
             Verificando...
           } @else {
-            <mat-icon>verified</mat-icon> Verificar e.firma
+            <i class="bi bi-patch-check"></i> Verificar e.firma
           }
         </button>
       </form>
@@ -123,25 +118,25 @@ export class FielSignatureComponent {
   resultado: FielResult | null = null;
 
   onCerChange(event: Event) {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (file) { this.cerFile = file; this.cerNombre = file.name; }
+    const FILE = (event.target as HTMLInputElement).files?.[0];
+    if (FILE) { this.cerFile = FILE; this.cerNombre = FILE.name; }
   }
 
   onKeyChange(event: Event) {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (file) { this.keyFile = file; this.keyNombre = file.name; }
+    const FILE = (event.target as HTMLInputElement).files?.[0];
+    if (FILE) { this.keyFile = FILE; this.keyNombre = FILE.name; }
   }
 
   verificar() {
-    if (!this.cerFile || !this.keyFile || this.form.invalid) return;
+    if (!this.cerFile || !this.keyFile || this.form.invalid) { return; }
     this.cargando = true;
     this.error = '';
-    const pass = this.form.value.passphrase!;
+    const PASS = this.form.value.passphrase!;
 
-    this.api.verificarFiel(this.cerFile, this.keyFile, pass).subscribe({
-      next: (res: any) => {
+    this.api.verificarFiel(this.cerFile, this.keyFile, PASS).subscribe({
+      next: (res: { valido: boolean; rfc: string; nombre: string }) => {
         this.cargando = false;
-        this.resultado = { valido: true, rfc: res.rfc, nombre: res.nombre, cerFile: this.cerFile!, keyFile: this.keyFile!, passphrase: pass };
+        this.resultado = { valido: true, rfc: res.rfc, nombre: res.nombre, cerFile: this.cerFile!, keyFile: this.keyFile!, passphrase: PASS };
         this.firmado.emit(this.resultado);
       },
       error: () => {

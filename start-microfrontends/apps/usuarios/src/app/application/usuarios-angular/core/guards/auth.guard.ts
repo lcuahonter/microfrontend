@@ -1,25 +1,31 @@
-import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { inject } from '@angular/core';
 
-export const authGuard: CanActivateFn = () => {
-  const auth = inject(AuthService);
-  const router = inject(Router);
-  if (auth.logueado()) return true;
-  return router.createUrlTree(['/login']);
+export const AUTH_GUARD: CanActivateFn = () => {
+  const AUTH = inject(AuthService);
+  const ROUTER = inject(Router);
+  if (AUTH.logueado()) {
+    return true;
+  }
+  return ROUTER.createUrlTree(['/login']);
 };
 
-export const noAuthGuard: CanActivateFn = () => {
-  const auth = inject(AuthService);
-  const router = inject(Router);
-  if (!auth.logueado()) return true;
-  return router.createUrlTree(['/dashboard']);
+export const NO_AUTH_GUARD: CanActivateFn = () => {
+  const AUTH = inject(AuthService);
+  const ROUTER = inject(Router);
+  if (!AUTH.logueado()) {
+    return true;
+  }
+  return ROUTER.createUrlTree(['/dashboard']);
 };
 
-export const adminGuard: CanActivateFn = () => {
-  const auth = inject(AuthService);
-  const router = inject(Router);
-  const rol = auth.rol();
-  if (rol?.tipoRol === 'ADMINISTRADOR' || rol?.tipoRol === 'FUNCIONARIO') return true;
-  return router.createUrlTree(['/dashboard']);
+export const ADMIN_GUARD: CanActivateFn = () => {
+  const AUTH = inject(AuthService);
+  const ROUTER = inject(Router);
+  const ROL = AUTH.rol();
+  if (ROL?.tipoRol === 'ADMINISTRADOR' || ROL?.tipoRol === 'FUNCIONARIO') {
+    return true;
+  }
+  return ROUTER.createUrlTree(['/dashboard']);
 };

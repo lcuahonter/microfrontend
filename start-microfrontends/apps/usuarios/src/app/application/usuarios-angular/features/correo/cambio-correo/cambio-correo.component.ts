@@ -1,16 +1,11 @@
-import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { StepperComponent, WizardStep } from '../../../shared/components/stepper/stepper.component';
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
+import { AuthService } from '../../../core/services/auth.service';
+import { CommonModule } from '@angular/common';
 import { FielSignatureComponent } from '../../../shared/components/fiel-signature/fiel-signature.component';
 import { UsuariosApiService } from '../../../core/services/usuarios-api.service';
-import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'vuc-cambio-correo',
@@ -18,17 +13,15 @@ import { AuthService } from '../../../core/services/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule, ReactiveFormsModule,
-    MatFormFieldModule, MatInputModule, MatButtonModule,
-    MatIconModule, MatProgressSpinnerModule,
     StepperComponent, AlertComponent, FielSignatureComponent,
   ],
   template: `
     <div class="page-container">
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title><mat-icon>email</mat-icon> Cambio de Correo Electrónico</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title"><i class="bi bi-envelope"></i> Cambio de Correo Electrónico</h5>
+        </div>
+        <div class="card-body">
           <vuc-stepper [pasos]="pasos" [pasoActual]="paso()" (pasoClick)="paso.set($event)"></vuc-stepper>
 
           <!-- PASO 0: Nuevo correo -->
@@ -36,23 +29,33 @@ import { AuthService } from '../../../core/services/auth.service';
             <h3>Ingrese el Nuevo Correo</h3>
             <vuc-alert type="info">El cambio requiere confirmación con su e.firma.</vuc-alert>
             <form [formGroup]="form" class="form-fields">
-              <mat-form-field appearance="outline">
-                <mat-label>Correo Actual</mat-label>
-                <mat-icon matPrefix>email</mat-icon>
-                <input matInput [value]="auth.usuario()?.correo || ''" readonly>
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label>Nuevo Correo</mat-label>
-                <mat-icon matPrefix>email</mat-icon>
-                <input matInput formControlName="correoNuevo" type="email">
-                @if (form.get('correoNuevo')?.hasError('email')) {
-                  <mat-error>Formato incorrecto</mat-error>
+              <div class="mb-3">
+                <label class="form-label">Correo Actual</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                  <input class="form-control" [value]="auth.usuario()?.correo || ''" readonly>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Nuevo Correo</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                  <input class="form-control" formControlName="correoNuevo" type="email">
+                </div>
+                @if (form.get('correoNuevo')?.hasError('required') && form.get('correoNuevo')?.touched) {
+                  <div class="invalid-feedback d-block">El correo es requerido</div>
                 }
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label>Confirmar Nuevo Correo</mat-label>
-                <input matInput formControlName="confirmacion" type="email">
-              </mat-form-field>
+                @if (form.get('correoNuevo')?.hasError('email') && form.get('correoNuevo')?.touched) {
+                  <div class="invalid-feedback d-block">Formato de correo incorrecto</div>
+                }
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Confirmar Nuevo Correo</label>
+                <input class="form-control" formControlName="confirmacion" type="email">
+                @if (form.get('confirmacion')?.hasError('required') && form.get('confirmacion')?.touched) {
+                  <div class="invalid-feedback d-block">Confirme el correo</div>
+                }
+              </div>
             </form>
           }
 
@@ -66,7 +69,7 @@ import { AuthService } from '../../../core/services/auth.service';
           @if (paso() === 2) {
             @if (exito()) {
               <div class="success-center">
-                <mat-icon style="font-size:64px;color:#43a047">check_circle</mat-icon>
+                <i class="bi bi-check-circle success-icon--large"></i>
                 <h3>¡Correo Actualizado!</h3>
                 <p>Se envió confirmación a <strong>{{ form.value.correoNuevo }}</strong></p>
               </div>
@@ -79,31 +82,32 @@ import { AuthService } from '../../../core/services/auth.service';
           @if (paso() < 2) {
             <div class="step-nav">
               @if (paso() > 0) {
-                <button mat-stroked-button (click)="paso.update(p => p - 1)"><mat-icon>arrow_back</mat-icon> Anterior</button>
+                <button class="btn btn-outline-primary" (click)="paso.set(paso() - 1)"><i class="bi bi-arrow-left"></i> Anterior</button>
               }
-              <span style="flex:1"></span>
+              <span class="flex-grow-1"></span>
               @if (paso() === 0) {
-                <button mat-raised-button color="primary" (click)="paso.set(1)" [disabled]="form.invalid">
-                  Siguiente <mat-icon>arrow_forward</mat-icon>
+                <button class="btn btn-primary" (click)="paso.set(1)" [disabled]="form.invalid">
+                  Siguiente <i class="bi bi-arrow-right"></i>
                 </button>
               }
               @if (paso() === 1 && fielData) {
-                <button mat-raised-button color="primary" (click)="guardar()" [disabled]="cargando()">
-                  @if (cargando()) { <mat-spinner diameter="20"></mat-spinner> }
-                  @else { <mat-icon>save</mat-icon> Guardar Cambio }
+                <button class="btn btn-primary" (click)="guardar()" [disabled]="cargando()">
+                  @if (cargando()) { <div class="spinner-border spinner-border-sm text-light" role="status"></div> }
+                  @else { <i class="bi bi-save"></i> Guardar Cambio }
                 </button>
               }
             </div>
           }
-        </mat-card-content>
-      </mat-card>
+        </div>
+      </div>
     </div>
   `,
   styles: [`
     .page-container { max-width: 560px; margin: 0 auto; }
     .form-fields { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
-    .step-nav { display: flex; margin-top: 24px; padding-top: 16px; border-top: 1px solid #e0e0e0; }
+    .step-nav { display: flex; margin-top: 24px; padding-top: 16px; border-top: 1px solid #dee2e6; }
     .success-center { text-align: center; padding: 24px; }
+    .success-icon--large { font-size: 64px; color: #2e7d32; display: block; margin-bottom: 16px; }
   `],
 })
 export class CambioCorreoComponent {
@@ -114,9 +118,9 @@ export class CambioCorreoComponent {
   paso = signal(0);
   cargando = signal(false);
   exito = signal(false);
-  fielData: any = null;
+  fielData: unknown = null;
 
-  pasos: WizardStep[] = [
+  readonly pasos: WizardStep[] = [
     { label: 'Nuevo Correo', icon: 'email' },
     { label: 'e.firma', icon: 'security' },
     { label: 'Resultado', icon: 'check' },
@@ -127,17 +131,17 @@ export class CambioCorreoComponent {
     confirmacion: ['', Validators.required],
   });
 
-  onFirmado(data: any) { this.fielData = data; }
+  onFirmado(data: unknown) { this.fielData = data; }
 
   guardar() {
     this.cargando.set(true);
-    const dto = {
+    const DTO = {
       rfcUsuario: this.auth.usuario()!.rfc,
       correoActual: this.auth.usuario()!.correo,
       correoNuevo: this.form.value.correoNuevo!,
       confirmacionCorreo: this.form.value.confirmacion!,
     };
-    this.api.cambiarCorreo(dto).subscribe({
+    this.api.cambiarCorreo(DTO).subscribe({
       next: () => { this.cargando.set(false); this.exito.set(true); this.paso.set(2); },
       error: () => { this.cargando.set(false); this.paso.set(2); },
     });

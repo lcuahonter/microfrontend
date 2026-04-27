@@ -1,4 +1,4 @@
-import { Usuario, TipoPersona, TipoNacionalidad, EstatusUsuario, TipoRol } from '../core/models/usuario.model';
+import { EstatusUsuario, TipoNacionalidad, TipoPersona, TipoRol, Usuario } from '../core/models/usuario.model';
 
 export const USUARIOS_MOCK: Usuario[] = [
   {

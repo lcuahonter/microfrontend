@@ -1,24 +1,22 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'vuc-alert',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, MatIconModule, MatButtonModule],
+  imports: [CommonModule],
   template: `
     @if (visible) {
       <div class="vuc-alert" [class]="'vuc-alert--' + type">
-        <mat-icon class="vuc-alert__icon">{{ iconMap[type] }}</mat-icon>
+        <i class="bi" [class]="iconMap[type]" class="vuc-alert__icon"></i>
         <div class="vuc-alert__content">
           <strong *ngIf="title" class="vuc-alert__title">{{ title }}</strong>
           <span class="vuc-alert__msg"><ng-content></ng-content></span>
         </div>
         @if (closable) {
-          <button mat-icon-button class="vuc-alert__close" (click)="close()">
-            <mat-icon>close</mat-icon>
+          <button class="btn btn-sm btn-link p-0 vuc-alert__close" (click)="close()">
+            <i class="bi bi-x-circle"></i>
           </button>
         }
       </div>
@@ -29,11 +27,11 @@ import { MatButtonModule } from '@angular/material/button';
       display: flex; align-items: flex-start; gap: 12px;
       padding: 12px 16px; border-radius: 8px; margin-bottom: 16px;
     }
-    .vuc-alert--info    { background: #e3f2fd; color: #1565c0; border-left: 4px solid #1976d2; }
-    .vuc-alert--success { background: #e8f5e9; color: #2e7d32; border-left: 4px solid #43a047; }
-    .vuc-alert--warning { background: #fff8e1; color: #e65100; border-left: 4px solid #fb8c00; }
-    .vuc-alert--error   { background: #ffebee; color: #b71c1c; border-left: 4px solid #e53935; }
-    .vuc-alert__icon { margin-top: 2px; }
+    .vuc-alert--info    { background: #dff0d8; color: #31708f; border-left: 4px solid #2c7be5; }
+    .vuc-alert--success { background: #dff0d8; color: #3c763d; border-left: 4px solid #2e7d32; }
+    .vuc-alert--warning { background: #fcf8e3; color: #8a6d3b; border-left: 4px solid #e65100; }
+    .vuc-alert--error   { background: #f2dede; color: #a94442; border-left: 4px solid #a94442; }
+    .vuc-alert__icon { margin-top: 2px; font-size: 18px; }
     .vuc-alert__content { flex: 1; }
     .vuc-alert__title { display: block; font-weight: 600; margin-bottom: 4px; }
     .vuc-alert__close { margin-left: auto; }
@@ -48,10 +46,10 @@ export class AlertComponent {
   visible = true;
 
   readonly iconMap = {
-    info: 'info',
-    success: 'check_circle',
-    warning: 'warning',
-    error: 'error',
+    info: 'bi-info-circle',
+    success: 'bi-check-circle',
+    warning: 'bi-exclamation-triangle',
+    error: 'bi-x-circle',
   };
 
   close() {

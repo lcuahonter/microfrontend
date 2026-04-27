@@ -1,20 +1,12 @@
-import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatRadioModule } from '@angular/material/radio';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatDividerModule } from '@angular/material/divider';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { StepperComponent, WizardStep } from '../../../shared/components/stepper/stepper.component';
+import { TipoNacionalidad, TipoPersona } from '../../../core/models/usuario.model';
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
+import { CommonModule } from '@angular/common';
 import { FielSignatureComponent } from '../../../shared/components/fiel-signature/fiel-signature.component';
+import { Router } from '@angular/router';
 import { UsuariosApiService } from '../../../core/services/usuarios-api.service';
-import { TipoPersona, TipoNacionalidad } from '../../../core/models/usuario.model';
 
 @Component({
   selector: 'vuc-registro-wizard',
@@ -22,32 +14,42 @@ import { TipoPersona, TipoNacionalidad } from '../../../core/models/usuario.mode
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule, ReactiveFormsModule,
-    MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule,
-    MatRadioModule, MatCheckboxModule, MatProgressSpinnerModule, MatDividerModule,
     StepperComponent, AlertComponent, FielSignatureComponent,
   ],
   template: `
     <div class="wizard-container">
-      <mat-card class="wizard-card">
-        <mat-card-header>
-          <mat-card-title>Registro de Usuario VUCEM</mat-card-title>
-          <mat-card-subtitle>Complete todos los pasos para registrarse</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
+      <div class="card wizard-card">
+        <div class="card-header">
+          <h5 class="card-title">Registro de Usuario VUCEM</h5>
+          <p class="card-subtitle text-muted mb-0">Complete todos los pasos para registrarse</p>
+        </div>
+        <div class="card-body">
           <vuc-stepper [pasos]="pasos" [pasoActual]="paso()" (pasoClick)="paso.set($event)"></vuc-stepper>
 
           <!-- PASO 0: Nacionalidad y tipo -->
           @if (paso() === 0) {
             <div class="wizard-step">
               <h3>Tipo de Persona y Nacionalidad</h3>
-              <mat-radio-group [(ngModel)]="tipoPersona" class="radio-group">
-                <mat-radio-button value="FISICA">Persona Física</mat-radio-button>
-                <mat-radio-button value="MORAL">Persona Moral</mat-radio-button>
-              </mat-radio-group>
-              <mat-radio-group [(ngModel)]="tipoNacionalidad" class="radio-group" style="margin-top:16px">
-                <mat-radio-button value="MEXICANO">Mexicano</mat-radio-button>
-                <mat-radio-button value="EXTRANJERO">Extranjero</mat-radio-button>
-              </mat-radio-group>
+              <div class="mb-3">
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="tipoPersona" id="tpFisica" value="FISICA" [formControl]="tipoPersonaCtrl">
+                  <label class="form-check-label" for="tpFisica">Persona Física</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="tipoPersona" id="tpMoral" value="MORAL" [formControl]="tipoPersonaCtrl">
+                  <label class="form-check-label" for="tpMoral">Persona Moral</label>
+                </div>
+              </div>
+              <div class="mb-3">
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="tipoNac" id="tnMex" value="MEXICANO" [formControl]="tipoNacionalidadCtrl">
+                  <label class="form-check-label" for="tnMex">Mexicano</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="tipoNac" id="tnExt" value="EXTRANJERO" [formControl]="tipoNacionalidadCtrl">
+                  <label class="form-check-label" for="tnExt">Extranjero</label>
+                </div>
+              </div>
             </div>
           }
 
@@ -56,32 +58,35 @@ import { TipoPersona, TipoNacionalidad } from '../../../core/models/usuario.mode
             <div class="wizard-step">
               <h3>Datos Personales</h3>
               <form [formGroup]="formDatos" class="wizard-form">
-                <mat-form-field appearance="outline">
-                  <mat-label>RFC</mat-label>
-                  <input matInput formControlName="rfc" maxlength="13" style="text-transform:uppercase" placeholder="AAAA000000XX0">
+                <div class="mb-3">
+                  <label class="form-label">RFC</label>
+                  <input class="form-control text-uppercase" formControlName="rfc" maxlength="13" placeholder="AAAA000000XX0">
                   @if (formDatos.get('rfc')?.hasError('required') && formDatos.get('rfc')?.touched) {
-                    <mat-error>El RFC es requerido</mat-error>
+                    <div class="invalid-feedback d-block">El RFC es requerido</div>
                   }
-                </mat-form-field>
-                @if (tipoPersona === 'FISICA' && tipoNacionalidad === 'MEXICANO') {
-                  <mat-form-field appearance="outline">
-                    <mat-label>CURP</mat-label>
-                    <input matInput formControlName="curp" maxlength="18" style="text-transform:uppercase">
-                  </mat-form-field>
+                </div>
+                @if (tipoPersonaCtrl.value === 'FISICA' && tipoNacionalidadCtrl.value === 'MEXICANO') {
+                  <div class="mb-3">
+                    <label class="form-label">CURP</label>
+                    <input class="form-control text-uppercase" formControlName="curp" maxlength="18">
+                  </div>
                 }
-                <mat-form-field appearance="outline">
-                  <mat-label>{{ tipoPersona === 'MORAL' ? 'Razón Social' : 'Nombre(s)' }}</mat-label>
-                  <input matInput formControlName="nombre">
-                </mat-form-field>
-                @if (tipoPersona === 'FISICA') {
-                  <mat-form-field appearance="outline">
-                    <mat-label>Primer Apellido</mat-label>
-                    <input matInput formControlName="primerApellido">
-                  </mat-form-field>
-                  <mat-form-field appearance="outline">
-                    <mat-label>Segundo Apellido</mat-label>
-                    <input matInput formControlName="segundoApellido">
-                  </mat-form-field>
+                <div class="mb-3">
+                  <label class="form-label">{{ tipoPersonaCtrl.value === 'MORAL' ? 'Razón Social' : 'Nombre(s)' }}</label>
+                  <input class="form-control" formControlName="nombre">
+                  @if (formDatos.get('nombre')?.hasError('required') && formDatos.get('nombre')?.touched) {
+                    <div class="invalid-feedback d-block">Este campo es requerido</div>
+                  }
+                </div>
+                @if (tipoPersonaCtrl.value === 'FISICA') {
+                  <div class="mb-3">
+                    <label class="form-label">Primer Apellido</label>
+                    <input class="form-control" formControlName="primerApellido">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Segundo Apellido</label>
+                    <input class="form-control" formControlName="segundoApellido">
+                  </div>
                 }
               </form>
             </div>
@@ -93,22 +98,26 @@ import { TipoPersona, TipoNacionalidad } from '../../../core/models/usuario.mode
               <h3>Correo Electrónico</h3>
               <vuc-alert type="info">El correo será utilizado para notificaciones de sus trámites.</vuc-alert>
               <form [formGroup]="formCorreo" class="wizard-form">
-                <mat-form-field appearance="outline">
-                  <mat-label>Correo Electrónico</mat-label>
-                  <mat-icon matPrefix>email</mat-icon>
-                  <input matInput formControlName="correo" type="email">
+                <div class="mb-3">
+                  <label class="form-label">Correo Electrónico</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                    <input class="form-control" formControlName="correo" type="email">
+                  </div>
                   @if (formCorreo.get('correo')?.hasError('email')) {
-                    <mat-error>Formato de correo incorrecto</mat-error>
+                    <div class="invalid-feedback d-block">Formato de correo incorrecto</div>
                   }
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                  <mat-label>Confirmar Correo</mat-label>
-                  <mat-icon matPrefix>email</mat-icon>
-                  <input matInput formControlName="confirmacion" type="email">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Confirmar Correo</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                    <input class="form-control" formControlName="confirmacion" type="email">
+                  </div>
                   @if (formCorreo.hasError('noCoincide')) {
-                    <mat-error>Los correos no coinciden</mat-error>
+                    <div class="invalid-feedback d-block">Los correos no coinciden</div>
                   }
-                </mat-form-field>
+                </div>
               </form>
             </div>
           }
@@ -126,9 +135,12 @@ import { TipoPersona, TipoNacionalidad } from '../../../core/models/usuario.mode
                   <li>Notificar cualquier uso no autorizado de su cuenta.</li>
                 </ul>
               </div>
-              <mat-checkbox [(ngModel)]="aceptaTerminos">
-                Acepto los términos y condiciones de uso de VUCEM
-              </mat-checkbox>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="aceptaTerminos" [formControl]="aceptaTerminosCtrl">
+                <label class="form-check-label" for="aceptaTerminos">
+                  Acepto los términos y condiciones de uso de VUCEM
+                </label>
+              </div>
             </div>
           }
 
@@ -146,17 +158,17 @@ import { TipoPersona, TipoNacionalidad } from '../../../core/models/usuario.mode
             <div class="wizard-step">
               @if (registroExitoso()) {
                 <div class="success-container">
-                  <mat-icon class="success-icon">check_circle</mat-icon>
-                  <h3>¡Registro Exitoso!</h3>
+                  <i class="bi bi-check-circle success-icon"></i>
+                  <h4>¡Registro Exitoso!</h4>
                   <p>Su cuenta ha sido creada. Revise su correo electrónico para confirmar su registro.</p>
-                  <button mat-raised-button color="primary" (click)="irAlLogin()">
-                    <mat-icon>login</mat-icon> Ir al Inicio de Sesión
+                  <button class="btn btn-primary" (click)="irAlLogin()">
+                    <i class="bi bi-box-arrow-in-right"></i> Ir al Inicio de Sesión
                   </button>
                 </div>
               } @else {
                 <h3>Confirmar Registro</h3>
                 <div class="resumen">
-                  <p><strong>Tipo:</strong> {{ tipoPersona }} | {{ tipoNacionalidad }}</p>
+                  <p><strong>Tipo:</strong> {{ tipoPersonaCtrl.value }} | {{ tipoNacionalidadCtrl.value }}</p>
                   <p><strong>RFC:</strong> {{ formDatos.value.rfc }}</p>
                   <p><strong>Nombre:</strong> {{ formDatos.value.nombre }} {{ formDatos.value.primerApellido }}</p>
                   <p><strong>Correo:</strong> {{ formCorreo.value.correo }}</p>
@@ -169,39 +181,37 @@ import { TipoPersona, TipoNacionalidad } from '../../../core/models/usuario.mode
           @if (!registroExitoso()) {
             <div class="wizard-nav">
               @if (paso() > 0) {
-                <button mat-stroked-button (click)="retroceder()">
-                  <mat-icon>arrow_back</mat-icon> Anterior
+                <button class="btn btn-outline-primary" (click)="retroceder()">
+                  <i class="bi bi-arrow-left"></i> Anterior
                 </button>
               }
-              <span style="flex:1"></span>
+              <span class="flex-grow-1"></span>
               @if (paso() < pasos.length - 1) {
-                <button mat-raised-button color="primary" (click)="avanzar()" [disabled]="!puedeContinuar()">
-                  Siguiente <mat-icon>arrow_forward</mat-icon>
+                <button class="btn btn-primary" (click)="avanzar()" [disabled]="!puedeContinuar()">
+                  Siguiente <i class="bi bi-arrow-right"></i>
                 </button>
               } @else {
-                <button mat-raised-button color="primary" (click)="registrar()" [disabled]="cargando()">
-                  @if (cargando()) { <mat-spinner diameter="20"></mat-spinner> }
-                  @else { <mat-icon>how_to_reg</mat-icon> Registrar }
+                <button class="btn btn-primary" (click)="registrar()" [disabled]="cargando()">
+                  @if (cargando()) { <div class="spinner-border spinner-border-sm text-light" role="status"></div> }
+                  @else { <i class="bi bi-person-check"></i> Registrar }
                 </button>
               }
             </div>
           }
-        </mat-card-content>
-      </mat-card>
+        </div>
+      </div>
     </div>
   `,
   styles: [`
     .wizard-container { max-width: 720px; margin: 0 auto; }
-    .wizard-card { }
-    .wizard-step h3 { color: #006847; margin-bottom: 16px; }
+    .wizard-step h3 { color: #404041; margin-bottom: 16px; }
     .wizard-form { display: flex; flex-direction: column; gap: 8px; }
-    .radio-group { display: flex; gap: 24px; }
-    .terminos-box { padding: 16px; background: #f5f5f5; border-radius: 8px; margin-bottom: 16px; font-size: 14px; }
-    .wizard-nav { display: flex; align-items: center; margin-top: 24px; padding-top: 16px; border-top: 1px solid #e0e0e0; }
+    .terminos-box { padding: 16px; background: #f8f9fa; border-radius: 8px; margin-bottom: 16px; font-size: 14px; }
+    .wizard-nav { display: flex; align-items: center; margin-top: 24px; padding-top: 16px; border-top: 1px solid #dee2e6; }
     .success-container { text-align: center; padding: 32px; }
-    .success-icon { font-size: 72px; width: 72px; height: 72px; color: #43a047; }
-    .success-container h3 { font-size: 24px; color: #2e7d32; }
-    .resumen { background: #f9f9f9; padding: 16px; border-radius: 8px; }
+    .success-icon { font-size: 72px; color: #2e7d32; display: block; margin-bottom: 16px; }
+    .success-container h4 { color: #2e7d32; }
+    .resumen { background: #f8f9fa; padding: 16px; border-radius: 8px; }
     .resumen p { margin: 4px 0; }
   `],
 })
@@ -211,14 +221,14 @@ export class RegistroWizardComponent {
   private router = inject(Router);
 
   paso = signal(0);
-  tipoPersona = 'FISICA';
-  tipoNacionalidad = 'MEXICANO';
-  aceptaTerminos = false;
+  tipoPersonaCtrl = new FormControl('FISICA');
+  tipoNacionalidadCtrl = new FormControl('MEXICANO');
+  aceptaTerminosCtrl = new FormControl(false);
   cargando = signal(false);
   registroExitoso = signal(false);
-  fielData: any = null;
+  fielData: unknown = null;
 
-  pasos: WizardStep[] = [
+  readonly pasos: WizardStep[] = [
     { label: 'Tipo', icon: 'person' },
     { label: 'Datos', icon: 'badge' },
     { label: 'Correo', icon: 'email' },
@@ -241,21 +251,21 @@ export class RegistroWizardComponent {
   });
 
   puedeContinuar(): boolean {
-    if (this.paso() === 1) return this.formDatos.valid;
-    if (this.paso() === 2) return this.formCorreo.valid && this.formCorreo.value.correo === this.formCorreo.value.confirmacion;
-    if (this.paso() === 3) return this.aceptaTerminos;
-    if (this.paso() === 4) return !!this.fielData;
+    if (this.paso() === 1) { return this.formDatos.valid; }
+    if (this.paso() === 2) { return this.formCorreo.valid && this.formCorreo.value.correo === this.formCorreo.value.confirmacion; }
+    if (this.paso() === 3) { return Boolean(this.aceptaTerminosCtrl.value); }
+    if (this.paso() === 4) { return Boolean(this.fielData); }
     return true;
   }
 
-  avanzar() { if (this.puedeContinuar()) this.paso.update(p => p + 1); }
+  avanzar() { if (this.puedeContinuar()) { this.paso.update(p => p + 1); } }
   retroceder() { this.paso.update(p => p - 1); }
 
-  onFirmado(data: any) { this.fielData = data; }
+  onFirmado(data: unknown) { this.fielData = data; }
 
   registrar() {
     this.cargando.set(true);
-    const dto = {
+    const DTO = {
       rfc: this.formDatos.value.rfc!,
       curp: this.formDatos.value.curp || undefined,
       nombre: this.formDatos.value.nombre!,
@@ -263,11 +273,11 @@ export class RegistroWizardComponent {
       segundoApellido: this.formDatos.value.segundoApellido || undefined,
       correo: this.formCorreo.value.correo!,
       confirmacionCorreo: this.formCorreo.value.confirmacion!,
-      tipoPersona: this.tipoPersona as TipoPersona,
-      tipoNacionalidad: this.tipoNacionalidad as TipoNacionalidad,
-      aceptaTerminos: this.aceptaTerminos,
+      tipoPersona: this.tipoPersonaCtrl.value as TipoPersona,
+      tipoNacionalidad: this.tipoNacionalidadCtrl.value as TipoNacionalidad,
+      aceptaTerminos: Boolean(this.aceptaTerminosCtrl.value),
     };
-    this.api.registrarUsuario(dto).subscribe(() => {
+    this.api.registrarUsuario(DTO).subscribe(() => {
       this.cargando.set(false);
       this.registroExitoso.set(true);
     });

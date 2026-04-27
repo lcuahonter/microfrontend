@@ -1,4 +1,4 @@
-import { Rol, Dependencia, UnidadAdministrativa } from '../core/models/rol.model';
+import { Dependencia, Rol, UnidadAdministrativa } from '../core/models/rol.model';
 import { Tramite } from '../core/models/tramite.model';
 
 export const ROLES_MOCK: Rol[] = [
